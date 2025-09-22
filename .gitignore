@@ -1,0 +1,10 @@
+# build
+build/
+
+# vcpkg
+vcpkg/
+vcpkg_installed/
+
+# misc
+compile_commands.json
+.cache

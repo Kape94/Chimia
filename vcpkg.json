@@ -1,0 +1,19 @@
+{
+  "name": "new-project",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "glew",
+    "glfw3",
+    "glm",
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    {
+      "name": "imgui",
+      "default-features": false,
+      "features": [
+        "glfw-binding",
+        "opengl3-binding"
+      ]
+    }
+  ]
+}
