@@ -24,3 +24,8 @@ target_link_libraries(${APP_TOOLKIT_LIB}
         glm::glm
         imgui::imgui
 )
+
+option(BUILD_SAMPLES OFF)
+if (${BUILD_SAMPLES})
+  add_subdirectory(samples)
+endif()

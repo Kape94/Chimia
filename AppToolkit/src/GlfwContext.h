@@ -3,8 +3,6 @@
 #include "AppToolkitDefs.h"
 #include "WindowProperties.h"
 
-#include <string>
-
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 
