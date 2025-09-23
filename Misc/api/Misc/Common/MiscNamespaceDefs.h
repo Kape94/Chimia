@@ -1,0 +1,8 @@
+#pragma once
+
+#define MISC_NAMESPACE_NAME Misc
+
+#define BEGIN_MISC_NAMESPACE namespace MISC_NAMESPACE_NAME {
+#define END_MISC_NAMESPACE }
+
+#define USING_MISC_NAMESPACE using namespace MISC_NAMESPACE_NAME;

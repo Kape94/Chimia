@@ -6,5 +6,6 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
+add_subdirectory(Misc)
 add_subdirectory(AppToolkit)
 add_subdirectory(RenderLib)

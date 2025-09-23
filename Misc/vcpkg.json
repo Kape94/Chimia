@@ -1,0 +1,8 @@
+{
+  "name": "misc",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "vcpkg-cmake",
+    "vcpkg-cmake-config"
+  ]
+}
