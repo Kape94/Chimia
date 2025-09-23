@@ -1,7 +1,4 @@
 
-find_package(GLEW REQUIRED)
-find_package(glm CONFIG REQUIRED)
-
 set(TARGET_NAME RenderLib)
 
 file(GLOB SRC_FILES src/*.cpp)

@@ -1,6 +1,4 @@
 
-find_package(glfw3 CONFIG REQUIRED)
-
 set(TARGET_NAME RenderLibExamples_Utils)
 add_library(${TARGET_NAME}
     src/Window.cpp
