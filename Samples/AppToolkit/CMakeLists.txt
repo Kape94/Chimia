@@ -1,12 +1,12 @@
 
-add_executable(ex1-minimal ex1-minimal.cpp)
-target_link_libraries(ex1-minimal PRIVATE AppToolkit)
+add_executable(Samples_App_ex1 ex1-minimal.cpp)
+target_link_libraries(Samples_App_ex1 AppToolkit)
 
-add_executable(ex2-simpleUI ex2-simpleUI.cpp)
-target_link_libraries(ex2-simpleUI PRIVATE AppToolkit)
+add_executable(Samples_App_ex2 ex2-simpleUI.cpp)
+target_link_libraries(Samples_App_ex2 AppToolkit)
 
-add_executable(ex3-drawing ex3-drawing.cpp)
-target_link_libraries(ex3-drawing PRIVATE AppToolkit)
+add_executable(Samples_App_ex3 ex3-drawing.cpp)
+target_link_libraries(Samples_App_ex3 AppToolkit)
 
-add_executable(ex4-drawingUIAndInput ex4-drawingUIAndInput.cpp)
-target_link_libraries(ex4-drawingUIAndInput PRIVATE AppToolkit)
+add_executable(Samples_App_ex4 ex4-drawingUIAndInput.cpp)
+target_link_libraries(Samples_App_ex4 AppToolkit)
