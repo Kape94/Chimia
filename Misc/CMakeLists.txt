@@ -22,8 +22,3 @@ target_include_directories(${TARGET_NAME}
   PRIVATE
     ./api/Misc
 )
-
-option(BUILD_SAMPLES OFF)
-if (${BUILD_SAMPLES})
-  add_subdirectory(samples)
-endif()
