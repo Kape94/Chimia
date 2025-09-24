@@ -6,10 +6,11 @@
 #include "RenderLib/Texture2D.h"
 #include "RenderLib/TextureUnit.h"
 
+#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Utils/stb_image.h"
 
 namespace Inputs {
 
@@ -112,7 +113,7 @@ const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 }
 
 int
-main()
+main(int argc, char** argv)
 {
   Window win(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT, "Example #3");
 
@@ -130,8 +131,12 @@ main()
       RenderLib::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
   int width, height, nChannels;
+
+  const std::string assetsDir =
+    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+  const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   unsigned char* texData =
-    stbi_load("solar-flare.jpg", &width, &height, &nChannels, 0);
+    stbi_load(solarFlareAsset.c_str(), &width, &height, &nChannels, 0);
 
   RenderLib::Texture2D texture(texData, width, height);
 

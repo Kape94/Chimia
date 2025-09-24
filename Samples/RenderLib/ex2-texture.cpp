@@ -5,10 +5,11 @@
 #include "RenderLib/Texture2D.h"
 #include "RenderLib/TextureUnit.h"
 
+#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "Utils/stb_image.h"
 
 namespace Inputs {
 
@@ -60,7 +61,7 @@ const std::vector<unsigned> index{ 0, 1, 2 };
 }
 
 int
-main()
+main(int argc, char** argv)
 {
   Window win(1280, 1080, "Example #2");
 
@@ -76,16 +77,22 @@ main()
     { RenderLib::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       RenderLib::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
+  const std::string assetsDir =
+    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+
   int width, height, nChannels;
+
+  const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   unsigned char* texData =
-    stbi_load("blue-light-style.jpg", &width, &height, &nChannels, 0);
+    stbi_load(blueLightAsset.c_str(), &width, &height, &nChannels, 0);
 
   RenderLib::Texture2D texture;
   texture.Create(texData, width, height);
 
   stbi_image_free(texData);
 
-  texData = stbi_load("solar-flare.jpg", &width, &height, &nChannels, 0);
+  const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
+  texData = stbi_load(solarFlareAsset.c_str(), &width, &height, &nChannels, 0);
 
   RenderLib::Texture2D texture2;
   texture2.Create(texData, width, height);

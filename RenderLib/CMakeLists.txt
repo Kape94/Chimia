@@ -17,7 +17,3 @@ target_link_libraries(${TARGET_NAME}
         glm::glm
 )
 
-option(BUILD_SAMPLES OFF)
-if (BUILD_SAMPLES)
-    add_subdirectory(samples)
-endif()

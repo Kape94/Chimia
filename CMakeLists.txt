@@ -9,3 +9,8 @@ find_package(imgui CONFIG REQUIRED)
 add_subdirectory(Misc)
 add_subdirectory(AppToolkit)
 add_subdirectory(RenderLib)
+
+option(BUILD_SAMPLES OFF)
+if (BUILD_SAMPLES)
+    add_subdirectory(Samples)
+endif()
