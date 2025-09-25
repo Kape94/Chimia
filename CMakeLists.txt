@@ -6,9 +6,9 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
-add_subdirectory(Misc)
+add_subdirectory(Bits)
 add_subdirectory(App)
-add_subdirectory(RenderLib)
+add_subdirectory(Rendering)
 
 option(BUILD_SAMPLES OFF)
 if (BUILD_SAMPLES)

@@ -1,5 +1,5 @@
 add_subdirectory(Utils)
 
 add_subdirectory(App)
-add_subdirectory(RenderLib)
-add_subdirectory(Misc)
+add_subdirectory(Rendering)
+add_subdirectory(Bits)
