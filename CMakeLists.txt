@@ -7,7 +7,7 @@ find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
 add_subdirectory(Misc)
-add_subdirectory(AppToolkit)
+add_subdirectory(App)
 add_subdirectory(RenderLib)
 
 option(BUILD_SAMPLES OFF)
