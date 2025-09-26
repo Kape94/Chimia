@@ -3,6 +3,7 @@ SET(TARGET_NAME Chimia_Draw3D)
 
 add_library(${TARGET_NAME}
     src/Draw3D.cpp
+    src/Shaders.cpp
     src/Triangle.cpp
     src/TriangleDetail.cpp
 )

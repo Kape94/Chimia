@@ -1,11 +1,10 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
+#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/vector_float3.hpp>
 
-#include <cstdlib>
-#include <ctime>
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -18,13 +17,7 @@ std::vector<glm::vec3> initialDirs{ { -1.0f, -1.0f, 0.0f },
                                     { 1.0f, -1.0f, 0.0f } };
 
 // ----------------------------------------------------------------------------
-
-float
-normalizedRand()
-{
-  return (float)rand() / RAND_MAX;
-}
-
+// Triangle class
 // ----------------------------------------------------------------------------
 
 class Triangle
@@ -47,17 +40,19 @@ private:
 
 Triangle::Triangle()
 {
-  m_pos = { -1.0f + normalizedRand() * 2.0f,
-            -1.0f + normalizedRand() * 2.0f,
-            0.0f };
-  m_col = { 0.0f + normalizedRand() * 1.0f,
-            0.0f + normalizedRand() * 1.0f,
-            0.0f + normalizedRand() * 1.0f };
-  m_size = 0.01f + 0.02f * normalizedRand();
+  using namespace SamplesUtils;
 
-  const unsigned randomPos = rand() % initialDirs.size();
+  m_pos = { -1.0f + NormalizedRand() * 2.0f,
+            -1.0f + NormalizedRand() * 2.0f,
+            0.0f };
+  m_col = { 0.0f + NormalizedRand() * 1.0f,
+            0.0f + NormalizedRand() * 1.0f,
+            0.0f + NormalizedRand() * 1.0f };
+  m_size = 0.01f + 0.02f * NormalizedRand();
+
+  const unsigned randomPos = Rand() % initialDirs.size();
   m_dir = initialDirs[randomPos];
-  m_velocity = 0.005f + 0.015f * normalizedRand();
+  m_velocity = 0.005f + 0.015f * NormalizedRand();
 }
 
 const glm::vec3&
@@ -112,6 +107,8 @@ CreateTriangles()
 }
 
 // ----------------------------------------------------------------------------
+// main
+// ----------------------------------------------------------------------------
 
 int
 main()
@@ -120,7 +117,7 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  srand(time(NULL));
+  SamplesUtils::InitRandom();
 
   auto triangles = CreateTriangles();
   while (!w.ShouldClose()) {
@@ -141,3 +138,5 @@ main()
   }
   return 0;
 }
+
+// ----------------------------------------------------------------------------

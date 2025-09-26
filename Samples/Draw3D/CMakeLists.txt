@@ -1,3 +1,9 @@
+add_library(Samples_Draw3D_Dependencies INTERFACE)
+target_link_libraries(Samples_Draw3D_Dependencies INTERFACE Chimia_Draw3D Samples_Utils)
+
 
 add_executable(Samples_Draw3D_ex1 ex1-triangles.cpp)
-target_link_libraries(Samples_Draw3D_ex1 Chimia_Draw3D Samples_Utils)
+target_link_libraries(Samples_Draw3D_ex1 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex2 ex2-vertexColoredTriangles.cpp)
+target_link_libraries(Samples_Draw3D_ex2 PRIVATE Samples_Draw3D_Dependencies)

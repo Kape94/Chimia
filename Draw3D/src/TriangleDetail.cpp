@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
-#include "ShaderCodes.h"
+#include "Shaders.h"
 
 #include "Bits/Buffer/RawBuffer.h"
 #include "Rendering/Buffer.h"
@@ -19,11 +19,11 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 namespace {
 
 Chimia::Rendering::Buffer trianglesBuffer;
-Chimia::Rendering::Shader shader;
 
 constexpr size_t BATCH_SIZE = 1000;
 constexpr size_t TRIANGLE_SIZE = sizeof(glm::vec3) * 6;
 constexpr size_t TOTAL_BUFFER_SIZE = TRIANGLE_SIZE * BATCH_SIZE;
+
 Chimia::Bits::RawBuffer trianglesPos(TOTAL_BUFFER_SIZE);
 
 constexpr size_t N_FLOATS_PER_TRIANGLE = 18;
@@ -36,9 +36,11 @@ const float vertexItems[N_FLOATS_TOTAL] = { 0.0f };
 
 void
 Chimia::Draw3D::TriangleDetail::Draw(const glm::vec3& p1,
+                                     const glm::vec3& p1Color,
                                      const glm::vec3& p2,
+                                     const glm::vec3& p2Color,
                                      const glm::vec3& p3,
-                                     const glm::vec3& color)
+                                     const glm::vec3& p3Color)
 {
   constexpr size_t INCOMING_SIZE = TRIANGLE_SIZE;
   if (trianglesPos.GetAvailableSize() < INCOMING_SIZE) {
@@ -46,11 +48,11 @@ Chimia::Draw3D::TriangleDetail::Draw(const glm::vec3& p1,
   }
 
   trianglesPos.Append(&p1, sizeof(glm::vec3));
-  trianglesPos.Append(&color, sizeof(glm::vec3));
+  trianglesPos.Append(&p1Color, sizeof(glm::vec3));
   trianglesPos.Append(&p2, sizeof(glm::vec3));
-  trianglesPos.Append(&color, sizeof(glm::vec3));
+  trianglesPos.Append(&p2Color, sizeof(glm::vec3));
   trianglesPos.Append(&p3, sizeof(glm::vec3));
-  trianglesPos.Append(&color, sizeof(glm::vec3));
+  trianglesPos.Append(&p3Color, sizeof(glm::vec3));
 }
 
 // ----------------------------------------------------------------------------
@@ -58,8 +60,6 @@ Chimia::Draw3D::TriangleDetail::Draw(const glm::vec3& p1,
 void
 Chimia::Draw3D::TriangleDetail::Init()
 {
-  shader.Create(ShaderCodes::Vertex::vertexColored,
-                ShaderCodes::Fragment::colored);
   trianglesBuffer.Create(vertexItems,
                          N_FLOATS_TOTAL,
                          { Chimia::Rendering::ShaderAttribute::Float(0, 3),
@@ -76,7 +76,7 @@ Chimia::Draw3D::TriangleDetail::Flush()
 
   trianglesBuffer.Load(f, size);
 
-  shader.Use();
+  Draw3D::Shaders::VertexColored().Use();
   trianglesBuffer.Render();
 
   trianglesPos.Reset();

@@ -1,5 +1,7 @@
 #include "SamplesUtils.h"
 
+#include <cstdlib>
+#include <ctime>
 #include <filesystem>
 
 // ----------------------------------------------------------------------------
@@ -14,6 +16,30 @@ SamplesUtils::GetCurrentAppDir(char** argv)
   final.remove_filename();
 
   return final;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::InitRandom()
+{
+  srand(time(NULL));
+}
+
+// ----------------------------------------------------------------------------
+
+float
+SamplesUtils::NormalizedRand()
+{
+  return (float)rand() / RAND_MAX;
+}
+
+// ----------------------------------------------------------------------------
+
+int
+SamplesUtils::Rand()
+{
+  return rand();
 }
 
 // ----------------------------------------------------------------------------

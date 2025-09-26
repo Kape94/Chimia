@@ -5,4 +5,11 @@
 namespace SamplesUtils {
 std::string
 GetCurrentAppDir(char** argv);
+
+void
+InitRandom();
+float
+NormalizedRand();
+int
+Rand();
 }

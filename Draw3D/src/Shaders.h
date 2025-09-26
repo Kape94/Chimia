@@ -4,26 +4,18 @@
 
 #include "Draw3DNamespaceDefs.h"
 
-#include <glm/vec3.hpp>
+#include "Rendering/Shader.h"
 
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-namespace TriangleDetail {
+namespace Shaders {
 void
-Init();
+Initialize();
 
-void
-Flush();
-
-void
-Draw(const glm::vec3& p1,
-     const glm::vec3& p1Color,
-     const glm::vec3& p2,
-     const glm::vec3& p2Color,
-     const glm::vec3& p3,
-     const glm::vec3& p3Color);
+Rendering::Shader&
+VertexColored();
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

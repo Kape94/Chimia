@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Shaders.h"
 #include "TriangleDetail.h"
 
 #include "Rendering/Rendering.h"
@@ -13,6 +14,7 @@ Chimia::Draw3D::Initialize()
 {
   Chimia::Rendering::Initialize();
 
+  Shaders::Initialize();
   TriangleDetail::Init();
 }
 
