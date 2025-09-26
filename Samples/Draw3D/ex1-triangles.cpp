@@ -1,3 +1,4 @@
+#include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
 #include "Utils/Window.h"
 
@@ -117,7 +118,7 @@ main()
 {
   Window w(1280, 960, "Draw3D ex1");
 
-  Chimia::Draw3D::Init();
+  Chimia::Draw3D::Initialize();
 
   srand(time(NULL));
 

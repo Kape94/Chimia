@@ -10,11 +10,19 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
+namespace TriangleDetail {
 void
-Triangle(const glm::vec3& p1,
-         const glm::vec3& p2,
-         const glm::vec3& p3,
-         const glm::vec3& color);
+Init();
+
+void
+Flush();
+
+void
+Draw(const glm::vec3& p1,
+     const glm::vec3& p2,
+     const glm::vec3& p3,
+     const glm::vec3& color);
+}
 
 END_CHIMIA_DRAW3D_NAMESPACE
 

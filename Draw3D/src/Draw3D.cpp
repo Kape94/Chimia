@@ -1,23 +1,35 @@
-#include "Triangle.h"
+#include "Draw3D.h"
 
 // ----------------------------------------------------------------------------
 
-#include "Draw3DNamespaceDefs.h"
 #include "TriangleDetail.h"
 
-// ----------------------------------------------------------------------------
-
-USING_CHIMIA_DRAW3D_NAMESPACE
+#include "Rendering/Rendering.h"
 
 // ----------------------------------------------------------------------------
 
 void
-Chimia::Draw3D::Triangle(const glm::vec3& p1,
-                         const glm::vec3& p2,
-                         const glm::vec3& p3,
-                         const glm::vec3& color)
+Chimia::Draw3D::Initialize()
 {
-  TriangleDetail::Draw(p1, p2, p3, color);
+  Chimia::Rendering::Initialize();
+
+  TriangleDetail::Init();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Flush()
+{
+  TriangleDetail::Flush();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::ClearScreen()
+{
+  Rendering::Clear();
 }
 
 // ----------------------------------------------------------------------------
