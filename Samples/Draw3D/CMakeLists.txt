@@ -1,0 +1,3 @@
+
+add_executable(Samples_Draw3D_ex1 ex1-triangle.cpp)
+target_link_libraries(Samples_Draw3D_ex1 Chimia_Draw3D Samples_Utils)

@@ -6,9 +6,11 @@ add_library(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME}
-    PRIVATE
-        Rendering
+    PUBLIC
         glm::glm
+    PRIVATE
+        Bits
+        Rendering
 )
 
 target_include_directories(${TARGET_NAME}

@@ -10,15 +10,19 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-void Init();
+void
+Init();
 
-void Triangle(
-    const glm::vec3& p1,
-    const glm::vec3& p2,
-    const glm::vec3& p3,
-    const glm::vec3& color
-);
+void
+Triangle(const glm::vec3& p1,
+         const glm::vec3& p2,
+         const glm::vec3& p3,
+         const glm::vec3& color);
 
-void Flush();
+void
+Flush();
+
+void
+ClearScreen();
 
 END_CHIMIA_DRAW3D_NAMESPACE

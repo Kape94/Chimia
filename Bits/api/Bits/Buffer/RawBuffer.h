@@ -15,10 +15,13 @@ public:
 
   ~RawBuffer();
 
-  void Append(void* newData, const size_t newDataSize);
+  void Append(const void* newData, const size_t newDataSize);
 
   unsigned char* GetData();
   size_t GetSize();
+  size_t GetAvailableSize();
+
+  void Reset();
 
 private:
   void IncreaseSize(const size_t size);
@@ -27,11 +30,11 @@ private:
 
   unsigned char* Allocate(const size_t size) const;
 
-  void Clear();
+  void Delete();
 
   size_t RemainingSize() const;
 
-  void AppendData(void* newData, const size_t newDataSize);
+  void AppendData(const void* newData, const size_t newDataSize);
 
   size_t maximumSize = 0;
   size_t currentSize = 0;

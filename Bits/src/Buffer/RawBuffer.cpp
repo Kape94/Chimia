@@ -28,13 +28,13 @@ RawBuffer::RawBuffer(const size_t _maximumSize)
 
 RawBuffer::~RawBuffer()
 {
-  Clear();
+  Delete();
 }
 
 //-----------------------------------------------------------------------------
 
 void
-RawBuffer::Append(void* newData, const size_t newDataSize)
+RawBuffer::Append(const void* newData, const size_t newDataSize)
 {
   const size_t remainingSize = RemainingSize();
   if (newDataSize > remainingSize) {
@@ -69,7 +69,7 @@ RawBuffer::Resize(const size_t size)
   } else {
     unsigned char* newData = Allocate(size);
     memcpy(newData, data, currentSize);
-    Clear();
+    Delete();
     data = newData;
   }
   maximumSize = size;
@@ -88,7 +88,7 @@ RawBuffer::Allocate(const size_t size) const
 //-----------------------------------------------------------------------------
 
 void
-RawBuffer::Clear()
+RawBuffer::Delete()
 {
   if (data != nullptr) {
     free(data);
@@ -106,10 +106,19 @@ RawBuffer::RemainingSize() const
 //-----------------------------------------------------------------------------
 
 void
-RawBuffer::AppendData(void* newData, const size_t newDataSize)
+RawBuffer::AppendData(const void* newData, const size_t newDataSize)
 {
   memcpy(&data[currentSize], newData, newDataSize);
   currentSize += newDataSize;
+}
+
+//-----------------------------------------------------------------------------
+
+void
+RawBuffer::Reset()
+{
+  memset(data, 0, maximumSize);
+  currentSize = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,6 +135,14 @@ size_t
 RawBuffer::GetSize()
 {
   return currentSize;
+}
+
+//-----------------------------------------------------------------------------
+
+size_t
+RawBuffer::GetAvailableSize()
+{
+  return maximumSize - currentSize;
 }
 
 //-----------------------------------------------------------------------------
