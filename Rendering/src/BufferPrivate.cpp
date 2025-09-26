@@ -15,6 +15,14 @@ BufferPrivate::GetVAO(const Buffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
+BufferPrivate::GetNVertices(const Buffer& buffer)
+{
+  return buffer.GetNVertices();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
 BufferPrivate::GetVAO(const IndexedBuffer& buffer)
 {
   return buffer.GetVAO();

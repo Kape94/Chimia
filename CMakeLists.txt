@@ -9,6 +9,7 @@ find_package(imgui CONFIG REQUIRED)
 add_subdirectory(Bits)
 add_subdirectory(App)
 add_subdirectory(Rendering)
+add_subdirectory(Draw3D)
 
 option(BUILD_SAMPLES OFF)
 if (BUILD_SAMPLES)

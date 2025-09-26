@@ -48,11 +48,14 @@ const char* fShader = R"(
 
 namespace BufferData {
 
+// clang-format off
 const std::vector<float> vertex{
-  // x ,    y,    z,    u,    v,
-  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+ // x     y     z     u     v
+    0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 
+    0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
+// clang-format on
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -99,8 +102,10 @@ main(int argc, char** argv)
 
   stbi_image_free(texData);
 
-  const Chimia::Rendering::TextureUnit texUnit = Chimia::Rendering::TextureUnit::UNIT_1;
-  const Chimia::Rendering::TextureUnit tex2Unit = Chimia::Rendering::TextureUnit::UNIT_2;
+  const Chimia::Rendering::TextureUnit texUnit =
+    Chimia::Rendering::TextureUnit::UNIT_1;
+  const Chimia::Rendering::TextureUnit tex2Unit =
+    Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
     texture.Use(texUnit);

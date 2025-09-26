@@ -5,6 +5,8 @@
 #include "IndexedBuffer.h"
 #include "ShaderAttribute.h"
 
+#include <variant>
+
 //---------------------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
@@ -32,6 +34,14 @@ public:
                        const unsigned nInstances,
                        const ShaderAttributes& instanceShaderAttributes);
 
+  void CreateInstanced(const float* vertexData,
+                       const unsigned nVertexDataItems,
+                       const ShaderAttributes& shaderAttributes,
+                       const void* instancedData,
+                       const unsigned instancedDataSize,
+                       const unsigned nInstances,
+                       const ShaderAttributes& instanceShaderAttributes);
+
   void Clear();
 
   void Render() const;
@@ -44,9 +54,14 @@ private:
                               const unsigned instanceDataSize,
                               const unsigned nInstances);
 
+  void ClearBaseBuffer();
+
+  void RenderWithRegularBaseBuffer(const Buffer& buffer) const;
+  void RenderWithIndexedBaseBuffer(const IndexedBuffer& indexedBuffer) const;
+
   friend class BufferPrivate;
 
-  IndexedBuffer m_baseBuffer;
+  std::variant<Buffer, IndexedBuffer> m_baseBuffer;
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;
 };

@@ -14,6 +14,8 @@ class BufferPrivate
 {
 public:
   static unsigned GetVAO(const Buffer& buffer);
+  static unsigned GetNVertices(const Buffer& buffer);
+
   static unsigned GetVAO(const IndexedBuffer& buffer);
   static unsigned GetNElements(const IndexedBuffer& buffer);
 };

@@ -2,7 +2,9 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
+#include "IndexedBuffer.h"
 #include "OpenGLDefs.h"
+#include <variant>
 
 //---------------------------------------------------------------------------------------
 
@@ -53,14 +55,40 @@ InstancedBuffer::CreateInstanced(
   const unsigned nIndexDataItems,
   const ShaderAttributes& shaderAttributes,
   const void* instancedData,
-  const unsigned instanceDataSize,
+  const unsigned instancedDataSize,
   const unsigned nInstances,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_baseBuffer.Create(
+  m_baseBuffer = IndexedBuffer();
+  IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
+
+  base.Create(
     vertexData, nVertexDataItems, indexData, nIndexDataItems, shaderAttributes);
 
-  LoadInstancedDataInGPU(instancedData, instanceDataSize, nInstances);
+  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
+
+  m_nInstances = nInstances;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::CreateInstanced(
+  const float* vertexData,
+  const unsigned nVertexDataItems,
+  const ShaderAttributes& shaderAttributes,
+  const void* instancedData,
+  const unsigned instancedDataSize,
+  const unsigned nInstances,
+  const ShaderAttributes& instanceShaderAttributes)
+{
+  m_baseBuffer = Buffer();
+  Buffer& base = std::get<Buffer>(m_baseBuffer);
+
+  base.Create(vertexData, nVertexDataItems, shaderAttributes);
+
+  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 
   m_nInstances = nInstances;
@@ -82,7 +110,7 @@ InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
 void
 InstancedBuffer::Clear()
 {
-  m_baseBuffer.Clear();
+  ClearBaseBuffer();
   if (m_instancedVBO != 0) {
     glDeleteBuffers(1, &m_instancedVBO);
     m_instancedVBO = 0;
@@ -92,10 +120,47 @@ InstancedBuffer::Clear()
 //---------------------------------------------------------------------------------------
 
 void
+InstancedBuffer::ClearBaseBuffer()
+{
+  if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+    buffer->Clear();
+  } else if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+    indexedBuffer->Clear();
+  }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 InstancedBuffer::Render() const
 {
-  const unsigned VAO = BufferPrivate::GetVAO(m_baseBuffer);
-  const unsigned nElements = BufferPrivate::GetNElements(m_baseBuffer);
+  if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+    RenderWithIndexedBaseBuffer(*indexedBuffer);
+  } else if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+    RenderWithRegularBaseBuffer(*buffer);
+  }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::RenderWithRegularBaseBuffer(const Buffer& buffer) const
+{
+  const unsigned VAO = BufferPrivate::GetVAO(buffer);
+  const unsigned nVertices = BufferPrivate::GetNVertices(buffer);
+
+  glBindVertexArray(VAO);
+  glDrawArraysInstanced(GL_TRIANGLES, 0, nVertices, m_nInstances);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::RenderWithIndexedBaseBuffer(
+  const IndexedBuffer& indexedBuffer) const
+{
+  const unsigned VAO = BufferPrivate::GetVAO(indexedBuffer);
+  const unsigned nElements = BufferPrivate::GetNElements(indexedBuffer);
 
   glBindVertexArray(VAO);
   glDrawElementsInstanced(

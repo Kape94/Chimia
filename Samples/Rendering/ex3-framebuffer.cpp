@@ -92,19 +92,25 @@ const char* fShaderPost = R"(
 
 namespace BufferData {
 
+// clang-format off
 const std::vector<float> vertex{
-  // x ,    y,    z,    u,    v,
-  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-  1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+// x     y    z     u     v
+  0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 
+  1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 
+  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
+// clang-format on
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
-const std::vector<float> quad{ // x,   y,    z,    u,    v
-                               -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, -1.0f,
-                               0.0f,  1.0f,  0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-                               1.0f,  -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+// clang-format off
+const std::vector<float> quad{ // x    y     z     u     v
+                               -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 
+                               1.0f, -1.0f, 0.0f,  1.0f,  0.0f, 
+                               1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
+                               -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
+// clang-format on
 
 const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 
@@ -122,7 +128,7 @@ main(int argc, char** argv)
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                           Inputs::ShaderCodes::fShader);
+                                   Inputs::ShaderCodes::fShader);
 
   Chimia::Rendering::IndexedBuffer buffer(
     Inputs::BufferData::vertex,
@@ -142,12 +148,14 @@ main(int argc, char** argv)
 
   stbi_image_free(texData);
 
-  const Chimia::Rendering::TextureUnit texUnit = Chimia::Rendering::TextureUnit::UNIT_1;
+  const Chimia::Rendering::TextureUnit texUnit =
+    Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
+  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
+                                             Inputs::SCR_HEIGHT);
 
   Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
-                                     Inputs::ShaderCodes::fShaderPost);
+                                             Inputs::ShaderCodes::fShaderPost);
 
   Chimia::Rendering::IndexedBuffer quadBuffer(
     Inputs::BufferData::quad,
@@ -155,7 +163,8 @@ main(int argc, char** argv)
     { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
 
-  const Chimia::Rendering::TextureUnit texUnitPost = Chimia::Rendering::TextureUnit::UNIT_2;
+  const Chimia::Rendering::TextureUnit texUnitPost =
+    Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
     frameBuffer.Use();

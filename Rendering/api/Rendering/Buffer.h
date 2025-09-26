@@ -50,6 +50,7 @@ private:
                            const unsigned nVertexDataItems);
 
   unsigned GetVAO() const;
+  unsigned GetNVertices() const;
 
   friend class BufferPrivate;
 

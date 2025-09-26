@@ -42,10 +42,13 @@ const char* fShader = R"(
 
 namespace BufferData {
 
-const std::vector<float> vertex{ // x ,    y,    z
-                                 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                                 0.0f, 0.0f, 1.0f, 0.0f
+// clang-format off
+const std::vector<float> vertex{// x     y    z
+                                 0.0f, 0.0f, 0.0f, 
+                                 1.0f, 0.0f, 0.0f, 
+                                 0.0f, 1.0f, 0.0f
 };
+// clang-format on
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -62,12 +65,13 @@ main()
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                           Inputs::ShaderCodes::fShader);
+                                   Inputs::ShaderCodes::fShader);
 
   Chimia::Rendering::IndexedBuffer buffer(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/) });
+    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/,
+                                                3 /*nFloats*/) });
 
   float angle = 0.0f;
 

@@ -40,14 +40,16 @@ const char* fShader = R"(
 namespace BufferData {
 
 // clang-format off
-const std::vector<float> vertex{ // x    y    z
-                                 0.0f, 0.0f, 0.0f, 
-                                 0.1f, 0.0f, 0.0f, 
-                                 0.0f, 0.1f, 0.0f
+const std::vector<float> vertex{ // x ,    y,    z
+                                 0.0f,  0.0f, 0.0f, 
+                                 0.1f, 0.0f,  0.0f,
+                                 0.0f,  0.1f, 0.0f, 
+                                 0.0f, 0.0f,  0.0f,
+                                 -0.1f, 0.0f, 0.0f, 
+                                 0.0f, -0.1f, 0.0f
 };
 // clang-format on
 
-const std::vector<unsigned> index{ 0, 1, 2 };
 }
 
 namespace InstanceData {
@@ -65,7 +67,7 @@ const std::vector<glm::vec2> positions{
 int
 main()
 {
-  Window win(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT, "Example #5");
+  Window win(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT, "Example #7");
 
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
@@ -75,9 +77,7 @@ main()
 
   Chimia::Rendering::InstancedBuffer buffer;
   buffer.CreateInstanced(Inputs::BufferData::vertex.data(),
-                         (unsigned)Inputs::BufferData::vertex.size(),
-                         Inputs::BufferData::index.data(),
-                         (unsigned)Inputs::BufferData::index.size(),
+                         Inputs::BufferData::vertex.size(),
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
                          Inputs::InstanceData::positions.data(),

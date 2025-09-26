@@ -40,3 +40,8 @@ target_link_libraries(Samples_Rendering_ex5 PRIVATE Samples_Rendering_DefaultDep
 
 add_executable(Samples_Rendering_ex6 ex6-regularBuffer.cpp)
 target_link_libraries(Samples_Rendering_ex6 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 7) Regular buffer with instancing
+
+add_executable(Samples_Rendering_ex7 ex7-regularBufferInstanced.cpp)
+target_link_libraries(Samples_Rendering_ex7 PRIVATE Samples_Rendering_DefaultDeps)
