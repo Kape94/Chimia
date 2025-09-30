@@ -10,7 +10,7 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-namespace TriangleDetail {
+namespace TrianglePrivate {
 void
 Init();
 

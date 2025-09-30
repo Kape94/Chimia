@@ -6,7 +6,6 @@ add_library(${TARGET_NAME}
     src/Draw3D.cpp
     src/Shaders.cpp
     src/Triangle.cpp
-    src/TriangleDetail.cpp
 )
 
 target_link_libraries(${TARGET_NAME}

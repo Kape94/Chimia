@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Shaders.h"
-#include "TriangleDetail.h"
+#include "TrianglePrivate.h"
 
 #include "Rendering/Rendering.h"
 
@@ -15,7 +15,7 @@ Chimia::Draw3D::Initialize()
   Chimia::Rendering::Initialize();
 
   Shaders::Initialize();
-  TriangleDetail::Init();
+  TrianglePrivate::Init();
 }
 
 // ----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ Chimia::Draw3D::Initialize()
 void
 Chimia::Draw3D::Flush()
 {
-  TriangleDetail::Flush();
+  TrianglePrivate::Flush();
 }
 
 // ----------------------------------------------------------------------------
