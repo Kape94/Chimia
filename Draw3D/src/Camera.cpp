@@ -13,8 +13,10 @@
 USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
+// Utils
+// ----------------------------------------------------------------------------
 
-namespace {
+namespace CameraUtils {
 
 glm::mat4x4
 createIdentity()
@@ -29,17 +31,36 @@ isEqual(const float a, const float b, const float error)
   return diff < error;
 }
 
-glm::mat4x4 projection = createIdentity();
-glm::mat4x4 view = createIdentity();
+glm::vec3
+AdjustedUpDirection(const glm::vec3& up, const glm::vec3& target)
+{
+  const glm::vec3 direction = glm::normalize(target);
+  const float dotUpWithDirection = glm::dot(up, direction);
+  const bool upAndTargetAreInSameDirection =
+    isEqual(dotUpWithDirection, 0.0f, 0.0001f);
+
+  return upAndTargetAreInSameDirection ? glm::vec3{ 0.0f, 0.0f, 1.0f } : up;
+}
 
 }
 
+// ----------------------------------------------------------------------------
+// State
+// ----------------------------------------------------------------------------
+
+namespace CameraState {
+glm::mat4x4 projection = CameraUtils::createIdentity();
+glm::mat4x4 view = CameraUtils::createIdentity();
+}
+
+// ----------------------------------------------------------------------------
+// Camera
 // ----------------------------------------------------------------------------
 
 void
 Camera::Projection::SetIdentity()
 {
-  projection = createIdentity();
+  CameraState::projection = CameraUtils::createIdentity();
 }
 
 // ----------------------------------------------------------------------------
@@ -50,7 +71,7 @@ Camera::Projection::SetPerspective(const float fieldOfView,
                                    const float nearClippingPlane,
                                    const float farClippingPlane)
 {
-  projection =
+  CameraState::projection =
     glm::perspective(fieldOfView, aspect, nearClippingPlane, farClippingPlane);
 }
 
@@ -64,7 +85,7 @@ Camera::Projection::SetOthographic(const float left,
                                    const float near,
                                    const float far)
 {
-  projection = glm::ortho(left, right, bottom, top, near, far);
+  CameraState::projection = glm::ortho(left, right, bottom, top, near, far);
 }
 
 // ----------------------------------------------------------------------------
@@ -72,24 +93,20 @@ Camera::Projection::SetOthographic(const float left,
 void
 Camera::View::LookAt(const glm::vec3& eye, const glm::vec3& target)
 {
-  glm::vec3 up{ 0.0f, 1.0f, 0.0f };
+  const glm::vec3 defaultUp{ 0.0f, 1.0f, 0.0f };
+  const glm::vec3 up = CameraUtils::AdjustedUpDirection(defaultUp, target);
 
-  const glm::vec3 direction = glm::normalize(target);
-  const float dotUpWithDirection = glm::dot(up, direction);
-  const bool sameDirection = isEqual(dotUpWithDirection, 0.0f, 0.0001f);
-  if (glm::dot(up, direction)) {
-    up = { 0.0f, 0.0f, 1.0f };
-  }
-
-  view = glm::lookAt(eye, target, up);
+  CameraState::view = glm::lookAt(eye, target, up);
 }
 
+// ----------------------------------------------------------------------------
+// CameraPrivate
 // ----------------------------------------------------------------------------
 
 glm::mat4x4
 CameraPrivate::GetCurrentTransform()
 {
-  return projection * view;
+  return CameraState::projection * CameraState::view;
 }
 
 // ----------------------------------------------------------------------------

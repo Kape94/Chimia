@@ -17,8 +17,10 @@ main()
   Chimia::Draw3D::Initialize();
 
   const float triangleSize = 1.0f;
+  const float vertexSize = triangleSize / 2.0f;
 
   glm::vec3 cameraPos{ 0.0f, 1.0f, -2.0f };
+
   Chimia::Draw3D::Camera::Projection::SetPerspective(
     45.0f, 1.0f, 0.01f, 100.0f);
   Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
@@ -28,25 +30,25 @@ main()
     Chimia::Draw3D::ClearScreen();
 
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
-    Chimia::Draw3D::Triangle({ 0.0f, 0.0f, 0.0f },
+    Chimia::Draw3D::Triangle({ -vertexSize, -vertexSize, 0.0f },
                              { 1.0f, 0.0f, 0.0f },
-                             { triangleSize, 0.0f, 0.0f },
+                             { vertexSize, -vertexSize, 0.0f },
                              { 0.0f, 1.0f, 0.0f },
-                             { 0.0f, triangleSize, 0.0f },
+                             { -vertexSize, vertexSize, 0.0f },
                              { 0.0f, 0.0f, 1.0f });
 
-    Chimia::Draw3D::Triangle({ triangleSize, 0.0f, 0.0f },
+    Chimia::Draw3D::Triangle({ vertexSize, -vertexSize, 0.0f },
                              { 1.0f, 0.0f, 0.0f },
-                             { triangleSize, triangleSize, 0.0f },
+                             { vertexSize, vertexSize, 0.0f },
                              { 0.0f, 1.0f, 0.0f },
-                             { 0.0f, triangleSize, 0.0f },
+                             { -vertexSize, vertexSize, 0.0f },
                              { 0.0f, 0.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 
-    glm::mat4x4 rot =
+    const glm::mat4x4 rotMatrix =
       glm::rotate(glm::identity<glm::mat4x4>(), 0.01f, { 0.0f, 1.0f, 0.0f });
-    cameraPos = rot * glm::vec4(cameraPos, 1.0f);
+    cameraPos = rotMatrix * glm::vec4(cameraPos, 1.0f);
 
     w.Swap();
     w.PollEvents();
