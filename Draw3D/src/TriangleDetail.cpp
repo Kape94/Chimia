@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "CameraPrivate.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Shaders.h"
 
@@ -71,12 +72,18 @@ Chimia::Draw3D::TriangleDetail::Init()
 void
 Chimia::Draw3D::TriangleDetail::Flush()
 {
-  auto f = reinterpret_cast<const float*>(trianglesPos.GetData());
   const unsigned size = trianglesPos.GetSize() / sizeof(float);
+  if (size == 0)
+    return;
+
+  auto f = reinterpret_cast<const float*>(trianglesPos.GetData());
 
   trianglesBuffer.Load(f, size);
 
-  Draw3D::Shaders::VertexColored().Use();
+  Rendering::Shader& shader = Draw3D::Shaders::VertexColored();
+  shader.Use();
+  shader.SetUniform("transform", CameraPrivate::GetCurrentTransform());
+
   trianglesBuffer.Render();
 
   trianglesPos.Reset();
