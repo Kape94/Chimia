@@ -10,3 +10,6 @@ target_link_libraries(Samples_Draw3D_ex2 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex3 ex3-camera.cpp)
 target_link_libraries(Samples_Draw3D_ex3 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex4 ex4-basicIllumination.cpp)
+target_link_libraries(Samples_Draw3D_ex4 PRIVATE Samples_Draw3D_Dependencies)

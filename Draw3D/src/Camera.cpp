@@ -51,6 +51,8 @@ AdjustedUpDirection(const glm::vec3& up, const glm::vec3& target)
 namespace CameraState {
 glm::mat4x4 projection = CameraUtils::createIdentity();
 glm::mat4x4 view = CameraUtils::createIdentity();
+
+glm::vec3 cameraPosition{ 0.0f, 0.0f, 0.0f };
 }
 
 // ----------------------------------------------------------------------------
@@ -97,6 +99,7 @@ Camera::View::LookAt(const glm::vec3& eye, const glm::vec3& target)
   const glm::vec3 up = CameraUtils::AdjustedUpDirection(defaultUp, target);
 
   CameraState::view = glm::lookAt(eye, target, up);
+  CameraState::cameraPosition = eye;
 }
 
 // ----------------------------------------------------------------------------
@@ -107,6 +110,14 @@ glm::mat4x4
 CameraPrivate::GetCurrentTransform()
 {
   return CameraState::projection * CameraState::view;
+}
+
+// ----------------------------------------------------------------------------
+
+glm::vec3
+CameraPrivate::GetCameraPosition()
+{
+  return CameraState::cameraPosition;
 }
 
 // ----------------------------------------------------------------------------

@@ -31,6 +31,10 @@ public:
 
   void Clear();
 
+  void SetUniform(const std::string& name, const int value);
+
+  void SetUniform(const std::string& name, const float value);
+
   void SetUniform(const std::string& name, const TextureUnit& unit);
 
   void SetUniform(const std::string& name, const glm::mat4x4& matrix);

@@ -9,6 +9,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 namespace CameraPrivate {
 glm::mat4x4
 GetCurrentTransform();
+
+glm::vec3
+GetCameraPosition();
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

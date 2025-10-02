@@ -26,6 +26,34 @@ RawBuffer::RawBuffer(const size_t _maximumSize)
 
 //-----------------------------------------------------------------------------
 
+RawBuffer::RawBuffer(RawBuffer&& other)
+  : data(other.data)
+  , maximumSize(other.maximumSize)
+  , currentSize(other.currentSize)
+{
+  other.data = nullptr;
+  other.maximumSize = 0;
+  other.currentSize = 0;
+}
+
+//-----------------------------------------------------------------------------
+
+RawBuffer&
+RawBuffer::operator=(RawBuffer&& other)
+{
+  data = other.data;
+  maximumSize = other.maximumSize;
+  currentSize = other.currentSize;
+
+  other.data = nullptr;
+  other.maximumSize = 0;
+  other.currentSize = 0;
+
+  return *this;
+}
+
+//-----------------------------------------------------------------------------
+
 RawBuffer::~RawBuffer()
 {
   Delete();

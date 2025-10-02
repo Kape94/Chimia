@@ -22,6 +22,10 @@ Shader::~Shader()
 
 //---------------------------------------------------------------------------------------
 
+// TODO: handle shader compilation errors.
+//   Overall idea on this is to create an error system to report these errors
+#include <iostream>
+
 void
 Shader::Create(const char* vertexShaderCode, const char* fragmentShaderCode)
 {
@@ -31,14 +35,37 @@ Shader::Create(const char* vertexShaderCode, const char* fragmentShaderCode)
   glShaderSource(vShaderID, 1, &vertexShaderCode, nullptr);
   glCompileShader(vShaderID);
 
+  int success;
+  char infoLog[512];
+  glGetShaderiv(vShaderID, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vShaderID, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
+  }
+
   const unsigned fShaderID = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(fShaderID, 1, &fragmentShaderCode, nullptr);
   glCompileShader(fShaderID);
+
+  glGetShaderiv(fShaderID, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(fShaderID, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
+  }
 
   id = glCreateProgram();
   glAttachShader(id, vShaderID);
   glAttachShader(id, fShaderID);
   glLinkProgram(id);
+
+  glGetProgramiv(id, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(id, 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n"
+              << infoLog << std::endl;
+  }
 
   glDeleteShader(vShaderID);
   glDeleteShader(fShaderID);
@@ -50,6 +77,28 @@ void
 Shader::Use()
 {
   glUseProgram(id);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+Shader::SetUniform(const std::string& name, const int value)
+{
+  const int location = GetUniformLocation(name);
+  if (location != -1) {
+    glProgramUniform1i(id, location, value);
+  }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+Shader::SetUniform(const std::string& name, const float value)
+{
+  const int location = GetUniformLocation(name);
+  if (location != -1) {
+    glProgramUniform1f(id, location, value);
+  }
 }
 
 //---------------------------------------------------------------------------------------

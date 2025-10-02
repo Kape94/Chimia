@@ -13,6 +13,12 @@ public:
 
   RawBuffer(const size_t _maximumSize);
 
+  RawBuffer(RawBuffer&& other);
+  RawBuffer& operator=(RawBuffer&& other);
+
+  RawBuffer(const RawBuffer& other) = delete;
+  RawBuffer& operator=(const RawBuffer& other) = delete;
+
   ~RawBuffer();
 
   void Append(const void* newData, const size_t newDataSize);

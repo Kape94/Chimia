@@ -24,15 +24,12 @@ namespace TriangleData {
 
 Chimia::Rendering::Buffer trianglesBuffer;
 
+// TODO: batch size should be configurable
 constexpr size_t BATCH_SIZE = 1000;
 constexpr size_t TRIANGLE_SIZE = sizeof(glm::vec3) * 6;
 constexpr size_t TOTAL_BUFFER_SIZE = TRIANGLE_SIZE * BATCH_SIZE;
 
 Chimia::Bits::RawBuffer trianglesPos(TOTAL_BUFFER_SIZE);
-
-constexpr size_t N_FLOATS_PER_TRIANGLE = 18;
-constexpr size_t N_FLOATS_TOTAL = N_FLOATS_PER_TRIANGLE * BATCH_SIZE;
-const float vertexItems[N_FLOATS_TOTAL] = { 0.0f };
 
 }
 
@@ -94,12 +91,16 @@ Chimia::Draw3D::TrianglePrivate::Draw(const glm::vec3& p1,
 void
 Chimia::Draw3D::TrianglePrivate::Init()
 {
-  using namespace TriangleData;
+  constexpr size_t N_FLOATS_PER_TRIANGLE = 18;
+  constexpr size_t N_FLOATS_TOTAL =
+    N_FLOATS_PER_TRIANGLE * TriangleData::BATCH_SIZE;
 
-  trianglesBuffer.Create(vertexItems,
-                         N_FLOATS_TOTAL,
-                         { Chimia::Rendering::ShaderAttribute::Float(0, 3),
-                           Chimia::Rendering::ShaderAttribute::Float(1, 3) });
+  const float* vertexData = nullptr;
+  TriangleData::trianglesBuffer.Create(
+    vertexData,
+    N_FLOATS_TOTAL,
+    { Chimia::Rendering::ShaderAttribute::Float(0, 3),
+      Chimia::Rendering::ShaderAttribute::Float(1, 3) });
 }
 
 // ----------------------------------------------------------------------------
