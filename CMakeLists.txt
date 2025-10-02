@@ -6,10 +6,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
-add_subdirectory(Bits)
-add_subdirectory(App)
-add_subdirectory(Rendering)
-add_subdirectory(Draw3D)
+add_subdirectory(Chimia)
 
 option(BUILD_SAMPLES OFF)
 if (BUILD_SAMPLES)
