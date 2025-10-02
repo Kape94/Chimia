@@ -1,0 +1,12 @@
+#pragma once
+
+// clang-format off
+
+#define CHIMIA_DIAGNOSTICS_NAMESPACE Chimia::Diagnostics
+
+#define BEGIN_CHIMIA_DIAGNOSTICS_NAMESPACE namespace CHIMIA_DIAGNOSTICS_NAMESPACE {
+#define END_CHIMIA_DIAGNOSTICS_NAMESPACE }
+
+#define USING_CHIMIA_DIAGNOSTICS_NAMESPACE using namespace CHIMIA_DIAGNOSTICS_NAMESPACE;
+
+// clang-format on

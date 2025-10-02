@@ -23,6 +23,12 @@ public:
 
   Shader(const char* vertexShaderCode, const char* fragmentShaderCode);
 
+  Shader(const Shader& other) = delete;
+  Shader& operator=(const Shader& other) = delete;
+
+  Shader(Shader&& other);
+  Shader& operator=(Shader&& other);
+
   ~Shader();
 
   void Create(const char* vertexShaderCode, const char* fragmentShaderCode);
@@ -44,7 +50,19 @@ public:
 private:
   int GetUniformLocation(const std::string& name) const;
 
-  unsigned id = 0;
+  unsigned CreateVertexShader(const char* vertexShaderCode);
+
+  unsigned CreateFragmentShader(const char* fragmentShaderCode);
+
+  unsigned CreateShader(const unsigned shaderType, const char* shaderCode);
+
+  void CheckShaderCompilationStatus(const int shaderID);
+
+  void CheckProgramLinkStatus(const int programID);
+
+  void LinkProgram(const unsigned vShaderID, const unsigned fShaderID);
+
+  unsigned m_programId = 0;
 };
 
 //---------------------------------------------------------------------------------------

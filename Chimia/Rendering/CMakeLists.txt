@@ -12,6 +12,8 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME} 
+    PRIVATE
+        Chimia_Diagnostics
     PUBLIC 
         GLEW::GLEW
         glm::glm
