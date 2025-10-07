@@ -5,8 +5,6 @@
     "glew",
     "glfw3",
     "glm",
-    "vcpkg-cmake",
-    "vcpkg-cmake-config",
     {
       "name": "imgui",
       "default-features": false,
@@ -14,6 +12,9 @@
         "glfw-binding",
         "opengl3-binding"
       ]
-    }
+    },
+    "vcpkg-cmake",
+    "vcpkg-cmake-config",
+    "assimp"
   ]
 }

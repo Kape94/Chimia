@@ -1,0 +1,12 @@
+#pragma once
+
+// clang-format off
+
+#define CHIMIA_IMPORTER_NAMESPACE_NAME Chimia::Importer
+
+#define BEGIN_CHIMIA_IMPORTER_NAMESPACE namespace CHIMIA_IMPORTER_NAMESPACE_NAME {
+#define END_CHIMIA_IMPORTER_NAMESPACE }
+
+#define USING_CHIMIA_IMPORTER_NAMESPACE using namespace CHIMIA_IMPORTER_NAMESPACE_NAME;
+
+// clang-format on

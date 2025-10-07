@@ -1,6 +1,7 @@
 
 set(TARGET_NAME Samples_Utils)
 add_library(${TARGET_NAME}
+    src/OpenGLHelpers.cpp
     src/SamplesUtils.cpp
     src/Window.cpp
 )
