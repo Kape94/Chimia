@@ -2,8 +2,7 @@
 
 #include "Bits/Common/BitsNamespaceDefs.h"
 
-#include "Bits/IPC/posix/PosixPipeWriter.h"
-
+#include <memory>
 #include <string>
 
 BEGIN_BITS_NAMESPACE
@@ -18,7 +17,8 @@ public:
   void Write(const std::string& message);
 
 private:
-  Chimia::Bits::PosixPipeWriter pipe;
+  class PlatformImpl;
+  std::unique_ptr<PlatformImpl> m_impl;
 };
 
 END_BITS_NAMESPACE

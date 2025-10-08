@@ -2,9 +2,8 @@
 
 #include "Bits/Common/BitsNamespaceDefs.h"
 
-#include "Bits/IPC/posix/PosixPipeHost.h"
-
 #include <functional>
+#include <memory>
 #include <string>
 #include <thread>
 
@@ -26,10 +25,12 @@ public:
 private:
   std::string Read();
 
+  class PlatformImpl;
+  std::unique_ptr<PlatformImpl> m_impl;
+
   bool isListening = false;
   DataReceivedFn onDataReceived = nullptr;
   std::thread listeningThread;
-  Chimia::Bits::PosixPipeHost pipe;
 };
 
 END_BITS_NAMESPACE

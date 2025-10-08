@@ -39,7 +39,8 @@ private:
 
   std::thread m_processWatcher;
 
-  int m_pid = 0;
+  class PlatformImpl;
+  std::unique_ptr<PlatformImpl> m_impl;
 };
 
 END_BITS_NAMESPACE

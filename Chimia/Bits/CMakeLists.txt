@@ -5,8 +5,6 @@ set(TARGET_NAME Bits)
 add_library(${TARGET_NAME}
   src/Buffer/IndexedBuffer.cpp
   src/Buffer/RawBuffer.cpp
-  src/IPC/posix/PosixPipeHost.cpp
-  src/IPC/posix/PosixPipeWriter.cpp
   src/IPC/PipeHost.cpp
   src/IPC/PipeWriter.cpp
   src/Process/ChildProcess.cpp

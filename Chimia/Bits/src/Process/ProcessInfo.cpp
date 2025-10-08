@@ -45,31 +45,134 @@ ReadStartTicksFromStat(std::ifstream& statFile)
 }
 }
 
+// ------------------------------------------------------------------------
+// Platform specific implementation
+// ------------------------------------------------------------------------
+
+#ifdef __linux__
+
+// ------------------------------------------------------------------------
+// Linux platform implementation
+// ------------------------------------------------------------------------
+
+class ProcessInfo::PlatformImpl
+{
+public:
+  PlatformImpl(const int pid)
+    : m_pid(pid)
+  {
+    std::filesystem::path processDir = ProcessDirectory();
+    if (!std::filesystem::exists(processDir)) {
+      Invalidate();
+    } else {
+      m_processTimestamp = ReadTimestampFromStat();
+    }
+  }
+
+  bool IsRunning() const
+  {
+    if (!IsValid())
+      return false;
+
+    const double timestamp = GetTimestamp();
+    return timestamp == m_processTimestamp;
+  }
+
+  std::string GetName() const
+  {
+    if (!IsValid())
+      return "";
+
+    std::ifstream comm(ProcessDirectory() + "comm");
+    if (!comm.good())
+      return "";
+
+    std::string name;
+    std::getline(comm, name);
+
+    return name;
+  }
+
+  double GetTimestamp() const
+  {
+    if (!IsValid())
+      return 0.0;
+
+    return ReadTimestampFromStat();
+  }
+
+private:
+  double ReadTimestampFromStat() const
+  {
+    std::ifstream stat(ProcessDirectory() + "stat");
+    if (!stat.good())
+      return 0;
+
+    const long startTicks = ProcessInfoUtils::ReadStartTicksFromStat(stat);
+    const long ticksPerSecond = sysconf(_SC_CLK_TCK);
+
+    const double startSeconds =
+      static_cast<double>(startTicks) / static_cast<double>(ticksPerSecond);
+    return startSeconds;
+  }
+
+  std::string ProcessDirectory() const
+  {
+    const std::string pidStr = std::to_string(m_pid);
+    return "/proc/" + pidStr + "/";
+  }
+
+  bool IsValid() const { return m_pid > 0 && m_processTimestamp > 0; }
+
+  void Invalidate()
+  {
+    m_pid = 0;
+    m_processTimestamp = 0;
+  }
+
+  double m_processTimestamp = 0.0;
+  int m_pid = 0;
+};
+
+#else
+
+// ------------------------------------------------------------------------
+// Other platform implementation
+// ------------------------------------------------------------------------
+
+class ProcessInfo::PlatformImpl
+{
+public:
+  PlatformImpl(const int) {}
+
+  bool IsRunning() const { return false; }
+
+  std::string GetName() const { return ""; }
+
+  double GetTimestamp() const { return 0.0; }
+};
+
+#endif
+
 // ----------------------------------------------------------------------------
 // ProcessInfo
 // ----------------------------------------------------------------------------
 
 ProcessInfo::ProcessInfo(const int pid)
-  : m_pid(pid)
+  : m_impl(new PlatformImpl(pid))
 {
-  std::filesystem::path processDir = ProcessDirectory();
-  if (!std::filesystem::exists(processDir)) {
-    Invalidate();
-  } else {
-    m_processTimestamp = ReadTimestampFromStat();
-  }
 }
+
+// ----------------------------------------------------------------------------
+
+ProcessInfo::~ProcessInfo() = default;
 
 // ----------------------------------------------------------------------------
 
 bool
 ProcessInfo::IsRunning() const
 {
-  if (!IsValid())
-    return false;
-
-  const double timestamp = GetTimestamp();
-  return timestamp == m_processTimestamp;
+  return m_impl->IsRunning();
 }
 
 // ----------------------------------------------------------------------------
@@ -77,17 +180,7 @@ ProcessInfo::IsRunning() const
 std::string
 ProcessInfo::GetName() const
 {
-  if (!IsValid())
-    return "";
-
-  std::ifstream comm(ProcessDirectory() + "comm");
-  if (!comm.good())
-    return "";
-
-  std::string name;
-  std::getline(comm, name);
-
-  return name;
+  return m_impl->GetName();
 }
 
 // ----------------------------------------------------------------------------
@@ -95,52 +188,7 @@ ProcessInfo::GetName() const
 double
 ProcessInfo::GetTimestamp() const
 {
-  if (!IsValid())
-    return 0.0;
-
-  return ReadTimestampFromStat();
-}
-
-// ----------------------------------------------------------------------------
-
-double
-ProcessInfo::ReadTimestampFromStat() const
-{
-  std::ifstream stat(ProcessDirectory() + "stat");
-  if (!stat.good())
-    return 0;
-
-  const long startTicks = ProcessInfoUtils::ReadStartTicksFromStat(stat);
-  const long ticksPerSecond = sysconf(_SC_CLK_TCK);
-
-  const double startSeconds = static_cast<double>(startTicks) / static_cast<double>(ticksPerSecond);
-  return startSeconds;
-}
-
-// ----------------------------------------------------------------------------
-
-std::string
-ProcessInfo::ProcessDirectory() const
-{
-  const std::string pidStr = std::to_string(m_pid);
-  return "/proc/" + pidStr + "/";
-}
-
-// ----------------------------------------------------------------------------
-
-bool
-ProcessInfo::IsValid() const
-{
-  return m_pid > 0 && m_processTimestamp > 0;
-}
-
-// ----------------------------------------------------------------------------
-
-void
-ProcessInfo::Invalidate()
-{
-  m_pid = 0;
-  m_processTimestamp = 0;
+  return m_impl->GetTimestamp();
 }
 
 // ----------------------------------------------------------------------------

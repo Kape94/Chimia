@@ -2,6 +2,7 @@
 
 #include "Bits/Common/BitsNamespaceDefs.h"
 
+#include <memory>
 #include <string>
 
 BEGIN_BITS_NAMESPACE
@@ -10,20 +11,15 @@ class ProcessInfo
 {
 public:
   ProcessInfo(const int pid);
+  ~ProcessInfo();
 
   bool IsRunning() const;
   std::string GetName() const;
   double GetTimestamp() const;
 
 private:
-  double ReadTimestampFromStat() const;
-  bool IsValid() const;
-  void Invalidate();
-
-  std::string ProcessDirectory() const;
-
-  double m_processTimestamp = 0.0;
-  int m_pid = 0;
+  class PlatformImpl;
+  std::unique_ptr<PlatformImpl> m_impl;
 };
 
 END_BITS_NAMESPACE
