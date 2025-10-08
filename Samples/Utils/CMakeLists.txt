@@ -17,3 +17,5 @@ target_include_directories(${TARGET_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/api/Utils
 )
+
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

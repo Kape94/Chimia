@@ -91,7 +91,7 @@ public:
                const ProcessExitFn& exitCallback,
                const ProcessExitFn& terminateCallback)
     : m_exitCallback(exitCallback)
-    , m_teminateCallback(terminateCallback)
+    , m_terminateCallback(terminateCallback)
   {
   }
 
@@ -107,7 +107,7 @@ public:
 
 private:
   ProcessExitFn m_exitCallback;
-  ProcessExitFn m_teminateCallback;
+  ProcessExitFn m_terminateCallback;
 };
 
 #endif

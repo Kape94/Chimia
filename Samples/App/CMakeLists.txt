@@ -1,12 +1,15 @@
+add_library(Samples_App_Dependencies INTERFACE)
+target_link_libraries(Samples_App_Dependencies INTERFACE App)
+target_compile_features(Samples_App_Dependencies INTERFACE cxx_std_17)
 
 add_executable(Samples_App_ex1 ex1-minimal.cpp)
-target_link_libraries(Samples_App_ex1 App)
+target_link_libraries(Samples_App_ex1 PRIVATE Samples_App_Dependencies)
 
 add_executable(Samples_App_ex2 ex2-simpleUI.cpp)
-target_link_libraries(Samples_App_ex2 App)
+target_link_libraries(Samples_App_ex2 PRIVATE Samples_App_Dependencies)
 
 add_executable(Samples_App_ex3 ex3-drawing.cpp)
-target_link_libraries(Samples_App_ex3 App)
+target_link_libraries(Samples_App_ex3 PRIVATE Samples_App_Dependencies)
 
 add_executable(Samples_App_ex4 ex4-drawingUIAndInput.cpp)
-target_link_libraries(Samples_App_ex4 App)
+target_link_libraries(Samples_App_ex4 PRIVATE Samples_App_Dependencies)

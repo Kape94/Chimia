@@ -1,20 +1,24 @@
+add_library(Samples_Bits_Dependencies INTERFACE)
+target_link_libraries(Samples_Bits_Dependencies INTERFACE Bits)
+target_compile_features(Samples_Bits_Dependencies INTERFACE cxx_std_17)
+
 add_executable(Samples_Bits_ex1 ex1-buffer.cpp)
-target_link_libraries(Samples_Bits_ex1 Bits)
+target_link_libraries(Samples_Bits_ex1 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex2 ex2-memoryPool.cpp)
-target_link_libraries(Samples_Bits_ex2 Bits)
+target_link_libraries(Samples_Bits_ex2 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex3 ex3-memoryPoolLoadTest.cpp)
-target_link_libraries(Samples_Bits_ex3 Bits)
+target_link_libraries(Samples_Bits_ex3 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex4 ex4-threadPool.cpp)
-target_link_libraries(Samples_Bits_ex4 Bits)
+target_link_libraries(Samples_Bits_ex4 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex5 ex5-pipeUsage.cpp)
-target_link_libraries(Samples_Bits_ex5 Bits)
+target_link_libraries(Samples_Bits_ex5 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex6 ex6-processUsage.cpp)
-target_link_libraries(Samples_Bits_ex6 Bits)
+target_link_libraries(Samples_Bits_ex6 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex7 ex7-processInfoUsage.cpp)
-target_link_libraries(Samples_Bits_ex7 Bits)
+target_link_libraries(Samples_Bits_ex7 PRIVATE Samples_Bits_Dependencies)

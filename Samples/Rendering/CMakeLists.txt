@@ -7,6 +7,8 @@ target_link_libraries(Samples_Rendering_DefaultDeps
         Rendering  
 )
 
+target_compile_features(Samples_Rendering_DefaultDeps INTERFACE cxx_std_17)
+
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/assets/)

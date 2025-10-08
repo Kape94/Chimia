@@ -1,7 +1,5 @@
 #include "Process/ProcessInfo.h"
 
-#include <unistd.h>
-
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -54,6 +52,8 @@ ReadStartTicksFromStat(std::ifstream& statFile)
 // ------------------------------------------------------------------------
 // Linux platform implementation
 // ------------------------------------------------------------------------
+
+#include <unistd.h>
 
 class ProcessInfo::PlatformImpl
 {
