@@ -6,6 +6,7 @@
 
 #include "GL/glew.h"
 
+#include <functional>
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -15,20 +16,28 @@
 class Mesh
 {
 private:
-  GLuint VAO;
-  GLuint VBO;
-  GLuint EBO;
-  GLsizei indexCount;
+  GLuint VAO = 0;
+  GLuint VBO = 0;
+  GLuint EBO = 0;
+  GLsizei indexCount = 0;
 
 public:
   Mesh();
   ~Mesh();
+
+  Mesh(const Mesh& other) = delete;
+  Mesh& operator=(const Mesh& other) = delete;
+
+  Mesh(Mesh&& other);
+  Mesh& operator=(Mesh&& other);
 
   // ====================================================================
   // THE REQUIRED FUNCTION: Setup and upload data to the GPU
   // ====================================================================
   void setup(const std::vector<GLfloat>& vertices,
              const std::vector<GLuint>& indices);
+
+  void adjust(const std::function<void(void)>& f);
 
   // ====================================================================
   // THE DRAWING FUNCTION

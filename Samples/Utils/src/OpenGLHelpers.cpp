@@ -17,11 +17,49 @@ Mesh::Mesh()
   glGenBuffers(1, &EBO);
 }
 
+// ----------------------------------------------------------------------------
+
 Mesh::~Mesh()
 {
-  glDeleteVertexArrays(1, &VAO);
-  glDeleteBuffers(1, &VBO);
-  glDeleteBuffers(1, &EBO);
+  if (VAO != 0) {
+    glDeleteVertexArrays(1, &VAO);
+  }
+  if (VBO != 0) {
+    glDeleteBuffers(1, &VBO);
+  }
+  if (EBO != 0) {
+    glDeleteBuffers(1, &EBO);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+Mesh::Mesh(Mesh&& other)
+  : VAO(other.VAO)
+  , VBO(other.VBO)
+  , EBO(other.EBO)
+  , indexCount(other.indexCount)
+{
+  other.VAO = 0;
+  other.VBO = 0;
+  other.EBO = 0;
+  other.indexCount = 0;
+}
+
+Mesh&
+Mesh::operator=(Mesh&& other)
+{
+  VAO = other.VAO;
+  VBO = other.VBO;
+  EBO = other.EBO;
+  indexCount = other.indexCount;
+
+  other.VAO = 0;
+  other.VBO = 0;
+  other.EBO = 0;
+  other.indexCount = 0;
+
+  return *this;
 }
 
 // ====================================================================
@@ -64,6 +102,13 @@ Mesh::setup(const std::vector<GLfloat>& vertices,
   glBindVertexArray(0);
 }
 
+void
+Mesh::adjust(const std::function<void(void)>& f)
+{
+  glBindVertexArray(VAO);
+  f();
+  glBindVertexArray(0);
+}
 // ====================================================================
 // THE DRAWING FUNCTION
 // ====================================================================

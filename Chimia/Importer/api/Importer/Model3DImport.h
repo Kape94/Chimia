@@ -7,11 +7,37 @@
 
 BEGIN_CHIMIA_IMPORTER_NAMESPACE
 
-void
-ImportModel(const std::string& path,
-            std::vector<float>& vertices,
-            std::vector<float>& normals,
-            std::vector<float>& texCoords,
-            std::vector<unsigned>& indices);
+struct vector2f
+{
+  float x;
+  float y;
+};
+
+struct vector3f
+{
+  float x;
+  float y;
+  float z;
+};
+
+struct vector4f
+{
+  float x;
+  float y;
+  float z;
+  float w;
+};
+
+struct Mesh
+{
+  std::vector<vector3f> vertices;
+  std::vector<vector4f> colors;
+  std::vector<vector3f> normals;
+  std::vector<vector2f> texCoords;
+  std::vector<unsigned> indices;
+};
+
+std::vector<Mesh>
+ImportMeshes(const std::string& path);
 
 END_CHIMIA_IMPORTER_NAMESPACE
