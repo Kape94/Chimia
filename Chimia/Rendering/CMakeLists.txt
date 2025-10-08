@@ -19,3 +19,4 @@ target_link_libraries(${TARGET_NAME}
         glm::glm
 )
 
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

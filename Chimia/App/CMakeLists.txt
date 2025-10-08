@@ -25,3 +25,4 @@ target_link_libraries(${APP_TOOLKIT_LIB}
         imgui::imgui
 )
 
+target_compile_features(${APP_TOOLKIT_LIB} PRIVATE cxx_std_17)

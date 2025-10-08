@@ -22,3 +22,5 @@ target_include_directories(${TARGET_NAME}
   PRIVATE
     ./api/Bits
 )
+
+target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
