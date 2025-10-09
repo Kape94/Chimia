@@ -1,3 +1,4 @@
+#include "Importer/ImporterTypes.h"
 #include "Importer/Model3DImport.h"
 
 #include "Utils/OpenGLHelpers.h"
@@ -11,6 +12,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
@@ -43,14 +45,6 @@ const char* fragmentShaderSource = R"(
 int
 main(int argc, char** argv)
 {
-  const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
-
-  const std::string modelPath = assetsDir + "ObjectPair.obj";
-
-  std::vector<Chimia::Importer::Mesh> meshes =
-    Chimia::Importer::ImportMeshes(modelPath);
-
   Window w(1280, 960, "Importer ex2");
 
   glewExperimental = true;
@@ -60,6 +54,19 @@ main(int argc, char** argv)
 
   const int shaderID =
     createShaderProgram(vertexShaderSource, fragmentShaderSource);
+
+  const std::string assetsDir =
+    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+
+  const std::string modelPath = assetsDir + "ObjectPair.obj";
+
+  std::vector<Chimia::Importer::Mesh> meshes =
+    Chimia::Importer::ImportMeshes(modelPath);
+  auto bufferDatas =
+    Chimia::Importer::PackBufferDataFromMeshes(meshes,
+                                               { .includeColors = true,
+                                                 .includeNormals = false,
+                                                 .includeTexCoords = false });
 
   auto adjustShaderAttribs = []() {
     glVertexAttribPointer(
@@ -76,22 +83,10 @@ main(int argc, char** argv)
   };
 
   std::vector<Mesh> renderMeshes;
-  for (const auto& m : meshes) {
-    std::vector<float> vertices;
-    std::vector<unsigned> indices;
-    const size_t nVertices = m.vertices.size();
-    for (size_t i = 0; i < nVertices; ++i) {
-      const Chimia::Importer::vector3f& v = m.vertices[i];
-      const Chimia::Importer::vector4f& c = m.colors[i];
-      vertices.insert(vertices.end(), { v.x, v.y, v.z });
-      vertices.insert(vertices.end(), { c.x, c.y, c.z });
-    }
-    for (const auto& i : m.indices) {
-      indices.push_back(i);
-    }
+  for (const auto& data : bufferDatas) {
 
     Mesh& createdMesh = renderMeshes.emplace_back();
-    createdMesh.setup(vertices, indices);
+    createdMesh.setup(data.vertexData, data.indices);
     createdMesh.adjust(adjustShaderAttribs);
   }
 

@@ -48,8 +48,6 @@ main(int argc, char** argv)
   const std::string modelPath = assetsDir + "Untitled.obj";
 
   std::vector<float> vertices;
-  std::vector<float> normals;
-  std::vector<float> texCoords;
   std::vector<unsigned> indices;
 
   std::vector<Chimia::Importer::Mesh> meshes =
