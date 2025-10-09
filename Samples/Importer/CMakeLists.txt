@@ -42,6 +42,7 @@ add_custom_command(
 
 add_executable(Samples_Importer_ex2 ex2-colored.cpp)
 target_link_libraries(Samples_Importer_ex2 PRIVATE Samples_Importer_DefaultDeps)
+target_compile_features(Samples_Importer_ex2 PRIVATE cxx_std_20)
 
 add_custom_command(
     TARGET Samples_Importer_ex2
