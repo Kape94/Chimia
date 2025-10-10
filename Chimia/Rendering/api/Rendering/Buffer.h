@@ -17,6 +17,9 @@ class Buffer
 public:
   Buffer() = default;
 
+  Buffer(const Buffer& other) = delete;
+  Buffer& operator=(const Buffer& other) = delete;
+
   Buffer(Buffer&& other) noexcept;
 
   Buffer& operator=(Buffer&& other) noexcept;

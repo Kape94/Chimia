@@ -18,6 +18,11 @@ public:
 
   ~FrameBuffer();
 
+  FrameBuffer(const FrameBuffer& other) = delete;
+  FrameBuffer& operator=(const FrameBuffer& other) = delete;
+  FrameBuffer(FrameBuffer&& other) = delete;
+  FrameBuffer& operator=(FrameBuffer&& other) = delete;
+
   void Create(const unsigned width, const unsigned height);
 
   void Use();

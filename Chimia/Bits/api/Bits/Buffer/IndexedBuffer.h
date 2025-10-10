@@ -14,6 +14,12 @@ public:
 
   IndexedBuffer(const size_t maximumSize);
 
+  IndexedBuffer(const IndexedBuffer& other) = delete;
+  IndexedBuffer& operator=(const IndexedBuffer& other) = delete;
+
+  IndexedBuffer(IndexedBuffer&& other) = delete;
+  IndexedBuffer& operator=(IndexedBuffer&& other) = delete;
+
   void Append(void* data, const size_t dataSize);
 
   template<typename DataType>

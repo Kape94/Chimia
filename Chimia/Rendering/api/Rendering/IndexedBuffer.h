@@ -18,6 +18,9 @@ class IndexedBuffer
 public:
   IndexedBuffer() = default;
 
+  IndexedBuffer(const IndexedBuffer& other) = delete;
+  IndexedBuffer& operator=(const IndexedBuffer& other) = delete;
+
   IndexedBuffer(IndexedBuffer&& other) noexcept;
 
   IndexedBuffer& operator=(IndexedBuffer&& other) noexcept;

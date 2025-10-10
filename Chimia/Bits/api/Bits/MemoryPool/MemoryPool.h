@@ -18,6 +18,12 @@ public:
 
   ~MemoryPool();
 
+  MemoryPool(const MemoryPool<Object>& other) = delete;
+  MemoryPool& operator=(const MemoryPool<Object>& other) = delete;
+
+  MemoryPool(MemoryPool<Object>&& other) = delete;
+  MemoryPool& operator=(MemoryPool<Object>&& other) = delete;
+
   Object* New();
 
   template<typename... Args>

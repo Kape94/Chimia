@@ -13,6 +13,12 @@ public:
   ProcessInfo(const int pid);
   ~ProcessInfo();
 
+  ProcessInfo(const ProcessInfo& other) = delete;
+  ProcessInfo& operator=(const ProcessInfo& other) = delete;
+
+  ProcessInfo(ProcessInfo&& other) = delete;
+  ProcessInfo& operator=(ProcessInfo&& other) = delete;
+
   bool IsRunning() const;
   std::string GetName() const;
   double GetTimestamp() const;

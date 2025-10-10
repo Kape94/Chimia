@@ -16,6 +16,14 @@ BEGIN_BITS_NAMESPACE
 class TaskQueue
 {
 public:
+  TaskQueue() = default;
+
+  TaskQueue(const TaskQueue& other) = delete;
+  TaskQueue& operator=(const TaskQueue& other) = delete;
+
+  TaskQueue(TaskQueue&& other) = delete;
+  TaskQueue& operator=(TaskQueue&& other) = delete;
+
   using Task = std::function<void(void)>;
 
   void PushTask(Task task);

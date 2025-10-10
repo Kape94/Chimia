@@ -18,8 +18,10 @@ class InstancedBuffer
 public:
   InstancedBuffer() = default;
 
-  InstancedBuffer(InstancedBuffer&& other) noexcept;
+  InstancedBuffer(const InstancedBuffer& other) = delete;
+  InstancedBuffer& operator=(const InstancedBuffer& other) = delete;
 
+  InstancedBuffer(InstancedBuffer&& other) noexcept;
   InstancedBuffer& operator=(InstancedBuffer&& other) noexcept;
 
   ~InstancedBuffer();

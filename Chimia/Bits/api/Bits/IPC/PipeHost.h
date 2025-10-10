@@ -16,6 +16,12 @@ public:
 
   ~PipeHost();
 
+  PipeHost(const PipeHost& other) = delete;
+  PipeHost& operator=(const PipeHost& other) = delete;
+
+  PipeHost(PipeHost&& other) = delete;
+  PipeHost& operator=(PipeHost&& other) = delete;
+
   void Listen();
   void StopListening();
 

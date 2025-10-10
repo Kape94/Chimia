@@ -21,6 +21,12 @@ public:
 
   ~ThreadPool();
 
+  ThreadPool(const ThreadPool& other) = delete;
+  ThreadPool& operator=(const ThreadPool& other) = delete;
+
+  ThreadPool(ThreadPool&& other) = delete;
+  ThreadPool& operator=(ThreadPool&& other) = delete;
+
   void PushTask(TaskQueue::Task task);
 
 private:

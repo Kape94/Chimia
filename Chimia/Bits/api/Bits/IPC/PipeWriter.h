@@ -14,6 +14,12 @@ public:
 
   ~PipeWriter();
 
+  PipeWriter(const PipeWriter& other) = delete;
+  PipeWriter& operator=(const PipeWriter& other) = delete;
+
+  PipeWriter(PipeWriter&& other) = delete;
+  PipeWriter& operator=(PipeWriter&& other) = delete;
+
   void Write(const std::string& message);
 
 private:

@@ -17,6 +17,12 @@ public:
 
   ~ChildProcess();
 
+  ChildProcess(const ChildProcess& other) = delete;
+  ChildProcess& operator=(const ChildProcess& other) = delete;
+
+  ChildProcess(ChildProcess&& other) = delete;
+  ChildProcess& operator=(ChildProcess&& other) = delete;
+
   void Await();
 
   void Terminate();
