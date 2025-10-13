@@ -130,25 +130,31 @@ main(int argc, char** argv)
   glGenBuffers(1, &VBO);
   glGenBuffers(1, &EBO);
 
-  indexCount = indices.size();
-
-  // 1. Bind the VAO first (it will "record" all subsequent
-  // VBO/EBO/AttribPointer calls)
-  glBindVertexArray(VAO);
-
-  // 2. Bind and set VBO data (Vertex Positions)
+  // ------------------------ Load data on GPU --------------------------------
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER,
                vertices.size() * sizeof(GLfloat),
                vertices.data(),
                GL_STATIC_DRAW);
 
-  // 3. Bind and set EBO data (Indices)
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                indices.size() * sizeof(GLuint),
                indices.data(),
                GL_STATIC_DRAW);
+
+  indexCount = indices.size();
+
+  // ------------------- Create render command (VAO) --------------------------
+  // 1. Bind the VAO first (it will "record" all subsequent
+  // VBO/EBO/AttribPointer calls)
+  glBindVertexArray(VAO);
+
+  // 2. Bind and set VBO data (Vertex Positions)
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+  // 3. Bind and set EBO data (Indices)
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
   // 4. Configure Vertex Attributes (Tells OpenGL how to interpret the data in
   // the VBO) Attribute location 0: Vertex Position (3 components per vertex)

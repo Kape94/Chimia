@@ -21,6 +21,8 @@ public:
 
   ~RawBuffer();
 
+  void Resize(const size_t size);
+
   void Append(const void* newData, const size_t newDataSize);
 
   unsigned char* GetData();
@@ -31,8 +33,6 @@ public:
 
 private:
   void IncreaseSize(const size_t size);
-
-  void Resize(const size_t size);
 
   unsigned char* Allocate(const size_t size) const;
 

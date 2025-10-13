@@ -90,6 +90,8 @@ RawBuffer::Resize(const size_t size)
 {
   if (size == 0) {
     return;
+  } else if (size < maximumSize) {
+    Delete();
   }
 
   if (data == nullptr) {
@@ -121,6 +123,8 @@ RawBuffer::Delete()
   if (data != nullptr) {
     free(data);
   }
+  currentSize = 0;
+  maximumSize = 0;
 }
 
 //-----------------------------------------------------------------------------

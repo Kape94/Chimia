@@ -5,6 +5,7 @@
 #include "LitTrianglePrivate.h"
 #include "Shaders.h"
 #include "TrianglePrivate.h"
+#include "VertexColoredRendererImpl.h"
 
 #include "Rendering/Rendering.h"
 
@@ -19,6 +20,7 @@ Chimia::Draw3D::Initialize()
   Shaders::Initialize();
   TrianglePrivate::Init();
   LitTrianglePrivate::Init();
+  VertexColoredRendererImpl::getInstance().Init();
 }
 
 // ----------------------------------------------------------------------------
@@ -28,6 +30,7 @@ Chimia::Draw3D::Flush()
 {
   TrianglePrivate::Flush();
   LitTrianglePrivate::Flush();
+  VertexColoredRendererImpl::getInstance().Flush();
 }
 
 // ----------------------------------------------------------------------------

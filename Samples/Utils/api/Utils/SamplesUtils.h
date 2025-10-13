@@ -12,4 +12,7 @@ float
 NormalizedRand();
 int
 Rand();
+
+void
+SyncForTargetFPS(unsigned fps);
 }
