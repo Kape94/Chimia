@@ -62,12 +62,16 @@ SamplesUtils::Rand()
 void
 SamplesUtils::SyncForTargetFPS(unsigned fps)
 {
-  const float frameTime = (float)1.0f / fps;
+  const float frameTime = 1.0f / (float)fps;
+  const long frameTimeInMilisecs = (long)(frameTime * 1000.0f);
 
   const auto current = CurrentTimePoint();
   const auto diff = current - g_lastCheck;
+  
+  const long durationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+  const long remainingFrameTime = frameTimeInMilisecs - durationInMilliseconds;
 
-  std::this_thread::sleep_for(diff);
+  std::this_thread::sleep_for(std::chrono::milliseconds(remainingFrameTime));
   g_lastCheck = CurrentTimePoint();
 }
 

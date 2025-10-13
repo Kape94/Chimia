@@ -135,6 +135,7 @@ main()
 
     w.Swap();
     w.PollEvents();
+    SamplesUtils::SyncForTargetFPS(30);
   }
   return 0;
 }
