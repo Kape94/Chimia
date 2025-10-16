@@ -44,6 +44,10 @@ public:
                        const unsigned nInstances,
                        const ShaderAttributes& instanceShaderAttributes);
 
+  void LoadInstancedData(const void* instancedData,
+                         const unsigned instancedDataSize,
+                         const unsigned nInstances);
+
   void Clear();
 
   void Render() const;

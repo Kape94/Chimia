@@ -1,8 +1,9 @@
 #pragma once
 
-#include <cstddef>
-
+#include "Bits/Buffer/RawDataView.h"
 #include "Bits/Common/BitsNamespaceDefs.h"
+
+#include <cstddef>
 
 BEGIN_BITS_NAMESPACE
 
@@ -23,6 +24,7 @@ public:
 
   void Resize(const size_t size);
 
+  void Append(const RawDataView& dataView);
   void Append(const void* newData, const size_t newDataSize);
 
   unsigned char* GetData();

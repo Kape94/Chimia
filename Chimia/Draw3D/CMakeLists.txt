@@ -6,9 +6,11 @@ add_library(${TARGET_NAME}
     src/Draw3D.cpp
     src/Illumination.cpp
     src/LitTriangle.cpp
+    src/ModelBatch.cpp
     src/Renderers.cpp
     src/Shaders.cpp
     src/Triangle.cpp
+    src/TriangleBatch.cpp
     src/VertexColoredRendererImpl.cpp
 )
 

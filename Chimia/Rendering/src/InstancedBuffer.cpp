@@ -97,6 +97,20 @@ InstancedBuffer::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
+InstancedBuffer::LoadInstancedData(const void* instancedData,
+                                   const unsigned instancedDataSize,
+                                   const unsigned nInstances)
+{
+  const unsigned totalSize = instancedDataSize * nInstances;
+  BufferUtils::LoadDataOnBuffer(
+    m_instancedVBO, GL_ARRAY_BUFFER, instancedData, totalSize);
+
+  m_nInstances = nInstances;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
                                         const unsigned instanceDataSize,
                                         const unsigned nInstances)

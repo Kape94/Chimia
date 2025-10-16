@@ -16,3 +16,6 @@ target_link_libraries(Samples_Draw3D_ex4 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex5 ex5-vertexColoredRenderer.cpp)
 target_link_libraries(Samples_Draw3D_ex5 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex6 ex6-vertexColoredRendererModel.cpp)
+target_link_libraries(Samples_Draw3D_ex6 PRIVATE Samples_Draw3D_Dependencies)

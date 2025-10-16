@@ -62,6 +62,14 @@ RawBuffer::~RawBuffer()
 //-----------------------------------------------------------------------------
 
 void
+RawBuffer::Append(const RawDataView& dataView)
+{
+  Append(dataView.data, dataView.size);
+}
+
+//-----------------------------------------------------------------------------
+
+void
 RawBuffer::Append(const void* newData, const size_t newDataSize)
 {
   const size_t remainingSize = RemainingSize();

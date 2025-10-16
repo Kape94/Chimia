@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
+#include <iostream>
 #include <thread>
 
 // ----------------------------------------------------------------------------
@@ -17,6 +18,11 @@ CurrentTimePoint()
 
 std::chrono::time_point<std::chrono::high_resolution_clock> g_lastCheck =
   CurrentTimePoint();
+
+std::chrono::time_point<std::chrono::high_resolution_clock> g_frameInit =
+  CurrentTimePoint();
+long g_bestFrameTime = 10000000;
+long g_worstFrameTime = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -67,12 +73,48 @@ SamplesUtils::SyncForTargetFPS(unsigned fps)
 
   const auto current = CurrentTimePoint();
   const auto diff = current - g_lastCheck;
-  
-  const long durationInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+
+  const long durationInMilliseconds =
+    std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
   const long remainingFrameTime = frameTimeInMilisecs - durationInMilliseconds;
 
   std::this_thread::sleep_for(std::chrono::milliseconds(remainingFrameTime));
   g_lastCheck = CurrentTimePoint();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::BeginFrameStats()
+{
+  g_frameInit = CurrentTimePoint();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::LogFrameStats()
+{
+  auto now = CurrentTimePoint();
+  auto diff = now - g_frameInit;
+
+  bool shouldPrintStats = false;
+  const long diffMilli =
+    std::chrono::duration_cast<std::chrono::microseconds>(diff).count();
+  if (diffMilli < g_bestFrameTime) {
+    g_bestFrameTime = diffMilli;
+    shouldPrintStats = true;
+  }
+  if (diffMilli > g_worstFrameTime) {
+    g_worstFrameTime = diffMilli;
+    shouldPrintStats = true;
+  }
+
+  if (shouldPrintStats) {
+    std::cout << "Updated frame time stats...\n";
+    std::cout << "Best frame time: " << g_bestFrameTime << " us\n";
+    std::cout << "Worst frame time: " << g_worstFrameTime << " us\n";
+  }
 }
 
 // ----------------------------------------------------------------------------

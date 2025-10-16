@@ -15,4 +15,9 @@ Rand();
 
 void
 SyncForTargetFPS(unsigned fps);
+
+void
+BeginFrameStats();
+void
+LogFrameStats();
 }

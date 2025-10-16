@@ -67,3 +67,13 @@ target_link_libraries(Samples_Rendering_ex6 PRIVATE Samples_Rendering_DefaultDep
 
 add_executable(Samples_Rendering_ex7 ex7-regularBufferInstanced.cpp)
 target_link_libraries(Samples_Rendering_ex7 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 8) Regular buffer with instancing + instanced subdata
+
+add_executable(Samples_Rendering_ex8 ex8-instancedBufferSubData.cpp)
+target_link_libraries(Samples_Rendering_ex8 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 9) Regular buffer with instancing using transformation matrices
+
+add_executable(Samples_Rendering_ex9 ex9-instancedBufferWithTransform.cpp)
+target_link_libraries(Samples_Rendering_ex9 PRIVATE Samples_Rendering_DefaultDeps)

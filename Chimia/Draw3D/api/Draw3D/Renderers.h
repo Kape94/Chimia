@@ -4,7 +4,10 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
@@ -23,6 +26,12 @@ public:
                             const glm::vec3& color2,
                             const glm::vec3& p3,
                             const glm::vec3& color3) = 0;
+
+  virtual unsigned CreateModel(const std::vector<float>& vertexData,
+                               const std::vector<unsigned>& indices) = 0;
+
+  virtual void DrawModelTransformed(unsigned modelID,
+                                    const glm::mat4x4& transform) = 0;
 };
 
 // ----------------------------------------------------------------------------

@@ -3,12 +3,18 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
+#include "ModelBatch.h"
 #include "Renderers.h"
+#include "TriangleBatch.h"
 
 #include "Bits/Buffer/RawBuffer.h"
 #include "Rendering/Buffer.h"
+#include "Rendering/InstancedBuffer.h"
 
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+
+#include <map>
 
 // ----------------------------------------------------------------------------
 
@@ -30,7 +36,27 @@ public:
                     const glm::vec3& p3,
                     const glm::vec3& color3) override;
 
+  unsigned CreateModel(const std::vector<float>& vertexData,
+                       const std::vector<unsigned>& indices) override;
+
+  void DrawModelTransformed(unsigned modelID,
+                            const glm::mat4x4& transform) override;
+
 private:
+  using ModelEntry = struct
+  {
+    Bits::RawBuffer modelTransformsInputBuffer;
+    Rendering::InstancedBuffer transformedModelGpuBuffer;
+  };
+
+  void FlushTriangles();
+  void FlushTransformedModels();
+
+  void FlushTransformedModelEntry(ModelEntry& model);
+
+  void ConfigureShaderForTriangleDrawing();
+  void ConfigureShaderForTransformedModelDrawing();
+
   VertexColoredRendererImpl() = default;
 
   VertexColoredRendererImpl(const VertexColoredRendererImpl& other) = delete;
@@ -41,8 +67,12 @@ private:
   VertexColoredRendererImpl& operator=(VertexColoredRendererImpl&& other) =
     delete;
 
-  Bits::RawBuffer m_triangleInputBuffer;
-  Rendering::Buffer m_triangleGpuBuffer;
+  // Bits::RawBuffer m_triangleInputBuffer;
+  // Rendering::Buffer m_triangleGpuBuffer;
+  TriangleBatch m_triangleBatch;
+
+  unsigned m_currentTransformedModelID = 1;
+  std::map<unsigned, ModelBatch> m_transformedModelsTable;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

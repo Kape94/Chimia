@@ -18,6 +18,9 @@ Rendering::Shader&
 VertexColored();
 
 Rendering::Shader&
+VertexColoredWithInstancedTransform();
+
+Rendering::Shader&
 GouraudLit();
 
 }

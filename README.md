@@ -1,7 +1,6 @@
 # Chimia lib
 
 TODO: update readme
-TODO: remove inner find_package calls
 
 This is a C++ project created by CppM.
 ## Build Instructions
