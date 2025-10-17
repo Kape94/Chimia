@@ -72,7 +72,6 @@ VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
 
   ModelBatch& model = it.first->second;
   model.Create({ vertexData, indices },
-               sizeof(glm::mat4x4),
                nTransforms,
                { Rendering::ShaderAttribute::Float(0, 3),
                  Rendering::ShaderAttribute::Float(1, 3) },
@@ -123,7 +122,6 @@ VertexColoredRendererImpl::FlushTriangles()
 void
 VertexColoredRendererImpl::FlushTransformedModels()
 {
-  ConfigureShaderForTransformedModelDrawing();
   for (auto& modelTableEntry : m_transformedModelsTable) {
     ModelBatch& model = modelTableEntry.second;
     model.Flush();

@@ -28,7 +28,6 @@ ThreadPoolWorker::ThreadPoolWorker(ThreadPoolWorker&& other)
 ThreadPoolWorker&
 ThreadPoolWorker::operator=(ThreadPoolWorker&& other)
 {
-  // TODO
   ThreadPoolWorker copy(std::move(other));
   std::swap(*this, copy);
   return *this;

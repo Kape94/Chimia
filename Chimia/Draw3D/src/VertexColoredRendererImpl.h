@@ -7,10 +7,6 @@
 #include "Renderers.h"
 #include "TriangleBatch.h"
 
-#include "Bits/Buffer/RawBuffer.h"
-#include "Rendering/Buffer.h"
-#include "Rendering/InstancedBuffer.h"
-
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
@@ -43,16 +39,8 @@ public:
                             const glm::mat4x4& transform) override;
 
 private:
-  using ModelEntry = struct
-  {
-    Bits::RawBuffer modelTransformsInputBuffer;
-    Rendering::InstancedBuffer transformedModelGpuBuffer;
-  };
-
   void FlushTriangles();
   void FlushTransformedModels();
-
-  void FlushTransformedModelEntry(ModelEntry& model);
 
   void ConfigureShaderForTriangleDrawing();
   void ConfigureShaderForTransformedModelDrawing();
@@ -67,8 +55,6 @@ private:
   VertexColoredRendererImpl& operator=(VertexColoredRendererImpl&& other) =
     delete;
 
-  // Bits::RawBuffer m_triangleInputBuffer;
-  // Rendering::Buffer m_triangleGpuBuffer;
   TriangleBatch m_triangleBatch;
 
   unsigned m_currentTransformedModelID = 1;

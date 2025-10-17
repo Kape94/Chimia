@@ -11,53 +11,59 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 void
 ModelBatch::Create(const BufferData& bufferData,
-                   const size_t dataSizePerInstance,
                    const size_t instanceBatchSize,
                    const Rendering::ShaderAttributes& vertexAttributes,
                    const Rendering::ShaderAttributes& instanceAttributes,
                    const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
-  m_instanceInputSize = dataSizePerInstance;
+  m_instancedDataSize = CalculateInstancedDataSize(instanceAttributes);
 
-  AddGPUBuffer(bufferData,
-               dataSizePerInstance,
-               instanceBatchSize,
-               vertexAttributes,
-               instanceAttributes);
+  AddGPUBuffer(
+    bufferData, instanceBatchSize, vertexAttributes, instanceAttributes);
 
-  m_instancedInputBuffer.Resize(instanceBatchSize * dataSizePerInstance);
+  m_instancedInputBuffer.Resize(instanceBatchSize * m_instancedDataSize);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 ModelBatch::Create(const std::vector<BufferData>& bufferDatas,
-                   const size_t dataSizePerInstance,
                    const size_t instanceBatchSize,
                    const Rendering::ShaderAttributes& vertexAttributes,
                    const Rendering::ShaderAttributes& instanceAttributes,
                    const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
-  m_instanceInputSize = dataSizePerInstance;
+  m_instancedDataSize = CalculateInstancedDataSize(instanceAttributes);
 
   for (auto& bufferData : bufferDatas) {
-    AddGPUBuffer(bufferData,
-                 dataSizePerInstance,
-                 instanceBatchSize,
-                 vertexAttributes,
-                 instanceAttributes);
+    AddGPUBuffer(
+      bufferData, instanceBatchSize, vertexAttributes, instanceAttributes);
   }
 
-  m_instancedInputBuffer.Resize(instanceBatchSize * dataSizePerInstance);
+  m_instancedInputBuffer.Resize(instanceBatchSize * m_instancedDataSize);
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+ModelBatch::CalculateInstancedDataSize(
+  const Rendering::ShaderAttributes& instancedDataAttributes)
+{
+  return std::accumulate(
+    instancedDataAttributes.begin(),
+    instancedDataAttributes.end(),
+    0,
+    [](size_t current, const Rendering::ShaderAttribute& attr) {
+      return current + attr.DataSizeInBytes();
+    });
 }
 
 // ----------------------------------------------------------------------------
 
 void
 ModelBatch::AddGPUBuffer(const BufferData& bufferData,
-                         const size_t dataSizePerInstance,
                          const size_t instanceBatchSize,
                          const Rendering::ShaderAttributes& vertexAttributes,
                          const Rendering::ShaderAttributes& instanceAttributes)
@@ -69,7 +75,7 @@ ModelBatch::AddGPUBuffer(const BufferData& bufferData,
                            bufferData.Indices().size(),
                            vertexAttributes,
                            nullptr,
-                           dataSizePerInstance,
+                           m_instancedDataSize,
                            instanceBatchSize,
                            instanceAttributes);
 }
@@ -79,10 +85,7 @@ ModelBatch::AddGPUBuffer(const BufferData& bufferData,
 void
 ModelBatch::Draw(const Bits::RawDataView& instanceData)
 {
-  if (m_instancedInputBuffer.GetAvailableSize() < instanceData.size) {
-    m_onFlush();
-    Flush();
-  }
+  HandleFlushByDemand();
 
   m_instancedInputBuffer.Append(instanceData);
 }
@@ -92,20 +95,21 @@ ModelBatch::Draw(const Bits::RawDataView& instanceData)
 void
 ModelBatch::Draw(const std::initializer_list<Bits::RawDataView>& instanceDatas)
 {
-  // TODO: cache instanceData size
-  const size_t totalIncomingSize = std::accumulate(
-    instanceDatas.begin(),
-    instanceDatas.end(),
-    0,
-    [](size_t a, const Bits::RawDataView& b) { return a + b.size; });
-
-  if (m_instancedInputBuffer.GetAvailableSize() < totalIncomingSize) {
-    m_onFlush();
-    Flush();
-  }
+  HandleFlushByDemand();
 
   for (const auto& instanceData : instanceDatas) {
     m_instancedInputBuffer.Append(instanceData);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ModelBatch::HandleFlushByDemand()
+{
+  if (m_instancedInputBuffer.GetAvailableSize() < m_instancedDataSize) {
+    m_onFlush();
+    Flush();
   }
 }
 
@@ -121,10 +125,10 @@ ModelBatch::Flush()
 
   m_onFlush();
 
-  const size_t nInstances = totalInputSize / m_instanceInputSize;
+  const size_t nInstances = totalInputSize / m_instancedDataSize;
   for (auto& buffer : m_gpuBuffers) {
     buffer.LoadInstancedData(
-      m_instancedInputBuffer.GetData(), m_instanceInputSize, nInstances);
+      m_instancedInputBuffer.GetData(), m_instancedDataSize, nInstances);
 
     buffer.Render();
   }

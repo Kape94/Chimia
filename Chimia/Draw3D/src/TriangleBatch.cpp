@@ -1,4 +1,6 @@
 #include "TriangleBatch.h"
+#include "Rendering/ShaderAttribute.h"
+#include <numeric>
 
 // ----------------------------------------------------------------------------
 
@@ -12,9 +14,8 @@ TriangleBatch::Create(const size_t batchSize,
                       const std::function<void(void)>& onFlush)
 {
 
-  // TODO: use shader attrs to get total data size
-  const size_t vertexSizePerTriangle = 6 * sizeof(glm::vec3);
-  const size_t bufferTotalSize = batchSize * vertexSizePerTriangle;
+  m_vertexDataSize = CalculateVertexDataSize(vertexAttributes);
+  const size_t bufferTotalSize = batchSize * m_vertexDataSize;
 
   m_inputBuffer.Resize(bufferTotalSize);
 
@@ -26,15 +27,26 @@ TriangleBatch::Create(const size_t batchSize,
 
 // ----------------------------------------------------------------------------
 
+size_t
+TriangleBatch::CalculateVertexDataSize(
+  const Rendering::ShaderAttributes& vertexAttributes)
+{
+  return std::accumulate(
+    vertexAttributes.begin(),
+    vertexAttributes.end(),
+    0,
+    [](size_t current, const Rendering::ShaderAttribute& attr) {
+      return current + attr.DataSizeInBytes();
+    });
+}
+
+// ----------------------------------------------------------------------------
+
 void
 TriangleBatch::Draw(
   const std::initializer_list<Bits::RawDataView>& additionalVertexDatas)
 {
-  // TODO: adjust size here...
-  constexpr size_t VEC3_SIZE = sizeof(glm::vec3);
-  constexpr size_t INCOMING_SIZE = 6 * VEC3_SIZE;
-
-  if (m_inputBuffer.GetAvailableSize() < INCOMING_SIZE) {
+  if (m_inputBuffer.GetAvailableSize() < m_vertexDataSize) {
     m_onFlush();
     Flush();
   }
