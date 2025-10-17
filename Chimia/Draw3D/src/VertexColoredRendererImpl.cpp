@@ -1,10 +1,12 @@
 #include "VertexColoredRendererImpl.h"
 
 #include "CameraPrivate.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Config.h"
+#include "ModelBatch.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
+#include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
 
@@ -24,9 +26,9 @@ VertexColoredRendererImpl::getInstance()
 void
 VertexColoredRendererImpl::Init()
 {
-  // TODO: batch size should be configurable
-  constexpr size_t BATCH_SIZE = 100;
-  m_triangleBatch.Create(BATCH_SIZE,
+  const size_t batchSize = Config::VertexColored::triangleBatchSize;
+
+  m_triangleBatch.Create(batchSize,
                          { Rendering::ShaderAttribute::Float(0, 3),
                            Rendering::ShaderAttribute::Float(1, 3) },
                          [&]() { ConfigureShaderForTriangleDrawing(); });
@@ -60,19 +62,13 @@ unsigned
 VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
                                        const std::vector<unsigned>& indices)
 {
-  const unsigned nTransforms = 2;
+  std::pair<unsigned, ModelBatch*> inserted = m_transformedModelsTable.Insert();
+  const unsigned modelID = inserted.first;
 
-  unsigned modelID = m_currentTransformedModelID++;
-  auto it = m_transformedModelsTable.emplace(
-    std::make_pair<unsigned, ModelBatch>(std::move(modelID), {}));
-  const bool insertedWithSuccess = it.second;
-  if (!insertedWithSuccess) {
-    return 0;
-  }
-
-  ModelBatch& model = it.first->second;
+  const size_t instanceBathSize = Config::VertexColored::modelsBatchSize;
+  ModelBatch& model = *inserted.second;
   model.Create({ vertexData, indices },
-               nTransforms,
+               instanceBathSize,
                { Rendering::ShaderAttribute::Float(0, 3),
                  Rendering::ShaderAttribute::Float(1, 3) },
                { Rendering::ShaderAttribute::Float(2, 4),
@@ -90,14 +86,12 @@ void
 VertexColoredRendererImpl::DrawModelTransformed(unsigned modelID,
                                                 const glm::mat4x4& transform)
 {
-  auto it = m_transformedModelsTable.find(modelID);
-  if (it == m_transformedModelsTable.end()) {
+  ModelBatch* model = m_transformedModelsTable.Find(modelID);
+  if (model == nullptr) {
     return;
   }
 
-  ModelBatch& model = it->second;
-
-  model.Draw({ &transform, sizeof(glm::mat4x4) });
+  model->Draw({ &transform, sizeof(glm::mat4x4) });
 }
 
 // ----------------------------------------------------------------------------
@@ -122,10 +116,7 @@ VertexColoredRendererImpl::FlushTriangles()
 void
 VertexColoredRendererImpl::FlushTransformedModels()
 {
-  for (auto& modelTableEntry : m_transformedModelsTable) {
-    ModelBatch& model = modelTableEntry.second;
-    model.Flush();
-  }
+  m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
 }
 
 // ----------------------------------------------------------------------------

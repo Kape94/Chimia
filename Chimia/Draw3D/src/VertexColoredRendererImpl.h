@@ -3,14 +3,13 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
+#include "IdentifiedObjectTable.h"
 #include "ModelBatch.h"
 #include "Renderers.h"
 #include "TriangleBatch.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
-
-#include <map>
 
 // ----------------------------------------------------------------------------
 
@@ -56,9 +55,7 @@ private:
     delete;
 
   TriangleBatch m_triangleBatch;
-
-  unsigned m_currentTransformedModelID = 1;
-  std::map<unsigned, ModelBatch> m_transformedModelsTable;
+  IdentifiedObjectTable<ModelBatch> m_transformedModelsTable;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE
