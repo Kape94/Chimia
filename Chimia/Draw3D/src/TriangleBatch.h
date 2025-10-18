@@ -12,7 +12,11 @@
 
 #include <glm/vec3.hpp>
 
+// ----------------------------------------------------------------------------
+
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
 
 class TriangleBatch
 {
@@ -21,8 +25,7 @@ public:
               const Rendering::ShaderAttributes& vertexAttributes,
               const std::function<void(void)>& onFlush);
 
-  void Draw(
-    const std::initializer_list<Bits::RawDataView>& additionalVertexDatas);
+  void Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas);
 
   void Flush();
 
@@ -32,9 +35,13 @@ private:
 
   std::function<void(void)> m_onFlush;
 
-  size_t m_vertexDataSize = 0;
+  size_t m_inputDataSize = 0;
   Bits::RawBuffer m_inputBuffer;
   Rendering::Buffer m_gpuBuffer;
 };
 
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------

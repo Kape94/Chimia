@@ -29,8 +29,8 @@ VertexColoredRendererImpl::Init()
   const size_t batchSize = Config::VertexColored::triangleBatchSize;
 
   m_triangleBatch.Create(batchSize,
-                         { Rendering::ShaderAttribute::Float(0, 3),
-                           Rendering::ShaderAttribute::Float(1, 3) },
+                         { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+                           Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
                          [&]() { ConfigureShaderForTriangleDrawing(); });
 }
 
@@ -69,12 +69,12 @@ VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
   ModelBatch& model = *inserted.second;
   model.Create({ vertexData, indices },
                instanceBathSize,
-               { Rendering::ShaderAttribute::Float(0, 3),
-                 Rendering::ShaderAttribute::Float(1, 3) },
-               { Rendering::ShaderAttribute::Float(2, 4),
-                 Rendering::ShaderAttribute::Float(3, 4),
-                 Rendering::ShaderAttribute::Float(4, 4),
-                 Rendering::ShaderAttribute::Float(5, 4) },
+               { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+                 Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
+               { Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
+                 Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
+                 Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
+                 Rendering::ShaderAttribute::Float(5 /*transform*/, 4) },
                [&]() { ConfigureShaderForTransformedModelDrawing(); });
 
   return modelID;

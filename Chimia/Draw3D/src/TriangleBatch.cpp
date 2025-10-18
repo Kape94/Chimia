@@ -1,4 +1,5 @@
 #include "TriangleBatch.h"
+#include "Bits/Buffer/RawDataView.h"
 #include "Rendering/ShaderAttribute.h"
 #include <numeric>
 
@@ -13,10 +14,11 @@ TriangleBatch::Create(const size_t batchSize,
                       const Rendering::ShaderAttributes& vertexAttributes,
                       const std::function<void(void)>& onFlush)
 {
+  constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
+  m_inputDataSize =
+    CalculateVertexDataSize(vertexAttributes) * N_VERTICES_IN_TRIANGLE;
 
-  m_vertexDataSize = CalculateVertexDataSize(vertexAttributes);
-  const size_t bufferTotalSize = batchSize * m_vertexDataSize;
-
+  const size_t bufferTotalSize = batchSize * m_inputDataSize;
   m_inputBuffer.Resize(bufferTotalSize);
 
   const size_t nFloats = bufferTotalSize / sizeof(float);
@@ -43,15 +45,14 @@ TriangleBatch::CalculateVertexDataSize(
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Draw(
-  const std::initializer_list<Bits::RawDataView>& additionalVertexDatas)
+TriangleBatch::Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas)
 {
-  if (m_inputBuffer.GetAvailableSize() < m_vertexDataSize) {
+  if (m_inputBuffer.GetAvailableSize() < m_inputDataSize) {
     m_onFlush();
     Flush();
   }
 
-  for (const auto& vertexDataView : additionalVertexDatas) {
+  for (const auto& vertexDataView : vertexDatas) {
     m_inputBuffer.Append(vertexDataView);
   }
 }
