@@ -77,3 +77,8 @@ target_link_libraries(Samples_Rendering_ex8 PRIVATE Samples_Rendering_DefaultDep
 
 add_executable(Samples_Rendering_ex9 ex9-instancedBufferWithTransform.cpp)
 target_link_libraries(Samples_Rendering_ex9 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 10) Regular buffer sub data with varying vertex size
+
+add_executable(Samples_Rendering_ex10 ex10-regularBufferSubData.cpp)
+target_link_libraries(Samples_Rendering_ex10 PRIVATE Samples_Rendering_DefaultDeps)

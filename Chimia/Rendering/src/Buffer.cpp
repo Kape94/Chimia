@@ -11,10 +11,12 @@ Buffer::Buffer(Buffer&& other) noexcept
   : m_VAO(other.m_VAO)
   , m_VBO(other.m_VBO)
   , m_nVertices(other.m_nVertices)
+  , m_sizePerVertex(other.m_sizePerVertex)
 {
   other.m_VAO = 0;
   other.m_VBO = 0;
   other.m_nVertices = 0;
+  other.m_sizePerVertex = 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -26,10 +28,12 @@ Buffer::operator=(Buffer&& other) noexcept
     m_VAO = other.m_VAO;
     m_VBO = other.m_VBO;
     m_nVertices = other.m_nVertices;
+    m_sizePerVertex = other.m_sizePerVertex;
 
     other.m_VAO = 0;
     other.m_VBO = 0;
     other.m_nVertices = 0;
+    other.m_sizePerVertex = 0;
   }
 
   return *this;
@@ -83,9 +87,8 @@ Buffer::Create(const void* vertexData,
   LoadDataInGPU(vertexData, vertexDataSize);
   BufferUtils::LinkShaderAttributes(shaderAttributes);
 
-  const unsigned sizePerVertex =
-    BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
-  m_nVertices = vertexDataSize / sizePerVertex;
+  m_sizePerVertex = BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
+  m_nVertices = vertexDataSize / m_sizePerVertex;
 }
 
 //---------------------------------------------------------------------------------------
@@ -120,6 +123,7 @@ Buffer::Load(const void* vertexData, const unsigned vertexDataSize)
 
   BufferUtils::LoadDataOnBuffer(
     m_VBO, GL_ARRAY_BUFFER, vertexData, vertexDataSize);
+  m_nVertices = vertexDataSize / m_sizePerVertex;
 }
 
 //---------------------------------------------------------------------------------------

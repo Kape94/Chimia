@@ -60,6 +60,7 @@ private:
   unsigned m_VAO = 0;
   unsigned m_VBO = 0;
 
+  unsigned m_sizePerVertex = 0;
   unsigned m_nVertices = 0;
 };
 
