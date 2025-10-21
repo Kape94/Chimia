@@ -112,6 +112,34 @@ IndexedBuffer::LoadIndexDataInGPU(const unsigned* indexData,
 
 //---------------------------------------------------------------------------------------
 
+void
+IndexedBuffer::LoadVertexData(const void* vertexData,
+                              const unsigned vertexDataSize)
+{
+  m_baseBuffer.Load(vertexData, vertexDataSize);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+IndexedBuffer::LoadIndexData(const unsigned* indexData,
+                             const unsigned nIndexValues)
+{
+  if (GetVAO() == 0) {
+    return;
+  }
+
+  constexpr unsigned SIZE_PER_INDEX = sizeof(unsigned);
+  const unsigned indexDataSize = nIndexValues * SIZE_PER_INDEX;
+
+  BufferUtils::LoadDataOnBuffer(
+    m_EBO, GL_ELEMENT_ARRAY_BUFFER, indexData, indexDataSize);
+
+  m_nElements = nIndexValues;
+}
+
+//---------------------------------------------------------------------------------------
+
 unsigned
 IndexedBuffer::GetVAO() const
 {

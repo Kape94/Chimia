@@ -47,6 +47,9 @@ public:
               const unsigned nIndexDataItems,
               const ShaderAttributes& shaderAttributes);
 
+  void LoadVertexData(const void* vertexData, const unsigned vertexDataSize);
+  void LoadIndexData(const unsigned* indexData, const unsigned nIndexValues);
+
   void Clear();
 
   void Render() const;

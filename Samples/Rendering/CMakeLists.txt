@@ -82,3 +82,8 @@ target_link_libraries(Samples_Rendering_ex9 PRIVATE Samples_Rendering_DefaultDep
 
 add_executable(Samples_Rendering_ex10 ex10-regularBufferSubData.cpp)
 target_link_libraries(Samples_Rendering_ex10 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 11) Indexed buffer sub data 
+
+add_executable(Samples_Rendering_ex11 ex11-indexedBufferSubData.cpp)
+target_link_libraries(Samples_Rendering_ex11 PRIVATE Samples_Rendering_DefaultDeps)
