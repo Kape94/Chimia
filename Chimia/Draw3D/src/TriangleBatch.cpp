@@ -21,8 +21,7 @@ TriangleBatch::Create(const size_t batchSize,
   const size_t bufferTotalSize = batchSize * m_inputDataSize;
   m_inputBuffer.Resize(bufferTotalSize);
 
-  const size_t nFloats = bufferTotalSize / sizeof(float);
-  m_gpuBuffer.Create(nullptr, nFloats, vertexAttributes);
+  m_gpuBuffer.Create(nullptr, bufferTotalSize, vertexAttributes);
 
   m_onFlush = onFlush;
 }
@@ -62,17 +61,14 @@ TriangleBatch::Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas)
 void
 TriangleBatch::Flush()
 {
-  const size_t inputSize = m_inputBuffer.GetSize();
-  if (inputSize == 0) {
+  const size_t frameInputSize = m_inputBuffer.GetSize();
+  if (frameInputSize == 0) {
     return;
   }
 
   m_onFlush();
 
-  const float* inputData = reinterpret_cast<float*>(m_inputBuffer.GetData());
-  const unsigned nFloatItems = inputSize / sizeof(float);
-
-  m_gpuBuffer.Load(inputData, nFloatItems);
+  m_gpuBuffer.Load(m_inputBuffer.GetData(), frameInputSize);
   m_gpuBuffer.Render();
 
   m_inputBuffer.Reset();

@@ -47,14 +47,14 @@ IndexedBuffer::IndexedBuffer(const std::vector<float>& vertexData,
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer::IndexedBuffer(const float* vertexData,
-                             const unsigned nVertexDataItems,
+IndexedBuffer::IndexedBuffer(const void* vertexData,
+                             const unsigned vertexDataSize,
                              const unsigned* indexData,
                              const unsigned nIndexDataItems,
                              const ShaderAttributes& shaderAttributes)
 {
   Create(
-    vertexData, nVertexDataItems, indexData, nIndexDataItems, shaderAttributes);
+    vertexData, vertexDataSize, indexData, nIndexDataItems, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -71,7 +71,9 @@ IndexedBuffer::Create(const std::vector<float>& vertexData,
                       const std::vector<unsigned>& indexData,
                       const ShaderAttributes& shaderAttributes)
 {
-  const unsigned vertexDataSize = static_cast<unsigned>(vertexData.size());
+  const unsigned vertexDataNFloats = static_cast<unsigned>(vertexData.size());
+  const unsigned vertexDataSize = vertexDataNFloats * sizeof(float);
+
   const unsigned indexDataSize = static_cast<unsigned>(indexData.size());
   Create(vertexData.data(),
          vertexDataSize,
@@ -83,15 +85,15 @@ IndexedBuffer::Create(const std::vector<float>& vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Create(const float* vertexData,
-                      const unsigned nVertexDataItems,
+IndexedBuffer::Create(const void* vertexData,
+                      const unsigned vertexDataSize,
                       const unsigned* indexData,
                       const unsigned nIndexDataItems,
                       const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  m_baseBuffer.Create(vertexData, nVertexDataItems, shaderAttributes);
+  m_baseBuffer.Create(vertexData, vertexDataSize, shaderAttributes);
 
   LoadIndexDataInGPU(indexData, nIndexDataItems);
   m_nElements = nIndexDataItems;

@@ -103,7 +103,7 @@ main()
 
   Chimia::Rendering::InstancedBuffer buffer;
   buffer.CreateInstanced(Inputs::BufferData::vertex.data(),
-                         Inputs::BufferData::vertex.size(),
+                         Inputs::BufferData::vertex.size() * sizeof(float),
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
                          nullptr,

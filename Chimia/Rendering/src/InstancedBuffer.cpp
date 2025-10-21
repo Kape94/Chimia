@@ -49,8 +49,8 @@ InstancedBuffer::~InstancedBuffer()
 
 void
 InstancedBuffer::CreateInstanced(
-  const float* vertexData,
-  const unsigned nVertexDataItems,
+  const void* vertexData,
+  const unsigned vertexDataSize,
   const unsigned* indexData,
   const unsigned nIndexDataItems,
   const ShaderAttributes& shaderAttributes,
@@ -63,7 +63,7 @@ InstancedBuffer::CreateInstanced(
   IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
 
   base.Create(
-    vertexData, nVertexDataItems, indexData, nIndexDataItems, shaderAttributes);
+    vertexData, vertexDataSize, indexData, nIndexDataItems, shaderAttributes);
 
   LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
@@ -75,8 +75,8 @@ InstancedBuffer::CreateInstanced(
 
 void
 InstancedBuffer::CreateInstanced(
-  const float* vertexData,
-  const unsigned nVertexDataItems,
+  const void* vertexData,
+  const unsigned vertexDataSize,
   const ShaderAttributes& shaderAttributes,
   const void* instancedData,
   const unsigned instancedDataSize,
@@ -86,7 +86,7 @@ InstancedBuffer::CreateInstanced(
   m_baseBuffer = Buffer();
   Buffer& base = std::get<Buffer>(m_baseBuffer);
 
-  base.Create(vertexData, nVertexDataItems, shaderAttributes);
+  base.Create(vertexData, vertexDataSize, shaderAttributes);
 
   LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);

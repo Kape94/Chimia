@@ -91,14 +91,9 @@ Chimia::Draw3D::TrianglePrivate::Draw(const glm::vec3& p1,
 void
 Chimia::Draw3D::TrianglePrivate::Init()
 {
-  constexpr size_t N_FLOATS_PER_TRIANGLE = 18;
-  constexpr size_t N_FLOATS_TOTAL =
-    N_FLOATS_PER_TRIANGLE * TriangleData::BATCH_SIZE;
-
-  const float* vertexData = nullptr;
   TriangleData::trianglesBuffer.Create(
-    vertexData,
-    N_FLOATS_TOTAL,
+    nullptr,
+    TriangleData::TOTAL_BUFFER_SIZE,
     { Chimia::Rendering::ShaderAttribute::Float(0, 3),
       Chimia::Rendering::ShaderAttribute::Float(1, 3) });
 }
@@ -110,13 +105,11 @@ Chimia::Draw3D::TrianglePrivate::Flush()
 {
   using namespace TriangleData;
 
-  const unsigned size = trianglesPos.GetSize() / sizeof(float);
-  if (size == 0)
+  const unsigned frameInputSize = trianglesPos.GetSize();
+  if (frameInputSize == 0)
     return;
 
-  auto f = reinterpret_cast<const float*>(trianglesPos.GetData());
-
-  trianglesBuffer.Load(f, size);
+  trianglesBuffer.Load(trianglesPos.GetData(), frameInputSize);
 
   Rendering::Shader& shader = Draw3D::Shaders::VertexColored();
   shader.Use();

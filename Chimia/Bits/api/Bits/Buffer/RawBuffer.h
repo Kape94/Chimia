@@ -39,6 +39,7 @@ private:
   unsigned char* Allocate(const size_t size) const;
 
   void Delete();
+  void DeleteRawData();
 
   size_t RemainingSize() const;
 

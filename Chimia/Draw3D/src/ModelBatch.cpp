@@ -70,7 +70,7 @@ ModelBatch::AddGPUBuffer(const BufferData& bufferData,
 {
   Rendering::InstancedBuffer& inserted = m_gpuBuffers.emplace_back();
   inserted.CreateInstanced(bufferData.VertexData().data(),
-                           bufferData.VertexData().size(),
+                           bufferData.VertexData().size() * sizeof(float),
                            bufferData.Indices().data(),
                            bufferData.Indices().size(),
                            vertexAttributes,

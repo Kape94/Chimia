@@ -75,13 +75,11 @@ RetrieveBufferForMaterial(const Material& material)
 void
 FlushBuffer(Chimia::Bits::RawBuffer& buffer, const Material& material)
 {
-  const unsigned size = buffer.GetSize() / sizeof(float);
-  if (size == 0)
+  const unsigned frameInputSize = buffer.GetSize();
+  if (frameInputSize == 0)
     return;
 
-  auto f = reinterpret_cast<const float*>(buffer.GetData());
-
-  State::trianglesBuffer.Load(f, size);
+  State::trianglesBuffer.Load(buffer.GetData(), frameInputSize);
 
   Chimia::Rendering::Shader& shader = Chimia::Draw3D::Shaders::GouraudLit();
   shader.Use();
@@ -132,14 +130,9 @@ Chimia::Draw3D::LitTriangle(const glm::vec3& p1,
 void
 LitTrianglePrivate::Init()
 {
-  constexpr size_t N_FLOATS_PER_TRIANGLE = 18;
-  constexpr size_t N_FLOATS_TOTAL =
-    N_FLOATS_PER_TRIANGLE * LitTriangleInternal::Constants::BATCH_SIZE;
-  const float* vertexData = nullptr;
-
   LitTriangleInternal::State::trianglesBuffer.Create(
-    vertexData,
-    N_FLOATS_TOTAL,
+    nullptr,
+    LitTriangleInternal::Constants::TOTAL_BUFFER_SIZE,
     { Chimia::Rendering::ShaderAttribute::Float(0, 3),
       Chimia::Rendering::ShaderAttribute::Float(1, 3) });
 }

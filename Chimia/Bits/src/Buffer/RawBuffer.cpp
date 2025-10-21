@@ -107,7 +107,7 @@ RawBuffer::Resize(const size_t size)
   } else {
     unsigned char* newData = Allocate(size);
     memcpy(newData, data, currentSize);
-    Delete();
+    DeleteRawData();
     data = newData;
   }
   maximumSize = size;
@@ -128,11 +128,19 @@ RawBuffer::Allocate(const size_t size) const
 void
 RawBuffer::Delete()
 {
+  DeleteRawData();
+  currentSize = 0;
+  maximumSize = 0;
+}
+
+//-----------------------------------------------------------------------------
+
+void
+RawBuffer::DeleteRawData()
+{
   if (data != nullptr) {
     free(data);
   }
-  currentSize = 0;
-  maximumSize = 0;
 }
 
 //-----------------------------------------------------------------------------

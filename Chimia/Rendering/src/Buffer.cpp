@@ -45,11 +45,11 @@ Buffer::Buffer(const std::vector<float>& vertexData,
 
 //---------------------------------------------------------------------------------------
 
-Buffer::Buffer(const float* vertexData,
-               const unsigned nVertexDataItems,
+Buffer::Buffer(const void* vertexData,
+               const unsigned vertexDataSize,
                const ShaderAttributes& shaderAttributes)
 {
-  Create(vertexData, nVertexDataItems, shaderAttributes);
+  Create(vertexData, vertexDataSize, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -65,45 +65,46 @@ void
 Buffer::Create(const std::vector<float>& vertexData,
                const ShaderAttributes& shaderAttributes)
 {
-  const unsigned vertexDataSize = static_cast<unsigned>(vertexData.size());
+  const unsigned nFloatItems = static_cast<unsigned>(vertexData.size());
+  const unsigned vertexDataSize = nFloatItems * sizeof(float);
+
   Create(vertexData.data(), vertexDataSize, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Create(const float* vertexData,
-               const unsigned nVertexDataItems,
+Buffer::Create(const void* vertexData,
+               const unsigned vertexDataSize,
                const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  LoadDataInGPU(vertexData, nVertexDataItems);
+  LoadDataInGPU(vertexData, vertexDataSize);
   BufferUtils::LinkShaderAttributes(shaderAttributes);
 
-  const unsigned itemsPerVertex =
-    BufferUtils::ComputeTotalEntriesOfAttributes(shaderAttributes);
-  m_nVertices = nVertexDataItems / itemsPerVertex;
+  const unsigned sizePerVertex =
+    BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
+  m_nVertices = vertexDataSize / sizePerVertex;
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::LoadDataInGPU(const float* vertexData, const unsigned nVertexDataItems)
+Buffer::LoadDataInGPU(const void* vertexData, const unsigned vertexDataSize)
 {
   glGenVertexArrays(1, &m_VAO);
   glBindVertexArray(m_VAO);
 
-  LoadVertexDataInGPU(vertexData, nVertexDataItems);
+  LoadVertexDataInGPU(vertexData, vertexDataSize);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::LoadVertexDataInGPU(const float* vertexData,
-                            const unsigned nVertexDataItems)
+Buffer::LoadVertexDataInGPU(const void* vertexData,
+                            const unsigned vertexDataSize)
 {
-  const unsigned vertexDataSize = nVertexDataItems * sizeof(float);
   m_VBO = BufferUtils::CreateBufferAndLoadData(
     GL_ARRAY_BUFFER, vertexData, vertexDataSize);
 }
@@ -111,14 +112,14 @@ Buffer::LoadVertexDataInGPU(const float* vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Load(const float* vertexData, const unsigned nVertexDataItems)
+Buffer::Load(const void* vertexData, const unsigned vertexDataSize)
 {
   if (m_VAO == 0 || m_VBO == 0) {
     return;
   }
 
-  const unsigned totalSize = nVertexDataItems * sizeof(float);
-  BufferUtils::LoadDataOnBuffer(m_VBO, GL_ARRAY_BUFFER, vertexData, totalSize);
+  BufferUtils::LoadDataOnBuffer(
+    m_VBO, GL_ARRAY_BUFFER, vertexData, vertexDataSize);
 }
 
 //---------------------------------------------------------------------------------------

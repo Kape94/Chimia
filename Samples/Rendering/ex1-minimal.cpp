@@ -42,7 +42,7 @@ namespace BufferData {
 const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 
-const unsigned vertexDataSize = 18;
+const unsigned vertexDataSize = 18 * sizeof(float);
 
 const unsigned indexData[] = { 0, 1, 2 };
 

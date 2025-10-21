@@ -29,8 +29,8 @@ public:
                 const std::vector<unsigned>& indexData,
                 const ShaderAttributes& shaderAttributes);
 
-  IndexedBuffer(const float* vertexData,
-                const unsigned nVertexDataItems,
+  IndexedBuffer(const void* vertexData,
+                const unsigned vertexDataSize,
                 const unsigned* indexData,
                 const unsigned nIndexDataItems,
                 const ShaderAttributes& shaderAttributes);
@@ -41,8 +41,8 @@ public:
               const std::vector<unsigned>& indexData,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const float* vertexData,
-              const unsigned nVertexDataItems,
+  void Create(const void* vertexData,
+              const unsigned vertexDataSize,
               const unsigned* indexData,
               const unsigned nIndexDataItems,
               const ShaderAttributes& shaderAttributes);

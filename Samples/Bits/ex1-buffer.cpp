@@ -7,7 +7,7 @@ int
 main()
 {
   std::cout << "RawBuffer example ----------" << std::endl;
-  Chimia::Bits::RawBuffer buffer(32);
+  Chimia::Bits::RawBuffer buffer;
 
   int i = 45;
   char c = 'C';
@@ -23,7 +23,7 @@ main()
 
   std::cout << "IndexedBuffer example --------------------" << std::endl;
 
-  Chimia::Bits::IndexedBuffer indexedBuffer;
+  Chimia::Bits::IndexedBuffer indexedBuffer(4);
 
   indexedBuffer.Append(&i, sizeof(i));
   indexedBuffer.Append(&c, sizeof(c));

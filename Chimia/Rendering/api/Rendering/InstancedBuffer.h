@@ -26,8 +26,8 @@ public:
 
   ~InstancedBuffer();
 
-  void CreateInstanced(const float* vertexData,
-                       const unsigned nVertexDataItems,
+  void CreateInstanced(const void* vertexData,
+                       const unsigned vertexDataSize,
                        const unsigned* indexData,
                        const unsigned nIndexDataItems,
                        const ShaderAttributes& shaderAttributes,
@@ -36,8 +36,8 @@ public:
                        const unsigned nInstances,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const float* vertexData,
-                       const unsigned nVertexDataItems,
+  void CreateInstanced(const void* vertexData,
+                       const unsigned vertexDataSize,
                        const ShaderAttributes& shaderAttributes,
                        const void* instancedData,
                        const unsigned instancedDataSize,

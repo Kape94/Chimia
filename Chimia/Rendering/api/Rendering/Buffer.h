@@ -27,8 +27,8 @@ public:
   Buffer(const std::vector<float>& vertexData,
          const ShaderAttributes& shaderAttributes);
 
-  Buffer(const float* vertexData,
-         const unsigned nVertexDataItems,
+  Buffer(const void* vertexData,
+         const unsigned vertexDataSize,
          const ShaderAttributes& shaderAttributes);
 
   ~Buffer();
@@ -36,21 +36,21 @@ public:
   void Create(const std::vector<float>& vertexData,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const float* vertexData,
-              const unsigned nVertexDataItems,
+  void Create(const void* vertexData,
+              const unsigned vertexDataSize,
               const ShaderAttributes& shaderAttributes);
 
-  void Load(const float* vertexData, const unsigned nVertexDataItems);
+  void Load(const void* vertexData, const unsigned vertexDataSize);
 
   void Clear();
 
   void Render() const;
 
 private:
-  void LoadDataInGPU(const float* vertexData, const unsigned nVertexDataItems);
+  void LoadDataInGPU(const void* vertexData, const unsigned vertexDataSize);
 
-  void LoadVertexDataInGPU(const float* vertexData,
-                           const unsigned nVertexDataItems);
+  void LoadVertexDataInGPU(const void* vertexData,
+                           const unsigned vertexDataSize);
 
   unsigned GetVAO() const;
   unsigned GetNVertices() const;

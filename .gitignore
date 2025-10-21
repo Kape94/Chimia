@@ -9,3 +9,4 @@ vcpkg_installed/
 compile_commands.json
 .cache
 imgui.ini
+.vscode
