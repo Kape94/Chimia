@@ -26,12 +26,17 @@ VertexColoredRendererImpl::getInstance()
 void
 VertexColoredRendererImpl::Init()
 {
-  const size_t batchSize = Config::VertexColored::triangleBatchSize;
-
-  m_triangleBatch.Create(batchSize,
+  m_triangleBatch.Create(Config::VertexColored::triangleBatchSize,
                          { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
                            Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
                          [&]() { ConfigureShaderForTriangleDrawing(); });
+
+  m_indexedTriangleBatch.Create(
+    Config::VertexColored::indexedTrianglesVertexBatchSize,
+    Config::VertexColored::indexedTrianglesIndexBatchSize,
+    { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+      Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
+    [&]() { ConfigureShaderForTriangleDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -97,25 +102,22 @@ VertexColoredRendererImpl::DrawModelTransformed(unsigned modelID,
 // ----------------------------------------------------------------------------
 
 void
+VertexColoredRendererImpl::DrawIndexedTriangles(
+  const std::vector<float>& vertexData,
+  const std::vector<unsigned>& indexData)
+{
+  m_indexedTriangleBatch.Draw(
+    { vertexData.data(), vertexData.size(), sizeof(float) }, indexData);
+}
+
+// ----------------------------------------------------------------------------
+
+void
 VertexColoredRendererImpl::Flush()
 {
-  FlushTriangles();
-  FlushTransformedModels();
-}
-
-// ----------------------------------------------------------------------------
-
-void
-VertexColoredRendererImpl::FlushTriangles()
-{
   m_triangleBatch.Flush();
-}
+  m_indexedTriangleBatch.Flush();
 
-// ----------------------------------------------------------------------------
-
-void
-VertexColoredRendererImpl::FlushTransformedModels()
-{
   m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
 }
 

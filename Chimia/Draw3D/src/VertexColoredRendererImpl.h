@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "IdentifiedObjectTable.h"
+#include "IndexedTriangleBatch.h"
 #include "ModelBatch.h"
 #include "Renderers.h"
 #include "TriangleBatch.h"
@@ -37,10 +38,10 @@ public:
   void DrawModelTransformed(unsigned modelID,
                             const glm::mat4x4& transform) override;
 
-private:
-  void FlushTriangles();
-  void FlushTransformedModels();
+  void DrawIndexedTriangles(const std::vector<float>& vertexData,
+                            const std::vector<unsigned>& indexData) override;
 
+private:
   void ConfigureShaderForTriangleDrawing();
   void ConfigureShaderForTransformedModelDrawing();
 
@@ -55,6 +56,7 @@ private:
     delete;
 
   TriangleBatch m_triangleBatch;
+  IndexedTriangleBatch m_indexedTriangleBatch;
   IdentifiedObjectTable<ModelBatch> m_transformedModelsTable;
 };
 

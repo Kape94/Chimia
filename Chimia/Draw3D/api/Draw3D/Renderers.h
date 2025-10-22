@@ -32,6 +32,9 @@ public:
 
   virtual void DrawModelTransformed(unsigned modelID,
                                     const glm::mat4x4& transform) = 0;
+
+  virtual void DrawIndexedTriangles(const std::vector<float>& vertexData,
+                                    const std::vector<unsigned>& indexData) = 0;
 };
 
 // ----------------------------------------------------------------------------

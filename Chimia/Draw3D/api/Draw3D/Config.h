@@ -11,6 +11,8 @@ namespace Config {
 namespace VertexColored {
 static size_t triangleBatchSize = 100;
 static size_t modelsBatchSize = 2;
+static size_t indexedTrianglesVertexBatchSize = 200;
+static size_t indexedTrianglesIndexBatchSize = 500;
 }
 
 }
