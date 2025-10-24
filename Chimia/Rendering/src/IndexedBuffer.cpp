@@ -67,6 +67,18 @@ IndexedBuffer::~IndexedBuffer()
 //---------------------------------------------------------------------------------------
 
 void
+IndexedBuffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  Clear();
+
+  m_baseBuffer.Create(reusableVertexBuffer);
+
+  m_nElements = BufferPrivate::GetNElements(reusableVertexBuffer);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 IndexedBuffer::Create(const std::vector<float>& vertexData,
                       const std::vector<unsigned>& indexData,
                       const ShaderAttributes& shaderAttributes)
@@ -125,7 +137,7 @@ void
 IndexedBuffer::LoadIndexData(const unsigned* indexData,
                              const unsigned nIndexValues)
 {
-  if (GetVAO() == 0) {
+  if (GetVAO() == 0 || m_EBO == 0) {
     return;
   }
 

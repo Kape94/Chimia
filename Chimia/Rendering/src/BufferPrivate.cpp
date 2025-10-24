@@ -37,3 +37,38 @@ BufferPrivate::GetNElements(const IndexedBuffer& buffer)
 }
 
 // --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  reusableVertexBuffer.Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNVertices(
+  const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.GetNVertices();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNElements(
+  const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.GetNIndices();
+}
+
+// --------------------------------------------------------------------------------------
+
+const ShaderAttributes&
+BufferPrivate::GetShaderAttributes(
+  const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.GetShaderAttributes();
+}
+
+// --------------------------------------------------------------------------------------

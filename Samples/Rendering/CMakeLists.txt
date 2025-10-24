@@ -87,3 +87,14 @@ target_link_libraries(Samples_Rendering_ex10 PRIVATE Samples_Rendering_DefaultDe
 
 add_executable(Samples_Rendering_ex11 ex11-indexedBufferSubData.cpp)
 target_link_libraries(Samples_Rendering_ex11 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 12) Reusable vertex buffer simple usage
+
+add_executable(Samples_Rendering_ex12 ex12-reusableVertexBufferSimple.cpp)
+target_link_libraries(Samples_Rendering_ex12 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 13) Reusable vertex buffer with instancing
+
+add_executable(Samples_Rendering_ex13 ex13-reusableVertexBufferWithInstancing.cpp)
+target_link_libraries(Samples_Rendering_ex13 PRIVATE Samples_Rendering_DefaultDeps)
+

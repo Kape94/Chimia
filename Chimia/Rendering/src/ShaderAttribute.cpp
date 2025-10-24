@@ -47,6 +47,29 @@ ShaderAttribute::ShaderAttribute(const unsigned _location,
 
 //-----------------------------------------------------------------------------
 
+ShaderAttribute::ShaderAttribute(const ShaderAttribute& other)
+  : location(other.location)
+  , nEntries(other.nEntries)
+  , dataType(other.dataType)
+  , dataSizeInBytes(other.dataSizeInBytes)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+ShaderAttribute&
+ShaderAttribute::operator=(const ShaderAttribute& other)
+{
+  location = other.location;
+  nEntries = other.nEntries;
+  dataType = other.dataType;
+  dataSizeInBytes = other.dataSizeInBytes;
+
+  return *this;
+}
+
+//-----------------------------------------------------------------------------
+
 ShaderAttribute
 ShaderAttribute::Float(const unsigned location, const unsigned nEntries)
 {

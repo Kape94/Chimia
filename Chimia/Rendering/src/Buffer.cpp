@@ -1,7 +1,9 @@
 #include "Buffer.h"
 
+#include "BufferPrivate.h"
 #include "BufferUtils.h"
 #include "OpenGLDefs.h"
+#include "ShaderAttribute.h"
 
 USING_RENDERLIB_NAMESPACE
 
@@ -61,6 +63,29 @@ Buffer::Buffer(const void* vertexData,
 Buffer::~Buffer()
 {
   Clear();
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer)
+{
+  Clear();
+
+  glGenVertexArrays(1, &m_VAO);
+  glBindVertexArray(m_VAO);
+
+  BufferPrivate::Bind(reusableVertexBuffer);
+
+  const ShaderAttributes& attributes =
+    BufferPrivate::GetShaderAttributes(reusableVertexBuffer);
+  BufferUtils::LinkShaderAttributes(attributes);
+
+  m_nVertices = BufferPrivate::GetNVertices(reusableVertexBuffer);
+
+  // The size per vertex info is used for subdata operations, which are not
+  // applicable when we use a reusable vertex buffer.
+  m_sizePerVertex = 0;
 }
 
 //---------------------------------------------------------------------------------------

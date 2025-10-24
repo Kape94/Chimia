@@ -4,6 +4,7 @@
 
 #include "RenderingNamespaceDefs.h"
 
+#include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
 
 //---------------------------------------------------------------------------------------
@@ -32,6 +33,8 @@ public:
          const ShaderAttributes& shaderAttributes);
 
   ~Buffer();
+
+  void Create(const ReusableVertexBufferObject& reusableVertexBuffer);
 
   void Create(const std::vector<float>& vertexData,
               const ShaderAttributes& shaderAttributes);

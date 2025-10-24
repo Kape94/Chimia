@@ -5,6 +5,7 @@
 #include "RenderingNamespaceDefs.h"
 
 #include "Buffer.h"
+#include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
 
 //---------------------------------------------------------------------------------------
@@ -36,6 +37,8 @@ public:
                 const ShaderAttributes& shaderAttributes);
 
   ~IndexedBuffer();
+
+  void Create(const ReusableVertexBufferObject& reusableVertexBuffer);
 
   void Create(const std::vector<float>& vertexData,
               const std::vector<unsigned>& indexData,

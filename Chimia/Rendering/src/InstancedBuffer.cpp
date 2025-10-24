@@ -49,6 +49,27 @@ InstancedBuffer::~InstancedBuffer()
 
 void
 InstancedBuffer::CreateInstanced(
+  const ReusableVertexBufferObject& reusableVertexBuffer,
+  const void* instancedData,
+  const unsigned instancedDataSize,
+  const unsigned nInstances,
+  const ShaderAttributes& instanceShaderAttributes)
+{
+  m_baseBuffer = IndexedBuffer();
+  IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
+
+  base.Create(reusableVertexBuffer);
+
+  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
+
+  m_nInstances = nInstances;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::CreateInstanced(
   const void* vertexData,
   const unsigned vertexDataSize,
   const unsigned* indexData,

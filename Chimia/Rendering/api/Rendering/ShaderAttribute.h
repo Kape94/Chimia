@@ -15,6 +15,9 @@ BEGIN_RENDERLIB_NAMESPACE
 class ShaderAttribute
 {
 public:
+  ShaderAttribute(const ShaderAttribute& other);
+  ShaderAttribute& operator=(const ShaderAttribute& other);
+
   static ShaderAttribute Float(const unsigned location,
                                const unsigned nEntries);
 
@@ -47,10 +50,10 @@ private:
                   const unsigned _nEntries,
                   const unsigned _dataType);
 
-  const unsigned location;
-  const unsigned nEntries;
-  const unsigned dataType;
-  const unsigned dataSizeInBytes;
+  unsigned location = 0;
+  unsigned nEntries = 0;
+  unsigned dataType = 0;
+  unsigned dataSizeInBytes = 0;
 };
 
 //---------------------------------------------------------------------------------------
