@@ -19,6 +19,7 @@ struct RawArrayView
   const size_t itemSize;
 
   size_t TotalSize() const { return nItems * itemSize; }
+  RawDataView AsDataView() const { return { array, TotalSize() }; }
 };
 
 END_BITS_NAMESPACE

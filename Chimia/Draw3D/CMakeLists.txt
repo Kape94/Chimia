@@ -13,6 +13,7 @@ add_library(${TARGET_NAME}
 
     src/batch/ModelBatch.cpp
     src/batch/IndexedTriangleBatch.cpp
+    src/batch/StaticTriangles.cpp
     src/batch/TriangleBatch.cpp
 )
 

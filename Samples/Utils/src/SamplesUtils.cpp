@@ -5,6 +5,7 @@
 #include <ctime>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <thread>
 
 // ----------------------------------------------------------------------------
@@ -23,6 +24,38 @@ std::chrono::time_point<std::chrono::high_resolution_clock> g_frameInit =
   CurrentTimePoint();
 long g_bestFrameTime = 10000000;
 long g_worstFrameTime = 0;
+}
+
+// ----------------------------------------------------------------------------
+
+namespace ThreadPoolLite {
+class AutoJoiningThread
+{
+public:
+  template<class Function, class... Args>
+  AutoJoiningThread(Function f, Args... args)
+    : m_thread(f, std::forward<Args>(args)...)
+  {
+  }
+
+  ~AutoJoiningThread()
+  {
+    if (m_thread.joinable())
+      m_thread.join();
+  }
+
+private:
+  std::thread m_thread;
+};
+
+std::vector<std::unique_ptr<AutoJoiningThread>> threads;
+
+void
+PushTask(std::function<void(void)> action)
+{
+  threads.push_back(std::make_unique<AutoJoiningThread>(action));
+}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -115,6 +148,19 @@ SamplesUtils::LogFrameStats()
     std::cout << "Best frame time: " << g_bestFrameTime << " us\n";
     std::cout << "Worst frame time: " << g_worstFrameTime << " us\n";
   }
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::DoAfter(const std::function<void(void)>& action,
+                      const unsigned milliseconds)
+{
+  ThreadPoolLite::PushTask([action, milliseconds]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+
+    action();
+  });
 }
 
 // ----------------------------------------------------------------------------

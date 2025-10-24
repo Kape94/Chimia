@@ -46,13 +46,30 @@ TriangleBatch::CalculateVertexDataSize(
 void
 TriangleBatch::Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas)
 {
-  if (m_inputBuffer.GetAvailableSize() < m_inputDataSize) {
-    m_onFlush();
-    Flush();
-  }
+  HandleFlushByDemand();
 
   for (const auto& vertexDataView : vertexDatas) {
     m_inputBuffer.Append(vertexDataView);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TriangleBatch::Draw(const Bits::RawArrayView& vertexDataArray)
+{
+  HandleFlushByDemand();
+  m_inputBuffer.Append(vertexDataArray.AsDataView());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TriangleBatch::HandleFlushByDemand()
+{
+  if (m_inputBuffer.GetAvailableSize() < m_inputDataSize) {
+    m_onFlush();
+    Flush();
   }
 }
 

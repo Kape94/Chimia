@@ -25,6 +25,8 @@ public:
 
   void ForEach(const std::function<void(Object&)>& action);
 
+  void Delete(unsigned id);
+
 private:
   IdentifiedObjectTable(const IdentifiedObjectTable& other) = delete;
   IdentifiedObjectTable& operator=(const IdentifiedObjectTable& other) = delete;
@@ -62,6 +64,15 @@ IdentifiedObjectTable<Object>::Find(unsigned id)
 {
   auto it = m_objectsTable.find(id);
   return it != m_objectsTable.end() ? &it->second : nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+template<class Object>
+void
+IdentifiedObjectTable<Object>::Delete(unsigned id)
+{
+  m_objectsTable.erase(id);
 }
 
 // ----------------------------------------------------------------------------

@@ -7,10 +7,30 @@
 
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
+#include "StaticTriangles.h"
 
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+namespace {
+
+static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
+  Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+  Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3)
+};
+
+static const Chimia::Rendering::ShaderAttributes
+  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
+    Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
+    Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
+    Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
+    Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
+  };
+
+}
 
 // ----------------------------------------------------------------------------
 
@@ -27,15 +47,13 @@ void
 VertexColoredRendererImpl::Init()
 {
   m_triangleBatch.Create(Config::VertexColored::triangleBatchSize,
-                         { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-                           Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
+                         VERTEX_ATTRIBUTES,
                          [&]() { ConfigureShaderForTriangleDrawing(); });
 
   m_indexedTriangleBatch.Create(
     Config::VertexColored::indexedTrianglesVertexBatchSize,
     Config::VertexColored::indexedTrianglesIndexBatchSize,
-    { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-      Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
+    VERTEX_ATTRIBUTES,
     [&]() { ConfigureShaderForTriangleDrawing(); });
 }
 
@@ -63,6 +81,36 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
 
 // ----------------------------------------------------------------------------
 
+void
+VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData)
+{
+  m_triangleBatch.Draw({ vertexData.data(), vertexData.size(), sizeof(float) });
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+VertexColoredRendererImpl::AddStaticTriangles(
+  const std::vector<float>& vertexData)
+{
+  auto newEntry = m_staticTriangles.Insert();
+  StaticTriangles& triangles = *newEntry.second;
+
+  triangles.Create(vertexData, VERTEX_ATTRIBUTES);
+
+  return newEntry.first;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexColoredRendererImpl::DeleteStaticTriangles(unsigned id)
+{
+  m_staticTriangles.Delete(id);
+}
+
+// ----------------------------------------------------------------------------
+
 unsigned
 VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
                                        const std::vector<unsigned>& indices)
@@ -74,12 +122,8 @@ VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
   ModelBatch& model = *inserted.second;
   model.Create({ vertexData, indices },
                instanceBathSize,
-               { Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-                 Rendering::ShaderAttribute::Float(1 /*color*/, 3) },
-               { Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
-                 Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
-                 Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-                 Rendering::ShaderAttribute::Float(5 /*transform*/, 4) },
+               VERTEX_ATTRIBUTES,
+               TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
                [&]() { ConfigureShaderForTransformedModelDrawing(); });
 
   return modelID;
@@ -119,6 +163,10 @@ VertexColoredRendererImpl::Flush()
   m_indexedTriangleBatch.Flush();
 
   m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
+
+  ConfigureShaderForTriangleDrawing();
+  m_staticTriangles.ForEach(
+    [](const StaticTriangles& triangles) { triangles.Render(); });
 }
 
 // ----------------------------------------------------------------------------

@@ -69,12 +69,11 @@ main()
     renderer.DrawModelTransformed(modelID, Inputs::transform2);
     renderer.DrawModelTransformed(modelID, Inputs::transform3);
 
-    renderer.DrawTriangle({ -1.0f, -1.0f, 0.0f },
-                          { 1.0f, 0.0f, 0.0f },
-                          { -1.0f, -0.5f, 0.0f },
-                          { 0.0f, 1.0f, 0.0f },
-                          { -0.5f, -0.5f, 0.0f },
-                          { 0.0f, 0.0f, 1.0f });
+    // clang-format off
+    renderer.DrawTriangles({ -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                            -1.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+                            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f });
+    // clang-format on
 
     Chimia::Draw3D::Flush();
 

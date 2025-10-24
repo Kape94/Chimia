@@ -20,5 +20,8 @@ target_link_libraries(Samples_Draw3D_ex5 PRIVATE Samples_Draw3D_Dependencies)
 add_executable(Samples_Draw3D_ex6 ex6-vertexColoredRendererModel.cpp)
 target_link_libraries(Samples_Draw3D_ex6 PRIVATE Samples_Draw3D_Dependencies)
 
-add_executable(Samples_Draw3D_ex7 ex7-vertexColoredRendererVertexData.cpp)
+add_executable(Samples_Draw3D_ex7 ex7-vertexColoredRendererIndexedTriangles.cpp)
 target_link_libraries(Samples_Draw3D_ex7 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex8 ex8-vertexColoredRendererStaticTriangles.cpp)
+target_link_libraries(Samples_Draw3D_ex8 PRIVATE Samples_Draw3D_Dependencies)

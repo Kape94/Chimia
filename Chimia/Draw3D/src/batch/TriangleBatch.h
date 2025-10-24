@@ -26,12 +26,15 @@ public:
               const std::function<void(void)>& onFlush);
 
   void Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas);
+  void Draw(const Bits::RawArrayView& vertexDataArray);
 
   void Flush();
 
 private:
   size_t CalculateVertexDataSize(
     const Rendering::ShaderAttributes& vertexAttributes);
+
+  void HandleFlushByDemand();
 
   std::function<void(void)> m_onFlush;
 

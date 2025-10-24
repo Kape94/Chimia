@@ -7,6 +7,7 @@
 #include "IndexedTriangleBatch.h"
 #include "ModelBatch.h"
 #include "Renderers.h"
+#include "StaticTriangles.h"
 #include "TriangleBatch.h"
 
 #include <glm/mat4x4.hpp>
@@ -31,6 +32,12 @@ public:
                     const glm::vec3& color2,
                     const glm::vec3& p3,
                     const glm::vec3& color3) override;
+
+  void DrawTriangles(const std::vector<float>& vertexData) override;
+
+  unsigned AddStaticTriangles(const std::vector<float>& vertexData) override;
+
+  void DeleteStaticTriangles(unsigned id) override;
 
   unsigned CreateModel(const std::vector<float>& vertexData,
                        const std::vector<unsigned>& indices) override;
@@ -58,6 +65,8 @@ private:
   TriangleBatch m_triangleBatch;
   IndexedTriangleBatch m_indexedTriangleBatch;
   IdentifiedObjectTable<ModelBatch> m_transformedModelsTable;
+
+  IdentifiedObjectTable<StaticTriangles> m_staticTriangles;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

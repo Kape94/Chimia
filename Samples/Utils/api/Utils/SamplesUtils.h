@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 
 namespace SamplesUtils {
@@ -20,4 +21,7 @@ void
 BeginFrameStats();
 void
 LogFrameStats();
+
+void
+DoAfter(const std::function<void(void)>& action, const unsigned milliseconds);
 }
