@@ -1,7 +1,7 @@
 # Chimia lib
 
 TODO: update readme
-TODO: Add vertex buffer reuse support for Rendering module
+TODO: Buffers implementation code on Rendering module is quite messy.
 
 This is a C++ project created by CppM.
 ## Build Instructions

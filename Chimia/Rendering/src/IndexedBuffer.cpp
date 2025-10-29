@@ -67,11 +67,13 @@ IndexedBuffer::~IndexedBuffer()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer)
+IndexedBuffer::Create(
+  const ReusableIndexedVertexBufferObject& reusableVertexBuffer)
 {
   Clear();
 
-  m_baseBuffer.Create(reusableVertexBuffer);
+  m_baseBuffer.Create(BufferPrivate::GetBaseVertexBuffer(reusableVertexBuffer));
+  BufferPrivate::Bind(reusableVertexBuffer);
 
   m_nElements = BufferPrivate::GetNElements(reusableVertexBuffer);
 }

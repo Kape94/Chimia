@@ -1,7 +1,7 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/InstancedBuffer.h"
-#include "Rendering/ReusableVertexBufferObject.h"
+#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -112,7 +112,7 @@ main()
   Chimia::Rendering::Shader shader2(Inputs::ShaderCodes::vShaderTransformed,
                                     Inputs::ShaderCodes::fShaderTransformed);
 
-  Chimia::Rendering::ReusableVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
   reusableVertexBuffer.Create(
     Inputs::BufferData::vertex.data(),
     (unsigned)Inputs::BufferData::vertex.size() * sizeof(float),

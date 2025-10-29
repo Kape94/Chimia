@@ -1,7 +1,7 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedBuffer.h"
-#include "Rendering/ReusableVertexBufferObject.h"
+#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderAttribute.h"
@@ -67,7 +67,7 @@ main()
     Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/)
   };
 
-  Chimia::Rendering::ReusableVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
   reusableVertexBuffer.Create(Inputs::BufferData::vertex,
                               Inputs::BufferData::vertexDataSize,
                               Inputs::BufferData::indexData,

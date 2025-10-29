@@ -3,6 +3,7 @@
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedBuffer.h"
+#include "ReusableIndexedVertexBufferObject.h"
 #include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
 
@@ -32,6 +33,13 @@ public:
                        const unsigned instancedDataSize,
                        const unsigned nInstances,
                        const ShaderAttributes& instanceShaderAttributes);
+
+  void CreateInstanced(
+    const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+    const void* instancedData,
+    const unsigned instancedDataSize,
+    const unsigned nInstances,
+    const ShaderAttributes& instanceShaderAttributes);
 
   void CreateInstanced(const void* vertexData,
                        const unsigned vertexDataSize,

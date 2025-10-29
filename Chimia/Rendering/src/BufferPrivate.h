@@ -3,6 +3,7 @@
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedBuffer.h"
+#include "ReusableIndexedVertexBufferObject.h"
 #include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
 
@@ -31,6 +32,15 @@ public:
     const ReusableVertexBufferObject& reusableVertexBuffer);
   static const ShaderAttributes& GetShaderAttributes(
     const ReusableVertexBufferObject& reusableVertexBuffer);
+
+  // ReusableIndexedVertexBufferObject
+  static void Bind(const ReusableIndexedVertexBufferObject& reusableBuffer);
+  static unsigned GetNElements(
+    const ReusableIndexedVertexBufferObject& reusableBuffer);
+  static const ShaderAttributes& GetShaderAttributes(
+    const ReusableIndexedVertexBufferObject& reusableBuffer);
+  static const ReusableVertexBufferObject& GetBaseVertexBuffer(
+    const ReusableIndexedVertexBufferObject& reusableBuffer);
 };
 
 // --------------------------------------------------------------------------------------
