@@ -5,7 +5,6 @@
 #include "IndexedBuffer.h"
 #include "ReusableIndexedVertexBufferObject.h"
 #include "ReusableVertexBufferObject.h"
-#include "ShaderAttribute.h"
 
 // --------------------------------------------------------------------------------------
 
