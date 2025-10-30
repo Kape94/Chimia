@@ -29,6 +29,7 @@ public:
   ~InstancedBuffer();
 
   void CreateInstanced(const ReusableVertexBufferObject& reusableVertexBuffer,
+                       const ShaderAttributes& shaderAttributes,
                        const void* instancedData,
                        const unsigned instancedDataSize,
                        const unsigned nInstances,
@@ -36,6 +37,7 @@ public:
 
   void CreateInstanced(
     const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+    const ShaderAttributes& shaderAttributes,
     const void* instancedData,
     const unsigned instancedDataSize,
     const unsigned nInstances,

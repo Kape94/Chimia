@@ -4,6 +4,7 @@
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/ShaderAttribute.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -113,16 +114,20 @@ main()
                                     Inputs::ShaderCodes::fShaderTransformed);
 
   Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(
-    Inputs::BufferData::vertex.data(),
-    (unsigned)Inputs::BufferData::vertex.size() * sizeof(float),
-    Inputs::BufferData::index.data(),
-    (unsigned)Inputs::BufferData::index.size(),
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) });
+  reusableVertexBuffer.Create(Inputs::BufferData::vertex.data(),
+                              (unsigned)Inputs::BufferData::vertex.size() *
+                                sizeof(float),
+                              (unsigned)Inputs::BufferData::vertex.size(),
+                              Inputs::BufferData::index.data(),
+                              (unsigned)Inputs::BufferData::index.size());
 
+  const Chimia::Rendering::ShaderAttributes vertexAttributes{
+    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
+                                                3 /*nEntries*/) }
+  };
   Chimia::Rendering::InstancedBuffer buffer1;
   buffer1.CreateInstanced(reusableVertexBuffer,
+                          vertexAttributes,
                           Inputs::InstanceData::positions.data(),
                           Inputs::InstanceData::dataSize,
                           Inputs::InstanceData::positions.size(),
@@ -132,6 +137,7 @@ main()
   Chimia::Rendering::InstancedBuffer buffer2;
   buffer2.CreateInstanced(
     reusableVertexBuffer,
+    vertexAttributes,
     Inputs::InstanceData::transforms.data(),
     Inputs::InstanceData::transformsDataSize,
     Inputs::InstanceData::transforms.size(),

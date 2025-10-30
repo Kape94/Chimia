@@ -47,14 +47,13 @@ ReusableIndexedVertexBufferObject::~ReusableIndexedVertexBufferObject()
 // ----------------------------------------------------------------------------
 
 void
-ReusableIndexedVertexBufferObject::Create(
-  const void* vertexData,
-  const unsigned vertexDataSize,
-  const unsigned* indexData,
-  const unsigned nIndexDataItems,
-  const ShaderAttributes& shaderAttributes)
+ReusableIndexedVertexBufferObject::Create(const void* vertexData,
+                                          const unsigned vertexDataSize,
+                                          const unsigned nVertices,
+                                          const unsigned* indexData,
+                                          const unsigned nIndexDataItems)
 {
-  m_vertexBufferObject.Create(vertexData, vertexDataSize, shaderAttributes);
+  m_vertexBufferObject.Create(vertexData, vertexDataSize, nVertices);
 
   const unsigned indexDataSize = nIndexDataItems * sizeof(unsigned);
   m_EBO = BufferUtils::CreateBufferAndLoadData(
@@ -91,14 +90,6 @@ unsigned
 ReusableIndexedVertexBufferObject::GetNIndices() const
 {
   return m_nIndices;
-}
-
-// ----------------------------------------------------------------------------
-
-const ShaderAttributes&
-ReusableIndexedVertexBufferObject::GetShaderAttributes() const
-{
-  return BufferPrivate::GetShaderAttributes(m_vertexBufferObject);
 }
 
 // ----------------------------------------------------------------------------

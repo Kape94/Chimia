@@ -30,14 +30,10 @@ public:
     const ReusableVertexBufferObject& reusableVertexBuffer);
   static unsigned GetNElements(
     const ReusableVertexBufferObject& reusableVertexBuffer);
-  static const ShaderAttributes& GetShaderAttributes(
-    const ReusableVertexBufferObject& reusableVertexBuffer);
 
   // ReusableIndexedVertexBufferObject
   static void Bind(const ReusableIndexedVertexBufferObject& reusableBuffer);
   static unsigned GetNElements(
-    const ReusableIndexedVertexBufferObject& reusableBuffer);
-  static const ShaderAttributes& GetShaderAttributes(
     const ReusableIndexedVertexBufferObject& reusableBuffer);
   static const ReusableVertexBufferObject& GetBaseVertexBuffer(
     const ReusableIndexedVertexBufferObject& reusableBuffer);

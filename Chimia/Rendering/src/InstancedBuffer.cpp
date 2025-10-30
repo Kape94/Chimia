@@ -4,6 +4,7 @@
 #include "BufferUtils.h"
 #include "IndexedBuffer.h"
 #include "OpenGLDefs.h"
+#include "ShaderAttribute.h"
 #include <variant>
 
 //---------------------------------------------------------------------------------------
@@ -50,6 +51,7 @@ InstancedBuffer::~InstancedBuffer()
 void
 InstancedBuffer::CreateInstanced(
   const ReusableVertexBufferObject& reusableVertexBuffer,
+  const ShaderAttributes& vertexShaderAttributes,
   const void* instancedData,
   const unsigned instancedDataSize,
   const unsigned nInstances,
@@ -58,7 +60,7 @@ InstancedBuffer::CreateInstanced(
   m_baseBuffer = Buffer();
   Buffer& base = std::get<Buffer>(m_baseBuffer);
 
-  base.Create(reusableVertexBuffer);
+  base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
   LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
@@ -71,6 +73,7 @@ InstancedBuffer::CreateInstanced(
 void
 InstancedBuffer::CreateInstanced(
   const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+  const ShaderAttributes& vertexShaderAttributes,
   const void* instancedData,
   const unsigned instancedDataSize,
   const unsigned nInstances,
@@ -79,7 +82,7 @@ InstancedBuffer::CreateInstanced(
   m_baseBuffer = IndexedBuffer();
   IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
 
-  base.Create(reusableVertexBuffer);
+  base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
   LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);

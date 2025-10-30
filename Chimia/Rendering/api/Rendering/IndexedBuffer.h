@@ -38,7 +38,8 @@ public:
 
   ~IndexedBuffer();
 
-  void Create(const ReusableIndexedVertexBufferObject& reusableVertexBuffer);
+  void Create(const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+              const ShaderAttributes& shaderAttributes);
 
   void Create(const std::vector<float>& vertexData,
               const std::vector<unsigned>& indexData,

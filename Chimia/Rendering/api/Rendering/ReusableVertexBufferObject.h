@@ -27,21 +27,19 @@ public:
 
   void Create(const void* vertexData,
               const unsigned vertexDataSize,
-              const ShaderAttributes& shaderAttributes);
+              const unsigned nVertices);
 
   void Clear();
 
 private:
   void Bind() const;
   unsigned GetNVertices() const;
-  const ShaderAttributes& GetShaderAttributes() const;
 
   friend class BufferPrivate;
 
   unsigned m_VBO = 0;
   unsigned m_sizePerVertex = 0;
   unsigned m_nVertices = 0;
-  ShaderAttributes m_shaderAttributes;
 };
 
 // ----------------------------------------------------------------------------

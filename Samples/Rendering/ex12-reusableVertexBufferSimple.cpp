@@ -43,8 +43,8 @@ namespace BufferData {
 
 const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
-
-const unsigned vertexDataSize = 18 * sizeof(float);
+const unsigned vertexDataItems = 18;
+const unsigned vertexDataSize = vertexDataItems * sizeof(float);
 
 const unsigned indexData[] = { 0, 1, 2 };
 
@@ -62,20 +62,18 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  const Chimia::Rendering::ShaderAttributes vertexAttributes{
-    Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-    Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/)
-  };
-
   Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
   reusableVertexBuffer.Create(Inputs::BufferData::vertex,
                               Inputs::BufferData::vertexDataSize,
+                              Inputs::BufferData::vertexDataItems,
                               Inputs::BufferData::indexData,
-                              Inputs::BufferData::indexDataSize,
-                              vertexAttributes);
+                              Inputs::BufferData::indexDataSize);
 
   Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(reusableVertexBuffer);
+  buffer.Create(
+    reusableVertexBuffer,
+    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
+      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   while (!win.ShouldClose()) {
     shader.Use();

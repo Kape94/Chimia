@@ -55,15 +55,6 @@ BufferPrivate::GetNVertices(
 
 // --------------------------------------------------------------------------------------
 
-const ShaderAttributes&
-BufferPrivate::GetShaderAttributes(
-  const ReusableVertexBufferObject& reusableVertexBuffer)
-{
-  return reusableVertexBuffer.GetShaderAttributes();
-}
-
-// --------------------------------------------------------------------------------------
-
 void
 BufferPrivate::Bind(const ReusableIndexedVertexBufferObject& reusableBuffer)
 {
@@ -77,15 +68,6 @@ BufferPrivate::GetNElements(
   const ReusableIndexedVertexBufferObject& reusableBuffer)
 {
   return reusableBuffer.GetNIndices();
-}
-
-// --------------------------------------------------------------------------------------
-
-const ShaderAttributes&
-BufferPrivate::GetShaderAttributes(
-  const ReusableIndexedVertexBufferObject& reusableBuffer)
-{
-  return reusableBuffer.GetShaderAttributes();
 }
 
 // --------------------------------------------------------------------------------------

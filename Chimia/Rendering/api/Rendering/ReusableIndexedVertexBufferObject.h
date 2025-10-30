@@ -29,9 +29,9 @@ public:
 
   void Create(const void* vertexData,
               const unsigned vertexDataSize,
+              const unsigned nVertices,
               const unsigned* indexData,
-              const unsigned nIndexDataItems,
-              const ShaderAttributes& shaderAttributes);
+              const unsigned nIndexDataItems);
 
 private:
   void Clear();
@@ -39,7 +39,6 @@ private:
   void Bind() const;
   unsigned GetNVertices() const;
   unsigned GetNIndices() const;
-  const ShaderAttributes& GetShaderAttributes() const;
   const ReusableVertexBufferObject& GetBaseBuffer() const;
 
   friend class BufferPrivate;

@@ -68,7 +68,8 @@ Buffer::~Buffer()
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer)
+Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
+               const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
@@ -76,10 +77,7 @@ Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer)
   glBindVertexArray(m_VAO);
 
   BufferPrivate::Bind(reusableVertexBuffer);
-
-  const ShaderAttributes& attributes =
-    BufferPrivate::GetShaderAttributes(reusableVertexBuffer);
-  BufferUtils::LinkShaderAttributes(attributes);
+  BufferUtils::LinkShaderAttributes(shaderAttributes);
 
   m_nVertices = BufferPrivate::GetNVertices(reusableVertexBuffer);
 

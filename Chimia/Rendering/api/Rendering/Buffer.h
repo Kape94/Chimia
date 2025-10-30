@@ -34,7 +34,8 @@ public:
 
   ~Buffer();
 
-  void Create(const ReusableVertexBufferObject& reusableVertexBuffer);
+  void Create(const ReusableVertexBufferObject& reusableVertexBuffer,
+              const ShaderAttributes& shaderAttributes);
 
   void Create(const std::vector<float>& vertexData,
               const ShaderAttributes& shaderAttributes);
