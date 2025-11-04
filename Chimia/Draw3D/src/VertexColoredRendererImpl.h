@@ -3,12 +3,15 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
-#include "IdentifiedObjectTable.h"
 #include "IndexedTriangleBatch.h"
+#include "Model.h"
 #include "ModelBatch.h"
+#include "ObjectTable.h"
 #include "Renderers.h"
+#include "StaticModel.h"
 #include "StaticTriangles.h"
 #include "TriangleBatch.h"
+#include "Types.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -39,11 +42,16 @@ public:
 
   void DeleteStaticTriangles(unsigned id) override;
 
-  unsigned CreateModel(const std::vector<float>& vertexData,
-                       const std::vector<unsigned>& indices) override;
+  ModelID CreateModel(const std::vector<float>& vertexData,
+                      const std::vector<unsigned>& indices) override;
 
-  void DrawModelTransformed(unsigned modelID,
+  void DrawModelTransformed(const ModelID& modelID,
                             const glm::mat4x4& transform) override;
+
+  ModelInstanceID AddStaticModel(const ModelID& modelID,
+                                 const glm::mat4x4& transform) override;
+
+  void DeleteStaticModel(const ModelInstanceID& instanceID) override;
 
   void DrawIndexedTriangles(const std::vector<float>& vertexData,
                             const std::vector<unsigned>& indexData) override;
@@ -64,9 +72,15 @@ private:
 
   TriangleBatch m_triangleBatch;
   IndexedTriangleBatch m_indexedTriangleBatch;
-  IdentifiedObjectTable<ModelBatch> m_transformedModelsTable;
 
-  IdentifiedObjectTable<StaticTriangles> m_staticTriangles;
+  // IdentifiedObjectTable<Model> m_modelsTable;
+  // std::map<unsigned, ModelBatch> m_transformedModelsTable;
+  ObjectTable<Model> m_modelsTable;
+  ObjectTable<ModelBatch> m_transformedModelsTable;
+  ObjectTable<StaticModel> m_staticModelsTable;
+
+  // IdentifiedObjectTable<StaticTriangles> m_staticTriangles;
+  ObjectTable<StaticTriangles> m_staticTriangles;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

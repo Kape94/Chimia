@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
+#include "Types.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -33,11 +34,16 @@ public:
 
   virtual void DeleteStaticTriangles(unsigned id) = 0;
 
-  virtual unsigned CreateModel(const std::vector<float>& vertexData,
-                               const std::vector<unsigned>& indices) = 0;
+  virtual ModelID CreateModel(const std::vector<float>& vertexData,
+                              const std::vector<unsigned>& indices) = 0;
 
-  virtual void DrawModelTransformed(unsigned modelID,
+  virtual void DrawModelTransformed(const ModelID& modelID,
                                     const glm::mat4x4& transform) = 0;
+
+  virtual ModelInstanceID AddStaticModel(const ModelID& modelID,
+                                         const glm::mat4x4& transform) = 0;
+
+  virtual void DeleteStaticModel(const ModelInstanceID& instanceID) = 0;
 
   virtual void DrawIndexedTriangles(const std::vector<float>& vertexData,
                                     const std::vector<unsigned>& indexData) = 0;

@@ -1,5 +1,6 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Renderers.h"
+#include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
@@ -58,7 +59,7 @@ main()
 
   auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
 
-  const unsigned modelID =
+  const Chimia::Draw3D::ModelID modelID =
     renderer.CreateModel(Inputs::vertexData, Inputs::indices);
 
   while (!w.ShouldClose()) {

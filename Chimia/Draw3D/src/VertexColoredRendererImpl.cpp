@@ -1,13 +1,18 @@
 #include "VertexColoredRendererImpl.h"
 
+#include "BufferData.h"
 #include "CameraPrivate.h"
 #include "Config.h"
+#include "Diagnostics/Diagnostics.h"
+#include "Draw3DPrivate.h"
 #include "ModelBatch.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
+#include "StaticModel.h"
 #include "StaticTriangles.h"
+#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
@@ -93,12 +98,10 @@ unsigned
 VertexColoredRendererImpl::AddStaticTriangles(
   const std::vector<float>& vertexData)
 {
-  auto newEntry = m_staticTriangles.Insert();
-  StaticTriangles& triangles = *newEntry.second;
+  auto [id, triangles] = m_staticTriangles.Insert();
+  triangles->Create(vertexData, VERTEX_ATTRIBUTES);
 
-  triangles.Create(vertexData, VERTEX_ATTRIBUTES);
-
-  return newEntry.first;
+  return id;
 }
 
 // ----------------------------------------------------------------------------
@@ -111,36 +114,96 @@ VertexColoredRendererImpl::DeleteStaticTriangles(unsigned id)
 
 // ----------------------------------------------------------------------------
 
-unsigned
+ModelID
 VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
                                        const std::vector<unsigned>& indices)
 {
-  std::pair<unsigned, ModelBatch*> inserted = m_transformedModelsTable.Insert();
-  const unsigned modelID = inserted.first;
+  auto [modelID, model] = m_modelsTable.Insert();
+  model->Create(BufferData(vertexData, indices));
+
+  ModelBatch* batch = m_transformedModelsTable.Insert(modelID);
+  if (batch == nullptr) {
+    Chimia::Diagnostics::Error(
+      1,
+      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
+      "create transformed model entry for new model created");
+  }
+
+  auto configureShaderFn = [&]() {
+    ConfigureShaderForTransformedModelDrawing();
+  };
 
   const size_t instanceBathSize = Config::VertexColored::modelsBatchSize;
-  ModelBatch& model = *inserted.second;
-  model.Create({ vertexData, indices },
-               instanceBathSize,
-               VERTEX_ATTRIBUTES,
-               TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-               [&]() { ConfigureShaderForTransformedModelDrawing(); });
+  batch->Create(*model,
+                instanceBathSize,
+                VERTEX_ATTRIBUTES,
+                TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                configureShaderFn);
 
-  return modelID;
+  StaticModel* staticModel = m_staticModelsTable.Insert(modelID);
+  if (staticModel == nullptr) {
+    Chimia::Diagnostics::Error(
+      1,
+      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
+      "create static model entry for new model created");
+  }
+
+  staticModel->Create(*model,
+                      instanceBathSize,
+                      VERTEX_ATTRIBUTES,
+                      TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                      configureShaderFn);
+
+  return Draw3DPrivate::CreateModelID(modelID);
 }
 
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DrawModelTransformed(unsigned modelID,
+VertexColoredRendererImpl::DrawModelTransformed(const ModelID& modelID,
                                                 const glm::mat4x4& transform)
 {
-  ModelBatch* model = m_transformedModelsTable.Find(modelID);
+  const unsigned id = Draw3DPrivate::GetModelID(modelID);
+  ModelBatch* batch = m_transformedModelsTable.Find(id);
+  if (batch == nullptr) {
+    return;
+  }
+
+  batch->Draw({ &transform, sizeof(glm::mat4x4) });
+}
+
+// ----------------------------------------------------------------------------
+
+ModelInstanceID
+VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
+                                          const glm::mat4x4& transform)
+{
+  const unsigned id = Draw3DPrivate::GetModelID(modelID);
+  StaticModel* model = m_staticModelsTable.Find(id);
+  if (model == nullptr) {
+    return Draw3DPrivate::CreateModelInstanceID(0, 0);
+  }
+
+  const unsigned instanceID =
+    model->AddInstance({ &transform, sizeof(glm::mat4x4) });
+
+  return Draw3DPrivate::CreateModelInstanceID(id, instanceID);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
+{
+  const auto [modelIDValue, instanceIDValue] =
+    Draw3DPrivate::GetModelInstanceIDs(instanceID);
+
+  StaticModel* model = m_staticModelsTable.Find(modelIDValue);
   if (model == nullptr) {
     return;
   }
 
-  model->Draw({ &transform, sizeof(glm::mat4x4) });
+  model->DeleteInstance(instanceIDValue);
 }
 
 // ----------------------------------------------------------------------------
@@ -163,6 +226,7 @@ VertexColoredRendererImpl::Flush()
   m_indexedTriangleBatch.Flush();
 
   m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
+  m_staticModelsTable.ForEach([](StaticModel& model) { model.Render(); });
 
   ConfigureShaderForTriangleDrawing();
   m_staticTriangles.ForEach(

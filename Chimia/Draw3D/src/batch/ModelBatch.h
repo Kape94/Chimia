@@ -2,10 +2,12 @@
 
 #include "BufferData.h"
 #include "Draw3DNamespaceDefs.h"
+#include "Model.h"
 
 #include "Bits/Buffer/RawBuffer.h"
 #include "Bits/Buffer/RawDataView.h"
 #include "Rendering/InstancedBuffer.h"
+#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
 
 #include <functional>
@@ -16,13 +18,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class ModelBatch
 {
 public:
-  void Create(const BufferData& bufferData,
-              const size_t instanceBatchSize,
-              const Rendering::ShaderAttributes& vertexAttributes,
-              const Rendering::ShaderAttributes& instanceAttributes,
-              const std::function<void(void)>& onFlush);
-
-  void Create(const std::vector<BufferData>& bufferDatas,
+  void Create(const Model& model,
               const size_t instanceBatchSize,
               const Rendering::ShaderAttributes& vertexAttributes,
               const Rendering::ShaderAttributes& instanceAttributes,
@@ -34,10 +30,11 @@ public:
   void Flush();
 
 private:
-  void AddGPUBuffer(const BufferData& bufferData,
-                    const size_t instanceBatchSize,
-                    const Rendering::ShaderAttributes& vertexAttributes,
-                    const Rendering::ShaderAttributes& instanceAttributes);
+  void AddGPUBuffer(
+    const Rendering::ReusableIndexedVertexBufferObject& bufferData,
+    const size_t instanceBatchSize,
+    const Rendering::ShaderAttributes& vertexAttributes,
+    const Rendering::ShaderAttributes& instanceAttributes);
 
   size_t CalculateInstancedDataSize(
     const Rendering::ShaderAttributes& instancedDataAttributes);

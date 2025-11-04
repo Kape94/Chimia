@@ -1,5 +1,6 @@
 #include "ModelBatch.h"
 #include "Rendering/InstancedBuffer.h"
+#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
 #include <numeric>
 
@@ -10,7 +11,7 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Create(const BufferData& bufferData,
+ModelBatch::Create(const Model& model,
                    const size_t instanceBatchSize,
                    const Rendering::ShaderAttributes& vertexAttributes,
                    const Rendering::ShaderAttributes& instanceAttributes,
@@ -19,28 +20,13 @@ ModelBatch::Create(const BufferData& bufferData,
   m_onFlush = onFlush;
   m_instancedDataSize = CalculateInstancedDataSize(instanceAttributes);
 
-  AddGPUBuffer(
-    bufferData, instanceBatchSize, vertexAttributes, instanceAttributes);
-
-  m_instancedInputBuffer.Resize(instanceBatchSize * m_instancedDataSize);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-ModelBatch::Create(const std::vector<BufferData>& bufferDatas,
-                   const size_t instanceBatchSize,
-                   const Rendering::ShaderAttributes& vertexAttributes,
-                   const Rendering::ShaderAttributes& instanceAttributes,
-                   const std::function<void(void)>& onFlush)
-{
-  m_onFlush = onFlush;
-  m_instancedDataSize = CalculateInstancedDataSize(instanceAttributes);
-
-  for (auto& bufferData : bufferDatas) {
-    AddGPUBuffer(
-      bufferData, instanceBatchSize, vertexAttributes, instanceAttributes);
-  }
+  model.ForEachBuffer(
+    [&](const Rendering::ReusableIndexedVertexBufferObject& reusableBuffer) {
+      AddGPUBuffer(reusableBuffer,
+                   instanceBatchSize,
+                   vertexAttributes,
+                   instanceAttributes);
+    });
 
   m_instancedInputBuffer.Resize(instanceBatchSize * m_instancedDataSize);
 }
@@ -63,16 +49,14 @@ ModelBatch::CalculateInstancedDataSize(
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::AddGPUBuffer(const BufferData& bufferData,
-                         const size_t instanceBatchSize,
-                         const Rendering::ShaderAttributes& vertexAttributes,
-                         const Rendering::ShaderAttributes& instanceAttributes)
+ModelBatch::AddGPUBuffer(
+  const Rendering::ReusableIndexedVertexBufferObject& bufferData,
+  const size_t instanceBatchSize,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instanceAttributes)
 {
   Rendering::InstancedBuffer& inserted = m_gpuBuffers.emplace_back();
-  inserted.CreateInstanced(bufferData.VertexData().data(),
-                           bufferData.VertexData().size() * sizeof(float),
-                           bufferData.Indices().data(),
-                           bufferData.Indices().size(),
+  inserted.CreateInstanced(bufferData,
                            vertexAttributes,
                            nullptr,
                            m_instancedDataSize,

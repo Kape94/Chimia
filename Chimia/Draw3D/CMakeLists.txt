@@ -4,8 +4,10 @@ SET(TARGET_NAME Chimia_Draw3D)
 add_library(${TARGET_NAME}
     src/Camera.cpp
     src/Draw3D.cpp
+    src/Draw3DPrivate.cpp
     src/Illumination.cpp
     src/LitTriangle.cpp
+    src/Model.cpp
     src/Renderers.cpp
     src/Shaders.cpp
     src/Triangle.cpp
@@ -13,6 +15,7 @@ add_library(${TARGET_NAME}
 
     src/batch/ModelBatch.cpp
     src/batch/IndexedTriangleBatch.cpp
+    src/batch/StaticModel.cpp
     src/batch/StaticTriangles.cpp
     src/batch/TriangleBatch.cpp
 )
@@ -22,6 +25,7 @@ target_link_libraries(${TARGET_NAME}
         glm::glm
     PRIVATE
         Bits
+        Chimia_Diagnostics
         Rendering
 )
 
