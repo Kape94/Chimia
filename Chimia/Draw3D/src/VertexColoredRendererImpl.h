@@ -4,11 +4,8 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "IndexedTriangleBatch.h"
-#include "Model.h"
-#include "ModelBatch.h"
-#include "ObjectTable.h"
+#include "ModelRenderingComponent.h"
 #include "Renderers.h"
-#include "StaticModel.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -73,9 +70,7 @@ private:
   TriangleMeshComponent m_triangleMeshComponent;
   IndexedTriangleBatch m_indexedTriangleBatch;
 
-  ObjectTable<Model> m_modelsTable;
-  ObjectTable<ModelBatch> m_transformedModelsTable;
-  ObjectTable<StaticModel> m_staticModelsTable;
+  ModelRenderingComponent m_modelComponent;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

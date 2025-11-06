@@ -1,16 +1,11 @@
 #include "VertexColoredRendererImpl.h"
 
-#include "BufferData.h"
 #include "CameraPrivate.h"
 #include "Config.h"
-#include "Diagnostics/Diagnostics.h"
-#include "Draw3DPrivate.h"
-#include "ModelBatch.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
-#include "StaticModel.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -114,43 +109,13 @@ ModelID
 VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
                                        const std::vector<unsigned>& indices)
 {
-  auto [modelID, model] = m_modelsTable.Insert();
-  model->Create(BufferData(vertexData, indices));
-
-  ModelBatch* batch = m_transformedModelsTable.Insert(modelID);
-  if (batch == nullptr) {
-    Chimia::Diagnostics::Error(
-      1,
-      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
-      "create transformed model entry for new model created");
-  }
-
-  auto configureShaderFn = [&]() {
-    ConfigureShaderForTransformedModelDrawing();
-  };
-
-  const size_t instanceBathSize = Config::VertexColored::modelsBatchSize;
-  batch->Create(*model,
-                instanceBathSize,
-                VERTEX_ATTRIBUTES,
-                TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-                configureShaderFn);
-
-  StaticModel* staticModel = m_staticModelsTable.Insert(modelID);
-  if (staticModel == nullptr) {
-    Chimia::Diagnostics::Error(
-      1,
-      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
-      "create static model entry for new model created");
-  }
-
-  staticModel->Create(*model,
-                      instanceBathSize,
-                      VERTEX_ATTRIBUTES,
-                      TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-                      configureShaderFn);
-
-  return Draw3DPrivate::CreateModelID(modelID);
+  return m_modelComponent.CreateModel(
+    vertexData,
+    indices,
+    Config::VertexColored::modelsBatchSize,
+    VERTEX_ATTRIBUTES,
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+    [&]() { ConfigureShaderForTransformedModelDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -159,13 +124,7 @@ void
 VertexColoredRendererImpl::DrawModelTransformed(const ModelID& modelID,
                                                 const glm::mat4x4& transform)
 {
-  const unsigned id = Draw3DPrivate::GetModelID(modelID);
-  ModelBatch* batch = m_transformedModelsTable.Find(id);
-  if (batch == nullptr) {
-    return;
-  }
-
-  batch->Draw({ &transform, sizeof(glm::mat4x4) });
+  m_modelComponent.DrawModel(modelID, { &transform, sizeof(glm::mat4x4) });
 }
 
 // ----------------------------------------------------------------------------
@@ -174,16 +133,8 @@ ModelInstanceID
 VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
                                           const glm::mat4x4& transform)
 {
-  const unsigned id = Draw3DPrivate::GetModelID(modelID);
-  StaticModel* model = m_staticModelsTable.Find(id);
-  if (model == nullptr) {
-    return Draw3DPrivate::CreateModelInstanceID(0, 0);
-  }
-
-  const unsigned instanceID =
-    model->AddInstance({ &transform, sizeof(glm::mat4x4) });
-
-  return Draw3DPrivate::CreateModelInstanceID(id, instanceID);
+  return m_modelComponent.AddStaticModel(modelID,
+                                         { &transform, sizeof(glm::mat4x4) });
 }
 
 // ----------------------------------------------------------------------------
@@ -191,15 +142,7 @@ VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  const auto [modelIDValue, instanceIDValue] =
-    Draw3DPrivate::GetModelInstanceIDs(instanceID);
-
-  StaticModel* model = m_staticModelsTable.Find(modelIDValue);
-  if (model == nullptr) {
-    return;
-  }
-
-  model->DeleteInstance(instanceIDValue);
+  m_modelComponent.DeleteStaticModel(instanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -221,8 +164,7 @@ VertexColoredRendererImpl::Flush()
   m_triangleMeshComponent.Flush();
   m_indexedTriangleBatch.Flush();
 
-  m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
-  m_staticModelsTable.ForEach([](StaticModel& model) { model.Render(); });
+  m_modelComponent.Flush();
 }
 
 // ----------------------------------------------------------------------------

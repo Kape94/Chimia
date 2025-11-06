@@ -8,6 +8,7 @@ add_library(${TARGET_NAME}
     src/Illumination.cpp
     src/LitTriangle.cpp
     src/Model.cpp
+    src/ModelRenderingComponent.cpp
     src/Renderers.cpp
     src/Shaders.cpp
     src/Triangle.cpp
