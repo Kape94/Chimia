@@ -38,3 +38,19 @@ Draw3DPrivate::GetModelInstanceIDs(const ModelInstanceID& instanceID)
 }
 
 // ----------------------------------------------------------------------------
+
+TriangleMeshID
+Draw3DPrivate::CreateTriangleMeshID(unsigned id)
+{
+  return TriangleMeshID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+Draw3DPrivate::GetTriangleMeshIDValue(const TriangleMeshID& meshID)
+{
+  return meshID.m_id;
+}
+
+// ----------------------------------------------------------------------------

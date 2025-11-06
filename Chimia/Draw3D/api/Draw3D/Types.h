@@ -44,6 +44,22 @@ private:
 
 // ----------------------------------------------------------------------------
 
+class TriangleMeshID
+{
+private:
+  friend class Draw3DPrivate;
+
+  TriangleMeshID() = delete;
+  TriangleMeshID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------

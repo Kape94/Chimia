@@ -11,7 +11,6 @@
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
 #include "StaticModel.h"
-#include "StaticTriangles.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -51,9 +50,9 @@ VertexColoredRendererImpl::getInstance()
 void
 VertexColoredRendererImpl::Init()
 {
-  m_triangleBatch.Create(Config::VertexColored::triangleBatchSize,
-                         VERTEX_ATTRIBUTES,
-                         [&]() { ConfigureShaderForTriangleDrawing(); });
+  m_triangleMeshComponent.Init(Config::VertexColored::triangleBatchSize,
+                               VERTEX_ATTRIBUTES,
+                               [&]() { ConfigureShaderForTriangleDrawing(); });
 
   m_indexedTriangleBatch.Create(
     Config::VertexColored::indexedTrianglesVertexBatchSize,
@@ -74,7 +73,7 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
 {
   constexpr size_t VEC3_SIZE = sizeof(glm::vec3);
 
-  m_triangleBatch.Draw({
+  m_triangleMeshComponent.DrawTriangle({
     { &p1, VEC3_SIZE },
     { &color1, VEC3_SIZE },
     { &p2, VEC3_SIZE },
@@ -89,27 +88,24 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
 void
 VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData)
 {
-  m_triangleBatch.Draw({ vertexData.data(), vertexData.size(), sizeof(float) });
+  m_triangleMeshComponent.DrawTriangles(vertexData);
 }
 
 // ----------------------------------------------------------------------------
 
-unsigned
+TriangleMeshID
 VertexColoredRendererImpl::AddStaticTriangles(
   const std::vector<float>& vertexData)
 {
-  auto [id, triangles] = m_staticTriangles.Insert();
-  triangles->Create(vertexData, VERTEX_ATTRIBUTES);
-
-  return id;
+  return m_triangleMeshComponent.AddStaticMesh(vertexData);
 }
 
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DeleteStaticTriangles(unsigned id)
+VertexColoredRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  m_staticTriangles.Delete(id);
+  m_triangleMeshComponent.DeleteStaticMesh(meshID);
 }
 
 // ----------------------------------------------------------------------------
@@ -222,15 +218,11 @@ VertexColoredRendererImpl::DrawIndexedTriangles(
 void
 VertexColoredRendererImpl::Flush()
 {
-  m_triangleBatch.Flush();
+  m_triangleMeshComponent.Flush();
   m_indexedTriangleBatch.Flush();
 
   m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
   m_staticModelsTable.ForEach([](StaticModel& model) { model.Render(); });
-
-  ConfigureShaderForTriangleDrawing();
-  m_staticTriangles.ForEach(
-    [](const StaticTriangles& triangles) { triangles.Render(); });
 }
 
 // ----------------------------------------------------------------------------

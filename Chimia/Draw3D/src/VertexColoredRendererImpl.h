@@ -9,8 +9,7 @@
 #include "ObjectTable.h"
 #include "Renderers.h"
 #include "StaticModel.h"
-#include "StaticTriangles.h"
-#include "TriangleBatch.h"
+#include "TriangleMeshComponent.h"
 #include "Types.h"
 
 #include <glm/mat4x4.hpp>
@@ -38,9 +37,10 @@ public:
 
   void DrawTriangles(const std::vector<float>& vertexData) override;
 
-  unsigned AddStaticTriangles(const std::vector<float>& vertexData) override;
+  TriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData) override;
 
-  void DeleteStaticTriangles(unsigned id) override;
+  void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
 
   ModelID CreateModel(const std::vector<float>& vertexData,
                       const std::vector<unsigned>& indices) override;
@@ -70,17 +70,12 @@ private:
   VertexColoredRendererImpl& operator=(VertexColoredRendererImpl&& other) =
     delete;
 
-  TriangleBatch m_triangleBatch;
+  TriangleMeshComponent m_triangleMeshComponent;
   IndexedTriangleBatch m_indexedTriangleBatch;
 
-  // IdentifiedObjectTable<Model> m_modelsTable;
-  // std::map<unsigned, ModelBatch> m_transformedModelsTable;
   ObjectTable<Model> m_modelsTable;
   ObjectTable<ModelBatch> m_transformedModelsTable;
   ObjectTable<StaticModel> m_staticModelsTable;
-
-  // IdentifiedObjectTable<StaticTriangles> m_staticTriangles;
-  ObjectTable<StaticTriangles> m_staticTriangles;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

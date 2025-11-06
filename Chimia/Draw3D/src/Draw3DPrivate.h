@@ -24,6 +24,9 @@ public:
                                                unsigned instanceID);
   static std::pair<unsigned, unsigned> GetModelInstanceIDs(
     const ModelInstanceID& instanceID);
+
+  static TriangleMeshID CreateTriangleMeshID(unsigned id);
+  static unsigned GetTriangleMeshIDValue(const TriangleMeshID& meshID);
 };
 
 // ----------------------------------------------------------------------------

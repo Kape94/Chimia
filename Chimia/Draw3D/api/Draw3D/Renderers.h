@@ -30,9 +30,10 @@ public:
 
   virtual void DrawTriangles(const std::vector<float>& vertexData) = 0;
 
-  virtual unsigned AddStaticTriangles(const std::vector<float>& vertexData) = 0;
+  virtual TriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData) = 0;
 
-  virtual void DeleteStaticTriangles(unsigned id) = 0;
+  virtual void DeleteStaticTriangles(const TriangleMeshID& meshID) = 0;
 
   virtual ModelID CreateModel(const std::vector<float>& vertexData,
                               const std::vector<unsigned>& indices) = 0;

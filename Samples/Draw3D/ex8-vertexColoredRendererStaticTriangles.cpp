@@ -1,5 +1,6 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Renderers.h"
+#include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
@@ -9,7 +10,7 @@
 
 // ----------------------------------------------------------------------------
 
-unsigned
+Chimia::Draw3D::TriangleMeshID
 AddStaticQuad(const glm::vec3& p1,
               const glm::vec3& color1,
               const glm::vec3& p2,
@@ -47,23 +48,25 @@ main()
 
   auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
 
-  const unsigned quad1 = AddStaticQuad({ -0.5f, -0.5f, 0.0f },
-                                       { 1.0f, 0.0f, 0.0f },
-                                       { 0.5f, -0.5f, 0.0f },
-                                       { 0.0f, 1.0f, 0.0f },
-                                       { 0.5f, 0.5f, 0.0f },
-                                       { 0.0f, 0.0f, 1.0f },
-                                       { -0.5f, 0.5f, 0.0f },
-                                       { 1.0f, 0.0f, 1.0f });
+  const Chimia::Draw3D::TriangleMeshID quad1 =
+    AddStaticQuad({ -0.5f, -0.5f, 0.0f },
+                  { 1.0f, 0.0f, 0.0f },
+                  { 0.5f, -0.5f, 0.0f },
+                  { 0.0f, 1.0f, 0.0f },
+                  { 0.5f, 0.5f, 0.0f },
+                  { 0.0f, 0.0f, 1.0f },
+                  { -0.5f, 0.5f, 0.0f },
+                  { 1.0f, 0.0f, 1.0f });
 
-  const unsigned quad2 = AddStaticQuad({ -1.0f, -1.0f, 0.0f },
-                                       { 1.0f, 0.0f, 0.0f },
-                                       { 0.0f, -1.0f, 0.0f },
-                                       { 0.0f, 1.0f, 0.0f },
-                                       { 0.0f, 1.0f, 0.0f },
-                                       { 0.0f, 0.0f, 1.0f },
-                                       { -1.0f, 1.0f, 0.0f },
-                                       { 1.0f, 0.0f, 1.0f });
+  const Chimia::Draw3D::TriangleMeshID quad2 =
+    AddStaticQuad({ -1.0f, -1.0f, 0.0f },
+                  { 1.0f, 0.0f, 0.0f },
+                  { 0.0f, -1.0f, 0.0f },
+                  { 0.0f, 1.0f, 0.0f },
+                  { 0.0f, 1.0f, 0.0f },
+                  { 0.0f, 0.0f, 1.0f },
+                  { -1.0f, 1.0f, 0.0f },
+                  { 1.0f, 0.0f, 1.0f });
 
   auto deleteQuad1 = [&]() { renderer.DeleteStaticTriangles(quad1); };
   auto deleteQuad2 = [&]() { renderer.DeleteStaticTriangles(quad2); };
