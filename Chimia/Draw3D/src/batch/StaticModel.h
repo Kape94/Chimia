@@ -35,9 +35,28 @@ public:
   void Render();
 
 private:
-  void RenderBatch(const void* instancesData,
-                   const unsigned instancesDataSize,
-                   const unsigned nInstances);
+  void CreateGPUBuffers(const Model& model,
+                        const size_t batchSize,
+                        const size_t instanceBatchDataSize,
+                        const Rendering::ShaderAttributes& vertexAttributes,
+                        const Rendering::ShaderAttributes& instanceAttributes);
+
+  bool HasSomethingToRender() const;
+
+  bool CanRenderWithCurrentBuffers() const;
+
+  void RebuildInputBuffer();
+
+  void RenderByBatches();
+
+  void HandleRenderingForBatchRange(const size_t rangeStart,
+                                    const size_t rangeSize);
+
+  void LoadBatchAndRender(const void* instancesData,
+                          const unsigned instancesDataSize,
+                          const unsigned nInstances);
+
+  void RenderCurrentBuffers();
 
   std::function<void()> m_onRender;
 

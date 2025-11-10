@@ -4,7 +4,6 @@
 
 #include "Draw3DNamespaceDefs.h"
 
-#include "ObjectTable.h"
 #include "StaticTriangles.h"
 #include "TriangleBatch.h"
 #include "Types.h"
@@ -41,7 +40,7 @@ private:
   std::function<void(void)> m_onFlush;
 
   TriangleBatch m_triangleBatch;
-  ObjectTable<StaticTriangles> m_staticTriangles;
+  StaticTriangles m_staticTriangles;
 };
 
 // ----------------------------------------------------------------------------

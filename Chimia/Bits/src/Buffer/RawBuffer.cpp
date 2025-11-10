@@ -179,8 +179,16 @@ RawBuffer::GetData()
 
 //-----------------------------------------------------------------------------
 
+const unsigned char*
+RawBuffer::GetData() const
+{
+  return data;
+}
+
+//-----------------------------------------------------------------------------
+
 size_t
-RawBuffer::GetSize()
+RawBuffer::GetSize() const
 {
   return currentSize;
 }
@@ -188,7 +196,7 @@ RawBuffer::GetSize()
 //-----------------------------------------------------------------------------
 
 size_t
-RawBuffer::GetAvailableSize()
+RawBuffer::GetAvailableSize() const
 {
   return maximumSize - currentSize;
 }

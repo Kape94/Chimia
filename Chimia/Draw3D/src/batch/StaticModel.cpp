@@ -1,9 +1,10 @@
 #include "StaticModel.h"
+
+#include "BatchUtils.h"
 #include "Bits/Buffer/RawBuffer.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
-#include <numeric>
 
 // ----------------------------------------------------------------------------
 
@@ -20,13 +21,30 @@ StaticModel::Create(const Model& model,
 {
   m_onRender = onRender;
   const size_t instanceDataSize =
-    std::accumulate(instanceAttributes.begin(),
-                    instanceAttributes.end(),
-                    0,
-                    [](size_t current, const Rendering::ShaderAttribute& attr) {
-                      return current + attr.DataSizeInBytes();
-                    });
+    instanceAttributes.ComputeTotalSizeOfAttributes();
   const size_t instanceBatchDataSize = batchSize * instanceDataSize;
+
+  CreateGPUBuffers(model,
+                   batchSize,
+                   instanceBatchDataSize,
+                   vertexAttributes,
+                   instanceAttributes);
+
+  m_instanceDataSize = instanceDataSize;
+  m_instanceBatchDataSize = instanceBatchDataSize;
+  m_instanceDataBuffer.Resize(instanceBatchDataSize);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::CreateGPUBuffers(
+  const Model& model,
+  const size_t batchSize,
+  const size_t instanceBatchDataSize,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instanceAttributes)
+{
   model.ForEachBuffer(
     [&](const Rendering::ReusableIndexedVertexBufferObject& buffer) {
       Rendering::InstancedBuffer& gpuBuffer = m_gpuBuffers.emplace_back();
@@ -38,10 +56,6 @@ StaticModel::Create(const Model& model,
                                 batchSize,
                                 instanceAttributes);
     });
-
-  m_instanceDataSize = instanceDataSize;
-  m_instanceBatchDataSize = instanceBatchDataSize;
-  m_instanceDataBuffer.Resize(instanceBatchDataSize);
 }
 
 // ----------------------------------------------------------------------------
@@ -71,52 +85,104 @@ StaticModel::DeleteInstance(unsigned instanceID)
 void
 StaticModel::Render()
 {
+  if (CanRenderWithCurrentBuffers()) {
+    if (HasSomethingToRender()) {
+      m_onRender();
+      RenderCurrentBuffers();
+    }
+    return;
+  }
+
   if (m_shouldRebuildBuffers) {
-    m_instanceDataBuffer.Reset();
-    m_instanceTable.ForEach([&](Bits::RawBuffer& instanceData) {
-      m_instanceDataBuffer.Append(instanceData.GetData(),
-                                  instanceData.GetSize());
-    });
+    RebuildInputBuffer();
+  }
+
+  RenderByBatches();
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+StaticModel::CanRenderWithCurrentBuffers() const
+{
+  const bool needToReloadDataOnGPU = m_shouldRebuildBuffers;
+  const bool needToRenderByBatch =
+    m_instanceDataBuffer.GetSize() > m_instanceBatchDataSize;
+
+  return !needToReloadDataOnGPU && !needToRenderByBatch;
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+StaticModel::HasSomethingToRender() const
+{
+  return m_instanceDataBuffer.GetSize() > 0;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::RebuildInputBuffer()
+{
+  m_instanceDataBuffer.Reset();
+  m_instanceTable.ForEach([&](const Bits::RawBuffer& instanceData) {
+    m_instanceDataBuffer.Append(instanceData.GetData(), instanceData.GetSize());
+  });
+  m_shouldRebuildBuffers = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::RenderByBatches()
+{
+  if (!HasSomethingToRender()) {
+    return;
   }
 
   m_onRender();
 
-  if (m_instanceDataBuffer.GetSize() > m_instanceBatchDataSize) {
+  BatchUtils::ForEachBatchRange(
+    m_instanceDataBuffer.GetSize(),
+    m_instanceBatchDataSize,
+    [&](const size_t rangeStart, const size_t rangeSize) {
+      HandleRenderingForBatchRange(rangeStart, rangeSize);
+    });
+}
 
-    const size_t maxOffset =
-      m_instanceDataBuffer.GetSize() / m_instanceBatchDataSize;
-    for (size_t i = 0; i <= maxOffset; ++i) {
-      const size_t offset = m_instanceBatchDataSize * i;
-      const size_t nextOffset = m_instanceBatchDataSize * (i + 1);
-      const size_t batchEnd =
-        std::min(nextOffset, m_instanceDataBuffer.GetSize());
-      const size_t batchSize = batchEnd - offset;
+// ----------------------------------------------------------------------------
 
-      const unsigned char* data = m_instanceDataBuffer.GetData();
-      const unsigned char* offsetData = data + offset;
+void
+StaticModel::HandleRenderingForBatchRange(const size_t rangeStart,
+                                          const size_t rangeSize)
+{
+  const unsigned char* data = m_instanceDataBuffer.GetData();
+  const unsigned char* offsetData = data + rangeStart;
 
-      const unsigned nInstances = batchSize / m_instanceDataSize;
-      RenderBatch(offsetData, batchSize, nInstances);
-    }
-  } else {
-    const unsigned nInstances =
-      m_instanceDataBuffer.GetSize() / m_instanceDataSize;
-    RenderBatch(m_instanceDataBuffer.GetData(),
-                m_instanceDataBuffer.GetSize(),
-                nInstances);
+  const unsigned nInstances = rangeSize / m_instanceDataSize;
+
+  LoadBatchAndRender(offsetData, rangeSize, nInstances);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::LoadBatchAndRender(const void* instancesData,
+                                const unsigned instancesDataSize,
+                                const unsigned nInstances)
+{
+  for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
+    gpuBuffer.LoadInstancedData(instancesData, instancesDataSize, nInstances);
+    gpuBuffer.Render();
   }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::RenderBatch(const void* instancesData,
-                         const unsigned instancesDataSize,
-                         const unsigned nInstances)
+StaticModel::RenderCurrentBuffers()
 {
-  for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
-    gpuBuffer.LoadInstancedData(instancesData, instancesDataSize, nInstances);
-  }
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
     gpuBuffer.Render();
   }

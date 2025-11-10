@@ -70,8 +70,19 @@ main()
 
   auto deleteQuad1 = [&]() { renderer.DeleteStaticTriangles(quad1); };
   auto deleteQuad2 = [&]() { renderer.DeleteStaticTriangles(quad2); };
+  auto addQuad = [&]() {
+    AddStaticQuad({ -1.0f, -1.0f, 0.0f },
+                  { 1.0f, 0.0f, 1.0f },
+                  { 0.0f, -1.0f, 0.0f },
+                  { 0.0f, 1.0f, 1.0f },
+                  { 0.0f, 1.0f, 0.0f },
+                  { 0.0f, 0.0f, 1.0f },
+                  { -1.0f, 1.0f, 0.0f },
+                  { 1.0f, 0.0f, 1.0f });
+  };
   SamplesUtils::DoAfter(deleteQuad2, 3000);
   SamplesUtils::DoAfter(deleteQuad1, 5000);
+  SamplesUtils::DoAfter(addQuad, 8000);
 
   while (!w.ShouldClose()) {
 

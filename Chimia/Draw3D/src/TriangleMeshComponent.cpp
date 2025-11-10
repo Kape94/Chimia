@@ -1,5 +1,4 @@
 #include "TriangleMeshComponent.h"
-#include "Draw3DPrivate.h"
 
 // ----------------------------------------------------------------------------
 
@@ -16,6 +15,7 @@ TriangleMeshComponent::Init(const size_t triangleBatchSize,
   m_onFlush = onFlush;
 
   m_triangleBatch.Create(triangleBatchSize, vertexAttributes, onFlush);
+  m_staticTriangles.Create(triangleBatchSize, vertexAttributes);
 }
 
 // ----------------------------------------------------------------------------
@@ -26,8 +26,7 @@ TriangleMeshComponent::Flush()
   m_onFlush();
 
   m_triangleBatch.Flush();
-  m_staticTriangles.ForEach(
-    [](const StaticTriangles& triangles) { triangles.Render(); });
+  m_staticTriangles.Render();
 }
 
 // ----------------------------------------------------------------------------
@@ -52,10 +51,7 @@ TriangleMeshComponent::DrawTriangles(const std::vector<float>& vertexData)
 TriangleMeshID
 TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 {
-  auto [id, triangles] = m_staticTriangles.Insert();
-  triangles->Create(vertexData, m_vertexAttributes);
-
-  return Draw3DPrivate::CreateTriangleMeshID(id);
+  return m_staticTriangles.AddStaticMesh(vertexData);
 }
 
 // ----------------------------------------------------------------------------
@@ -63,7 +59,7 @@ TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 void
 TriangleMeshComponent::DeleteStaticMesh(const TriangleMeshID& meshID)
 {
-  m_staticTriangles.Delete(Draw3DPrivate::GetTriangleMeshIDValue(meshID));
+  m_staticTriangles.DeleteStaticMesh(meshID);
 }
 
 // ----------------------------------------------------------------------------

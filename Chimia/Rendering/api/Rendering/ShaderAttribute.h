@@ -2,6 +2,7 @@
 
 //---------------------------------------------------------------------------------------
 
+#include <initializer_list>
 #include <vector>
 
 #include "RenderingNamespaceDefs.h"
@@ -58,7 +59,34 @@ private:
 
 //---------------------------------------------------------------------------------------
 
-using ShaderAttributes = std::vector<ShaderAttribute>;
+class ShaderAttributes : public std::vector<ShaderAttribute>
+{
+public:
+  ShaderAttributes() = default;
+
+  ShaderAttributes(const std::initializer_list<ShaderAttribute>& attributes)
+    : std::vector<ShaderAttribute>(attributes)
+  {
+  }
+
+  unsigned ComputeTotalSizeOfAttributes() const
+  {
+    unsigned totalSize = 0;
+    for (const ShaderAttribute& attr : *this) {
+      totalSize += attr.DataSizeInBytes();
+    }
+    return totalSize;
+  }
+
+  unsigned ComputeTotalEntriesOfAttributes() const
+  {
+    unsigned totalEntries = 0;
+    for (const ShaderAttribute& attr : *this) {
+      totalEntries += attr.NEntries();
+    }
+    return totalEntries;
+  }
+};
 
 //---------------------------------------------------------------------------------------
 

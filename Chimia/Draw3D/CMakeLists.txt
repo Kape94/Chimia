@@ -15,6 +15,7 @@ add_library(${TARGET_NAME}
     src/TriangleMeshComponent.cpp
     src/VertexColoredRendererImpl.cpp
 
+    src/batch/BatchUtils.cpp
     src/batch/ModelBatch.cpp
     src/batch/IndexedTriangleBatch.cpp
     src/batch/StaticModel.cpp

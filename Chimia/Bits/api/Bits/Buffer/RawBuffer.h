@@ -28,8 +28,10 @@ public:
   void Append(const void* newData, const size_t newDataSize);
 
   unsigned char* GetData();
-  size_t GetSize();
-  size_t GetAvailableSize();
+  const unsigned char* GetData() const;
+
+  size_t GetSize() const;
+  size_t GetAvailableSize() const;
 
   void Reset();
 
