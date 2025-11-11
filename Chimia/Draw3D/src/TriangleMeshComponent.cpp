@@ -48,6 +48,18 @@ TriangleMeshComponent::DrawTriangles(const std::vector<float>& vertexData)
 
 // ----------------------------------------------------------------------------
 
+void
+TriangleMeshComponent::DrawTriangles(const std::vector<float>& vertexData,
+                                     const std::vector<unsigned>& indices)
+{
+  const std::vector<float> unindexedVertexData =
+    DropIndices(vertexData, indices);
+
+  DrawTriangles(unindexedVertexData);
+}
+
+// ----------------------------------------------------------------------------
+
 TriangleMeshID
 TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 {
@@ -56,10 +68,44 @@ TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 
 // ----------------------------------------------------------------------------
 
+TriangleMeshID
+TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData,
+                                     const std::vector<unsigned>& indices)
+{
+  const std::vector<float> unindexedVertexData =
+    DropIndices(vertexData, indices);
+
+  return m_staticTriangles.AddStaticMesh(unindexedVertexData);
+}
+
+// ----------------------------------------------------------------------------
+
 void
 TriangleMeshComponent::DeleteStaticMesh(const TriangleMeshID& meshID)
 {
   m_staticTriangles.DeleteStaticMesh(meshID);
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<float>
+TriangleMeshComponent::DropIndices(const std::vector<float>& vertexData,
+                                   const std::vector<unsigned>& indices)
+{
+  std::vector<float> unindexedData;
+
+  const size_t vertexSize = m_vertexAttributes.ComputeTotalSizeOfAttributes();
+  const size_t vertexFloatSize = vertexSize / sizeof(float);
+
+  unindexedData.reserve(vertexFloatSize * indices.size());
+  for (const unsigned i : indices) {
+    const size_t offset = i * vertexFloatSize;
+    const auto vertexDataStart = vertexData.begin() + offset;
+    const auto vertexDataEnd = vertexDataStart + vertexFloatSize;
+    unindexedData.insert(unindexedData.end(), vertexDataStart, vertexDataEnd);
+  }
+
+  return unindexedData;
 }
 
 // ----------------------------------------------------------------------------

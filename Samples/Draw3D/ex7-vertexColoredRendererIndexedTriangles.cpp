@@ -29,7 +29,7 @@ DrawQuad(const glm::vec3& p1,
   // clang-format on
 
   static auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
-  renderer.DrawIndexedTriangles(vertexData, { 0, 1, 2, 2, 3, 0 });
+  renderer.DrawTriangles(vertexData, { 0, 1, 2, 2, 3, 0 });
 }
 
 // ----------------------------------------------------------------------------
@@ -66,10 +66,10 @@ main()
              { 1.0f, 0.0f, 1.0f });
 
     // clang-format off
-    renderer.DrawIndexedTriangles({ 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                                    1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                                    1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f },
-                                  { 0, 1, 2 });
+    renderer.DrawTriangles({ 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+                             1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                             1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f },
+                           { 0, 1, 2 });
     // clang-format on
 
     Chimia::Draw3D::Flush();

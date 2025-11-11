@@ -37,6 +37,34 @@ AddStaticQuad(const glm::vec3& p1,
   return renderer.AddStaticTriangles(vertexData);
 }
 
+Chimia::Draw3D::TriangleMeshID
+AddStaticQuadIndexed(const glm::vec3& p1,
+                     const glm::vec3& color1,
+                     const glm::vec3& p2,
+                     const glm::vec3& color2,
+                     const glm::vec3& p3,
+                     const glm::vec3& color3,
+                     const glm::vec3& p4,
+                     const glm::vec3& color4)
+{
+  // clang-format off
+  const std::vector<float> vertexData{
+    // First triangle
+    p1.x, p1.y, p1.z, color1.r, color1.g, color1.b,
+    p2.x, p2.y, p2.z, color2.r, color2.g, color2.b,
+    p3.x, p3.y, p3.z, color3.r, color3.g, color3.b,
+    p4.x, p4.y, p4.z, color4.r, color4.g, color4.b,
+  };
+
+  const std::vector<unsigned> indices{
+    0, 1, 2, 2, 3, 0
+  };
+  // clang-format on
+
+  static auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
+  return renderer.AddStaticTriangles(vertexData, indices);
+}
+
 // ----------------------------------------------------------------------------
 
 int
@@ -59,26 +87,26 @@ main()
                   { 1.0f, 0.0f, 1.0f });
 
   const Chimia::Draw3D::TriangleMeshID quad2 =
-    AddStaticQuad({ -1.0f, -1.0f, 0.0f },
-                  { 1.0f, 0.0f, 0.0f },
-                  { 0.0f, -1.0f, 0.0f },
-                  { 0.0f, 1.0f, 0.0f },
-                  { 0.0f, 1.0f, 0.0f },
-                  { 0.0f, 0.0f, 1.0f },
-                  { -1.0f, 1.0f, 0.0f },
-                  { 1.0f, 0.0f, 1.0f });
+    AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
+                         { 1.0f, 0.0f, 0.0f },
+                         { 0.0f, -1.0f, 0.0f },
+                         { 0.0f, 1.0f, 0.0f },
+                         { 0.0f, 1.0f, 0.0f },
+                         { 0.0f, 0.0f, 1.0f },
+                         { -1.0f, 1.0f, 0.0f },
+                         { 1.0f, 0.0f, 1.0f });
 
   auto deleteQuad1 = [&]() { renderer.DeleteStaticTriangles(quad1); };
   auto deleteQuad2 = [&]() { renderer.DeleteStaticTriangles(quad2); };
   auto addQuad = [&]() {
-    AddStaticQuad({ -1.0f, -1.0f, 0.0f },
-                  { 1.0f, 0.0f, 1.0f },
-                  { 0.0f, -1.0f, 0.0f },
-                  { 0.0f, 1.0f, 1.0f },
-                  { 0.0f, 1.0f, 0.0f },
-                  { 0.0f, 0.0f, 1.0f },
-                  { -1.0f, 1.0f, 0.0f },
-                  { 1.0f, 0.0f, 1.0f });
+    AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
+                         { 1.0f, 0.0f, 1.0f },
+                         { 0.0f, -1.0f, 0.0f },
+                         { 0.0f, 1.0f, 1.0f },
+                         { 0.0f, 1.0f, 0.0f },
+                         { 0.0f, 0.0f, 1.0f },
+                         { -1.0f, 1.0f, 0.0f },
+                         { 1.0f, 0.0f, 1.0f });
   };
   SamplesUtils::DoAfter(deleteQuad2, 3000);
   SamplesUtils::DoAfter(deleteQuad1, 5000);

@@ -30,8 +30,15 @@ public:
 
   virtual void DrawTriangles(const std::vector<float>& vertexData) = 0;
 
+  virtual void DrawTriangles(const std::vector<float>& vertexData,
+                             const std::vector<unsigned>& indexData) = 0;
+
   virtual TriangleMeshID AddStaticTriangles(
     const std::vector<float>& vertexData) = 0;
+
+  virtual TriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData,
+    const std::vector<unsigned>& indexData) = 0;
 
   virtual void DeleteStaticTriangles(const TriangleMeshID& meshID) = 0;
 
@@ -45,9 +52,6 @@ public:
                                          const glm::mat4x4& transform) = 0;
 
   virtual void DeleteStaticModel(const ModelInstanceID& instanceID) = 0;
-
-  virtual void DrawIndexedTriangles(const std::vector<float>& vertexData,
-                                    const std::vector<unsigned>& indexData) = 0;
 };
 
 // ----------------------------------------------------------------------------

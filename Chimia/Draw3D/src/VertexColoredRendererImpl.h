@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
-#include "IndexedTriangleBatch.h"
 #include "ModelRenderingComponent.h"
 #include "Renderers.h"
 #include "TriangleMeshComponent.h"
@@ -34,8 +33,15 @@ public:
 
   void DrawTriangles(const std::vector<float>& vertexData) override;
 
+  void DrawTriangles(const std::vector<float>& vertexData,
+                     const std::vector<unsigned>& indexData) override;
+
   TriangleMeshID AddStaticTriangles(
     const std::vector<float>& vertexData) override;
+
+  TriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData,
+    const std::vector<unsigned>& indexData) override;
 
   void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
 
@@ -49,9 +55,6 @@ public:
                                  const glm::mat4x4& transform) override;
 
   void DeleteStaticModel(const ModelInstanceID& instanceID) override;
-
-  void DrawIndexedTriangles(const std::vector<float>& vertexData,
-                            const std::vector<unsigned>& indexData) override;
 
 private:
   void ConfigureShaderForTriangleDrawing();
@@ -68,8 +71,6 @@ private:
     delete;
 
   TriangleMeshComponent m_triangleMeshComponent;
-  IndexedTriangleBatch m_indexedTriangleBatch;
-
   ModelRenderingComponent m_modelComponent;
 };
 

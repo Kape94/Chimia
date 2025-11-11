@@ -48,12 +48,6 @@ VertexColoredRendererImpl::Init()
   m_triangleMeshComponent.Init(Config::VertexColored::triangleBatchSize,
                                VERTEX_ATTRIBUTES,
                                [&]() { ConfigureShaderForTriangleDrawing(); });
-
-  m_indexedTriangleBatch.Create(
-    Config::VertexColored::indexedTrianglesVertexBatchSize,
-    Config::VertexColored::indexedTrianglesIndexBatchSize,
-    VERTEX_ATTRIBUTES,
-    [&]() { ConfigureShaderForTriangleDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -88,11 +82,30 @@ VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData)
 
 // ----------------------------------------------------------------------------
 
+void
+VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData,
+                                         const std::vector<unsigned>& indexData)
+{
+  m_triangleMeshComponent.DrawTriangles(vertexData, indexData);
+}
+
+// ----------------------------------------------------------------------------
+
 TriangleMeshID
 VertexColoredRendererImpl::AddStaticTriangles(
   const std::vector<float>& vertexData)
 {
   return m_triangleMeshComponent.AddStaticMesh(vertexData);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+VertexColoredRendererImpl::AddStaticTriangles(
+  const std::vector<float>& vertexData,
+  const std::vector<unsigned>& indexData)
+{
+  return m_triangleMeshComponent.AddStaticMesh(vertexData, indexData);
 }
 
 // ----------------------------------------------------------------------------
@@ -148,22 +161,9 @@ VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DrawIndexedTriangles(
-  const std::vector<float>& vertexData,
-  const std::vector<unsigned>& indexData)
-{
-  m_indexedTriangleBatch.Draw(
-    { vertexData.data(), vertexData.size(), sizeof(float) }, indexData);
-}
-
-// ----------------------------------------------------------------------------
-
-void
 VertexColoredRendererImpl::Flush()
 {
   m_triangleMeshComponent.Flush();
-  m_indexedTriangleBatch.Flush();
-
   m_modelComponent.Flush();
 }
 
