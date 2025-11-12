@@ -1,5 +1,5 @@
 add_library(Samples_App_Dependencies INTERFACE)
-target_link_libraries(Samples_App_Dependencies INTERFACE App)
+target_link_libraries(Samples_App_Dependencies INTERFACE Chimia_App)
 target_compile_features(Samples_App_Dependencies INTERFACE cxx_std_17)
 
 add_executable(Samples_App_ex1 ex1-minimal.cpp)

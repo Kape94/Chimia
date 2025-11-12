@@ -1,5 +1,5 @@
 add_library(Samples_Bits_Dependencies INTERFACE)
-target_link_libraries(Samples_Bits_Dependencies INTERFACE Bits)
+target_link_libraries(Samples_Bits_Dependencies INTERFACE Chimia_Bits)
 target_compile_features(Samples_Bits_Dependencies INTERFACE cxx_std_17)
 
 add_executable(Samples_Bits_ex1 ex1-buffer.cpp)

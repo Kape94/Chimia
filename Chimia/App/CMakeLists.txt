@@ -1,5 +1,5 @@
 
-set(APP_TOOLKIT_LIB App)
+set(APP_TOOLKIT_LIB Chimia_App)
 
 add_library(${APP_TOOLKIT_LIB}
     src/App.cpp

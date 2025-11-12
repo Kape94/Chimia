@@ -3,7 +3,7 @@
 #include "Bits/Buffer/RawDataView.h"
 #include "Draw3DPrivate.h"
 
-#include "Diagnostics/Diagnostics.h"
+#include "Core/Diagnostics.h"
 #include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------

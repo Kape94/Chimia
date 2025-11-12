@@ -13,7 +13,8 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME} 
-    PRIVATE assimp::assimp
+    PRIVATE 
+        assimp::assimp
 )
 
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

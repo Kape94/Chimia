@@ -1,7 +1,7 @@
 
 set(BITS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(TARGET_NAME Bits)
+set(TARGET_NAME Chimia_Bits)
 add_library(${TARGET_NAME}
   src/Buffer/IndexedBuffer.cpp
   src/Buffer/RawBuffer.cpp

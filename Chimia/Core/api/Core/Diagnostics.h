@@ -1,11 +1,13 @@
 #pragma once
 
-#include "DiagnosticsNamespaceDefs.h"
+#include "CoreNamespaceDefs.h"
 
 #include <functional>
 #include <string>
 
-BEGIN_CHIMIA_DIAGNOSTICS_NAMESPACE
+BEGIN_CHIMIA_CORE_NAMESPACE
+
+namespace Diagnostics {
 
 void
 OnError(
@@ -14,4 +16,6 @@ OnError(
 void
 Error(const int errorCode, const std::string& message);
 
-END_CHIMIA_DIAGNOSTICS_NAMESPACE
+}
+
+END_CHIMIA_CORE_NAMESPACE

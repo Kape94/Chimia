@@ -4,7 +4,7 @@ add_library(Samples_Rendering_DefaultDeps INTERFACE)
 target_link_libraries(Samples_Rendering_DefaultDeps
     INTERFACE
         Samples_Utils
-        Rendering  
+        Chimia_Rendering  
 )
 
 target_compile_features(Samples_Rendering_DefaultDeps INTERFACE cxx_std_17)

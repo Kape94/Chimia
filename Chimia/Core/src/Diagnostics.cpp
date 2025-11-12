@@ -5,7 +5,7 @@
 
 // ----------------------------------------------------------------------------
 
-USING_CHIMIA_DIAGNOSTICS_NAMESPACE
+USING_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -22,9 +22,18 @@ std::function<void(const int, const std::string&)> onError =
 // ----------------------------------------------------------------------------
 
 void
-Chimia::Diagnostics::Error(const int errorCode, const std::string& message)
+Diagnostics::Error(const int errorCode, const std::string& message)
 {
   DiagnosticsInternal::onError(errorCode, message);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Diagnostics::OnError(
+  const std::function<void(const int, const std::string&)>& onErrorFunction)
+{
+  DiagnosticsInternal::onError = onErrorFunction;
 }
 
 // ----------------------------------------------------------------------------

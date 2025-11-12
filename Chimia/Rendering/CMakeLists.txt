@@ -1,5 +1,5 @@
 
-set(TARGET_NAME Rendering)
+set(TARGET_NAME Chimia_Rendering)
 
 file(GLOB SRC_FILES src/*.cpp)
 add_library(${TARGET_NAME} ${SRC_FILES})
@@ -13,7 +13,7 @@ target_include_directories(${TARGET_NAME}
 
 target_link_libraries(${TARGET_NAME} 
     PRIVATE
-        Chimia_Diagnostics
+        Chimia_Core
     PUBLIC 
         GLEW::GLEW
         glm::glm

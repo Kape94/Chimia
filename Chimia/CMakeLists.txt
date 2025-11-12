@@ -1,4 +1,4 @@
-add_subdirectory(Diagnostics)
+add_subdirectory(Core)
 add_subdirectory(Bits)
 
 add_subdirectory(App)

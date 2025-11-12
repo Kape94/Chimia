@@ -2,7 +2,7 @@
 
 #include "OpenGLDefs.h"
 
-#include "Diagnostics/Diagnostics.h"
+#include "Core/Diagnostics.h"
 
 #include <glm/gtc/type_ptr.hpp>
 

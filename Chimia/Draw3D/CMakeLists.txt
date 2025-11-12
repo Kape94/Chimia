@@ -26,9 +26,9 @@ target_link_libraries(${TARGET_NAME}
     PUBLIC
         glm::glm
     PRIVATE
-        Bits
-        Chimia_Diagnostics
-        Rendering
+        Chimia_Bits
+        Chimia_Core
+        Chimia_Rendering
 )
 
 target_include_directories(${TARGET_NAME}
