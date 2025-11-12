@@ -1,6 +1,5 @@
 #include "ModelRenderingComponent.h"
 
-#include "Bits/Buffer/RawDataView.h"
 #include "Draw3DPrivate.h"
 
 #include "Core/Diagnostics.h"
@@ -30,8 +29,13 @@ ModelRenderingComponent::CreateModel(
   const Rendering::ShaderAttributes& instanceAttributes,
   const std::function<void(void)>& onFlush)
 {
+  // TODO: handle unnecessary vector copy (BufferData holds vector member that
+  // copy the parameters)
+  const size_t sizePerVertex = vertexAttributes.ComputeTotalSizeOfAttributes();
+  const size_t nVertices = (vertexData.size() * sizeof(float)) / sizePerVertex;
+
   auto [modelID, model] = m_modelsTable.Insert();
-  model->Create(BufferData(vertexData, indices));
+  model->Create(MeshDataView(vertexData, nVertices, indices));
 
   ModelBatch* batch = m_transformedModelsTable.Insert(modelID);
   if (batch == nullptr) {
@@ -62,7 +66,7 @@ ModelRenderingComponent::CreateModel(
 
 void
 ModelRenderingComponent::DrawModel(const ModelID& modelID,
-                                   const Bits::RawDataView& instanceData)
+                                   const RawDataView& instanceData)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
   ModelBatch* batch = m_transformedModelsTable.Find(id);
@@ -77,7 +81,7 @@ ModelRenderingComponent::DrawModel(const ModelID& modelID,
 
 ModelInstanceID
 ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
-                                        const Bits::RawDataView& instanceData)
+                                        const RawDataView& instanceData)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
   StaticModel* model = m_staticModelsTable.Find(id);

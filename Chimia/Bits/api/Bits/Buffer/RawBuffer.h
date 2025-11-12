@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Bits/Buffer/RawDataView.h"
 #include "Bits/Common/BitsNamespaceDefs.h"
+
+#include "Core/Types.h"
 
 #include <cstddef>
 

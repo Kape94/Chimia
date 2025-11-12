@@ -4,7 +4,6 @@
 #include "Model.h"
 
 #include "Bits/Buffer/RawBuffer.h"
-#include "Bits/Buffer/RawDataView.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
@@ -23,8 +22,8 @@ public:
               const Rendering::ShaderAttributes& instanceAttributes,
               const std::function<void(void)>& onFlush);
 
-  void Draw(const Bits::RawDataView& instanceData);
-  void Draw(const std::initializer_list<Bits::RawDataView>& instanceDatas);
+  void Draw(const RawDataView& instanceData);
+  void Draw(const std::initializer_list<RawDataView>& instanceDatas);
 
   void Flush();
 
@@ -35,8 +34,6 @@ private:
     const Rendering::ShaderAttributes& vertexAttributes,
     const Rendering::ShaderAttributes& instanceAttributes);
 
-  size_t CalculateInstancedDataSize(
-    const Rendering::ShaderAttributes& instancedDataAttributes);
   void HandleFlushByDemand();
 
   std::function<void(void)> m_onFlush;

@@ -92,8 +92,7 @@ void
 Chimia::Draw3D::TrianglePrivate::Init()
 {
   TriangleData::trianglesBuffer.Create(
-    nullptr,
-    TriangleData::TOTAL_BUFFER_SIZE,
+    { nullptr, TriangleData::TOTAL_BUFFER_SIZE },
     { Chimia::Rendering::ShaderAttribute::Float(0, 3),
       Chimia::Rendering::ShaderAttribute::Float(1, 3) });
 }
@@ -109,7 +108,7 @@ Chimia::Draw3D::TrianglePrivate::Flush()
   if (frameInputSize == 0)
     return;
 
-  trianglesBuffer.Load(trianglesPos.GetData(), frameInputSize);
+  trianglesBuffer.Load({ trianglesPos.GetData(), frameInputSize });
 
   Rendering::Shader& shader = Draw3D::Shaders::VertexColored();
   shader.Use();

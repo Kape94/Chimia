@@ -76,13 +76,10 @@ main()
                                    Inputs::ShaderCodes::fShader);
 
   Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(Inputs::BufferData::vertex.data(),
-                         Inputs::BufferData::vertex.size() * sizeof(float),
+  buffer.CreateInstanced(Inputs::BufferData::vertex,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
-                         Inputs::InstanceData::positions.data(),
-                         Inputs::InstanceData::dataSize,
-                         Inputs::InstanceData::positions.size(),
+                         Inputs::InstanceData::positions,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            1 /*location*/, 2 /*nEntries*/) });
 

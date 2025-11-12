@@ -70,6 +70,7 @@ const std::vector<float> vertex{ // x    y    z
                                  0.0f, 0.1f, 0.0f
 };
 // clang-format on
+const unsigned nVertices = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 }
@@ -114,12 +115,9 @@ main()
                                     Inputs::ShaderCodes::fShaderTransformed);
 
   Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(Inputs::BufferData::vertex.data(),
-                              (unsigned)Inputs::BufferData::vertex.size() *
-                                sizeof(float),
-                              (unsigned)Inputs::BufferData::vertex.size(),
-                              Inputs::BufferData::index.data(),
-                              (unsigned)Inputs::BufferData::index.size());
+  reusableVertexBuffer.Create(Inputs::BufferData::vertex,
+                              Inputs::BufferData::nVertices,
+                              Inputs::BufferData::index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
@@ -128,9 +126,7 @@ main()
   Chimia::Rendering::InstancedBuffer buffer1;
   buffer1.CreateInstanced(reusableVertexBuffer,
                           vertexAttributes,
-                          Inputs::InstanceData::positions.data(),
-                          Inputs::InstanceData::dataSize,
-                          Inputs::InstanceData::positions.size(),
+                          Inputs::InstanceData::positions,
                           { Chimia::Rendering::ShaderAttribute::Float(
                             1 /*location*/, 2 /*nEntries*/) });
 
@@ -138,9 +134,7 @@ main()
   buffer2.CreateInstanced(
     reusableVertexBuffer,
     vertexAttributes,
-    Inputs::InstanceData::transforms.data(),
-    Inputs::InstanceData::transformsDataSize,
-    Inputs::InstanceData::transforms.size(),
+    Inputs::InstanceData::transforms,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

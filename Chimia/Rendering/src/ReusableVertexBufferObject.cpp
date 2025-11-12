@@ -1,6 +1,7 @@
 #include "ReusableVertexBufferObject.h"
 
 #include "BufferUtils.h"
+#include "Core/Types.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -46,12 +47,12 @@ ReusableVertexBufferObject::~ReusableVertexBufferObject()
 // ----------------------------------------------------------------------------
 
 void
-ReusableVertexBufferObject::Create(const void* vertexData,
-                                   const unsigned vertexDataSize,
+ReusableVertexBufferObject::Create(const RawDataView& vertexData,
                                    const unsigned nVertices)
 {
+  const size_t vertexDataSize = vertexData.size;
   m_VBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ARRAY_BUFFER, vertexData, vertexDataSize);
+    GL_ARRAY_BUFFER, vertexData.data, vertexDataSize);
 
   m_nVertices = nVertices;
   m_sizePerVertex = vertexDataSize / nVertices;

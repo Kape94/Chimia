@@ -1,9 +1,18 @@
 #pragma once
 
+// ----------------------------------------------------------------------------
+
 #include "Draw3DNamespaceDefs.h"
+
+#include "Core/Types.h"
+
 #include <vector>
 
+// ----------------------------------------------------------------------------
+
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
 
 class MeshDataView
 {
@@ -27,14 +36,18 @@ public:
   MeshDataView(MeshDataView&& other) = delete;
   MeshDataView& operator=(MeshDataView&& other) = delete;
 
-  const std::vector<float>& VertexData() const { return m_vertexData; }
-  const std::vector<unsigned>& Indices() const { return m_indices; }
+  const RawDataView& VertexData() const { return m_vertexData; }
+  const RawArrayView& Indices() const { return m_indices; }
   size_t NVertices() const { return m_nVertices; }
 
 private:
-  std::vector<float> m_vertexData;
+  RawDataView m_vertexData;
   size_t m_nVertices = 0;
-  std::vector<unsigned> m_indices;
+  RawArrayView m_indices;
 };
 
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------

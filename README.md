@@ -11,6 +11,10 @@ TODO: There should be 3 big components inside the renderer:
 TODO: Add dynamic sizing mechanism for batches;
   - Add support on Rendering module for resizing a buffer;
   - For Draw3D module, expand the gpu buffers on flush;
+TODO: Implement gouraud lit renderer;
+TODO: Revisit vertex input;
+TODO: Search TODO comments on code;  
+
 
 ## Build Instructions
 Run `cppm build` to build the project.

@@ -21,4 +21,9 @@ target_include_directories(${TARGET_NAME}
     ./api/Bits
 )
 
+target_link_libraries(${TARGET_NAME}
+  PUBLIC
+    Chimia_Core
+)
+
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

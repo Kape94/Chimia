@@ -2,6 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Bits/Buffer/RawBuffer.h"
+#include "Core/Types.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
@@ -49,19 +50,18 @@ StaticModel::CreateGPUBuffers(
     [&](const Rendering::ReusableIndexedVertexBufferObject& buffer) {
       Rendering::InstancedBuffer& gpuBuffer = m_gpuBuffers.emplace_back();
 
-      gpuBuffer.CreateInstanced(buffer,
-                                vertexAttributes,
-                                nullptr,
-                                instanceBatchDataSize,
-                                batchSize,
-                                instanceAttributes);
+      gpuBuffer.CreateInstanced(
+        buffer,
+        vertexAttributes,
+        RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
+        instanceAttributes);
     });
 }
 
 // ----------------------------------------------------------------------------
 
 unsigned
-StaticModel::AddInstance(const Bits::RawDataView& instanceData)
+StaticModel::AddInstance(const RawDataView& instanceData)
 {
   auto [instanceID, newInstance] = m_instanceTable.Insert();
   newInstance->Append(instanceData);
@@ -173,7 +173,8 @@ StaticModel::LoadBatchAndRender(const void* instancesData,
                                 const unsigned nInstances)
 {
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
-    gpuBuffer.LoadInstancedData(instancesData, instancesDataSize, nInstances);
+    gpuBuffer.LoadInstancedData(
+      RawArrayView{ instancesData, nInstances, instancesDataSize });
     gpuBuffer.Render();
   }
 }

@@ -2,6 +2,7 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
+#include "Core/Types.h"
 #include "OpenGLDefs.h"
 #include <utility>
 
@@ -47,19 +48,17 @@ ReusableIndexedVertexBufferObject::~ReusableIndexedVertexBufferObject()
 // ----------------------------------------------------------------------------
 
 void
-ReusableIndexedVertexBufferObject::Create(const void* vertexData,
-                                          const unsigned vertexDataSize,
+ReusableIndexedVertexBufferObject::Create(const RawDataView& vertexData,
                                           const unsigned nVertices,
-                                          const unsigned* indexData,
-                                          const unsigned nIndexDataItems)
+                                          const RawArrayView& indexData)
 {
-  m_vertexBufferObject.Create(vertexData, vertexDataSize, nVertices);
+  m_vertexBufferObject.Create(vertexData, nVertices);
 
-  const unsigned indexDataSize = nIndexDataItems * sizeof(unsigned);
+  const unsigned indexDataSize = indexData.TotalSize();
   m_EBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ELEMENT_ARRAY_BUFFER, indexData, indexDataSize);
+    GL_ELEMENT_ARRAY_BUFFER, indexData.array, indexDataSize);
 
-  m_nIndices = nIndexDataItems;
+  m_nIndices = indexData.nItems;
 }
 
 // ----------------------------------------------------------------------------

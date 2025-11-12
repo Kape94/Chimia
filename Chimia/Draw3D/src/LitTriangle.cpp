@@ -1,4 +1,5 @@
 #include "LitTriangle.h"
+#include "Core/Types.h"
 #include "LitTrianglePrivate.h"
 
 // ----------------------------------------------------------------------------
@@ -79,7 +80,8 @@ FlushBuffer(Chimia::Bits::RawBuffer& buffer, const Material& material)
   if (frameInputSize == 0)
     return;
 
-  State::trianglesBuffer.Load(buffer.GetData(), frameInputSize);
+  State::trianglesBuffer.Load(
+    Chimia::RawDataView{ buffer.GetData(), frameInputSize });
 
   Chimia::Rendering::Shader& shader = Chimia::Draw3D::Shaders::GouraudLit();
   shader.Use();
@@ -131,8 +133,7 @@ void
 LitTrianglePrivate::Init()
 {
   LitTriangleInternal::State::trianglesBuffer.Create(
-    nullptr,
-    LitTriangleInternal::Constants::TOTAL_BUFFER_SIZE,
+    RawDataView{ nullptr, LitTriangleInternal::Constants::TOTAL_BUFFER_SIZE },
     { Chimia::Rendering::ShaderAttribute::Float(0, 3),
       Chimia::Rendering::ShaderAttribute::Float(1, 3) });
 }

@@ -1,6 +1,6 @@
 #include "Model.h"
 
-#include "BufferData.h"
+#include "Core/Types.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 
 // ----------------------------------------------------------------------------
@@ -10,17 +10,17 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-Model::Create(const BufferData& bufferData)
+Model::Create(const MeshDataView& meshData)
 {
-  AllocateBufferDataOnGPU(bufferData);
+  AllocateBufferDataOnGPU(meshData);
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Model::Create(const std::vector<BufferData>& bufferDatas)
+Model::Create(const std::vector<MeshDataView>& meshDatas)
 {
-  for (const BufferData& data : bufferDatas) {
+  for (const MeshDataView& data : meshDatas) {
     AllocateBufferDataOnGPU(data);
   }
 }
@@ -28,18 +28,13 @@ Model::Create(const std::vector<BufferData>& bufferDatas)
 // ----------------------------------------------------------------------------
 
 void
-Model::AllocateBufferDataOnGPU(const BufferData& bufferData)
+Model::AllocateBufferDataOnGPU(const MeshDataView& meshData)
 {
-  const std::vector<float>& vertex = bufferData.VertexData();
-  const unsigned nVertices = vertex.size();
-  const unsigned vertexDataSize = vertex.size() * sizeof(float);
-
-  const std::vector<unsigned>& index = bufferData.Indices();
-  const unsigned nIndices = index.size();
+  const RawDataView& vertex = meshData.VertexData();
+  const RawArrayView& index = meshData.Indices();
 
   auto& insertedBuffer = m_gpuBufferDatas.emplace_back();
-  insertedBuffer.Create(
-    vertex.data(), vertexDataSize, nVertices, index.data(), nIndices);
+  insertedBuffer.Create(vertex, meshData.NVertices(), index);
 }
 
 // ----------------------------------------------------------------------------

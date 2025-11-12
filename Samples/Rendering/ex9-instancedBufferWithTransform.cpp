@@ -85,13 +85,10 @@ main()
 
   Chimia::Rendering::InstancedBuffer buffer;
   buffer.CreateInstanced(
-    Inputs::BufferData::vertex.data(),
-    Inputs::BufferData::vertex.size() * sizeof(float),
+    Inputs::BufferData::vertex,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) },
-    Inputs::InstanceData::transforms.data(),
-    Inputs::InstanceData::dataSize,
-    Inputs::InstanceData::transforms.size(),
+    Inputs::InstanceData::transforms,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

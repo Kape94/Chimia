@@ -1,12 +1,12 @@
 #pragma once
 
-#include <vector>
-
 #include "RenderingNamespaceDefs.h"
 
 #include "Buffer.h"
 #include "ReusableIndexedVertexBufferObject.h"
 #include "ShaderAttribute.h"
+
+#include "Core/Types.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -26,14 +26,8 @@ public:
 
   IndexedBuffer& operator=(IndexedBuffer&& other) noexcept;
 
-  IndexedBuffer(const std::vector<float>& vertexData,
-                const std::vector<unsigned>& indexData,
-                const ShaderAttributes& shaderAttributes);
-
-  IndexedBuffer(const void* vertexData,
-                const unsigned vertexDataSize,
-                const unsigned* indexData,
-                const unsigned nIndexDataItems,
+  IndexedBuffer(const RawDataView& vertexData,
+                const RawArrayView& indexData,
                 const ShaderAttributes& shaderAttributes);
 
   ~IndexedBuffer();
@@ -41,18 +35,12 @@ public:
   void Create(const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const std::vector<float>& vertexData,
-              const std::vector<unsigned>& indexData,
+  void Create(const RawDataView& vertexData,
+              const RawArrayView& indexData,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const void* vertexData,
-              const unsigned vertexDataSize,
-              const unsigned* indexData,
-              const unsigned nIndexDataItems,
-              const ShaderAttributes& shaderAttributes);
-
-  void LoadVertexData(const void* vertexData, const unsigned vertexDataSize);
-  void LoadIndexData(const unsigned* indexData, const unsigned nIndexValues);
+  void LoadVertexData(const RawDataView& newVertexData);
+  void LoadIndexData(const RawArrayView& newIndexData);
 
   void Clear();
 

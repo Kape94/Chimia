@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -24,9 +25,7 @@ public:
 
   ~ReusableVertexBufferObject();
 
-  void Create(const void* vertexData,
-              const unsigned vertexDataSize,
-              const unsigned nVertices);
+  void Create(const RawDataView& vertexData, const unsigned nVertices);
 
   void Clear();
 

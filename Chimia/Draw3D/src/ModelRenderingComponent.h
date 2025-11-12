@@ -34,10 +34,10 @@ public:
                       const Rendering::ShaderAttributes& instanceAttributes,
                       const std::function<void(void)>& onFlush);
 
-  void DrawModel(const ModelID& modelID, const Bits::RawDataView& instanceData);
+  void DrawModel(const ModelID& modelID, const RawDataView& instanceData);
 
   ModelInstanceID AddStaticModel(const ModelID& modelID,
-                                 const Bits::RawDataView& instanceData);
+                                 const RawDataView& instanceData);
 
   void DeleteStaticModel(const ModelInstanceID& instanceID);
 

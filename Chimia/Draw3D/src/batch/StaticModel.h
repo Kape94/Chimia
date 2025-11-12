@@ -2,7 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-#include "Bits/Buffer/RawDataView.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 #include "ObjectTable.h"
@@ -29,7 +28,7 @@ public:
               const Rendering::ShaderAttributes& instanceAttributes,
               const std::function<void()>& onRender);
 
-  unsigned AddInstance(const Bits::RawDataView& instanceData);
+  unsigned AddInstance(const RawDataView& instanceData);
   void DeleteInstance(unsigned instanceID);
 
   void Render();

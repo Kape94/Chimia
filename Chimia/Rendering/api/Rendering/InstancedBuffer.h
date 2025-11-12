@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedBuffer.h"
@@ -30,40 +31,27 @@ public:
 
   void CreateInstanced(const ReusableVertexBufferObject& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
-                       const void* instancedData,
-                       const unsigned instancedDataSize,
-                       const unsigned nInstances,
+                       const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
   void CreateInstanced(
     const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
     const ShaderAttributes& shaderAttributes,
-    const void* instancedData,
-    const unsigned instancedDataSize,
-    const unsigned nInstances,
+    const RawArrayView& instancesData,
     const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const void* vertexData,
-                       const unsigned vertexDataSize,
-                       const unsigned* indexData,
-                       const unsigned nIndexDataItems,
+  void CreateInstanced(const RawDataView& vertexData,
+                       const RawArrayView& indexData,
                        const ShaderAttributes& shaderAttributes,
-                       const void* instancedData,
-                       const unsigned instancedDataSize,
-                       const unsigned nInstances,
+                       const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const void* vertexData,
-                       const unsigned vertexDataSize,
+  void CreateInstanced(const RawDataView& vertexData,
                        const ShaderAttributes& shaderAttributes,
-                       const void* instancedData,
-                       const unsigned instancedDataSize,
-                       const unsigned nInstances,
+                       const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void LoadInstancedData(const void* instancedData,
-                         const unsigned instancedDataSize,
-                         const unsigned nInstances);
+  void LoadInstancedData(const RawArrayView& instancesData);
 
   void Clear();
 

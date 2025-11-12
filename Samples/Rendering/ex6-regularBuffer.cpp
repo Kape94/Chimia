@@ -96,7 +96,7 @@ main()
       const std::vector<float>& data = selected == 0
                                          ? Inputs::BufferData::vertex
                                          : Inputs::BufferData::vertex2;
-      buffer.Load(data.data(), data.size() * sizeof(float));
+      buffer.Load(data);
     }
 
     shader.Use();

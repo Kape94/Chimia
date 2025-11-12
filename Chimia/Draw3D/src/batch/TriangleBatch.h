@@ -3,7 +3,6 @@
 #include "Draw3DNamespaceDefs.h"
 
 #include "Bits/Buffer/RawBuffer.h"
-#include "Bits/Buffer/RawDataView.h"
 #include "Rendering/Buffer.h"
 #include "Rendering/ShaderAttribute.h"
 
@@ -25,15 +24,12 @@ public:
               const Rendering::ShaderAttributes& vertexAttributes,
               const std::function<void(void)>& onFlush);
 
-  void Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas);
-  void Draw(const Bits::RawArrayView& vertexDataArray);
+  void Draw(const std::initializer_list<RawDataView>& vertexDatas);
+  void Draw(const RawArrayView& vertexDataArray);
 
   void Flush();
 
 private:
-  size_t CalculateVertexDataSize(
-    const Rendering::ShaderAttributes& vertexAttributes);
-
   void HandleFlushByDemand();
 
   std::function<void(void)> m_onFlush;

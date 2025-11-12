@@ -8,7 +8,6 @@
 #include "TriangleBatch.h"
 #include "Types.h"
 
-#include "Bits/Buffer/RawDataView.h"
 #include "Rendering/ShaderAttribute.h"
 
 #include <initializer_list>
@@ -31,7 +30,7 @@ public:
   void DrawTriangles(const std::vector<float>& vertexData);
   void DrawTriangles(const std::vector<float>& vertexData,
                      const std::vector<unsigned>& indices);
-  void DrawTriangle(const std::initializer_list<Bits::RawDataView>& vertexData);
+  void DrawTriangle(const std::initializer_list<RawDataView>& vertexData);
 
   TriangleMeshID AddStaticMesh(const std::vector<float>& vertexData);
   TriangleMeshID AddStaticMesh(const std::vector<float>& vertexData,

@@ -45,10 +45,11 @@ const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 const unsigned vertexDataItems = 18;
 const unsigned vertexDataSize = vertexDataItems * sizeof(float);
+const unsigned nVertices = 3;
 
 const unsigned indexData[] = { 0, 1, 2 };
 
-const unsigned indexDataSize = 3;
+const unsigned indexDataItems = 3;
 }
 }
 
@@ -63,11 +64,12 @@ main()
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
   Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(Inputs::BufferData::vertex,
-                              Inputs::BufferData::vertexDataSize,
-                              Inputs::BufferData::vertexDataItems,
-                              Inputs::BufferData::indexData,
-                              Inputs::BufferData::indexDataSize);
+  reusableVertexBuffer.Create(
+    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
+    Inputs::BufferData::nVertices,
+    { Inputs::BufferData::indexData,
+      Inputs::BufferData::indexDataItems,
+      sizeof(unsigned) });
 
   Chimia::Rendering::IndexedBuffer buffer;
   buffer.Create(

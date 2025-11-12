@@ -2,6 +2,7 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
+#include "Core/Types.h"
 #include "IndexedBuffer.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
@@ -52,9 +53,7 @@ void
 InstancedBuffer::CreateInstanced(
   const ReusableVertexBufferObject& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
-  const void* instancedData,
-  const unsigned instancedDataSize,
-  const unsigned nInstances,
+  const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   m_baseBuffer = Buffer();
@@ -62,10 +61,11 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
-  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  LoadInstancedDataInGPU(
+    instancesData.array, instancesData.itemSize, instancesData.nItems);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 
-  m_nInstances = nInstances;
+  m_nInstances = instancesData.nItems;
 }
 
 //---------------------------------------------------------------------------------------
@@ -74,9 +74,7 @@ void
 InstancedBuffer::CreateInstanced(
   const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
-  const void* instancedData,
-  const unsigned instancedDataSize,
-  const unsigned nInstances,
+  const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   m_baseBuffer = IndexedBuffer();
@@ -84,73 +82,66 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
-  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  LoadInstancedDataInGPU(
+    instancesData.array, instancesData.itemSize, instancesData.nItems);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 
-  m_nInstances = nInstances;
+  m_nInstances = instancesData.nItems;
 }
 
 //---------------------------------------------------------------------------------------
 
 void
 InstancedBuffer::CreateInstanced(
-  const void* vertexData,
-  const unsigned vertexDataSize,
-  const unsigned* indexData,
-  const unsigned nIndexDataItems,
+  const RawDataView& vertexData,
+  const RawArrayView& indexData,
   const ShaderAttributes& shaderAttributes,
-  const void* instancedData,
-  const unsigned instancedDataSize,
-  const unsigned nInstances,
+  const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   m_baseBuffer = IndexedBuffer();
   IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
 
-  base.Create(
-    vertexData, vertexDataSize, indexData, nIndexDataItems, shaderAttributes);
+  base.Create(vertexData, indexData, shaderAttributes);
 
-  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  LoadInstancedDataInGPU(
+    instancesData.array, instancesData.itemSize, instancesData.nItems);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 
-  m_nInstances = nInstances;
+  m_nInstances = instancesData.nItems;
 }
 
 //---------------------------------------------------------------------------------------
 
 void
 InstancedBuffer::CreateInstanced(
-  const void* vertexData,
-  const unsigned vertexDataSize,
+  const RawDataView& vertexData,
   const ShaderAttributes& shaderAttributes,
-  const void* instancedData,
-  const unsigned instancedDataSize,
-  const unsigned nInstances,
+  const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   m_baseBuffer = Buffer();
   Buffer& base = std::get<Buffer>(m_baseBuffer);
 
-  base.Create(vertexData, vertexDataSize, shaderAttributes);
+  base.Create(vertexData, shaderAttributes);
 
-  LoadInstancedDataInGPU(instancedData, instancedDataSize, nInstances);
+  LoadInstancedDataInGPU(
+    instancesData.array, instancesData.itemSize, instancesData.nItems);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 
-  m_nInstances = nInstances;
+  m_nInstances = instancesData.nItems;
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::LoadInstancedData(const void* instancedData,
-                                   const unsigned instancedDataSize,
-                                   const unsigned nInstances)
+InstancedBuffer::LoadInstancedData(const RawArrayView& instancesData)
 {
-  const unsigned totalSize = instancedDataSize * nInstances;
+  const unsigned totalSize = instancesData.TotalSize();
   BufferUtils::LoadDataOnBuffer(
-    m_instancedVBO, GL_ARRAY_BUFFER, instancedData, totalSize);
+    m_instancedVBO, GL_ARRAY_BUFFER, instancesData.array, totalSize);
 
-  m_nInstances = nInstances;
+  m_nInstances = instancesData.nItems;
 }
 
 //---------------------------------------------------------------------------------------

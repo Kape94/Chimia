@@ -1,7 +1,7 @@
 #include "TriangleBatch.h"
-#include "Bits/Buffer/RawDataView.h"
+
+#include "Core/Types.h"
 #include "Rendering/ShaderAttribute.h"
-#include <numeric>
 
 // ----------------------------------------------------------------------------
 
@@ -16,35 +16,20 @@ TriangleBatch::Create(const size_t batchSize,
 {
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   m_inputDataSize =
-    CalculateVertexDataSize(vertexAttributes) * N_VERTICES_IN_TRIANGLE;
+    vertexAttributes.ComputeTotalSizeOfAttributes() * N_VERTICES_IN_TRIANGLE;
 
   const size_t bufferTotalSize = batchSize * m_inputDataSize;
   m_inputBuffer.Resize(bufferTotalSize);
 
-  m_gpuBuffer.Create(nullptr, bufferTotalSize, vertexAttributes);
+  m_gpuBuffer.Create(RawDataView{ nullptr, bufferTotalSize }, vertexAttributes);
 
   m_onFlush = onFlush;
 }
 
 // ----------------------------------------------------------------------------
 
-size_t
-TriangleBatch::CalculateVertexDataSize(
-  const Rendering::ShaderAttributes& vertexAttributes)
-{
-  return std::accumulate(
-    vertexAttributes.begin(),
-    vertexAttributes.end(),
-    0,
-    [](size_t current, const Rendering::ShaderAttribute& attr) {
-      return current + attr.DataSizeInBytes();
-    });
-}
-
-// ----------------------------------------------------------------------------
-
 void
-TriangleBatch::Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas)
+TriangleBatch::Draw(const std::initializer_list<RawDataView>& vertexDatas)
 {
   HandleFlushByDemand();
 
@@ -56,7 +41,7 @@ TriangleBatch::Draw(const std::initializer_list<Bits::RawDataView>& vertexDatas)
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Draw(const Bits::RawArrayView& vertexDataArray)
+TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 {
   HandleFlushByDemand();
   m_inputBuffer.Append(vertexDataArray.AsDataView());
@@ -85,7 +70,7 @@ TriangleBatch::Flush()
 
   m_onFlush();
 
-  m_gpuBuffer.Load(m_inputBuffer.GetData(), frameInputSize);
+  m_gpuBuffer.Load(RawDataView{ m_inputBuffer.GetData(), frameInputSize });
   m_gpuBuffer.Render();
 
   m_inputBuffer.Reset();

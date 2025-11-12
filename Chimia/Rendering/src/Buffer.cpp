@@ -2,6 +2,7 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
+#include "Core/Types.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
 
@@ -43,19 +44,10 @@ Buffer::operator=(Buffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-Buffer::Buffer(const std::vector<float>& vertexData,
+Buffer::Buffer(const RawDataView& bufferData,
                const ShaderAttributes& shaderAttributes)
 {
-  Create(vertexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-Buffer::Buffer(const void* vertexData,
-               const unsigned vertexDataSize,
-               const ShaderAttributes& shaderAttributes)
-{
-  Create(vertexData, vertexDataSize, shaderAttributes);
+  Create(bufferData, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -89,25 +81,13 @@ Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Create(const std::vector<float>& vertexData,
-               const ShaderAttributes& shaderAttributes)
-{
-  const unsigned nFloatItems = static_cast<unsigned>(vertexData.size());
-  const unsigned vertexDataSize = nFloatItems * sizeof(float);
-
-  Create(vertexData.data(), vertexDataSize, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-Buffer::Create(const void* vertexData,
-               const unsigned vertexDataSize,
+Buffer::Create(const RawDataView& vertexData,
                const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  LoadDataInGPU(vertexData, vertexDataSize);
+  const size_t vertexDataSize = vertexData.size;
+  LoadDataInGPU(vertexData.data, vertexDataSize);
   BufferUtils::LinkShaderAttributes(shaderAttributes);
 
   m_sizePerVertex = BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
@@ -138,14 +118,15 @@ Buffer::LoadVertexDataInGPU(const void* vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Load(const void* vertexData, const unsigned vertexDataSize)
+Buffer::Load(const RawDataView& vertexData)
 {
   if (m_VAO == 0 || m_VBO == 0) {
     return;
   }
 
+  const size_t vertexDataSize = vertexData.size;
   BufferUtils::LoadDataOnBuffer(
-    m_VBO, GL_ARRAY_BUFFER, vertexData, vertexDataSize);
+    m_VBO, GL_ARRAY_BUFFER, vertexData.data, vertexDataSize);
   m_nVertices = vertexDataSize / m_sizePerVertex;
 }
 

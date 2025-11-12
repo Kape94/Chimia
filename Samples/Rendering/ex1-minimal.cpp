@@ -46,7 +46,7 @@ const unsigned vertexDataSize = 18 * sizeof(float);
 
 const unsigned indexData[] = { 0, 1, 2 };
 
-const unsigned indexDataSize = 3;
+const unsigned indexDataNItems = 3;
 }
 }
 
@@ -62,10 +62,8 @@ main()
 
   Chimia::Rendering::IndexedBuffer buffer;
   buffer.Create(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::vertexDataSize,
-    Inputs::BufferData::indexData,
-    Inputs::BufferData::indexDataSize,
+    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 

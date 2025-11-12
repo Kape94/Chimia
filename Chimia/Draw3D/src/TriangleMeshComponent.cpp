@@ -33,7 +33,7 @@ TriangleMeshComponent::Flush()
 
 void
 TriangleMeshComponent::DrawTriangle(
-  const std::initializer_list<Bits::RawDataView>& vertexData)
+  const std::initializer_list<RawDataView>& vertexData)
 {
   m_triangleBatch.Draw(vertexData);
 }

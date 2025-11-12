@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
-
 #include "RenderingNamespaceDefs.h"
 
 #include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
+
+#include "Core/Types.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -25,11 +25,7 @@ public:
 
   Buffer& operator=(Buffer&& other) noexcept;
 
-  Buffer(const std::vector<float>& vertexData,
-         const ShaderAttributes& shaderAttributes);
-
-  Buffer(const void* vertexData,
-         const unsigned vertexDataSize,
+  Buffer(const RawDataView& vertexData,
          const ShaderAttributes& shaderAttributes);
 
   ~Buffer();
@@ -37,14 +33,10 @@ public:
   void Create(const ReusableVertexBufferObject& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const std::vector<float>& vertexData,
+  void Create(const RawDataView& vertexData,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const void* vertexData,
-              const unsigned vertexDataSize,
-              const ShaderAttributes& shaderAttributes);
-
-  void Load(const void* vertexData, const unsigned vertexDataSize);
+  void Load(const RawDataView& vertexData);
 
   void Clear();
 

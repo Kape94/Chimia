@@ -2,6 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Bits/Buffer/RawBuffer.h"
+#include "Core/Types.h"
 #include "Draw3DPrivate.h"
 
 // ----------------------------------------------------------------------------
@@ -19,7 +20,8 @@ StaticTriangles::Create(const size_t batchSize,
   const size_t triangleBatchSize =
     sizePerVertex * nVerticesPerTriangle * batchSize;
 
-  m_gpuBuffer.Create(nullptr, triangleBatchSize, shaderAttributes);
+  m_gpuBuffer.Create(RawDataView{ nullptr, triangleBatchSize },
+                     shaderAttributes);
   m_inputBuffer.Resize(triangleBatchSize);
 
   m_batchSize = triangleBatchSize;
@@ -127,7 +129,7 @@ StaticTriangles::HandleRenderingForBatchRange(const size_t rangeStart,
   const unsigned char* data = m_inputBuffer.GetData();
   const unsigned char* batchData = data + rangeStart;
 
-  m_gpuBuffer.Load(batchData, rangeSize);
+  m_gpuBuffer.Load(RawDataView{ batchData, rangeSize });
   m_gpuBuffer.Render();
 }
 

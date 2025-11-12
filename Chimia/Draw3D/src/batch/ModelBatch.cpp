@@ -1,8 +1,8 @@
 #include "ModelBatch.h"
+#include "Core/Types.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
-#include <numeric>
 
 // ----------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ ModelBatch::Create(const Model& model,
                    const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
-  m_instancedDataSize = CalculateInstancedDataSize(instanceAttributes);
+  m_instancedDataSize = instanceAttributes.ComputeTotalSizeOfAttributes();
 
   model.ForEachBuffer(
     [&](const Rendering::ReusableIndexedVertexBufferObject& reusableBuffer) {
@@ -33,21 +33,6 @@ ModelBatch::Create(const Model& model,
 
 // ----------------------------------------------------------------------------
 
-size_t
-ModelBatch::CalculateInstancedDataSize(
-  const Rendering::ShaderAttributes& instancedDataAttributes)
-{
-  return std::accumulate(
-    instancedDataAttributes.begin(),
-    instancedDataAttributes.end(),
-    0,
-    [](size_t current, const Rendering::ShaderAttribute& attr) {
-      return current + attr.DataSizeInBytes();
-    });
-}
-
-// ----------------------------------------------------------------------------
-
 void
 ModelBatch::AddGPUBuffer(
   const Rendering::ReusableIndexedVertexBufferObject& bufferData,
@@ -56,18 +41,17 @@ ModelBatch::AddGPUBuffer(
   const Rendering::ShaderAttributes& instanceAttributes)
 {
   Rendering::InstancedBuffer& inserted = m_gpuBuffers.emplace_back();
-  inserted.CreateInstanced(bufferData,
-                           vertexAttributes,
-                           nullptr,
-                           m_instancedDataSize,
-                           instanceBatchSize,
-                           instanceAttributes);
+  inserted.CreateInstanced(
+    bufferData,
+    vertexAttributes,
+    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSize },
+    instanceAttributes);
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Draw(const Bits::RawDataView& instanceData)
+ModelBatch::Draw(const RawDataView& instanceData)
 {
   HandleFlushByDemand();
 
@@ -77,7 +61,7 @@ ModelBatch::Draw(const Bits::RawDataView& instanceData)
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Draw(const std::initializer_list<Bits::RawDataView>& instanceDatas)
+ModelBatch::Draw(const std::initializer_list<RawDataView>& instanceDatas)
 {
   HandleFlushByDemand();
 
@@ -111,8 +95,8 @@ ModelBatch::Flush()
 
   const size_t nInstances = totalInputSize / m_instancedDataSize;
   for (auto& buffer : m_gpuBuffers) {
-    buffer.LoadInstancedData(
-      m_instancedInputBuffer.GetData(), m_instancedDataSize, nInstances);
+    buffer.LoadInstancedData(RawArrayView{
+      m_instancedInputBuffer.GetData(), nInstances, m_instancedDataSize });
 
     buffer.Render();
   }

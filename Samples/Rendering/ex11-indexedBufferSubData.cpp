@@ -114,10 +114,8 @@ main()
 
   Chimia::Rendering::IndexedBuffer buffer;
   buffer.Create(
-    nullptr,
-    maximumVertexSize * sizeof(float),
-    nullptr,
-    maximumIndexSize,
+    { nullptr, maximumVertexSize * sizeof(float) },
+    { nullptr, maximumIndexSize, sizeof(unsigned) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -127,8 +125,8 @@ main()
 
   const auto& state = states[selected];
 
-  buffer.LoadVertexData(state.vData.data(), state.vData.size() * sizeof(float));
-  buffer.LoadIndexData(state.iData.data(), state.iData.size());
+  buffer.LoadVertexData(state.vData);
+  buffer.LoadIndexData(state.iData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -141,9 +139,8 @@ main()
 
       const auto& state = states[selected];
 
-      buffer.LoadVertexData(state.vData.data(),
-                            state.vData.size() * sizeof(float));
-      buffer.LoadIndexData(state.iData.data(), state.iData.size());
+      buffer.LoadVertexData(state.vData);
+      buffer.LoadIndexData(state.iData);
     }
 
     shader.Use();

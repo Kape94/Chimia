@@ -2,6 +2,7 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
+#include "Core/Types.h"
 #include "OpenGLDefs.h"
 
 //---------------------------------------------------------------------------------------
@@ -38,23 +39,11 @@ IndexedBuffer::operator=(IndexedBuffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer::IndexedBuffer(const std::vector<float>& vertexData,
-                             const std::vector<unsigned>& indexData,
+IndexedBuffer::IndexedBuffer(const RawDataView& vertexData,
+                             const RawArrayView& indexData,
                              const ShaderAttributes& shaderAttributes)
 {
   Create(vertexData, indexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-IndexedBuffer::IndexedBuffer(const void* vertexData,
-                             const unsigned vertexDataSize,
-                             const unsigned* indexData,
-                             const unsigned nIndexDataItems,
-                             const ShaderAttributes& shaderAttributes)
-{
-  Create(
-    vertexData, vertexDataSize, indexData, nIndexDataItems, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -83,35 +72,17 @@ IndexedBuffer::Create(
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Create(const std::vector<float>& vertexData,
-                      const std::vector<unsigned>& indexData,
-                      const ShaderAttributes& shaderAttributes)
-{
-  const unsigned vertexDataNFloats = static_cast<unsigned>(vertexData.size());
-  const unsigned vertexDataSize = vertexDataNFloats * sizeof(float);
-
-  const unsigned indexDataSize = static_cast<unsigned>(indexData.size());
-  Create(vertexData.data(),
-         vertexDataSize,
-         indexData.data(),
-         indexDataSize,
-         shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-IndexedBuffer::Create(const void* vertexData,
-                      const unsigned vertexDataSize,
-                      const unsigned* indexData,
-                      const unsigned nIndexDataItems,
+IndexedBuffer::Create(const RawDataView& vertexData,
+                      const RawArrayView& indexData,
                       const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  m_baseBuffer.Create(vertexData, vertexDataSize, shaderAttributes);
+  m_baseBuffer.Create(vertexData, shaderAttributes);
 
-  LoadIndexDataInGPU(indexData, nIndexDataItems);
+  const unsigned nIndexDataItems = indexData.nItems;
+  LoadIndexDataInGPU(reinterpret_cast<const unsigned*>(indexData.array),
+                     nIndexDataItems);
   m_nElements = nIndexDataItems;
 }
 
@@ -129,27 +100,23 @@ IndexedBuffer::LoadIndexDataInGPU(const unsigned* indexData,
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::LoadVertexData(const void* vertexData,
-                              const unsigned vertexDataSize)
+IndexedBuffer::LoadVertexData(const RawDataView& vertexData)
 {
-  m_baseBuffer.Load(vertexData, vertexDataSize);
+  m_baseBuffer.Load(vertexData);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::LoadIndexData(const unsigned* indexData,
-                             const unsigned nIndexValues)
+IndexedBuffer::LoadIndexData(const RawArrayView& indexData)
 {
   if (GetVAO() == 0 || m_EBO == 0) {
     return;
   }
 
-  constexpr unsigned SIZE_PER_INDEX = sizeof(unsigned);
-  const unsigned indexDataSize = nIndexValues * SIZE_PER_INDEX;
-
+  const unsigned nIndexValues = indexData.nItems;
   BufferUtils::LoadDataOnBuffer(
-    m_EBO, GL_ELEMENT_ARRAY_BUFFER, indexData, indexDataSize);
+    m_EBO, GL_ELEMENT_ARRAY_BUFFER, indexData.array, indexData.TotalSize());
 
   m_nElements = nIndexValues;
 }
