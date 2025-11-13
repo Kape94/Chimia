@@ -4,6 +4,8 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "Core/Types.h"
+
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
@@ -56,6 +58,40 @@ private:
   }
 
   unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
+class MeshDataView
+{
+public:
+  MeshDataView() = delete;
+
+  MeshDataView(const RawDataView& vertexData,
+               const size_t nVertices,
+               const RawArrayView& indices)
+    : m_vertexData(vertexData)
+    , m_nVertices(nVertices)
+    , m_indices(indices)
+  {
+  }
+
+  ~MeshDataView() = default;
+
+  MeshDataView(const MeshDataView& other) = delete;
+  MeshDataView& operator=(const MeshDataView& other) = delete;
+
+  MeshDataView(MeshDataView&& other) = delete;
+  MeshDataView& operator=(MeshDataView&& other) = delete;
+
+  const RawDataView& VertexData() const { return m_vertexData; }
+  const RawArrayView& Indices() const { return m_indices; }
+  size_t NVertices() const { return m_nVertices; }
+
+private:
+  RawDataView m_vertexData;
+  size_t m_nVertices = 0;
+  RawArrayView m_indices;
 };
 
 // ----------------------------------------------------------------------------

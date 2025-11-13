@@ -45,9 +45,6 @@ public:
 
   void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
 
-  ModelID CreateModel(const std::vector<float>& vertexData,
-                      const std::vector<unsigned>& indices) override;
-
   void DrawModelTransformed(const ModelID& modelID,
                             const glm::mat4x4& transform) override;
 

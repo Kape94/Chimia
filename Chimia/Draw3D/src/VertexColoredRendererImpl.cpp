@@ -48,6 +48,11 @@ VertexColoredRendererImpl::Init()
   m_triangleMeshComponent.Init(Config::VertexColored::triangleBatchSize,
                                VERTEX_ATTRIBUTES,
                                [&]() { ConfigureShaderForTriangleDrawing(); });
+
+  m_modelComponent.Init(Config::VertexColored::modelsBatchSize,
+                        VERTEX_ATTRIBUTES,
+                        TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                        [&]() { ConfigureShaderForTransformedModelDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -114,21 +119,6 @@ void
 VertexColoredRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
   m_triangleMeshComponent.DeleteStaticMesh(meshID);
-}
-
-// ----------------------------------------------------------------------------
-
-ModelID
-VertexColoredRendererImpl::CreateModel(const std::vector<float>& vertexData,
-                                       const std::vector<unsigned>& indices)
-{
-  return m_modelComponent.CreateModel(
-    vertexData,
-    indices,
-    Config::VertexColored::modelsBatchSize,
-    VERTEX_ATTRIBUTES,
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-    [&]() { ConfigureShaderForTransformedModelDrawing(); });
 }
 
 // ----------------------------------------------------------------------------

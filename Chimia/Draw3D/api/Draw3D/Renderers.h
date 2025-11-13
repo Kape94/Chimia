@@ -42,9 +42,6 @@ public:
 
   virtual void DeleteStaticTriangles(const TriangleMeshID& meshID) = 0;
 
-  virtual ModelID CreateModel(const std::vector<float>& vertexData,
-                              const std::vector<unsigned>& indices) = 0;
-
   virtual void DrawModelTransformed(const ModelID& modelID,
                                     const glm::mat4x4& transform) = 0;
 

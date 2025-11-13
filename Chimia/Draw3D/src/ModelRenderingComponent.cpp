@@ -1,13 +1,32 @@
 #include "ModelRenderingComponent.h"
 
 #include "Draw3DPrivate.h"
+#include "ModelBatch.h"
+#include "ResourcesManager.h"
 
 #include "Core/Diagnostics.h"
 #include "Rendering/ShaderAttribute.h"
+#include "StaticModel.h"
+#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+void
+ModelRenderingComponent::Init(
+  const size_t modelBatchSize,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instanceAttributes,
+  const std::function<void(void)>& onFlush)
+{
+  m_batchSize = modelBatchSize;
+  m_vertexAttributes = vertexAttributes;
+  m_instanceAttributes = instanceAttributes;
+  m_onFlush = onFlush;
+}
 
 // ----------------------------------------------------------------------------
 
@@ -20,50 +39,6 @@ ModelRenderingComponent::Flush()
 
 // ----------------------------------------------------------------------------
 
-ModelID
-ModelRenderingComponent::CreateModel(
-  const std::vector<float>& vertexData,
-  const std::vector<unsigned>& indices,
-  const size_t modelBatchSize,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes,
-  const std::function<void(void)>& onFlush)
-{
-  // TODO: handle unnecessary vector copy (BufferData holds vector member that
-  // copy the parameters)
-  const size_t sizePerVertex = vertexAttributes.ComputeTotalSizeOfAttributes();
-  const size_t nVertices = (vertexData.size() * sizeof(float)) / sizePerVertex;
-
-  auto [modelID, model] = m_modelsTable.Insert();
-  model->Create(MeshDataView(vertexData, nVertices, indices));
-
-  ModelBatch* batch = m_transformedModelsTable.Insert(modelID);
-  if (batch == nullptr) {
-    Chimia::Diagnostics::Error(
-      1,
-      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
-      "create transformed model entry for new model created");
-  }
-
-  batch->Create(
-    *model, modelBatchSize, vertexAttributes, instanceAttributes, onFlush);
-
-  StaticModel* staticModel = m_staticModelsTable.Insert(modelID);
-  if (staticModel == nullptr) {
-    Chimia::Diagnostics::Error(
-      1,
-      "Unexpected error at VertexColoredRendererImpl::CreateModel, couldn't "
-      "create static model entry for new model created");
-  }
-
-  staticModel->Create(
-    *model, modelBatchSize, vertexAttributes, instanceAttributes, onFlush);
-
-  return Draw3DPrivate::CreateModelID(modelID);
-}
-
-// ----------------------------------------------------------------------------
-
 void
 ModelRenderingComponent::DrawModel(const ModelID& modelID,
                                    const RawDataView& instanceData)
@@ -71,10 +46,35 @@ ModelRenderingComponent::DrawModel(const ModelID& modelID,
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
   ModelBatch* batch = m_transformedModelsTable.Find(id);
   if (batch == nullptr) {
-    return;
+    batch = AllocateBatchForModelDrawing(modelID);
+    if (batch == nullptr) {
+      return;
+    }
   }
 
   batch->Draw(instanceData);
+}
+
+// ----------------------------------------------------------------------------
+
+ModelBatch*
+ModelRenderingComponent::AllocateBatchForModelDrawing(const ModelID& modelID)
+{
+  const unsigned id = Draw3DPrivate::GetModelID(modelID);
+
+  ModelBatch* batch = m_transformedModelsTable.Insert(id);
+  if (batch == nullptr) {
+    Chimia::Diagnostics::Error(
+      1,
+      "Unexpected error at ModelRenderingComponent::DrawModel, couldn't "
+      "create transformed model entry for new model created");
+    return nullptr;
+  }
+
+  const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
+  batch->Create(
+    *model, m_batchSize, m_vertexAttributes, m_instanceAttributes, m_onFlush);
+  return batch;
 }
 
 // ----------------------------------------------------------------------------
@@ -84,14 +84,39 @@ ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
                                         const RawDataView& instanceData)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
-  StaticModel* model = m_staticModelsTable.Find(id);
-  if (model == nullptr) {
-    return Draw3DPrivate::CreateModelInstanceID(0, 0);
+
+  StaticModel* staticModel = m_staticModelsTable.Find(id);
+  if (staticModel == nullptr) {
+    staticModel = AllocateBatchForStaticModel(modelID);
+    if (staticModel == nullptr) {
+      return Draw3DPrivate::CreateModelInstanceID(0, 0);
+    }
   }
 
-  const unsigned instanceID = model->AddInstance(instanceData);
-
+  const unsigned instanceID = staticModel->AddInstance(instanceData);
   return Draw3DPrivate::CreateModelInstanceID(id, instanceID);
+}
+
+// ----------------------------------------------------------------------------
+
+StaticModel*
+ModelRenderingComponent::AllocateBatchForStaticModel(const ModelID& modelID)
+{
+  const unsigned id = Draw3DPrivate::GetModelID(modelID);
+
+  StaticModel* staticModel = m_staticModelsTable.Insert(id);
+  if (staticModel == nullptr) {
+    Chimia::Diagnostics::Error(
+      1,
+      "Unexpected error at ModelRenderingComponent::AddStaticModel, couldn't "
+      "create static model entry for new model created");
+    return nullptr;
+  }
+
+  const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
+  staticModel->Create(
+    *model, m_batchSize, m_vertexAttributes, m_instanceAttributes, m_onFlush);
+  return staticModel;
 }
 
 // ----------------------------------------------------------------------------

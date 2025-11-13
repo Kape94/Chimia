@@ -10,6 +10,8 @@ add_library(${TARGET_NAME}
     src/Model.cpp
     src/ModelRenderingComponent.cpp
     src/Renderers.cpp
+    src/Resources.cpp
+    src/ResourcesManager.cpp
     src/Shaders.cpp
     src/Triangle.cpp
     src/TriangleMeshComponent.cpp
@@ -25,9 +27,9 @@ add_library(${TARGET_NAME}
 target_link_libraries(${TARGET_NAME}
     PUBLIC
         glm::glm
+        Chimia_Core
     PRIVATE
         Chimia_Bits
-        Chimia_Core
         Chimia_Rendering
 )
 

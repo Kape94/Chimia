@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
-#include "MeshDataView.h"
+#include "Types.h"
 
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 

@@ -23,16 +23,12 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class ModelRenderingComponent
 {
 public:
-  void Init();
+  void Init(const size_t modelBatchSize,
+            const Rendering::ShaderAttributes& vertexAttributes,
+            const Rendering::ShaderAttributes& instanceAttributes,
+            const std::function<void(void)>& onFlush);
 
   void Flush();
-
-  ModelID CreateModel(const std::vector<float>& vertexData,
-                      const std::vector<unsigned>& indices,
-                      const size_t modelBatchSize,
-                      const Rendering::ShaderAttributes& vertexAttributes,
-                      const Rendering::ShaderAttributes& instanceAttributes,
-                      const std::function<void(void)>& onFlush);
 
   void DrawModel(const ModelID& modelID, const RawDataView& instanceData);
 
@@ -42,6 +38,15 @@ public:
   void DeleteStaticModel(const ModelInstanceID& instanceID);
 
 private:
+  ModelBatch* AllocateBatchForModelDrawing(const ModelID& modelID);
+
+  StaticModel* AllocateBatchForStaticModel(const ModelID& modelID);
+
+  size_t m_batchSize;
+  Rendering::ShaderAttributes m_vertexAttributes;
+  Rendering::ShaderAttributes m_instanceAttributes;
+  std::function<void(void)> m_onFlush;
+
   ObjectTable<Model> m_modelsTable;
   ObjectTable<ModelBatch> m_transformedModelsTable;
   ObjectTable<StaticModel> m_staticModelsTable;

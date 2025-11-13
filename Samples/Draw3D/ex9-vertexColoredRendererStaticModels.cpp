@@ -1,5 +1,6 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Renderers.h"
+#include "Draw3D/Resources.h"
 #include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
@@ -20,6 +21,7 @@ namespace Input {
       0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
       -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
   };
+  const size_t nVertices = 5;
 
   const std::vector<unsigned> indices {
     0, 1, 2, 0, 3, 4
@@ -58,8 +60,8 @@ main()
 
   auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
 
-  const Chimia::Draw3D::ModelID modelID =
-    renderer.CreateModel(Input::vertexData, Input::indices);
+  const Chimia::Draw3D::ModelID modelID = Chimia::Draw3D::CreateModel(
+    { Input::vertexData, Input::nVertices, Input::indices });
 
   const Chimia::Draw3D::ModelInstanceID instance1 =
     renderer.AddStaticModel(modelID, Input::transform1);

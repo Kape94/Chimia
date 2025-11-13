@@ -27,6 +27,7 @@ public:
   Object* Insert(unsigned id);
 
   Object* Find(unsigned id);
+  const Object* Find(unsigned id) const;
 
   void ForEach(const std::function<void(Object&)>& action);
 
@@ -103,6 +104,15 @@ ObjectTable<Object>::Insert(unsigned id)
 template<class Object>
 Object*
 ObjectTable<Object>::Find(unsigned id)
+{
+  return m_objects[id];
+}
+
+// ----------------------------------------------------------------------------
+
+template<class Object>
+const Object*
+ObjectTable<Object>::Find(unsigned id) const
 {
   return m_objects[id];
 }
