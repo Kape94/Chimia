@@ -15,6 +15,7 @@ namespace {
 Chimia::Rendering::Shader vertexColored;
 Chimia::Rendering::Shader vertexColoredWithInstancedTransform;
 Chimia::Rendering::Shader gouraudLit;
+Chimia::Rendering::Shader gouraudLitWithInstancedTransformAndMaterial;
 }
 
 // ----------------------------------------------------------------------------
@@ -31,6 +32,10 @@ Chimia::Draw3D::Shaders::Initialize()
 
   gouraudLit.Create(ShaderCodes::Vertex::gouraudLit,
                     ShaderCodes::Fragment::gouraudLit);
+
+  gouraudLitWithInstancedTransformAndMaterial.Create(
+    ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndMaterial,
+    ShaderCodes::Fragment::gouraudLit);
 }
 
 // ----------------------------------------------------------------------------
@@ -55,6 +60,14 @@ Chimia::Rendering::Shader&
 Chimia::Draw3D::Shaders::GouraudLit()
 {
   return gouraudLit;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::GouraudLitWithInstancedTransformAndMaterial()
+{
+  return gouraudLitWithInstancedTransformAndMaterial;
 }
 
 // ----------------------------------------------------------------------------

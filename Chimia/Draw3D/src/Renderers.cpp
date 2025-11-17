@@ -1,5 +1,6 @@
 #include "Renderers.h"
 
+#include "LitRendererImpl.h"
 #include "VertexColoredRendererImpl.h"
 
 // ----------------------------------------------------------------------------
@@ -12,6 +13,14 @@ VertexColoredRenderer&
 Chimia::Draw3D::GetVertexColoredRenderer()
 {
   return VertexColoredRendererImpl::getInstance();
+}
+
+// ----------------------------------------------------------------------------
+
+LitRenderer&
+Chimia::Draw3D::GetLitRenderer()
+{
+  return LitRendererImpl::getInstance();
 }
 
 // ----------------------------------------------------------------------------

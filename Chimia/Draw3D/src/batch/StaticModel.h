@@ -11,6 +11,7 @@
 #include "Rendering/ShaderAttribute.h"
 
 #include <functional>
+#include <initializer_list>
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -29,6 +30,8 @@ public:
               const std::function<void()>& onRender);
 
   unsigned AddInstance(const RawDataView& instanceData);
+  unsigned AddInstance(const std::initializer_list<RawDataView>& instanceDatas);
+
   void DeleteInstance(unsigned instanceID);
 
   void Render();

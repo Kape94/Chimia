@@ -23,10 +23,18 @@ public:
 
   const Model* GetModel(const ModelID& modelID) const;
 
+  MaterialID CreateMaterial(const glm::vec3& ambient,
+                            const glm::vec3& diffuse,
+                            const glm::vec3& specular,
+                            const float shininess);
+
+  const Material* GetMaterial(const MaterialID& materialID);
+
 private:
   ResourcesManager() = default;
 
   ObjectTable<Model> m_modelsTable;
+  ObjectTable<Material> m_materialsTable;
 };
 
 // ----------------------------------------------------------------------------

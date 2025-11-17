@@ -36,3 +36,29 @@ ResourcesManager::GetModel(const ModelID& modelID) const
 }
 
 // ----------------------------------------------------------------------------
+
+MaterialID
+ResourcesManager::CreateMaterial(const glm::vec3& ambient,
+                                 const glm::vec3& diffuse,
+                                 const glm::vec3& specular,
+                                 const float shininess)
+{
+  auto [materialID, material] = m_materialsTable.Insert();
+
+  material->ambient = ambient;
+  material->diffuse = diffuse;
+  material->specular = specular;
+  material->shininess = shininess;
+
+  return Draw3DPrivate::CreateMaterialID(materialID);
+}
+
+// ----------------------------------------------------------------------------
+
+const Material*
+ResourcesManager::GetMaterial(const MaterialID& materialID)
+{
+  return m_materialsTable.Find(Draw3DPrivate::GetMaterialIDValue(materialID));
+}
+
+// ----------------------------------------------------------------------------

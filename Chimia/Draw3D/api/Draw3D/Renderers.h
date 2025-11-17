@@ -51,12 +51,55 @@ public:
   virtual void DeleteStaticModel(const ModelInstanceID& instanceID) = 0;
 };
 
+class LitRenderer
+{
+public:
+  virtual void DrawTriangle(const glm::vec3& p1,
+                            const glm::vec3& normal1,
+                            const glm::vec3& p2,
+                            const glm::vec3& normal2,
+                            const glm::vec3& p3,
+                            const glm::vec3& normal3,
+                            const MaterialID& materialID) = 0;
+
+  virtual void DrawTriangles(const std::vector<float>& vertexData,
+                             const MaterialID& materialID) = 0;
+
+  virtual void DrawTriangles(const std::vector<float>& vertexData,
+                             const std::vector<unsigned>& indexData,
+                             const MaterialID& materialID) = 0;
+
+  virtual LitTriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData,
+    const MaterialID& materialID) = 0;
+
+  virtual LitTriangleMeshID AddStaticTriangles(
+    const std::vector<float>& vertexData,
+    const std::vector<unsigned>& indexData,
+    const MaterialID& materialID) = 0;
+
+  virtual void DeleteStaticTriangles(const LitTriangleMeshID& meshID) = 0;
+
+  virtual void DrawModelTransformed(const ModelID& modelID,
+                                    const glm::mat4x4& transform,
+                                    const MaterialID& materialID) = 0;
+
+  virtual ModelInstanceID AddStaticModel(const ModelID& modelID,
+                                         const glm::mat4x4& transform,
+                                         const MaterialID& materialID) = 0;
+
+  virtual void DeleteStaticModel(const ModelInstanceID& instanceID) = 0;
+};
+
 // ----------------------------------------------------------------------------
 // Renderer retrievers
 // ----------------------------------------------------------------------------
 
 VertexColoredRenderer&
 GetVertexColoredRenderer();
+
+LitRenderer&
+GetLitRenderer();
 
 // ----------------------------------------------------------------------------
 

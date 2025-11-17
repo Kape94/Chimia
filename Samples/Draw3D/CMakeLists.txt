@@ -28,3 +28,9 @@ target_link_libraries(Samples_Draw3D_ex8 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex9 ex9-vertexColoredRendererStaticModels.cpp)
 target_link_libraries(Samples_Draw3D_ex9 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex10 ex10-basicIlluminationLitRenderer.cpp)
+target_link_libraries(Samples_Draw3D_ex10 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex11 ex11-litRendererWithModel.cpp)
+target_link_libraries(Samples_Draw3D_ex11 PRIVATE Samples_Draw3D_Dependencies)

@@ -31,9 +31,14 @@ public:
   void Flush();
 
   void DrawModel(const ModelID& modelID, const RawDataView& instanceData);
+  void DrawModel(const ModelID& modelID,
+                 const std::initializer_list<RawDataView>& instanceDatas);
 
   ModelInstanceID AddStaticModel(const ModelID& modelID,
                                  const RawDataView& instanceData);
+  ModelInstanceID AddStaticModel(
+    const ModelID& modelID,
+    const std::initializer_list<RawDataView>& instanceDatas);
 
   void DeleteStaticModel(const ModelInstanceID& instanceID);
 

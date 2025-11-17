@@ -34,6 +34,7 @@ public:
   void Delete(unsigned id);
 
 private:
+  // TODO: put these constants in the config
   static constexpr int NOT_FOUND_INDEX = -1;
   static constexpr size_t INITIAL_SIZE = 100;
   static constexpr size_t GROWTH_SIZE = 100;
@@ -105,6 +106,10 @@ template<class Object>
 Object*
 ObjectTable<Object>::Find(unsigned id)
 {
+  if (id > m_objects.size()) {
+    return nullptr;
+  }
+
   return m_objects[id];
 }
 
@@ -114,6 +119,10 @@ template<class Object>
 const Object*
 ObjectTable<Object>::Find(unsigned id) const
 {
+  if (id > m_objects.size()) {
+    return nullptr;
+  }
+
   return m_objects[id];
 }
 
@@ -136,6 +145,10 @@ template<class Object>
 void
 ObjectTable<Object>::Delete(unsigned id)
 {
+  if (id > m_objects.size()) {
+    return;
+  }
+
   DeleteObject(m_objects[id]);
 }
 

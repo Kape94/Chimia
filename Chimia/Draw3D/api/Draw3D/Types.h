@@ -6,6 +6,8 @@
 
 #include "Core/Types.h"
 
+#include <glm/vec3.hpp>
+
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
@@ -62,6 +64,40 @@ private:
 
 // ----------------------------------------------------------------------------
 
+class LitTriangleMeshID
+{
+private:
+  friend class Draw3DPrivate;
+
+  LitTriangleMeshID() = delete;
+  LitTriangleMeshID(unsigned id, unsigned materialID)
+    : m_id(id)
+    , m_materialID(materialID)
+  {
+  }
+
+  unsigned m_id = 0;
+  unsigned m_materialID = 0;
+};
+
+// ----------------------------------------------------------------------------
+
+class MaterialID
+{
+private:
+  friend class Draw3DPrivate;
+
+  MaterialID() = delete;
+  MaterialID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 class MeshDataView
 {
 public:
@@ -92,6 +128,43 @@ private:
   RawDataView m_vertexData;
   size_t m_nVertices = 0;
   RawArrayView m_indices;
+};
+
+// ----------------------------------------------------------------------------
+
+struct LightColor
+{
+  glm::vec3 ambient{ 0.0f, 0.0f, 0.0f };
+  glm::vec3 diffuse{ 0.0f, 0.0f, 0.0f };
+  glm::vec3 specular{ 0.0f, 0.0f, 0.0f };
+};
+
+struct PointLightAttenuation
+{
+  float quadratic = 0.0f;
+  float linear = 0.0f;
+  float constant = 0.0f;
+};
+
+struct DirectionalLight
+{
+  glm::vec3 direction{ 0.0f, 0.0f, 0.0f };
+  LightColor color;
+};
+
+struct PointLight
+{
+  glm::vec3 position{ 0.0f, 0.0f, 0.0f };
+  LightColor color;
+  PointLightAttenuation attenuation;
+};
+
+struct Material
+{
+  glm::vec3 ambient{ 0.0f, 0.0f, 0.0f };
+  glm::vec3 diffuse{ 0.0f, 0.0f, 0.0f };
+  glm::vec3 specular{ 0.0f, 0.0f, 0.0f };
+  float shininess;
 };
 
 // ----------------------------------------------------------------------------

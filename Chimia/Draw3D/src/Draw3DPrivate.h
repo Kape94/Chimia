@@ -27,6 +27,14 @@ public:
 
   static TriangleMeshID CreateTriangleMeshID(unsigned id);
   static unsigned GetTriangleMeshIDValue(const TriangleMeshID& meshID);
+
+  static MaterialID CreateMaterialID(unsigned id);
+  static unsigned GetMaterialIDValue(const MaterialID& materialID);
+
+  static LitTriangleMeshID CreateLitTriangleMeshID(unsigned id,
+                                                   unsigned materialID);
+  static std::pair<unsigned, unsigned> GetLitTriangleMeshIDValues(
+    const LitTriangleMeshID& meshID);
 };
 
 // ----------------------------------------------------------------------------

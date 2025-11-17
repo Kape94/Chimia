@@ -54,3 +54,35 @@ Draw3DPrivate::GetTriangleMeshIDValue(const TriangleMeshID& meshID)
 }
 
 // ----------------------------------------------------------------------------
+
+MaterialID
+Draw3DPrivate::CreateMaterialID(unsigned id)
+{
+  return MaterialID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+Draw3DPrivate::GetMaterialIDValue(const MaterialID& materialID)
+{
+  return materialID.m_id;
+}
+
+// ----------------------------------------------------------------------------
+
+LitTriangleMeshID
+Draw3DPrivate::CreateLitTriangleMeshID(unsigned id, unsigned materialID)
+{
+  return LitTriangleMeshID(id, materialID);
+}
+
+// ----------------------------------------------------------------------------
+
+std::pair<unsigned, unsigned>
+Draw3DPrivate::GetLitTriangleMeshIDValues(const LitTriangleMeshID& meshID)
+{
+  return { meshID.m_id, meshID.m_materialID };
+}
+
+// ----------------------------------------------------------------------------

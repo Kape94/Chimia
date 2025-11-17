@@ -23,6 +23,9 @@ VertexColoredWithInstancedTransform();
 Rendering::Shader&
 GouraudLit();
 
+Rendering::Shader&
+GouraudLitWithInstancedTransformAndMaterial();
+
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

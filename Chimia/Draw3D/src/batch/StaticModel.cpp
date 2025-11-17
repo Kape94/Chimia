@@ -73,6 +73,22 @@ StaticModel::AddInstance(const RawDataView& instanceData)
 
 // ----------------------------------------------------------------------------
 
+unsigned
+StaticModel::AddInstance(
+  const std::initializer_list<RawDataView>& instanceDatas)
+{
+  auto [instanceID, newInstance] = m_instanceTable.Insert();
+  for (const RawDataView& data : instanceDatas) {
+    newInstance->Append(data);
+  }
+
+  m_shouldRebuildBuffers = true;
+
+  return instanceID;
+}
+
+// ----------------------------------------------------------------------------
+
 void
 StaticModel::DeleteInstance(unsigned instanceID)
 {
