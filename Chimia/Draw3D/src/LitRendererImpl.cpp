@@ -36,6 +36,24 @@ static const Chimia::Rendering::ShaderAttributes
     Chimia::Rendering::ShaderAttribute::Float(9 /*materialShininess*/, 1)
   };
 
+Chimia::Rendering::Shader&
+GetShaderForTriangleMeshDrawing()
+{
+  return Chimia::Draw3D::Config::Lit::IlluminationModel() ==
+             eIlluminationModel::GOURAUD
+           ? Chimia::Draw3D::Shaders::GouraudLit()
+           : Chimia::Draw3D::Shaders::PhongLit();
+}
+
+Chimia::Rendering::Shader&
+GetShaderForModelDrawing()
+{
+  return Config::Lit::IlluminationModel() == eIlluminationModel::GOURAUD
+           ? Chimia::Draw3D::Shaders::
+               GouraudLitWithInstancedTransformAndMaterial()
+           : Chimia::Draw3D::Shaders::
+               PhongLitWithInstancedTransformAndMaterial();
+}
 }
 
 // ----------------------------------------------------------------------------
@@ -52,7 +70,7 @@ LitRendererImpl::getInstance()
 void
 LitRendererImpl::Init()
 {
-  m_modelComponent.Init(Config::GouraudLit::modelsBatchSize,
+  m_modelComponent.Init(Config::Lit::ModelsBatchSize(),
                         VERTEX_ATTRIBUTES,
                         TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
                         [&]() { ConfigureShaderForTransformedModelDrawing(); });
@@ -159,9 +177,9 @@ LitRendererImpl::FetchTriangleRenderComponentForMaterial(
     renderComponent = m_triangleMeshComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::GouraudLit::triangleBatchSizePerMaterial,
-      VERTEX_ATTRIBUTES,
-      [&]() { ConfigureShaderForTriangleDrawing(materialID); });
+      Config::Lit::TriangleBatchSizePerMaterial(), VERTEX_ATTRIBUTES, [&]() {
+        ConfigureShaderForTriangleDrawing(materialID);
+      });
   }
 
   return renderComponent;
@@ -236,7 +254,7 @@ LitRendererImpl::ConfigureShaderForTriangleDrawing(const MaterialID& materialID)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = Chimia::Draw3D::Shaders::GouraudLit();
+  Chimia::Rendering::Shader& shader = GetShaderForTriangleMeshDrawing();
 
   shader.Use();
   IlluminationPrivate::ConfigureLightsOnShader(shader);
@@ -248,8 +266,7 @@ LitRendererImpl::ConfigureShaderForTriangleDrawing(const MaterialID& materialID)
 void
 LitRendererImpl::ConfigureShaderForTransformedModelDrawing()
 {
-  Chimia::Rendering::Shader& shader =
-    Chimia::Draw3D::Shaders::GouraudLitWithInstancedTransformAndMaterial();
+  Chimia::Rendering::Shader& shader = GetShaderForModelDrawing();
 
   shader.Use();
   IlluminationPrivate::ConfigureLightsOnShader(shader);

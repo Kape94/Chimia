@@ -3,6 +3,7 @@ SET(TARGET_NAME Chimia_Draw3D)
 
 add_library(${TARGET_NAME}
     src/Camera.cpp
+    src/Config.cpp
     src/Draw3D.cpp
     src/Draw3DPrivate.cpp
     src/Illumination.cpp

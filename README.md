@@ -6,9 +6,14 @@ TODO: Model is not a good name for class Model;
 TODO: Add dynamic sizing mechanism for batches;
   - Add support on Rendering module for resizing a buffer;
   - For Draw3D module, expand the gpu buffers on flush;
-TODO: Implement gouraud lit renderer;
 TODO: Revisit vertex input;
 TODO: Search TODO comments on code;  
+TODO: Missing features
+  - Color alpha and blending;
+  - Post processing effects: HDR, bloom, anti aliasing;
+  - Fog;
+  - Shadowing and per vertex color shadowing;
+  - Texture filtering; 
 
 ## Build Instructions
 Run `cppm build` to build the project.

@@ -14,6 +14,14 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
+enum class eIlluminationModel
+{
+  GOURAUD,
+  PHONG
+};
+
+// ----------------------------------------------------------------------------
+
 class ModelID
 {
 private:

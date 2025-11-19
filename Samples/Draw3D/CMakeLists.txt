@@ -34,3 +34,6 @@ target_link_libraries(Samples_Draw3D_ex10 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex11 ex11-litRendererWithModel.cpp)
 target_link_libraries(Samples_Draw3D_ex11 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex12 ex12-basicIlluminationPhongLitRenderer.cpp)
+target_link_libraries(Samples_Draw3D_ex12 PRIVATE Samples_Draw3D_Dependencies)

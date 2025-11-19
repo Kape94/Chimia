@@ -26,6 +26,12 @@ GouraudLit();
 Rendering::Shader&
 GouraudLitWithInstancedTransformAndMaterial();
 
+Rendering::Shader&
+PhongLit();
+
+Rendering::Shader&
+PhongLitWithInstancedTransformAndMaterial();
+
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE
