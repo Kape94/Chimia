@@ -7,7 +7,6 @@ add_library(${TARGET_NAME}
     src/Draw3D.cpp
     src/Draw3DPrivate.cpp
     src/Illumination.cpp
-    src/LitTriangle.cpp
     src/LitRendererImpl.cpp
     src/Model.cpp
     src/ModelRenderingComponent.cpp

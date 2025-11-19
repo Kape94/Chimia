@@ -1,8 +1,8 @@
 #include "Draw3D/Camera.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Illumination.h"
-#include "Draw3D/LitTriangle.h"
 
+#include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Utils/Window.h"
 
@@ -15,7 +15,7 @@ void
 DrawTriangle(const glm::vec3& p1,
              const glm::vec3& p2,
              const glm::vec3& p3,
-             const Chimia::Draw3D::Material& material)
+             const Chimia::Draw3D::MaterialID& material)
 {
 
   auto normal = [](const glm::vec3& v) {
@@ -28,7 +28,7 @@ DrawTriangle(const glm::vec3& p1,
 }
 
 void
-DrawCube(const Chimia::Draw3D::Material& material)
+DrawCube(const Chimia::Draw3D::MaterialID& material)
 {
   const float size = 1.0f;
 
@@ -99,6 +99,9 @@ main()
     { { 0.2f, 0.2f, 0.2f }, { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f } }
   };
 
+  const Chimia::Draw3D::MaterialID material = Chimia::Draw3D::CreateMaterial(
+    { 0.0f, 0.0f, 0.2f }, { 0.0f, 0.0f, 0.7f }, { 1.0f, 1.0f, 1.0f }, 32);
+
   Chimia::Draw3D::EnableLights(true);
   Chimia::Draw3D::SetLight(dLight);
 
@@ -107,11 +110,7 @@ main()
     Chimia::Draw3D::ClearScreen();
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
-    Chimia::Draw3D::Material tMaterial{
-      { 0.0f, 0.0f, 0.2f }, { 0.0f, 0.0f, 0.7f }, { 1.0f, 1.0f, 1.0f }, 32
-    };
-
-    DrawCube(tMaterial);
+    DrawCube(material);
     DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
