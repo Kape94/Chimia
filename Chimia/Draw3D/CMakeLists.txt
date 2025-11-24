@@ -7,22 +7,23 @@ add_library(${TARGET_NAME}
     src/Draw3D.cpp
     src/Draw3DPrivate.cpp
     src/Illumination.cpp
-    src/LitRendererImpl.cpp
     src/Model.cpp
-    src/ModelRenderingComponent.cpp
     src/Renderers.cpp
     src/Resources.cpp
     src/ResourcesManager.cpp
     src/Shaders.cpp
     src/Triangle.cpp
-    src/TriangleMeshComponent.cpp
-    src/VertexColoredRendererImpl.cpp
-
+    
     src/batch/BatchUtils.cpp
     src/batch/ModelBatch.cpp
     src/batch/StaticModel.cpp
     src/batch/StaticTriangles.cpp
     src/batch/TriangleBatch.cpp
+
+    src/renderers/LitRendererImpl.cpp
+    src/renderers/ModelRenderingComponent.cpp
+    src/renderers/TriangleMeshComponent.cpp
+    src/renderers/VertexColoredRendererImpl.cpp
 )
 
 target_link_libraries(${TARGET_NAME}
@@ -39,6 +40,7 @@ target_include_directories(${TARGET_NAME}
         ./api/Draw3D/
         ./src/
         ./src/batch/
+        ./src/renderers/
     PUBLIC
         ./api/
 )
