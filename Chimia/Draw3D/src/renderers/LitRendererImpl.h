@@ -25,12 +25,12 @@ public:
 
   void Flush();
 
-  void DrawTriangle(const glm::vec3& p1,
-                    const glm::vec3& normal1,
-                    const glm::vec3& p2,
-                    const glm::vec3& normal2,
-                    const glm::vec3& p3,
-                    const glm::vec3& normal3,
+  void DrawTriangle(const Position3& p1,
+                    const Normal3& p1Normal,
+                    const Position3& p2,
+                    const Normal3& p2Normal,
+                    const Position3& p3,
+                    const Normal3& p3Normal,
                     const MaterialID& materialID) override;
 
   void DrawTriangles(const std::vector<float>& vertexData,

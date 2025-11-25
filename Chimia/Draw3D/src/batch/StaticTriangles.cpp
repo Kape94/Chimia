@@ -3,7 +3,6 @@
 #include "BatchUtils.h"
 #include "Bits/Buffer/RawBuffer.h"
 #include "Core/Types.h"
-#include "Draw3DPrivate.h"
 
 // ----------------------------------------------------------------------------
 

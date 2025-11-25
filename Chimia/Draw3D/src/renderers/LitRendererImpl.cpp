@@ -1,6 +1,7 @@
 #include "LitRendererImpl.h"
 
 #include "Config.h"
+#include "Core/Types.h"
 #include "Draw3DPrivate.h"
 #include "IlluminationPrivate.h"
 #include "InternalTypes.h"
@@ -83,24 +84,25 @@ LitRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::DrawTriangle(const glm::vec3& p1,
-                              const glm::vec3& normal1,
-                              const glm::vec3& p2,
-                              const glm::vec3& normal2,
-                              const glm::vec3& p3,
-                              const glm::vec3& normal3,
+LitRendererImpl::DrawTriangle(const Position3& p1,
+                              const Normal3& p1Normal,
+                              const Position3& p2,
+                              const Normal3& p2Normal,
+                              const Position3& p3,
+                              const Normal3& p3Normal,
                               const MaterialID& materialID)
 {
-  constexpr size_t VEC3_SIZE = sizeof(glm::vec3);
+  constexpr size_t POS3_SIZE = sizeof(Position3);
+  constexpr size_t NORM3_SIZE = sizeof(Normal3);
 
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
   renderComponent->DrawTriangle({
-    { &p1, VEC3_SIZE },
-    { &normal1, VEC3_SIZE },
-    { &p2, VEC3_SIZE },
-    { &normal2, VEC3_SIZE },
-    { &p3, VEC3_SIZE },
-    { &normal3, VEC3_SIZE },
+    { &p1, POS3_SIZE },
+    { &p1Normal, NORM3_SIZE },
+    { &p2, POS3_SIZE },
+    { &p2Normal, NORM3_SIZE },
+    { &p3, POS3_SIZE },
+    { &p3Normal, NORM3_SIZE },
   });
 }
 

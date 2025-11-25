@@ -7,6 +7,7 @@ USING_CHIMIA_CORE_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace TypesUtils {
+
 size_t
 ComputeNFloatsCountForAttribute(const MeshAttributes& attributes)
 {
@@ -65,6 +66,85 @@ ResultingAttributes(const Mesh& mesh, const MeshAttributes& requested)
   return resulting;
 }
 
+}
+
+// ----------------------------------------------------------------------------
+// Position3
+// ----------------------------------------------------------------------------
+
+const glm::vec3&
+Position3::AsVec3() const
+{
+  return reinterpret_cast<const glm::vec3&>(*this);
+}
+
+glm::vec3&
+Position3::AsVec3()
+{
+  return reinterpret_cast<glm::vec3&>(*this);
+}
+
+// ----------------------------------------------------------------------------
+// Color3
+// ----------------------------------------------------------------------------
+
+const glm::vec3&
+Color3::AsVec3() const
+{
+  return reinterpret_cast<const glm::vec3&>(*this);
+}
+
+glm::vec3&
+Color3::AsVec3()
+{
+  return reinterpret_cast<glm::vec3&>(*this);
+}
+
+// ----------------------------------------------------------------------------
+// Color4
+// ----------------------------------------------------------------------------
+
+const glm::vec4&
+Color4::AsVec4() const
+{
+  return reinterpret_cast<const glm::vec4&>(*this);
+}
+
+glm::vec4&
+Color4::AsVec4()
+{
+  return reinterpret_cast<glm::vec4&>(*this);
+}
+
+// ----------------------------------------------------------------------------
+// Normal3
+// ----------------------------------------------------------------------------
+
+const glm::vec3&
+Normal3::AsVec3() const
+{
+  return reinterpret_cast<const glm::vec3&>(*this);
+}
+glm::vec3&
+Normal3::AsVec3()
+{
+  return reinterpret_cast<glm::vec3&>(*this);
+}
+
+// ----------------------------------------------------------------------------
+// TexCoord2
+// ----------------------------------------------------------------------------
+
+const glm::vec2&
+TexCoord2::AsVec2() const
+{
+  return reinterpret_cast<const glm::vec2&>(*this);
+}
+
+glm::vec2&
+TexCoord2::AsVec2()
+{
+  return reinterpret_cast<glm::vec2&>(*this);
 }
 
 // ----------------------------------------------------------------------------

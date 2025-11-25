@@ -7,6 +7,10 @@
 #include <cstddef>
 #include <vector>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_CORE_NAMESPACE
@@ -86,7 +90,7 @@ struct VertexDataView
 class Position3
 {
 public:
-  Position3() = delete;
+  explicit Position3() = default;
   explicit Position3(float _x, float _y, float _z)
     : x(_x)
     , y(_y)
@@ -94,7 +98,41 @@ public:
   {
   }
 
+  explicit Position3(const glm::vec3& vec)
+    : x(vec.x)
+    , y(vec.y)
+    , z(vec.z)
+  {
+  }
+
+  const glm::vec3& AsVec3() const;
+  glm::vec3& AsVec3();
+
   float x = 0.0f, y = 0.0f, z = 0.0f;
+};
+
+class Color3
+{
+public:
+  explicit Color3() = default;
+  explicit Color3(float _r, float _g, float _b)
+    : r(_r)
+    , g(_g)
+    , b(_b)
+  {
+  }
+
+  explicit Color3(const glm::vec3& vec)
+    : r(vec.r)
+    , g(vec.g)
+    , b(vec.b)
+  {
+  }
+
+  const glm::vec3& AsVec3() const;
+  glm::vec3& AsVec3();
+
+  float r = 0.0f, g = 0.0f, b = 0.0f;
 };
 
 class Color4
@@ -108,6 +146,17 @@ public:
     , a(_a)
   {
   }
+
+  explicit Color4(const glm::vec4& vec)
+    : r(vec.r)
+    , g(vec.g)
+    , b(vec.b)
+    , a(vec.a)
+  {
+  }
+
+  const glm::vec4& AsVec4() const;
+  glm::vec4& AsVec4();
 
   float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
 };
@@ -123,6 +172,16 @@ public:
   {
   }
 
+  explicit Normal3(const glm::vec3& vec)
+    : x(vec.x)
+    , y(vec.y)
+    , z(vec.z)
+  {
+  }
+
+  const glm::vec3& AsVec3() const;
+  glm::vec3& AsVec3();
+
   float x = 0.0f, y = 0.0f, z = 0.0f;
 };
 
@@ -135,6 +194,15 @@ public:
     , v(_v)
   {
   }
+
+  explicit TexCoord2(const glm::vec2& vec)
+    : u(vec.x)
+    , v(vec.y)
+  {
+  }
+
+  const glm::vec2& AsVec2() const;
+  glm::vec2& AsVec2();
 
   float u = 0.0f, v = 0.0f;
 };

@@ -13,4 +13,9 @@ target_include_directories(${TARGET_NAME}
         ./api/
 )
 
+target_link_libraries(${TARGET_NAME}
+    PUBLIC
+        glm::glm
+)
+
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

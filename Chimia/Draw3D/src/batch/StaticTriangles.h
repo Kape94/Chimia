@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Draw3DNamespaceDefs.h"
-#include "InternalTypes.h"
 
 #include "Bits/Buffer/RawBuffer.h"
 

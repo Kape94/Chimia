@@ -21,12 +21,12 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class VertexColoredRenderer
 {
 public:
-  virtual void DrawTriangle(const glm::vec3& p1,
-                            const glm::vec3& color1,
-                            const glm::vec3& p2,
-                            const glm::vec3& color2,
-                            const glm::vec3& p3,
-                            const glm::vec3& color3) = 0;
+  virtual void DrawTriangle(const Position3& p1,
+                            const Color3& color1,
+                            const Position3& p2,
+                            const Color3& color2,
+                            const Position3& p3,
+                            const Color3& color3) = 0;
 
   virtual void DrawTriangles(const std::vector<float>& vertexData) = 0;
 
@@ -54,12 +54,12 @@ public:
 class LitRenderer
 {
 public:
-  virtual void DrawTriangle(const glm::vec3& p1,
-                            const glm::vec3& normal1,
-                            const glm::vec3& p2,
-                            const glm::vec3& normal2,
-                            const glm::vec3& p3,
-                            const glm::vec3& normal3,
+  virtual void DrawTriangle(const Position3& p1,
+                            const Normal3& p1Normal,
+                            const Position3& p2,
+                            const Normal3& p2Normal,
+                            const Position3& p3,
+                            const Normal3& p3Normal,
                             const MaterialID& materialID) = 0;
 
   virtual void DrawTriangles(const std::vector<float>& vertexData,

@@ -1,3 +1,4 @@
+#include "Core/Types.h"
 #include "Draw3D/Camera.h"
 #include "Draw3D/Config.h"
 #include "Draw3D/Draw3D.h"
@@ -30,8 +31,13 @@ DrawTriangle(const glm::vec3& p1,
     return v - zero;
   };
 
-  renderer.DrawTriangle(
-    p1, normal(p1), p2, normal(p2), p3, normal(p3), material);
+  renderer.DrawTriangle(Chimia::Position3(p1),
+                        Chimia::Normal3(normal(p1)),
+                        Chimia::Position3(p2),
+                        Chimia::Normal3(normal(p2)),
+                        Chimia::Position3(p3),
+                        Chimia::Normal3(normal(p3)),
+                        material);
 }
 
 void
@@ -69,14 +75,15 @@ DrawLitCube(const Chimia::Draw3D::MaterialID& material)
 }
 
 void
-DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
+DrawLight(const Chimia::Position3& lightPos, const Chimia::Color3& lightColor)
 {
   const float size = 0.3f;
 
-  const glm::vec3 p1 = lightPos + glm::vec3{ -size, 0.0f, -size };
-  const glm::vec3 p2 = lightPos + glm::vec3{ size, 0.0f, -size };
-  const glm::vec3 p3 = lightPos + glm::vec3{ 0.0f, 0.0f, size };
-  const glm::vec3 p4 = lightPos + glm::vec3{ 0.0f, size, 0.0f };
+  const glm::vec3& pos = lightPos.AsVec3();
+  const Chimia::Position3 p1(pos + glm::vec3{ -size, 0.0f, -size });
+  const Chimia::Position3 p2(pos + glm::vec3{ size, 0.0f, -size });
+  const Chimia::Position3 p3(pos + glm::vec3{ 0.0f, 0.0f, size });
+  const Chimia::Position3 p4(pos + glm::vec3{ 0.0f, size, 0.0f });
 
   unlitRenderer.DrawTriangle(p1, lightColor, p2, lightColor, p4, lightColor);
   unlitRenderer.DrawTriangle(p2, lightColor, p3, lightColor, p4, lightColor);
@@ -97,14 +104,14 @@ main()
     Chimia::Draw3D::eIlluminationModel::PHONG);
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
-  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
+  Chimia::Position3 lightPos{ 0.0f, 5.0f, -5.0f };
 
   Chimia::Draw3D::Camera::Projection::SetPerspective(
     45.0f, 1.0f, 0.01f, 100.0f);
   Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
   const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
-  const glm::vec3 lightDir = zero - lightPos;
+  const glm::vec3 lightDir = zero - lightPos.AsVec3();
 
   Chimia::Draw3D::DirectionalLight dLight{
     lightDir,
@@ -123,7 +130,7 @@ main()
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
     DrawLitCube(tMaterial);
-    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, Chimia::Color3{ 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 
