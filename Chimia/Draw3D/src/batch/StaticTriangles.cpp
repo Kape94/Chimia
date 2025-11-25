@@ -30,7 +30,7 @@ StaticTriangles::Create(const size_t batchSize,
 
 // ----------------------------------------------------------------------------
 
-TriangleMeshID
+unsigned
 StaticTriangles::AddStaticMesh(const std::vector<float>& vertexData)
 {
   auto [meshID, triangleData] = m_staticTrianglesTable.Insert();
@@ -38,15 +38,15 @@ StaticTriangles::AddStaticMesh(const std::vector<float>& vertexData)
 
   m_shouldRebuildBuffers = true;
 
-  return Draw3DPrivate::CreateTriangleMeshID(meshID);
+  return meshID;
 }
 
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::DeleteStaticMesh(const TriangleMeshID& meshID)
+StaticTriangles::DeleteStaticMesh(const unsigned meshID)
 {
-  m_staticTrianglesTable.Delete(Draw3DPrivate::GetTriangleMeshIDValue(meshID));
+  m_staticTrianglesTable.Delete(meshID);
   m_shouldRebuildBuffers = true;
 }
 

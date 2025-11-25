@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "Draw3DPrivate.h"
 #include "IlluminationPrivate.h"
+#include "InternalTypes.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
 
@@ -10,6 +11,7 @@
 #include "Rendering/ShaderAttribute.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
+#include "eRendererType.h"
 
 // ----------------------------------------------------------------------------
 
@@ -54,6 +56,8 @@ GetShaderForModelDrawing()
            : Chimia::Draw3D::Shaders::
                PhongLitWithInstancedTransformAndMaterial();
 }
+
+constexpr unsigned RENDERER_ID = static_cast<unsigned>(eRendererType::LIT);
 }
 
 // ----------------------------------------------------------------------------
@@ -123,46 +127,43 @@ LitRendererImpl::DrawTriangles(const std::vector<float>& vertexData,
 
 // ----------------------------------------------------------------------------
 
-LitTriangleMeshID
+TriangleMeshID
 LitRendererImpl::AddStaticTriangles(const std::vector<float>& vertexData,
                                     const MaterialID& materialID)
 {
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
-  const TriangleMeshID meshID = renderComponent->AddStaticMesh(vertexData);
+  const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
 
-  return Draw3DPrivate::CreateLitTriangleMeshID(
-    Draw3DPrivate::GetTriangleMeshIDValue(meshID),
-    Draw3DPrivate::GetMaterialIDValue(materialID));
+  return Draw3DPrivate::CreateTriangleMeshID(
+    RENDERER_ID, instanceID, Draw3DPrivate::GetMaterialIDValue(materialID));
 }
 
 // ----------------------------------------------------------------------------
 
-LitTriangleMeshID
+TriangleMeshID
 LitRendererImpl::AddStaticTriangles(const std::vector<float>& vertexData,
                                     const std::vector<unsigned>& indexData,
                                     const MaterialID& materialID)
 {
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
-  const TriangleMeshID meshID =
+  const unsigned instanceID =
     renderComponent->AddStaticMesh(vertexData, indexData);
 
-  return Draw3DPrivate::CreateLitTriangleMeshID(
-    Draw3DPrivate::GetTriangleMeshIDValue(meshID),
-    Draw3DPrivate::GetMaterialIDValue(materialID));
+  return Draw3DPrivate::CreateTriangleMeshID(
+    RENDERER_ID, instanceID, Draw3DPrivate::GetMaterialIDValue(materialID));
 }
 
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::DeleteStaticTriangles(const LitTriangleMeshID& meshID)
+LitRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [meshIDValue, materialIDValue] =
-    Draw3DPrivate::GetLitTriangleMeshIDValues(meshID);
+  auto [rendererID, instanceIDValue, materialIDValue] =
+    Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   auto renderComponent = FetchTriangleRenderComponentForMaterial(
     Draw3DPrivate::CreateMaterialID(materialIDValue));
-  renderComponent->DeleteStaticMesh(
-    Draw3DPrivate::CreateTriangleMeshID(meshIDValue));
+  renderComponent->DeleteStaticMesh(instanceIDValue);
 }
 
 // ----------------------------------------------------------------------------
@@ -214,16 +215,18 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
 {
   auto material = ResourcesManager::GetInstance().GetMaterial(materialID);
   if (material == nullptr) {
-    return Draw3DPrivate::CreateModelInstanceID(0, 0);
+    return Draw3DPrivate::CreateModelInstanceID(0, 0, 0);
   }
 
-  return m_modelComponent.AddStaticModel(
+  const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
     modelID,
     { { &transform, sizeof(glm::mat4x4) },
       { &material->ambient, sizeof(glm::vec3) },
       { &material->diffuse, sizeof(glm::vec3) },
       { &material->specular, sizeof(glm::vec3) },
       { &material->shininess, sizeof(float) } });
+
+  return Draw3DPrivate::CreateModelInstanceID(RENDERER_ID, localInstanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -231,7 +234,8 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 LitRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  m_modelComponent.DeleteStaticModel(instanceID);
+  m_modelComponent.DeleteStaticModel(
+    Draw3DPrivate::CreateLocalModelInstanceID(instanceID));
 }
 
 // ----------------------------------------------------------------------------

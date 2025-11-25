@@ -2,11 +2,14 @@
 
 #include "CameraPrivate.h"
 #include "Config.h"
+#include "Draw3DPrivate.h"
+#include "InternalTypes.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
+#include "eRendererType.h"
 
 // ----------------------------------------------------------------------------
 
@@ -29,6 +32,9 @@ static const Chimia::Rendering::ShaderAttributes
     Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
   };
 
+constexpr unsigned MATERIAL_ID = 0;
+constexpr unsigned RENDERER_ID =
+  static_cast<unsigned>(eRendererType::VERTEX_COLORED);
 }
 
 // ----------------------------------------------------------------------------
@@ -100,7 +106,9 @@ TriangleMeshID
 VertexColoredRendererImpl::AddStaticTriangles(
   const std::vector<float>& vertexData)
 {
-  return m_triangleMeshComponent.AddStaticMesh(vertexData);
+  const unsigned instanceID = m_triangleMeshComponent.AddStaticMesh(vertexData);
+  return Draw3DPrivate::CreateTriangleMeshID(
+    RENDERER_ID, instanceID, MATERIAL_ID);
 }
 
 // ----------------------------------------------------------------------------
@@ -110,7 +118,10 @@ VertexColoredRendererImpl::AddStaticTriangles(
   const std::vector<float>& vertexData,
   const std::vector<unsigned>& indexData)
 {
-  return m_triangleMeshComponent.AddStaticMesh(vertexData, indexData);
+  const unsigned instanceID =
+    m_triangleMeshComponent.AddStaticMesh(vertexData, indexData);
+  return Draw3DPrivate::CreateTriangleMeshID(
+    RENDERER_ID, instanceID, MATERIAL_ID);
 }
 
 // ----------------------------------------------------------------------------
@@ -118,7 +129,9 @@ VertexColoredRendererImpl::AddStaticTriangles(
 void
 VertexColoredRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  m_triangleMeshComponent.DeleteStaticMesh(meshID);
+  auto [rendererID, instanceID, materialID] =
+    Draw3DPrivate::GetTriangleMeshIDValues(meshID);
+  m_triangleMeshComponent.DeleteStaticMesh(instanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -136,8 +149,10 @@ ModelInstanceID
 VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
                                           const glm::mat4x4& transform)
 {
-  return m_modelComponent.AddStaticModel(modelID,
-                                         { &transform, sizeof(glm::mat4x4) });
+  const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
+    modelID, { &transform, sizeof(glm::mat4x4) });
+
+  return Draw3DPrivate::CreateModelInstanceID(RENDERER_ID, localInstanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -145,7 +160,8 @@ VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  m_modelComponent.DeleteStaticModel(instanceID);
+  m_modelComponent.DeleteStaticModel(
+    Draw3DPrivate::CreateLocalModelInstanceID(instanceID));
 }
 
 // ----------------------------------------------------------------------------

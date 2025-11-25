@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "InternalTypes.h"
 #include "Model.h"
 #include "ModelBatch.h"
 #include "ObjectTable.h"
@@ -34,13 +35,13 @@ public:
   void DrawModel(const ModelID& modelID,
                  const std::initializer_list<RawDataView>& instanceDatas);
 
-  ModelInstanceID AddStaticModel(const ModelID& modelID,
-                                 const RawDataView& instanceData);
-  ModelInstanceID AddStaticModel(
+  LocalModelInstanceID AddStaticModel(const ModelID& modelID,
+                                      const RawDataView& instanceData);
+  LocalModelInstanceID AddStaticModel(
     const ModelID& modelID,
     const std::initializer_list<RawDataView>& instanceDatas);
 
-  void DeleteStaticModel(const ModelInstanceID& instanceID);
+  void DeleteStaticModel(const LocalModelInstanceID& instanceID);
 
 private:
   ModelBatch* AllocateBatchForModelDrawing(const ModelID& modelID);

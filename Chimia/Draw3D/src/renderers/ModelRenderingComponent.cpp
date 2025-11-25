@@ -98,7 +98,7 @@ ModelRenderingComponent::AllocateBatchForModelDrawing(const ModelID& modelID)
 
 // ----------------------------------------------------------------------------
 
-ModelInstanceID
+LocalModelInstanceID
 ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
                                         const RawDataView& instanceData)
 {
@@ -108,17 +108,17 @@ ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
   if (staticModel == nullptr) {
     staticModel = AllocateBatchForStaticModel(modelID);
     if (staticModel == nullptr) {
-      return Draw3DPrivate::CreateModelInstanceID(0, 0);
+      return Draw3DPrivate::CreateLocalModelInstanceID(0, 0);
     }
   }
 
   const unsigned instanceID = staticModel->AddInstance(instanceData);
-  return Draw3DPrivate::CreateModelInstanceID(id, instanceID);
+  return Draw3DPrivate::CreateLocalModelInstanceID(id, instanceID);
 }
 
 // ----------------------------------------------------------------------------
 
-ModelInstanceID
+LocalModelInstanceID
 ModelRenderingComponent::AddStaticModel(
   const ModelID& modelID,
   const std::initializer_list<RawDataView>& instanceDatas)
@@ -129,12 +129,12 @@ ModelRenderingComponent::AddStaticModel(
   if (staticModel == nullptr) {
     staticModel = AllocateBatchForStaticModel(modelID);
     if (staticModel == nullptr) {
-      return Draw3DPrivate::CreateModelInstanceID(0, 0);
+      return Draw3DPrivate::CreateLocalModelInstanceID(0, 0);
     }
   }
 
   const unsigned instanceID = staticModel->AddInstance(instanceDatas);
-  return Draw3DPrivate::CreateModelInstanceID(id, instanceID);
+  return Draw3DPrivate::CreateLocalModelInstanceID(id, instanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -162,10 +162,11 @@ ModelRenderingComponent::AllocateBatchForStaticModel(const ModelID& modelID)
 // ----------------------------------------------------------------------------
 
 void
-ModelRenderingComponent::DeleteStaticModel(const ModelInstanceID& instanceID)
+ModelRenderingComponent::DeleteStaticModel(
+  const LocalModelInstanceID& instanceID)
 {
   const auto [modelIDValue, instanceIDValue] =
-    Draw3DPrivate::GetModelInstanceIDs(instanceID);
+    Draw3DPrivate::GetLocalModelInstanceIDValues(instanceID);
 
   StaticModel* model = m_staticModelsTable.Find(modelIDValue);
   if (model == nullptr) {

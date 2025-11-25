@@ -83,6 +83,102 @@ struct VertexDataView
 
 // ----------------------------------------------------------------------------
 
+class Position3
+{
+public:
+  Position3() = delete;
+  explicit Position3(float _x, float _y, float _z)
+    : x(_x)
+    , y(_y)
+    , z(_z)
+  {
+  }
+
+  float x = 0.0f, y = 0.0f, z = 0.0f;
+};
+
+class Color4
+{
+public:
+  Color4() = delete;
+  explicit Color4(float _r, float _g, float _b, float _a)
+    : r(_r)
+    , g(_g)
+    , b(_b)
+    , a(_a)
+  {
+  }
+
+  float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
+};
+
+class Normal3
+{
+public:
+  Normal3() = delete;
+  explicit Normal3(float _x, float _y, float _z)
+    : x(_x)
+    , y(_y)
+    , z(_z)
+  {
+  }
+
+  float x = 0.0f, y = 0.0f, z = 0.0f;
+};
+
+class TexCoord2
+{
+public:
+  TexCoord2() = delete;
+  explicit TexCoord2(float _u, float _v)
+    : u(_u)
+    , v(_v)
+  {
+  }
+
+  float u = 0.0f, v = 0.0f;
+};
+
+struct MeshAttributes
+{
+  bool hasVertexColor = false;
+  bool hasVertexNormal = false;
+  bool hasTexCoords = false;
+
+  // User can request colors without alpha
+  bool includeColorAlpha = true;
+};
+
+struct MeshBufferData
+{
+  std::vector<float> vertexDataValues;
+  std::vector<unsigned> indices;
+
+  bool HasIndices() const { return indices.size() > 0; }
+};
+
+class Mesh
+{
+public:
+  void Add(const Position3& pos);
+  void Add(const Color4& col);
+  void Add(const Normal3& normal);
+  void Add(const TexCoord2& texCoord);
+
+  MeshAttributes GetMeshAttributes() const;
+  MeshBufferData GeneratePackedBufferData(
+    const struct MeshAttributes& selectedAttributes) const;
+
+private:
+  std::vector<Position3> m_positions;
+  std::vector<Color4> m_colors;
+  std::vector<Normal3> m_normals;
+  std::vector<TexCoord2> m_texCoords;
+  std::vector<unsigned> m_indices;
+};
+
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------

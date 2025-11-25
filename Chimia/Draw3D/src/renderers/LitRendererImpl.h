@@ -40,14 +40,14 @@ public:
                      const std::vector<unsigned>& indexData,
                      const MaterialID& materialID) override;
 
-  LitTriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
-                                       const MaterialID& materialID) override;
+  TriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
+                                    const MaterialID& materialID) override;
 
-  LitTriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
-                                       const std::vector<unsigned>& indexData,
-                                       const MaterialID& materialID) override;
+  TriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
+                                    const std::vector<unsigned>& indexData,
+                                    const MaterialID& materialID) override;
 
-  void DeleteStaticTriangles(const LitTriangleMeshID& meshID) override;
+  void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
 
   void DrawModelTransformed(const ModelID& modelID,
                             const glm::mat4x4& transform,

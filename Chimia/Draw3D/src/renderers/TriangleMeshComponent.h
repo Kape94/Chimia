@@ -6,7 +6,6 @@
 
 #include "StaticTriangles.h"
 #include "TriangleBatch.h"
-#include "Types.h"
 
 #include "Rendering/ShaderAttribute.h"
 
@@ -32,11 +31,11 @@ public:
                      const std::vector<unsigned>& indices);
   void DrawTriangle(const std::initializer_list<RawDataView>& vertexData);
 
-  TriangleMeshID AddStaticMesh(const std::vector<float>& vertexData);
-  TriangleMeshID AddStaticMesh(const std::vector<float>& vertexData,
-                               const std::vector<unsigned>& indices);
+  unsigned AddStaticMesh(const std::vector<float>& vertexData);
+  unsigned AddStaticMesh(const std::vector<float>& vertexData,
+                         const std::vector<unsigned>& indices);
 
-  void DeleteStaticMesh(const TriangleMeshID& meshID);
+  void DeleteStaticMesh(const unsigned meshID);
 
 private:
   std::vector<float> DropIndices(const std::vector<float>& vertexData,

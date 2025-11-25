@@ -60,7 +60,7 @@ TriangleMeshComponent::DrawTriangles(const std::vector<float>& vertexData,
 
 // ----------------------------------------------------------------------------
 
-TriangleMeshID
+unsigned
 TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 {
   return m_staticTriangles.AddStaticMesh(vertexData);
@@ -68,7 +68,7 @@ TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData)
 
 // ----------------------------------------------------------------------------
 
-TriangleMeshID
+unsigned
 TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData,
                                      const std::vector<unsigned>& indices)
 {
@@ -81,7 +81,7 @@ TriangleMeshComponent::AddStaticMesh(const std::vector<float>& vertexData,
 // ----------------------------------------------------------------------------
 
 void
-TriangleMeshComponent::DeleteStaticMesh(const TriangleMeshID& meshID)
+TriangleMeshComponent::DeleteStaticMesh(const unsigned meshID)
 {
   m_staticTriangles.DeleteStaticMesh(meshID);
 }

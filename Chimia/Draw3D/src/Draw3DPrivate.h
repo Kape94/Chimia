@@ -4,9 +4,8 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "InternalTypes.h"
 #include "Types.h"
-
-#include <utility>
 
 // ----------------------------------------------------------------------------
 
@@ -17,24 +16,38 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class Draw3DPrivate
 {
 public:
+  // ModelID
   static ModelID CreateModelID(unsigned id);
   static unsigned GetModelID(const ModelID& modelID);
 
-  static ModelInstanceID CreateModelInstanceID(unsigned modelID,
+  // ModelInstanceID
+  static ModelInstanceID CreateModelInstanceID(unsigned rendererID,
+                                               unsigned modelID,
                                                unsigned instanceID);
-  static std::pair<unsigned, unsigned> GetModelInstanceIDs(
+  static ModelInstanceID CreateModelInstanceID(
+    unsigned rendererID,
+    const LocalModelInstanceID& localInstanceID);
+  static std::tuple<unsigned, unsigned, unsigned> GetModelInstanceIDValues(
     const ModelInstanceID& instanceID);
 
-  static TriangleMeshID CreateTriangleMeshID(unsigned id);
-  static unsigned GetTriangleMeshIDValue(const TriangleMeshID& meshID);
+  // LocalModelInstanceID
+  static LocalModelInstanceID CreateLocalModelInstanceID(unsigned modelID,
+                                                         unsigned instanceID);
+  static LocalModelInstanceID CreateLocalModelInstanceID(
+    const ModelInstanceID& globalInstanceID);
+  static std::pair<unsigned, unsigned> GetLocalModelInstanceIDValues(
+    const LocalModelInstanceID& instanceID);
 
+  // MaterialID
   static MaterialID CreateMaterialID(unsigned id);
   static unsigned GetMaterialIDValue(const MaterialID& materialID);
 
-  static LitTriangleMeshID CreateLitTriangleMeshID(unsigned id,
-                                                   unsigned materialID);
-  static std::pair<unsigned, unsigned> GetLitTriangleMeshIDValues(
-    const LitTriangleMeshID& meshID);
+  // TriangleMeshID
+  static TriangleMeshID CreateTriangleMeshID(unsigned rendererID,
+                                             unsigned id,
+                                             unsigned materialID);
+  static std::tuple<unsigned, unsigned, unsigned> GetTriangleMeshIDValues(
+    const TriangleMeshID& meshID);
 };
 
 // ----------------------------------------------------------------------------

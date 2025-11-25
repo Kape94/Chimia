@@ -44,12 +44,14 @@ private:
   friend class Draw3DPrivate;
 
   ModelInstanceID() = delete;
-  ModelInstanceID(unsigned modelID, unsigned instanceID)
-    : m_modelID(modelID)
+  ModelInstanceID(unsigned rendererID, unsigned modelID, unsigned instanceID)
+    : m_rendererID(rendererID)
+    , m_modelID(modelID)
     , m_instanceID(instanceID)
   {
   }
 
+  unsigned m_rendererID = 0;
   unsigned m_modelID = 0;
   unsigned m_instanceID = 0;
 };
@@ -62,28 +64,14 @@ private:
   friend class Draw3DPrivate;
 
   TriangleMeshID() = delete;
-  TriangleMeshID(unsigned id)
-    : m_id(id)
-  {
-  }
-
-  unsigned m_id = 0;
-};
-
-// ----------------------------------------------------------------------------
-
-class LitTriangleMeshID
-{
-private:
-  friend class Draw3DPrivate;
-
-  LitTriangleMeshID() = delete;
-  LitTriangleMeshID(unsigned id, unsigned materialID)
-    : m_id(id)
+  TriangleMeshID(unsigned rendererID, unsigned id, unsigned materialID)
+    : m_rendererID(rendererID)
+    , m_id(id)
     , m_materialID(materialID)
   {
   }
 
+  unsigned m_rendererID = 0;
   unsigned m_id = 0;
   unsigned m_materialID = 0;
 };

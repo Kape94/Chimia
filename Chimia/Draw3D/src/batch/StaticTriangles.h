@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Bits/Buffer/RawBuffer.h"
 #include "Draw3DNamespaceDefs.h"
+#include "InternalTypes.h"
+
+#include "Bits/Buffer/RawBuffer.h"
 
 #include "ObjectTable.h"
 #include "Rendering/Buffer.h"
 #include "Rendering/ShaderAttribute.h"
-#include "Types.h"
 
 #include <vector>
 
@@ -24,9 +25,9 @@ public:
   void Create(const size_t batchSize,
               const Rendering::ShaderAttributes& shaderAttributes);
 
-  TriangleMeshID AddStaticMesh(const std::vector<float>& vertexData);
+  unsigned AddStaticMesh(const std::vector<float>& vertexData);
 
-  void DeleteStaticMesh(const TriangleMeshID& meshID);
+  void DeleteStaticMesh(const unsigned meshID);
 
   void Render();
 

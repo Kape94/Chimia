@@ -69,16 +69,16 @@ public:
                              const std::vector<unsigned>& indexData,
                              const MaterialID& materialID) = 0;
 
-  virtual LitTriangleMeshID AddStaticTriangles(
+  virtual TriangleMeshID AddStaticTriangles(
     const std::vector<float>& vertexData,
     const MaterialID& materialID) = 0;
 
-  virtual LitTriangleMeshID AddStaticTriangles(
+  virtual TriangleMeshID AddStaticTriangles(
     const std::vector<float>& vertexData,
     const std::vector<unsigned>& indexData,
     const MaterialID& materialID) = 0;
 
-  virtual void DeleteStaticTriangles(const LitTriangleMeshID& meshID) = 0;
+  virtual void DeleteStaticTriangles(const TriangleMeshID& meshID) = 0;
 
   virtual void DrawModelTransformed(const ModelID& modelID,
                                     const glm::mat4x4& transform,
