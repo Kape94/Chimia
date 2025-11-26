@@ -3,8 +3,6 @@ set(BITS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(TARGET_NAME Chimia_Bits)
 add_library(${TARGET_NAME}
-  src/Buffer/IndexedBuffer.cpp
-  src/Buffer/RawBuffer.cpp
   src/IPC/PipeHost.cpp
   src/IPC/PipeWriter.cpp
   src/Process/ChildProcess.cpp

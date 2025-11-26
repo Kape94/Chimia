@@ -24,7 +24,7 @@ ExtractMeshColors(const aiMesh& mesh, Mesh& output);
 void
 ExtractMeshNormals(const aiMesh& mesh, Mesh& output);
 void
-ExtractMeshTexCoords(const aiMesh& mesh, Mesh& output);
+ExtractMeshIndices(const aiMesh& mesh, Mesh& output);
 
 void
 FillBufferFromMesh(const Mesh& mesh,
@@ -90,7 +90,7 @@ Model3DImportInternal::ExtractMeshData(const aiMesh& mesh, Mesh& output)
   ExtractMeshPositions(mesh, output);
   ExtractMeshColors(mesh, output);
   ExtractMeshNormals(mesh, output);
-  ExtractMeshTexCoords(mesh, output);
+  ExtractMeshIndices(mesh, output);
 }
 
 // ----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ Model3DImportInternal::ExtractMeshNormals(const aiMesh& mesh, Mesh& output)
 // ----------------------------------------------------------------------------
 
 void
-Model3DImportInternal::ExtractMeshTexCoords(const aiMesh& mesh, Mesh& output)
+Model3DImportInternal::ExtractMeshIndices(const aiMesh& mesh, Mesh& output)
 {
   if (mesh.HasFaces()) {
     for (size_t j = 0; j < mesh.mNumFaces; ++j) {

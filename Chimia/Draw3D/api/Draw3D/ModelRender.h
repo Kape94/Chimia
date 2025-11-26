@@ -4,18 +4,16 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "Core/Types.h"
+
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-enum class eRendererType
-{
-  NONE = 0,
-  VERTEX_COLORED = 1,
-  LIT = 2
-};
+void
+DrawTriangleMesh(const MeshBufferData& mesh);
 
 // ----------------------------------------------------------------------------
 

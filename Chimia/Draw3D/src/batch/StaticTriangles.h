@@ -2,7 +2,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 
 #include "ObjectTable.h"
 #include "Rendering/Buffer.h"
@@ -47,8 +47,8 @@ private:
   size_t m_batchSize = 0;
 
   Rendering::Buffer m_gpuBuffer;
-  Bits::RawBuffer m_inputBuffer;
-  ObjectTable<Bits::RawBuffer> m_staticTrianglesTable;
+  DataBuffer m_inputBuffer;
+  ObjectTable<DataBuffer> m_staticTrianglesTable;
 };
 
 // ----------------------------------------------------------------------------

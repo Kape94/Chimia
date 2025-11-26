@@ -1,27 +1,26 @@
 #pragma once
 
-#include "Bits/Common/BitsNamespaceDefs.h"
-
 #include "Core/Types.h"
+#include "CoreNamespaceDefs.h"
 
 #include <cstddef>
 
-BEGIN_BITS_NAMESPACE
+BEGIN_CHIMIA_CORE_NAMESPACE
 
-class RawBuffer
+class DataBuffer
 {
 public:
-  RawBuffer();
+  DataBuffer();
 
-  RawBuffer(const size_t _maximumSize);
+  DataBuffer(const size_t _maximumSize);
 
-  RawBuffer(RawBuffer&& other);
-  RawBuffer& operator=(RawBuffer&& other);
+  DataBuffer(DataBuffer&& other);
+  DataBuffer& operator=(DataBuffer&& other);
 
-  RawBuffer(const RawBuffer& other) = delete;
-  RawBuffer& operator=(const RawBuffer& other) = delete;
+  DataBuffer(const DataBuffer& other) = delete;
+  DataBuffer& operator=(const DataBuffer& other) = delete;
 
-  ~RawBuffer();
+  ~DataBuffer();
 
   void Resize(const size_t size);
 
@@ -54,4 +53,4 @@ private:
   unsigned char* data = nullptr;
 };
 
-END_BITS_NAMESPACE
+END_CHIMIA_CORE_NAMESPACE

@@ -1,7 +1,7 @@
 #include "StaticTriangles.h"
 
 #include "BatchUtils.h"
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 #include "Core/Types.h"
 
 // ----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ void
 StaticTriangles::RebuildTrianglesBuffer()
 {
   m_inputBuffer.Reset();
-  m_staticTrianglesTable.ForEach([&](const Bits::RawBuffer& triangleData) {
+  m_staticTrianglesTable.ForEach([&](const DataBuffer& triangleData) {
     m_inputBuffer.Append(triangleData.GetData(), triangleData.GetSize());
   });
   m_shouldRebuildBuffers = false;

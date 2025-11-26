@@ -34,6 +34,12 @@ struct RawDataView
     , size(vector.size() * sizeof(T))
   {
   }
+
+  template<typename T>
+  const T& As()
+  {
+    return *reinterpret_cast<const T*>(data);
+  }
 };
 
 // ----------------------------------------------------------------------------
@@ -105,8 +111,12 @@ public:
   {
   }
 
-  const glm::vec3& AsVec3() const;
-  glm::vec3& AsVec3();
+  const glm::vec3& AsVec3() const
+  {
+    return reinterpret_cast<const glm::vec3&>(*this);
+  }
+
+  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
 
   float x = 0.0f, y = 0.0f, z = 0.0f;
 };
@@ -129,8 +139,12 @@ public:
   {
   }
 
-  const glm::vec3& AsVec3() const;
-  glm::vec3& AsVec3();
+  const glm::vec3& AsVec3() const
+  {
+    return reinterpret_cast<const glm::vec3&>(*this);
+  }
+
+  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
 
   float r = 0.0f, g = 0.0f, b = 0.0f;
 };
@@ -155,8 +169,12 @@ public:
   {
   }
 
-  const glm::vec4& AsVec4() const;
-  glm::vec4& AsVec4();
+  const glm::vec4& AsVec4() const
+  {
+    return reinterpret_cast<const glm::vec4&>(*this);
+  }
+
+  glm::vec4& AsVec4() { return reinterpret_cast<glm::vec4&>(*this); }
 
   float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
 };
@@ -179,8 +197,12 @@ public:
   {
   }
 
-  const glm::vec3& AsVec3() const;
-  glm::vec3& AsVec3();
+  const glm::vec3& AsVec3() const
+  {
+    return reinterpret_cast<const glm::vec3&>(*this);
+  }
+
+  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
 
   float x = 0.0f, y = 0.0f, z = 0.0f;
 };
@@ -201,8 +223,12 @@ public:
   {
   }
 
-  const glm::vec2& AsVec2() const;
-  glm::vec2& AsVec2();
+  const glm::vec2& AsVec2() const
+  {
+    return reinterpret_cast<const glm::vec2&>(*this);
+  }
+
+  glm::vec2& AsVec2() { return reinterpret_cast<glm::vec2&>(*this); }
 
   float u = 0.0f, v = 0.0f;
 };
@@ -221,6 +247,7 @@ struct MeshBufferData
 {
   std::vector<float> vertexDataValues;
   std::vector<unsigned> indices;
+  MeshAttributes attributes;
 
   bool HasIndices() const { return indices.size() > 0; }
 };
@@ -232,6 +259,7 @@ public:
   void Add(const Color4& col);
   void Add(const Normal3& normal);
   void Add(const TexCoord2& texCoord);
+  void AddFace(const unsigned i1, const unsigned i2, const unsigned i3);
 
   MeshAttributes GetMeshAttributes() const;
   MeshBufferData GeneratePackedBufferData(

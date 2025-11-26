@@ -2,7 +2,9 @@
 set(TARGET_NAME Chimia_Core)
 
 add_library(${TARGET_NAME}
+    src/DataBuffer.cpp
     src/Diagnostics.cpp
+    src/SchemaDataBuffer.cpp
     src/Types.cpp
 )
 

@@ -2,7 +2,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 #include "Rendering/Buffer.h"
 #include "Rendering/ShaderAttribute.h"
 
@@ -35,7 +35,7 @@ private:
   std::function<void(void)> m_onFlush;
 
   size_t m_inputDataSize = 0;
-  Bits::RawBuffer m_inputBuffer;
+  DataBuffer m_inputBuffer;
   Rendering::Buffer m_gpuBuffer;
 };
 

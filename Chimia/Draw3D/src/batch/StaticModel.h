@@ -6,7 +6,7 @@
 #include "Model.h"
 #include "ObjectTable.h"
 
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ShaderAttribute.h"
 
@@ -66,8 +66,8 @@ private:
 
   size_t m_instanceDataSize = 0;
   size_t m_instanceBatchDataSize = 0;
-  Bits::RawBuffer m_instanceDataBuffer;
-  ObjectTable<Bits::RawBuffer> m_instanceTable;
+  DataBuffer m_instanceDataBuffer;
+  ObjectTable<DataBuffer> m_instanceTable;
   std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
 };
 

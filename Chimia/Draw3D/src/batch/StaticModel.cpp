@@ -1,7 +1,7 @@
 #include "StaticModel.h"
 
 #include "BatchUtils.h"
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 #include "Core/Types.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
@@ -142,7 +142,7 @@ void
 StaticModel::RebuildInputBuffer()
 {
   m_instanceDataBuffer.Reset();
-  m_instanceTable.ForEach([&](const Bits::RawBuffer& instanceData) {
+  m_instanceTable.ForEach([&](const DataBuffer& instanceData) {
     m_instanceDataBuffer.Append(instanceData.GetData(), instanceData.GetSize());
   });
   m_shouldRebuildBuffers = false;

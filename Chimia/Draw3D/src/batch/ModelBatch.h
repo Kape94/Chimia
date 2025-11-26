@@ -3,7 +3,7 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 
-#include "Bits/Buffer/RawBuffer.h"
+#include "Core/DataBuffer.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
@@ -39,7 +39,7 @@ private:
   std::function<void(void)> m_onFlush;
 
   size_t m_instancedDataSize = 0;
-  Bits::RawBuffer m_instancedInputBuffer;
+  DataBuffer m_instancedInputBuffer;
   std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
 };
 
