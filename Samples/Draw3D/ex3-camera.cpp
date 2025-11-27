@@ -1,4 +1,3 @@
-#include "Core/Types.h"
 #include "Draw3D/Camera.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
@@ -30,20 +29,19 @@ main()
     Chimia::Draw3D::ClearScreen();
 
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
-    Chimia::Draw3D::Triangle(
-      Chimia::Position3{ -vertexSize, -vertexSize, 0.0f },
-      Chimia::Color3{ 1.0f, 0.0f, 0.0f },
-      Chimia::Position3{ vertexSize, -vertexSize, 0.0f },
-      Chimia::Color3{ 0.0f, 1.0f, 0.0f },
-      Chimia::Position3{ -vertexSize, vertexSize, 0.0f },
-      Chimia::Color3{ 0.0f, 0.0f, 1.0f });
+    Chimia::Draw3D::Triangle({ -vertexSize, -vertexSize, 0.0f },
+                             { 1.0f, 0.0f, 0.0f },
+                             { vertexSize, -vertexSize, 0.0f },
+                             { 0.0f, 1.0f, 0.0f },
+                             { -vertexSize, vertexSize, 0.0f },
+                             { 0.0f, 0.0f, 1.0f });
 
-    Chimia::Draw3D::Triangle(Chimia::Position3{ vertexSize, -vertexSize, 0.0f },
-                             Chimia::Color3{ 1.0f, 0.0f, 0.0f },
-                             Chimia::Position3{ vertexSize, vertexSize, 0.0f },
-                             Chimia::Color3{ 0.0f, 1.0f, 0.0f },
-                             Chimia::Position3{ -vertexSize, vertexSize, 0.0f },
-                             Chimia::Color3{ 0.0f, 0.0f, 1.0f });
+    Chimia::Draw3D::Triangle({ vertexSize, -vertexSize, 0.0f },
+                             { 1.0f, 0.0f, 0.0f },
+                             { vertexSize, vertexSize, 0.0f },
+                             { 0.0f, 1.0f, 0.0f },
+                             { -vertexSize, vertexSize, 0.0f },
+                             { 0.0f, 0.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

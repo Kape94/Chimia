@@ -1,4 +1,3 @@
-#include "Core/Types.h"
 #include "Draw3D/Camera.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Illumination.h"
@@ -13,15 +12,15 @@
 // ----------------------------------------------------------------------------
 
 void
-DrawTriangle(const Chimia::Position3& p1,
-             const Chimia::Position3& p2,
-             const Chimia::Position3& p3,
+DrawTriangle(const glm::vec3& p1,
+             const glm::vec3& p2,
+             const glm::vec3& p3,
              const Chimia::Draw3D::MaterialID& material)
 {
 
-  auto normal = [](const Chimia::Position3& p) {
+  auto normal = [](const glm::vec3& p) {
     const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
-    return Chimia::Normal3(p.AsVec3() - zero);
+    return p - zero;
   };
 
   Chimia::Draw3D::LitTriangle(
@@ -33,15 +32,15 @@ DrawCube(const Chimia::Draw3D::MaterialID& material)
 {
   const float size = 1.0f;
 
-  const Chimia::Position3 p1{ -size, -size, -size };
-  const Chimia::Position3 p2{ size, -size, -size };
-  const Chimia::Position3 p3{ size, size, -size };
-  const Chimia::Position3 p4{ -size, size, -size };
+  const glm::vec3 p1{ -size, -size, -size };
+  const glm::vec3 p2{ size, -size, -size };
+  const glm::vec3 p3{ size, size, -size };
+  const glm::vec3 p4{ -size, size, -size };
 
-  const Chimia::Position3 p5{ -size, -size, size };
-  const Chimia::Position3 p6{ size, -size, size };
-  const Chimia::Position3 p7{ size, size, size };
-  const Chimia::Position3 p8{ -size, size, size };
+  const glm::vec3 p5{ -size, -size, size };
+  const glm::vec3 p6{ size, -size, size };
+  const glm::vec3 p7{ size, size, size };
+  const glm::vec3 p8{ -size, size, size };
 
   DrawTriangle(p1, p2, p3, material);
   DrawTriangle(p3, p4, p1, material);
@@ -63,15 +62,14 @@ DrawCube(const Chimia::Draw3D::MaterialID& material)
 }
 
 void
-DrawLight(const Chimia::Position3& lightPos, const Chimia::Color3& lightColor)
+DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
 {
   const float size = 0.3f;
 
-  const glm::vec3& pos = lightPos.AsVec3();
-  const Chimia::Position3 p1(pos + glm::vec3{ -size, 0.0f, -size });
-  const Chimia::Position3 p2(pos + glm::vec3{ size, 0.0f, -size });
-  const Chimia::Position3 p3(pos + glm::vec3{ 0.0f, 0.0f, size });
-  const Chimia::Position3 p4(pos + glm::vec3{ 0.0f, size, 0.0f });
+  const glm::vec3 p1(lightPos + glm::vec3{ -size, 0.0f, -size });
+  const glm::vec3 p2(lightPos + glm::vec3{ size, 0.0f, -size });
+  const glm::vec3 p3(lightPos + glm::vec3{ 0.0f, 0.0f, size });
+  const glm::vec3 p4(lightPos + glm::vec3{ 0.0f, size, 0.0f });
 
   Chimia::Draw3D::Triangle(p1, p2, p4, lightColor);
   Chimia::Draw3D::Triangle(p2, p3, p4, lightColor);
@@ -87,14 +85,14 @@ main()
   Chimia::Draw3D::Initialize();
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
-  Chimia::Position3 lightPos{ 0.0f, 5.0f, -5.0f };
+  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
 
   Chimia::Draw3D::Camera::Projection::SetPerspective(
     45.0f, 1.0f, 0.01f, 100.0f);
   Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
   const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
-  const glm::vec3 lightDir = zero - lightPos.AsVec3();
+  const glm::vec3 lightDir = zero - lightPos;
 
   Chimia::Draw3D::DirectionalLight dLight{
     lightDir,
@@ -113,7 +111,7 @@ main()
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
     DrawCube(material);
-    DrawLight(lightPos, Chimia::Color3{ 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

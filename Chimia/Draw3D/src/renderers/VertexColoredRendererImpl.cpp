@@ -65,15 +65,15 @@ VertexColoredRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DrawTriangle(const Position3& p1,
-                                        const Color3& color1,
-                                        const Position3& p2,
-                                        const Color3& color2,
-                                        const Position3& p3,
-                                        const Color3& color3)
+VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
+                                        const glm::vec3& color1,
+                                        const glm::vec3& p2,
+                                        const glm::vec3& color2,
+                                        const glm::vec3& p3,
+                                        const glm::vec3& color3)
 {
-  constexpr size_t POS3_SIZE = sizeof(Position3);
-  constexpr size_t COL3_SIZE = sizeof(Color3);
+  constexpr size_t POS3_SIZE = sizeof(glm::vec3);
+  constexpr size_t COL3_SIZE = sizeof(glm::vec3);
 
   m_triangleMeshComponent.DrawTriangle({
     { &p1, POS3_SIZE },

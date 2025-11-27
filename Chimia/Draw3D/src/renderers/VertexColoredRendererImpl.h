@@ -24,12 +24,12 @@ public:
 
   void Flush();
 
-  void DrawTriangle(const Position3& p1,
-                    const Color3& color1,
-                    const Position3& p2,
-                    const Color3& color2,
-                    const Position3& p3,
-                    const Color3& color3) override;
+  void DrawTriangle(const glm::vec3& p1,
+                    const glm::vec3& color1,
+                    const glm::vec3& p2,
+                    const glm::vec3& color2,
+                    const glm::vec3& p3,
+                    const glm::vec3& color3) override;
 
   void DrawTriangles(const std::vector<float>& vertexData) override;
 

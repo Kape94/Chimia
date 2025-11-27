@@ -84,16 +84,16 @@ LitRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::DrawTriangle(const Position3& p1,
-                              const Normal3& p1Normal,
-                              const Position3& p2,
-                              const Normal3& p2Normal,
-                              const Position3& p3,
-                              const Normal3& p3Normal,
+LitRendererImpl::DrawTriangle(const glm::vec3& p1,
+                              const glm::vec3& p1Normal,
+                              const glm::vec3& p2,
+                              const glm::vec3& p2Normal,
+                              const glm::vec3& p3,
+                              const glm::vec3& p3Normal,
                               const MaterialID& materialID)
 {
-  constexpr size_t POS3_SIZE = sizeof(Position3);
-  constexpr size_t NORM3_SIZE = sizeof(Normal3);
+  constexpr size_t POS3_SIZE = sizeof(glm::vec3);
+  constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
 
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
   renderComponent->DrawTriangle({

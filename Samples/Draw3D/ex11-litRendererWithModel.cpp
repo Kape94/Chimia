@@ -1,4 +1,3 @@
-#include "Core/Types.h"
 #include "Draw3D/Camera.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Illumination.h"
@@ -80,15 +79,14 @@ CreateCubeGeometry()
 }
 
 void
-DrawLight(const Chimia::Position3& lightPos, const Chimia::Color3& lightColor)
+DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
 {
   const float size = 0.3f;
 
-  const glm::vec3& pos = lightPos.AsVec3();
-  const Chimia::Position3 p1(pos + glm::vec3{ -size, 0.0f, -size });
-  const Chimia::Position3 p2(pos + glm::vec3{ size, 0.0f, -size });
-  const Chimia::Position3 p3(pos + glm::vec3{ 0.0f, 0.0f, size });
-  const Chimia::Position3 p4(pos + glm::vec3{ 0.0f, size, 0.0f });
+  const glm::vec3 p1(lightPos + glm::vec3{ -size, 0.0f, -size });
+  const glm::vec3 p2(lightPos + glm::vec3{ size, 0.0f, -size });
+  const glm::vec3 p3(lightPos + glm::vec3{ 0.0f, 0.0f, size });
+  const glm::vec3 p4(lightPos + glm::vec3{ 0.0f, size, 0.0f });
 
   unlitRenderer.DrawTriangle(p1, lightColor, p2, lightColor, p4, lightColor);
   unlitRenderer.DrawTriangle(p2, lightColor, p3, lightColor, p4, lightColor);
@@ -119,14 +117,14 @@ main()
   Chimia::Draw3D::Initialize();
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
-  Chimia::Position3 lightPos{ 0.0f, 5.0f, -5.0f };
+  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
 
   Chimia::Draw3D::Camera::Projection::SetPerspective(
     45.0f, 1.0f, 0.01f, 100.0f);
   Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
   const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
-  const glm::vec3 lightDir = zero - lightPos.AsVec3();
+  const glm::vec3 lightDir = zero - lightPos;
 
   Chimia::Draw3D::DirectionalLight dLight{
     lightDir,
@@ -160,7 +158,7 @@ main()
       cubeModel, Transform({ 0.0f, 0.0f, 0.0f }, 2.0f), blueMaterial);
     renderer.DrawModelTransformed(
       cubeModel, Transform({ 0.5f, 0.0f, 0.0f }, 1.0f), blueMaterial);
-    DrawLight(lightPos, Chimia::Color3{ 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

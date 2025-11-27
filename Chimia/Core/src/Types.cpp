@@ -20,13 +20,13 @@ ComputeNFloatsCountForAttribute(const MeshAttributes& attributes)
 }
 
 void
-PushIntoVector(const Position3& pos, std::vector<float>& vector)
+PushIntoVector(const glm::vec3& pos, std::vector<float>& vector)
 {
   vector.insert(vector.end(), { pos.x, pos.y, pos.z });
 }
 
 void
-PushIntoVector(const Color4& col,
+PushIntoVector(const glm::vec4& col,
                const bool shouldIncludeAlpha,
                std::vector<float>& vector)
 {
@@ -38,15 +38,9 @@ PushIntoVector(const Color4& col,
 }
 
 void
-PushIntoVector(const Normal3& n, std::vector<float>& vector)
+PushIntoVector(const glm::vec2& coord, std::vector<float>& vector)
 {
-  vector.insert(vector.end(), { n.x, n.y, n.z });
-}
-
-void
-PushIntoVector(const TexCoord2& coord, std::vector<float>& vector)
-{
-  vector.insert(vector.end(), { coord.u, coord.v });
+  vector.insert(vector.end(), { coord.x, coord.y });
 }
 
 MeshAttributes
@@ -73,41 +67,46 @@ ResultingAttributes(const Mesh& mesh, const MeshAttributes& requested)
 // ----------------------------------------------------------------------------
 
 void
-Mesh::Add(const Position3& pos)
+Mesh::AddPosition(const glm::vec3& pos)
 {
   m_positions.push_back(pos);
+  m_shouldRebuildRenderData = true;
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Mesh::Add(const Color4& col)
+Mesh::AddColor(const glm::vec4& col)
 {
   m_colors.push_back(col);
+  m_shouldRebuildRenderData = true;
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Mesh::Add(const Normal3& normal)
+Mesh::AddNormal(const glm::vec3& normal)
 {
   m_normals.push_back(normal);
+  m_shouldRebuildRenderData = true;
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Mesh::Add(const TexCoord2& texCoord)
+Mesh::AddTexCoord(const glm::vec2& texCoord)
 {
   m_texCoords.push_back(texCoord);
+  m_shouldRebuildRenderData = true;
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Mesh::AddFace(const unsigned i1, const unsigned i2, const unsigned i3)
+Mesh::AddIndex(const unsigned i)
 {
-  m_indices.insert(m_indices.end(), { i1, i2, i3 });
+  m_indices.push_back(i);
+  m_shouldRebuildRenderData = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -125,20 +124,30 @@ Mesh::GetMeshAttributes() const
 
 // ----------------------------------------------------------------------------
 
-MeshBufferData
-Mesh::GeneratePackedBufferData(
-  const struct MeshAttributes& selectedAttributes) const
+const MeshBufferData&
+Mesh::GetRenderData() const
 {
-  MeshBufferData packedData;
+  if (m_shouldRebuildRenderData) {
+    BuildRenderData();
+  }
 
-  const MeshAttributes attributes =
-    TypesUtils::ResultingAttributes(*this, selectedAttributes);
+  return m_renderData;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Mesh::BuildRenderData() const
+{
+  m_renderData = MeshBufferData();
+
+  const MeshAttributes attributes = GetMeshAttributes();
 
   const size_t nFloatsPerVertex =
     TypesUtils::ComputeNFloatsCountForAttribute(attributes);
   const size_t nVertices = m_positions.size();
 
-  std::vector<float>& vertexData = packedData.vertexDataValues;
+  std::vector<float>& vertexData = m_renderData.vertexDataValues;
   vertexData.reserve(nVertices * nFloatsPerVertex);
 
   for (size_t i = 0; i < nVertices; ++i) {
@@ -155,10 +164,11 @@ Mesh::GeneratePackedBufferData(
     }
   }
 
-  packedData.indices = m_indices;
-  packedData.attributes = attributes;
+  m_renderData.indices = m_indices;
+  m_renderData.attributes = attributes;
+  m_renderData.nVertices = nVertices;
 
-  return packedData;
+  m_shouldRebuildRenderData = false;
 }
 
 // ----------------------------------------------------------------------------

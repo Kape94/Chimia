@@ -93,146 +93,6 @@ struct VertexDataView
 
 // ----------------------------------------------------------------------------
 
-class Position3
-{
-public:
-  explicit Position3() = default;
-  explicit Position3(float _x, float _y, float _z)
-    : x(_x)
-    , y(_y)
-    , z(_z)
-  {
-  }
-
-  explicit Position3(const glm::vec3& vec)
-    : x(vec.x)
-    , y(vec.y)
-    , z(vec.z)
-  {
-  }
-
-  const glm::vec3& AsVec3() const
-  {
-    return reinterpret_cast<const glm::vec3&>(*this);
-  }
-
-  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
-
-  float x = 0.0f, y = 0.0f, z = 0.0f;
-};
-
-class Color3
-{
-public:
-  explicit Color3() = default;
-  explicit Color3(float _r, float _g, float _b)
-    : r(_r)
-    , g(_g)
-    , b(_b)
-  {
-  }
-
-  explicit Color3(const glm::vec3& vec)
-    : r(vec.r)
-    , g(vec.g)
-    , b(vec.b)
-  {
-  }
-
-  const glm::vec3& AsVec3() const
-  {
-    return reinterpret_cast<const glm::vec3&>(*this);
-  }
-
-  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
-
-  float r = 0.0f, g = 0.0f, b = 0.0f;
-};
-
-class Color4
-{
-public:
-  Color4() = delete;
-  explicit Color4(float _r, float _g, float _b, float _a)
-    : r(_r)
-    , g(_g)
-    , b(_b)
-    , a(_a)
-  {
-  }
-
-  explicit Color4(const glm::vec4& vec)
-    : r(vec.r)
-    , g(vec.g)
-    , b(vec.b)
-    , a(vec.a)
-  {
-  }
-
-  const glm::vec4& AsVec4() const
-  {
-    return reinterpret_cast<const glm::vec4&>(*this);
-  }
-
-  glm::vec4& AsVec4() { return reinterpret_cast<glm::vec4&>(*this); }
-
-  float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
-};
-
-class Normal3
-{
-public:
-  Normal3() = delete;
-  explicit Normal3(float _x, float _y, float _z)
-    : x(_x)
-    , y(_y)
-    , z(_z)
-  {
-  }
-
-  explicit Normal3(const glm::vec3& vec)
-    : x(vec.x)
-    , y(vec.y)
-    , z(vec.z)
-  {
-  }
-
-  const glm::vec3& AsVec3() const
-  {
-    return reinterpret_cast<const glm::vec3&>(*this);
-  }
-
-  glm::vec3& AsVec3() { return reinterpret_cast<glm::vec3&>(*this); }
-
-  float x = 0.0f, y = 0.0f, z = 0.0f;
-};
-
-class TexCoord2
-{
-public:
-  TexCoord2() = delete;
-  explicit TexCoord2(float _u, float _v)
-    : u(_u)
-    , v(_v)
-  {
-  }
-
-  explicit TexCoord2(const glm::vec2& vec)
-    : u(vec.x)
-    , v(vec.y)
-  {
-  }
-
-  const glm::vec2& AsVec2() const
-  {
-    return reinterpret_cast<const glm::vec2&>(*this);
-  }
-
-  glm::vec2& AsVec2() { return reinterpret_cast<glm::vec2&>(*this); }
-
-  float u = 0.0f, v = 0.0f;
-};
-
 struct MeshAttributes
 {
   bool hasVertexColor = false;
@@ -248,6 +108,7 @@ struct MeshBufferData
   std::vector<float> vertexDataValues;
   std::vector<unsigned> indices;
   MeshAttributes attributes;
+  size_t nVertices = 0;
 
   bool HasIndices() const { return indices.size() > 0; }
 };
@@ -255,21 +116,25 @@ struct MeshBufferData
 class Mesh
 {
 public:
-  void Add(const Position3& pos);
-  void Add(const Color4& col);
-  void Add(const Normal3& normal);
-  void Add(const TexCoord2& texCoord);
-  void AddFace(const unsigned i1, const unsigned i2, const unsigned i3);
+  void AddPosition(const glm::vec3& pos);
+  void AddColor(const glm::vec4& col);
+  void AddNormal(const glm::vec3& normal);
+  void AddTexCoord(const glm::vec2& texCoord);
+  void AddIndex(const unsigned i);
 
   MeshAttributes GetMeshAttributes() const;
-  MeshBufferData GeneratePackedBufferData(
-    const struct MeshAttributes& selectedAttributes) const;
+  const MeshBufferData& GetRenderData() const;
 
 private:
-  std::vector<Position3> m_positions;
-  std::vector<Color4> m_colors;
-  std::vector<Normal3> m_normals;
-  std::vector<TexCoord2> m_texCoords;
+  void BuildRenderData() const;
+
+  mutable bool m_shouldRebuildRenderData = true;
+  mutable MeshBufferData m_renderData;
+
+  std::vector<glm::vec3> m_positions;
+  std::vector<glm::vec4> m_colors;
+  std::vector<glm::vec3> m_normals;
+  std::vector<glm::vec2> m_texCoords;
   std::vector<unsigned> m_indices;
 };
 
