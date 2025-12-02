@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "InternalTypes.h"
 #include "Model.h"
 #include "ObjectTable.h"
 #include "Types.h"

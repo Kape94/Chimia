@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Draw3DNamespaceDefs.h"
-#include "Illumination.h"
+#include "InternalTypes.h"
 
 #include "Rendering/Shader.h"
 
