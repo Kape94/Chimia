@@ -88,40 +88,17 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData)
+VertexColoredRendererImpl::DrawTriangles(const RawArrayView& vertexDataArray)
 {
-  m_triangleMeshComponent.DrawTriangles(vertexData);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-VertexColoredRendererImpl::DrawTriangles(const std::vector<float>& vertexData,
-                                         const std::vector<unsigned>& indexData)
-{
-  m_triangleMeshComponent.DrawTriangles(vertexData, indexData);
+  m_triangleMeshComponent.DrawTriangles(vertexDataArray);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
-VertexColoredRendererImpl::AddStaticTriangles(
-  const std::vector<float>& vertexData)
+VertexColoredRendererImpl::AddStaticTriangles(const RawDataView& vertexData)
 {
   const unsigned instanceID = m_triangleMeshComponent.AddStaticMesh(vertexData);
-  return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, MATERIAL_ID);
-}
-
-// ----------------------------------------------------------------------------
-
-TriangleMeshID
-VertexColoredRendererImpl::AddStaticTriangles(
-  const std::vector<float>& vertexData,
-  const std::vector<unsigned>& indexData)
-{
-  const unsigned instanceID =
-    m_triangleMeshComponent.AddStaticMesh(vertexData, indexData);
   return Draw3DPrivate::CreateTriangleMeshID(
     RENDERER_ID, instanceID, MATERIAL_ID);
 }

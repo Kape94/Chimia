@@ -8,7 +8,7 @@ add_library(${TARGET_NAME}
     src/Draw3DPrivate.cpp
     src/Illumination.cpp
     src/Model.cpp
-    src/Renderers.cpp
+    src/ModelRendering.cpp
     src/Resources.cpp
     src/ResourcesManager.cpp
     src/Shaders.cpp

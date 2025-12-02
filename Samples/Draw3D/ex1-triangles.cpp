@@ -1,5 +1,6 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
+#include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
@@ -89,7 +90,9 @@ Triangle::Draw() const
   const glm::vec3 p2(m_pos + p2Dir * m_size);
   const glm::vec3 p3(m_pos + p3Dir * m_size);
 
-  Chimia::Draw3D::Triangle(p1, p2, p3, m_col);
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, m_col },
+                           Chimia::Draw3D::VertexPC{ p2, m_col },
+                           Chimia::Draw3D::VertexPC{ p3, m_col });
 }
 
 // ----------------------------------------------------------------------------

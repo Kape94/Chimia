@@ -1,6 +1,7 @@
 #include "ResourcesManager.h"
 
 #include "Draw3DPrivate.h"
+#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
@@ -18,11 +19,12 @@ ResourcesManager::GetInstance()
 // ----------------------------------------------------------------------------
 
 ModelID
-ResourcesManager::CreateModel(const MeshDataView& meshData)
+ResourcesManager::CreateModel(const MeshDataView& meshData,
+                              const eVertexLayout vertexLayout)
 {
   auto [modelIDValue, model] = m_modelsTable.Insert();
 
-  model->Create(meshData);
+  model->Create(meshData, vertexLayout);
 
   return Draw3DPrivate::CreateModelID(modelIDValue);
 }

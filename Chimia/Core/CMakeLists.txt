@@ -4,8 +4,8 @@ set(TARGET_NAME Chimia_Core)
 add_library(${TARGET_NAME}
     src/DataBuffer.cpp
     src/Diagnostics.cpp
+    src/Mesh.cpp
     src/SchemaDataBuffer.cpp
-    src/Types.cpp
 )
 
 target_include_directories(${TARGET_NAME}

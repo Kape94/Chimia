@@ -4,8 +4,12 @@
 
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
+#include "Draw3DPrivate.h"
 #include "LitRendererImpl.h"
+#include "Types.h"
 #include "VertexColoredRendererImpl.h"
+#include "eRendererType.h"
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
@@ -16,44 +20,153 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 namespace {
 auto& renderer = VertexColoredRendererImpl::getInstance();
 auto& litRenderer = LitRendererImpl::getInstance();
+
+template<class VertexType>
+std::vector<VertexType>
+DropIndices(const std::vector<VertexType>& vertexData,
+            const std::vector<unsigned>& indices)
+{
+  std::vector<VertexType> unindexedData;
+  unindexedData.reserve(indices.size());
+
+  for (const unsigned i : indices) {
+    unindexedData.push_back(vertexData[i]);
+  }
+
+  return unindexedData;
+}
+
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Chimia::Draw3D::Triangle(const glm::vec3& p1,
-                         const glm::vec3& p2,
-                         const glm::vec3& p3,
-                         const glm::vec3& color)
+Chimia::Draw3D::Triangle(const VertexPC& v1,
+                         const VertexPC& v2,
+                         const VertexPC& v3)
 {
-  Triangle(p1, color, p2, color, p3, color);
+  renderer.DrawTriangle(
+    v1.position, v1.color, v2.position, v2.color, v3.position, v3.color);
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Chimia::Draw3D::Triangle(const glm::vec3& p1,
-                         const glm::vec3& p1Color,
-                         const glm::vec3& p2,
-                         const glm::vec3& p2Color,
-                         const glm::vec3& p3,
-                         const glm::vec3& p3Color)
+Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices)
 {
-  renderer.DrawTriangle(p1, p1Color, p2, p2Color, p3, p3Color);
+  renderer.DrawTriangles(
+    { vertices.data(), vertices.size(), sizeof(VertexPC) });
 }
 
 // ----------------------------------------------------------------------------
 
 void
-Chimia::Draw3D::LitTriangle(const glm::vec3& p1,
-                            const glm::vec3& p1Normal,
-                            const glm::vec3& p2,
-                            const glm::vec3& p2Normal,
-                            const glm::vec3& p3,
-                            const glm::vec3& p3Normal,
-                            const MaterialID& material)
+Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
+                          const std::vector<unsigned>& indices)
 {
-  litRenderer.DrawTriangle(p1, p1Normal, p2, p2Normal, p3, p3Normal, material);
+  const std::vector<VertexPC> unindexedVertex = DropIndices(vertices, indices);
+  Triangles(unindexedVertex);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPC>& vertices)
+{
+  return renderer.AddStaticTriangles(
+    RawDataView(vertices.data(), vertices.size() * sizeof(VertexPC)));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPC>& vertices,
+                                   const std::vector<unsigned>& indices)
+{
+  const std::vector<VertexPC> unindexedVertex = DropIndices(vertices, indices);
+  return AddStaticTriangles(unindexedVertex);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPN& v1,
+                         const VertexPN& v2,
+                         const VertexPN& v3,
+                         const MaterialID& material)
+{
+  litRenderer.DrawTriangle(v1.position,
+                           v1.normal,
+                           v2.position,
+                           v2.normal,
+                           v3.position,
+                           v3.normal,
+                           material);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
+                          const MaterialID& material)
+{
+  litRenderer.DrawTriangles(
+    { vertices.data(), vertices.size(), sizeof(VertexPN) }, material);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const MaterialID& material)
+{
+  const std::vector<VertexPN> unindexedVertex = DropIndices(vertices, indices);
+  Triangles(unindexedVertex, material);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPN>& vertices,
+                                   const MaterialID& material)
+{
+  return litRenderer.AddStaticTriangles(
+    RawDataView(vertices.data(), vertices.size() * sizeof(VertexPN)), material);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPN>& vertices,
+                                   const std::vector<unsigned>& indices,
+                                   const MaterialID& material)
+{
+  const std::vector<VertexPN> unindexedVertex = DropIndices(vertices, indices);
+  return AddStaticTriangles(unindexedVertex, material);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::DeleteStaticTriangles(const TriangleMeshID& meshID)
+{
+  auto [rendererID, _, __] = Draw3DPrivate::GetTriangleMeshIDValues(meshID);
+
+  const auto rendererType = static_cast<eRendererType>(rendererID);
+  switch (rendererType) {
+    case eRendererType::VERTEX_COLORED: {
+      renderer.DeleteStaticTriangles(meshID);
+      return;
+    }
+    case eRendererType::LIT: {
+      litRenderer.DeleteStaticTriangles(meshID);
+      return;
+    }
+    case eRendererType::NONE:
+    default:
+      return;
+  }
 }
 
 // ----------------------------------------------------------------------------

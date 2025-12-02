@@ -2,21 +2,25 @@
 
 // ----------------------------------------------------------------------------
 
-#include "Draw3DNamespaceDefs.h"
+#include "CoreNamespaceDefs.h"
 
-#include "Core/Types.h"
-
-// ----------------------------------------------------------------------------
-
-BEGIN_CHIMIA_DRAW3D_NAMESPACE
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
-void
-DrawTriangleMesh(const MeshBufferData& mesh);
+BEGIN_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-END_CHIMIA_DRAW3D_NAMESPACE
+struct RenderData
+{
+  std::vector<float> vertexData;
+  std::vector<unsigned> indices;
+  size_t nVertices = 0;
+};
+
+// ----------------------------------------------------------------------------
+
+END_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------

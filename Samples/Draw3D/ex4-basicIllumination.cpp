@@ -4,6 +4,7 @@
 
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
+#include "Draw3D/Types.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -23,8 +24,10 @@ DrawTriangle(const glm::vec3& p1,
     return p - zero;
   };
 
-  Chimia::Draw3D::LitTriangle(
-    p1, normal(p1), p2, normal(p2), p3, normal(p3), material);
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPN{ p1, normal(p1) },
+                           Chimia::Draw3D::VertexPN{ p2, normal(p2) },
+                           Chimia::Draw3D::VertexPN{ p3, normal(p3) },
+                           material);
 }
 
 void
@@ -62,6 +65,17 @@ DrawCube(const Chimia::Draw3D::MaterialID& material)
 }
 
 void
+DrawUnlitTriangle(const glm::vec3& p1,
+                  const glm::vec3& p2,
+                  const glm::vec3& p3,
+                  const glm::vec3& color)
+{
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
+                           Chimia::Draw3D::VertexPC{ p2, color },
+                           Chimia::Draw3D::VertexPC{ p3, color });
+}
+
+void
 DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
 {
   const float size = 0.3f;
@@ -71,10 +85,10 @@ DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
   const glm::vec3 p3(lightPos + glm::vec3{ 0.0f, 0.0f, size });
   const glm::vec3 p4(lightPos + glm::vec3{ 0.0f, size, 0.0f });
 
-  Chimia::Draw3D::Triangle(p1, p2, p4, lightColor);
-  Chimia::Draw3D::Triangle(p2, p3, p4, lightColor);
-  Chimia::Draw3D::Triangle(p3, p1, p4, lightColor);
-  Chimia::Draw3D::Triangle(p3, p2, p1, lightColor);
+  DrawUnlitTriangle(p1, p2, p4, lightColor);
+  DrawUnlitTriangle(p2, p3, p4, lightColor);
+  DrawUnlitTriangle(p3, p1, p4, lightColor);
+  DrawUnlitTriangle(p3, p2, p1, lightColor);
 }
 
 int

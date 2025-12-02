@@ -8,8 +8,6 @@
 #include "Rendering/Buffer.h"
 #include "Rendering/ShaderAttribute.h"
 
-#include <vector>
-
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
@@ -24,7 +22,7 @@ public:
   void Create(const size_t batchSize,
               const Rendering::ShaderAttributes& shaderAttributes);
 
-  unsigned AddStaticMesh(const std::vector<float>& vertexData);
+  unsigned AddStaticMesh(const RawDataView& vertexData);
 
   void DeleteStaticMesh(const unsigned meshID);
 

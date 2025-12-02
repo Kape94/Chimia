@@ -1,5 +1,5 @@
 #include "Draw3D/Draw3D.h"
-#include "Draw3D/Renderers.h"
+#include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
@@ -20,21 +20,24 @@ AddStaticQuad(const glm::vec3& p1,
               const glm::vec3& p4,
               const glm::vec3& color4)
 {
-  // clang-format off
-  const std::vector<float> vertexData{
+  const std::vector<Chimia::Draw3D::VertexPC> vertexData{
     // First triangle
-    p1.x, p1.y, p1.z, color1.r, color1.g, color1.b,
-    p2.x, p2.y, p2.z, color2.r, color2.g, color2.b,
-    p3.x, p3.y, p3.z, color3.r, color3.g, color3.b,
+    Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
+                              { color1.r, color1.g, color1.b } },
+    Chimia::Draw3D::VertexPC{ { p2.x, p2.y, p2.z },
+                              { color2.r, color2.g, color2.b } },
+    Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
+                              { color3.r, color3.g, color3.b } },
     // Second triangle
-    p3.x, p3.y, p3.z, color3.r, color3.g, color3.b,
-    p4.x, p4.y, p4.z, color4.r, color4.g, color4.b,
-    p1.x, p1.y, p1.z, color1.r, color1.g, color1.b,
+    Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
+                              { color3.r, color3.g, color3.b } },
+    Chimia::Draw3D::VertexPC{ { p4.x, p4.y, p4.z },
+                              { color4.r, color4.g, color4.b } },
+    Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
+                              { color1.r, color1.g, color1.b } },
   };
-  // clang-format on
 
-  static auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
-  return renderer.AddStaticTriangles(vertexData);
+  return Chimia::Draw3D::AddStaticTriangles(vertexData);
 }
 
 Chimia::Draw3D::TriangleMeshID
@@ -47,22 +50,21 @@ AddStaticQuadIndexed(const glm::vec3& p1,
                      const glm::vec3& p4,
                      const glm::vec3& color4)
 {
-  // clang-format off
-  const std::vector<float> vertexData{
+  const std::vector<Chimia::Draw3D::VertexPC> vertexData{
     // First triangle
-    p1.x, p1.y, p1.z, color1.r, color1.g, color1.b,
-    p2.x, p2.y, p2.z, color2.r, color2.g, color2.b,
-    p3.x, p3.y, p3.z, color3.r, color3.g, color3.b,
-    p4.x, p4.y, p4.z, color4.r, color4.g, color4.b,
+    Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
+                              { color1.r, color1.g, color1.b } },
+    Chimia::Draw3D::VertexPC{ { p2.x, p2.y, p2.z },
+                              { color2.r, color2.g, color2.b } },
+    Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
+                              { color3.r, color3.g, color3.b } },
+    Chimia::Draw3D::VertexPC{ { p4.x, p4.y, p4.z },
+                              { color4.r, color4.g, color4.b } },
   };
 
-  const std::vector<unsigned> indices{
-    0, 1, 2, 2, 3, 0
-  };
-  // clang-format on
+  const std::vector<unsigned> indices{ 0, 1, 2, 2, 3, 0 };
 
-  static auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
-  return renderer.AddStaticTriangles(vertexData, indices);
+  return Chimia::Draw3D::AddStaticTriangles(vertexData, indices);
 }
 
 // ----------------------------------------------------------------------------
@@ -73,8 +75,6 @@ main()
   Window w(1280, 960, "Draw3D ex8");
 
   Chimia::Draw3D::Initialize();
-
-  auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
 
   const Chimia::Draw3D::TriangleMeshID quad1 =
     AddStaticQuad({ -0.5f, -0.5f, 0.0f },
@@ -96,8 +96,8 @@ main()
                          { -1.0f, 1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f });
 
-  auto deleteQuad1 = [&]() { renderer.DeleteStaticTriangles(quad1); };
-  auto deleteQuad2 = [&]() { renderer.DeleteStaticTriangles(quad2); };
+  auto deleteQuad1 = [&]() { Chimia::Draw3D::DeleteStaticTriangles(quad1); };
+  auto deleteQuad2 = [&]() { Chimia::Draw3D::DeleteStaticTriangles(quad2); };
   auto addQuad = [&]() {
     AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f },

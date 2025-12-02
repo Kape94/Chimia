@@ -1,20 +1,15 @@
 #include "Draw3D/Camera.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Illumination.h"
-
-#include "Draw3D/Renderers.h"
+#include "Draw3D/ModelRendering.h"
 #include "Draw3D/Resources.h"
+#include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
-
-// ----------------------------------------------------------------------------
-
-auto& renderer = Chimia::Draw3D::GetLitRenderer();
-auto& unlitRenderer = Chimia::Draw3D::GetVertexColoredRenderer();
 
 // ----------------------------------------------------------------------------
 
@@ -79,6 +74,17 @@ CreateCubeGeometry()
 }
 
 void
+DrawUnlitTriangle(const glm::vec3& p1,
+                  const glm::vec3& p2,
+                  const glm::vec3& p3,
+                  const glm::vec3& color)
+{
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
+                           Chimia::Draw3D::VertexPC{ p2, color },
+                           Chimia::Draw3D::VertexPC{ p3, color });
+}
+
+void
 DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
 {
   const float size = 0.3f;
@@ -88,10 +94,10 @@ DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
   const glm::vec3 p3(lightPos + glm::vec3{ 0.0f, 0.0f, size });
   const glm::vec3 p4(lightPos + glm::vec3{ 0.0f, size, 0.0f });
 
-  unlitRenderer.DrawTriangle(p1, lightColor, p2, lightColor, p4, lightColor);
-  unlitRenderer.DrawTriangle(p2, lightColor, p3, lightColor, p4, lightColor);
-  unlitRenderer.DrawTriangle(p3, lightColor, p1, lightColor, p4, lightColor);
-  unlitRenderer.DrawTriangle(p3, lightColor, p2, lightColor, p1, lightColor);
+  DrawUnlitTriangle(p1, p2, p4, lightColor);
+  DrawUnlitTriangle(p2, p3, p4, lightColor);
+  DrawUnlitTriangle(p3, p1, p4, lightColor);
+  DrawUnlitTriangle(p3, p2, p1, lightColor);
 }
 
 glm::mat4x4
@@ -141,22 +147,24 @@ main()
 
   ModelData modelData = CreateCubeGeometry();
   const Chimia::Draw3D::ModelID cubeModel = Chimia::Draw3D::CreateModel(
-    { modelData.vertexData, modelData.nVertices, modelData.indexData });
+    { modelData.vertexData, modelData.nVertices, modelData.indexData },
+    Chimia::Draw3D::eVertexLayout::POSITION3_NORMAL3);
 
-  const Chimia::Draw3D::ModelInstanceID staticRedCube = renderer.AddStaticModel(
-    cubeModel, Transform({ 0.5f, 0.8f, 0.0f }, 1.0f), redMaterial);
+  const Chimia::Draw3D::ModelInstanceID staticRedCube =
+    Chimia::Draw3D::AddStaticModel(
+      cubeModel, Transform({ 0.5f, 0.8f, 0.0f }, 1.0f), redMaterial);
 
-  SamplesUtils::DoAfter([&]() { renderer.DeleteStaticModel(staticRedCube); },
-                        7000);
+  SamplesUtils::DoAfter(
+    [&]() { Chimia::Draw3D::DeleteStaticModel(staticRedCube); }, 7000);
 
   while (!w.ShouldClose()) {
 
     Chimia::Draw3D::ClearScreen();
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
-    renderer.DrawModelTransformed(
+    Chimia::Draw3D::DrawModel(
       cubeModel, Transform({ 0.0f, 0.0f, 0.0f }, 2.0f), blueMaterial);
-    renderer.DrawModelTransformed(
+    Chimia::Draw3D::DrawModel(
       cubeModel, Transform({ 0.5f, 0.0f, 0.0f }, 1.0f), blueMaterial);
     DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
 

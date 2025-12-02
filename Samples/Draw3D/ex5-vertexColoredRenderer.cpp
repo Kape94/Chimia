@@ -1,7 +1,10 @@
 #include "Draw3D/Draw3D.h"
-#include "Draw3D/Renderers.h"
+
+#include "Draw3D/Triangle.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
+
+#include <glm/vec3.hpp>
 
 // ----------------------------------------------------------------------------
 
@@ -12,22 +15,20 @@ public:
 
   void UpdateColor();
 
-  const glm::vec3& GetPos() const;
-  const glm::vec3& GetColor() const;
+  const Chimia::Draw3D::VertexPC& GetVertex() const;
 
 private:
-  glm::vec3 m_pos;
-  glm::vec3 m_color;
+  Chimia::Draw3D::VertexPC m_vertex;
   glm::vec3 m_direction;
   float m_changeVelocity;
 };
 
 SampleVertex::SampleVertex(const glm::vec3& pos)
-  : m_pos(pos)
 {
   using namespace SamplesUtils;
 
-  m_color = { NormalizedRand(), NormalizedRand(), NormalizedRand() };
+  m_vertex.position = pos;
+  m_vertex.color = { NormalizedRand(), NormalizedRand(), NormalizedRand() };
   m_direction = { NormalizedRand(), NormalizedRand(), NormalizedRand() };
   m_changeVelocity = 0.005f + NormalizedRand() * 0.015f;
 }
@@ -35,32 +36,27 @@ SampleVertex::SampleVertex(const glm::vec3& pos)
 void
 SampleVertex::UpdateColor()
 {
-  if (m_color.r >= 1.0f)
+  glm::vec3& color = m_vertex.color;
+  if (color.r >= 1.0f)
     m_direction.r = -1.0f;
-  if (m_color.r <= 0.0f)
+  if (color.r <= 0.0f)
     m_direction.r = 1.0f;
-  if (m_color.g >= 0.5f)
+  if (color.g >= 0.5f)
     m_direction.g = -1.0f;
-  if (m_color.g <= 0.0f)
+  if (color.g <= 0.0f)
     m_direction.g = 1.0f;
-  if (m_color.b >= 1.0f)
+  if (color.b >= 1.0f)
     m_direction.b = -1.0f;
-  if (m_color.b <= 0.0f)
+  if (color.b <= 0.0f)
     m_direction.b = 1.0f;
 
-  m_color += m_direction * m_changeVelocity;
+  color += m_direction * m_changeVelocity;
 }
 
-const glm::vec3&
-SampleVertex::GetPos() const
+const Chimia::Draw3D::VertexPC&
+SampleVertex::GetVertex() const
 {
-  return m_pos;
-}
-
-const glm::vec3&
-SampleVertex::GetColor() const
-{
-  return m_color;
+  return m_vertex;
 }
 
 // ----------------------------------------------------------------------------
@@ -76,17 +72,11 @@ main()
   SampleVertex v2({ 0.5f, -0.5f, 0.0f });
   SampleVertex v3({ 0.0f, 0.5f, 0.0f });
 
-  auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
   while (!w.ShouldClose()) {
 
     Chimia::Draw3D::ClearScreen();
 
-    renderer.DrawTriangle(v1.GetPos(),
-                          v1.GetColor(),
-                          v2.GetPos(),
-                          v2.GetColor(),
-                          v3.GetPos(),
-                          v3.GetColor());
+    Chimia::Draw3D::Triangle(v1.GetVertex(), v2.GetVertex(), v3.GetVertex());
 
     Chimia::Draw3D::Flush();
 

@@ -2,6 +2,7 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
 
+#include "Draw3D/Types.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -29,19 +30,21 @@ main()
     Chimia::Draw3D::ClearScreen();
 
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
-    Chimia::Draw3D::Triangle({ -vertexSize, -vertexSize, 0.0f },
-                             { 1.0f, 0.0f, 0.0f },
-                             { vertexSize, -vertexSize, 0.0f },
-                             { 0.0f, 1.0f, 0.0f },
-                             { -vertexSize, vertexSize, 0.0f },
-                             { 0.0f, 0.0f, 1.0f });
+    Chimia::Draw3D::Triangle(
+      Chimia::Draw3D::VertexPC{ { -vertexSize, -vertexSize, 0.0f },
+                                { 1.0f, 0.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { vertexSize, -vertexSize, 0.0f },
+                                { 0.0f, 1.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { -vertexSize, vertexSize, 0.0f },
+                                { 0.0f, 0.0f, 1.0f } });
 
-    Chimia::Draw3D::Triangle({ vertexSize, -vertexSize, 0.0f },
-                             { 1.0f, 0.0f, 0.0f },
-                             { vertexSize, vertexSize, 0.0f },
-                             { 0.0f, 1.0f, 0.0f },
-                             { -vertexSize, vertexSize, 0.0f },
-                             { 0.0f, 0.0f, 1.0f });
+    Chimia::Draw3D::Triangle(
+      Chimia::Draw3D::VertexPC{ { vertexSize, -vertexSize, 0.0f },
+                                { 1.0f, 0.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { vertexSize, vertexSize, 0.0f },
+                                { 0.0f, 1.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { -vertexSize, vertexSize, 0.0f },
+                                { 0.0f, 0.0f, 1.0f } });
 
     Chimia::Draw3D::Flush();
 

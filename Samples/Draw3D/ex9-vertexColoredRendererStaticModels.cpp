@@ -1,5 +1,5 @@
 #include "Draw3D/Draw3D.h"
-#include "Draw3D/Renderers.h"
+#include "Draw3D/ModelRendering.h"
 #include "Draw3D/Resources.h"
 #include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
@@ -58,18 +58,21 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
-
   const Chimia::Draw3D::ModelID modelID = Chimia::Draw3D::CreateModel(
-    { Input::vertexData, Input::nVertices, Input::indices });
+    { Input::vertexData, Input::nVertices, Input::indices },
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3);
 
   const Chimia::Draw3D::ModelInstanceID instance1 =
-    renderer.AddStaticModel(modelID, Input::transform1);
+    Chimia::Draw3D::AddStaticModel(modelID, Input::transform1);
   const Chimia::Draw3D::ModelInstanceID instance2 =
-    renderer.AddStaticModel(modelID, Input::transform2);
+    Chimia::Draw3D::AddStaticModel(modelID, Input::transform2);
 
-  auto deleteInstance1 = [&]() { renderer.DeleteStaticModel(instance1); };
-  auto deleteInstance2 = [&]() { renderer.DeleteStaticModel(instance2); };
+  auto deleteInstance1 = [&]() {
+    Chimia::Draw3D::DeleteStaticModel(instance1);
+  };
+  auto deleteInstance2 = [&]() {
+    Chimia::Draw3D::DeleteStaticModel(instance2);
+  };
   SamplesUtils::DoAfter(deleteInstance1, 3000);
   SamplesUtils::DoAfter(deleteInstance2, 5000);
 
@@ -77,7 +80,7 @@ main()
 
     Chimia::Draw3D::ClearScreen();
 
-    renderer.DrawModelTransformed(modelID, Input::transform3);
+    Chimia::Draw3D::DrawModel(modelID, Input::transform3);
 
     Chimia::Draw3D::Flush();
 

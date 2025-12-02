@@ -19,7 +19,8 @@ class ResourcesManager
 public:
   static ResourcesManager& GetInstance();
 
-  ModelID CreateModel(const MeshDataView& meshData);
+  ModelID CreateModel(const MeshDataView& meshDataconst,
+                      const eVertexLayout vertexLayout);
 
   const Model* GetModel(const ModelID& modelID) const;
 
@@ -34,6 +35,7 @@ private:
   ResourcesManager() = default;
 
   ObjectTable<Model> m_modelsTable;
+
   ObjectTable<Material> m_materialsTable;
 };
 

@@ -30,10 +30,10 @@ StaticTriangles::Create(const size_t batchSize,
 // ----------------------------------------------------------------------------
 
 unsigned
-StaticTriangles::AddStaticMesh(const std::vector<float>& vertexData)
+StaticTriangles::AddStaticMesh(const RawDataView& vertexData)
 {
   auto [meshID, triangleData] = m_staticTrianglesTable.Insert();
-  triangleData->Append(vertexData.data(), vertexData.size() * sizeof(float));
+  triangleData->Append(vertexData);
 
   m_shouldRebuildBuffers = true;
 

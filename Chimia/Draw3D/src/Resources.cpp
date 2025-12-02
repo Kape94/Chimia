@@ -1,6 +1,7 @@
 #include "Resources.h"
 
 #include "ResourcesManager.h"
+#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
@@ -9,10 +10,11 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 ModelID
-CHIMIA_DRAW3D_NAMESPACE_NAME::CreateModel(const MeshDataView& meshData)
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateModel(const MeshDataView& meshData,
+                                          const eVertexLayout vertexLayout)
 {
   auto& manager = ResourcesManager::GetInstance();
-  return manager.CreateModel(meshData);
+  return manager.CreateModel(meshData, vertexLayout);
 }
 
 // ----------------------------------------------------------------------------

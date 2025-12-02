@@ -165,6 +165,32 @@ struct Material
 
 // ----------------------------------------------------------------------------
 
+enum class eVertexLayout
+{
+  UNDEFINED = 0,
+  POSITION3_COLOR3,
+  POSITION3_NORMAL3,
+  POSITION3_COLOR3_NORMAL3
+};
+
+struct VertexPC
+{
+  glm::vec3 position;
+  glm::vec3 color;
+
+  static constexpr size_t NFloatComponents() { return 6; }
+};
+
+struct VertexPN
+{
+  glm::vec3 position;
+  glm::vec3 normal;
+
+  static constexpr size_t NFloatComponents() { return 6; }
+};
+
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------

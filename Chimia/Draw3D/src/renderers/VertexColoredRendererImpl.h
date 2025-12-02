@@ -4,7 +4,6 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
-#include "Renderers.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -15,7 +14,7 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-class VertexColoredRendererImpl : public VertexColoredRenderer
+class VertexColoredRendererImpl
 {
 public:
   static VertexColoredRendererImpl& getInstance();
@@ -29,29 +28,20 @@ public:
                     const glm::vec3& p2,
                     const glm::vec3& color2,
                     const glm::vec3& p3,
-                    const glm::vec3& color3) override;
+                    const glm::vec3& color3);
 
-  void DrawTriangles(const std::vector<float>& vertexData) override;
+  void DrawTriangles(const RawArrayView& vertexDataArray);
 
-  void DrawTriangles(const std::vector<float>& vertexData,
-                     const std::vector<unsigned>& indexData) override;
-
-  TriangleMeshID AddStaticTriangles(
-    const std::vector<float>& vertexData) override;
-
-  TriangleMeshID AddStaticTriangles(
-    const std::vector<float>& vertexData,
-    const std::vector<unsigned>& indexData) override;
-
-  void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
+  TriangleMeshID AddStaticTriangles(const RawDataView& vertexData);
+  void DeleteStaticTriangles(const TriangleMeshID& meshID);
 
   void DrawModelTransformed(const ModelID& modelID,
-                            const glm::mat4x4& transform) override;
+                            const glm::mat4x4& transform);
 
   ModelInstanceID AddStaticModel(const ModelID& modelID,
-                                 const glm::mat4x4& transform) override;
+                                 const glm::mat4x4& transform);
 
-  void DeleteStaticModel(const ModelInstanceID& instanceID) override;
+  void DeleteStaticModel(const ModelInstanceID& instanceID);
 
 private:
   void ConfigureShaderForTriangleDrawing();

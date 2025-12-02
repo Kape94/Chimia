@@ -26,21 +26,13 @@ public:
 
   void Flush();
 
-  void DrawTriangles(const std::vector<float>& vertexData);
-  void DrawTriangles(const std::vector<float>& vertexData,
-                     const std::vector<unsigned>& indices);
   void DrawTriangle(const std::initializer_list<RawDataView>& vertexData);
+  void DrawTriangles(const RawArrayView& vertexDataArray);
 
-  unsigned AddStaticMesh(const std::vector<float>& vertexData);
-  unsigned AddStaticMesh(const std::vector<float>& vertexData,
-                         const std::vector<unsigned>& indices);
-
+  unsigned AddStaticMesh(const RawDataView& vertexData);
   void DeleteStaticMesh(const unsigned meshID);
 
 private:
-  std::vector<float> DropIndices(const std::vector<float>& vertexData,
-                                 const std::vector<unsigned>& indices);
-
   Rendering::ShaderAttributes m_vertexAttributes;
   std::function<void(void)> m_onFlush;
 

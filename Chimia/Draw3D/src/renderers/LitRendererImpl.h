@@ -5,7 +5,6 @@
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
-#include "Renderers.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -16,7 +15,7 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-class LitRendererImpl : public LitRenderer
+class LitRendererImpl
 {
 public:
   static LitRendererImpl& getInstance();
@@ -31,33 +30,24 @@ public:
                     const glm::vec3& p2Normal,
                     const glm::vec3& p3,
                     const glm::vec3& p3Normal,
-                    const MaterialID& materialID) override;
+                    const MaterialID& materialID);
 
-  void DrawTriangles(const std::vector<float>& vertexData,
-                     const MaterialID& materialID) override;
+  void DrawTriangles(const RawArrayView& vertexDataArray,
+                     const MaterialID& materialID);
+  TriangleMeshID AddStaticTriangles(const RawDataView& vertexData,
+                                    const MaterialID& materialID);
 
-  void DrawTriangles(const std::vector<float>& vertexData,
-                     const std::vector<unsigned>& indexData,
-                     const MaterialID& materialID) override;
-
-  TriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
-                                    const MaterialID& materialID) override;
-
-  TriangleMeshID AddStaticTriangles(const std::vector<float>& vertexData,
-                                    const std::vector<unsigned>& indexData,
-                                    const MaterialID& materialID) override;
-
-  void DeleteStaticTriangles(const TriangleMeshID& meshID) override;
+  void DeleteStaticTriangles(const TriangleMeshID& meshID);
 
   void DrawModelTransformed(const ModelID& modelID,
                             const glm::mat4x4& transform,
-                            const MaterialID& materialID) override;
+                            const MaterialID& materialID);
 
   ModelInstanceID AddStaticModel(const ModelID& modelID,
                                  const glm::mat4x4& transform,
-                                 const MaterialID& materialID) override;
+                                 const MaterialID& materialID);
 
-  void DeleteStaticModel(const ModelInstanceID& instanceID) override;
+  void DeleteStaticModel(const ModelInstanceID& instanceID);
 
 private:
   TriangleMeshComponent* FetchTriangleRenderComponentForMaterial(

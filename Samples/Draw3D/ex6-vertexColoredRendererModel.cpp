@@ -1,7 +1,9 @@
 #include "Draw3D/Draw3D.h"
-#include "Draw3D/Renderers.h"
+#include "Draw3D/ModelRendering.h"
 #include "Draw3D/Resources.h"
+#include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
+
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
@@ -59,24 +61,22 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  auto& renderer = Chimia::Draw3D::GetVertexColoredRenderer();
-
   const Chimia::Draw3D::ModelID modelID = Chimia::Draw3D::CreateModel(
-    { Inputs::vertexData, Inputs::nVertices, Inputs::indices });
+    { Inputs::vertexData, Inputs::nVertices, Inputs::indices },
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3);
 
   while (!w.ShouldClose()) {
 
     Chimia::Draw3D::ClearScreen();
 
-    renderer.DrawModelTransformed(modelID, Inputs::transform1);
-    renderer.DrawModelTransformed(modelID, Inputs::transform2);
-    renderer.DrawModelTransformed(modelID, Inputs::transform3);
+    Chimia::Draw3D::DrawModel(modelID, Inputs::transform1);
+    Chimia::Draw3D::DrawModel(modelID, Inputs::transform2);
+    Chimia::Draw3D::DrawModel(modelID, Inputs::transform3);
 
-    // clang-format off
-    renderer.DrawTriangles({ -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                            -1.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-                            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f });
-    // clang-format on
+    Chimia::Draw3D::Triangle(
+      Chimia::Draw3D::VertexPC{ { -1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { -1.0f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
+      Chimia::Draw3D::VertexPC{ { -0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } });
 
     Chimia::Draw3D::Flush();
 

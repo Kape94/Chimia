@@ -5,34 +5,58 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Types.h"
 
-#include "Core/Types.h"
-
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-void
-Triangle(const glm::vec3& p1,
-         const glm::vec3& p2,
-         const glm::vec3& p3,
-         const glm::vec3& color);
+// Vertex Position3 + Color3
 
 void
-Triangle(const glm::vec3& p1,
-         const glm::vec3& p1Color,
-         const glm::vec3& p2,
-         const glm::vec3& p2Color,
-         const glm::vec3& p3,
-         const glm::vec3& p3Color);
+Triangle(const VertexPC& v1, const VertexPC& v2, const VertexPC& v3);
 
 void
-LitTriangle(const glm::vec3& p1,
-            const glm::vec3& p1Normal,
-            const glm::vec3& p2,
-            const glm::vec3& p2Normal,
-            const glm::vec3& p3,
-            const glm::vec3& p3Normal,
-            const MaterialID& material);
+Triangles(const std::vector<VertexPC>& vertices);
+
+void
+Triangles(const std::vector<VertexPC>& vertices,
+          const std::vector<unsigned>& indices);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPC>& vertices);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPC>& vertices,
+                   const std::vector<unsigned>& indices);
+
+// Vertex Position3 + Normal3
+
+void
+Triangle(const VertexPN& v1,
+         const VertexPN& v2,
+         const VertexPN& v3,
+         const MaterialID& material);
+
+void
+Triangles(const std::vector<VertexPN>& vertices, const MaterialID& material);
+
+void
+Triangles(const std::vector<VertexPN>& vertices,
+          const std::vector<unsigned>& indices,
+          const MaterialID& material);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPN>& vertices,
+                   const MaterialID& material);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPN>& vertices,
+                   const std::vector<unsigned>& indices,
+                   const MaterialID& material);
+
+// General
+
+void
+DeleteStaticTriangles(const TriangleMeshID& meshID);
 
 END_CHIMIA_DRAW3D_NAMESPACE
 

@@ -109,47 +109,21 @@ LitRendererImpl::DrawTriangle(const glm::vec3& p1,
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::DrawTriangles(const std::vector<float>& vertexData,
+LitRendererImpl::DrawTriangles(const RawArrayView& vertexDataArray,
                                const MaterialID& materialID)
 {
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
-  renderComponent->DrawTriangles(vertexData);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-LitRendererImpl::DrawTriangles(const std::vector<float>& vertexData,
-                               const std::vector<unsigned>& indexData,
-                               const MaterialID& materialID)
-{
-  auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
-  renderComponent->DrawTriangles(vertexData, indexData);
+  renderComponent->DrawTriangles(vertexDataArray);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
-LitRendererImpl::AddStaticTriangles(const std::vector<float>& vertexData,
+LitRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
                                     const MaterialID& materialID)
 {
   auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
   const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
-
-  return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, Draw3DPrivate::GetMaterialIDValue(materialID));
-}
-
-// ----------------------------------------------------------------------------
-
-TriangleMeshID
-LitRendererImpl::AddStaticTriangles(const std::vector<float>& vertexData,
-                                    const std::vector<unsigned>& indexData,
-                                    const MaterialID& materialID)
-{
-  auto renderComponent = FetchTriangleRenderComponentForMaterial(materialID);
-  const unsigned instanceID =
-    renderComponent->AddStaticMesh(vertexData, indexData);
 
   return Draw3DPrivate::CreateTriangleMeshID(
     RENDERER_ID, instanceID, Draw3DPrivate::GetMaterialIDValue(materialID));

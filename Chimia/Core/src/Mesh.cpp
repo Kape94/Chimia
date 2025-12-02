@@ -1,4 +1,4 @@
-#include "Types.h"
+#include "Mesh.h"
 
 // ----------------------------------------------------------------------------
 
@@ -6,7 +6,7 @@ USING_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-namespace TypesUtils {
+namespace MeshUtils {
 
 size_t
 ComputeNFloatsCountForAttribute(const MeshAttributes& attributes)
@@ -64,6 +64,37 @@ ResultingAttributes(const Mesh& mesh, const MeshAttributes& requested)
 
 // ----------------------------------------------------------------------------
 // Mesh
+// ----------------------------------------------------------------------------
+
+Mesh::Mesh(Mesh&& other)
+  : m_positions(std::move(other.m_positions))
+  , m_colors(std::move(other.m_colors))
+  , m_normals(std::move(other.m_normals))
+  , m_texCoords(std::move(other.m_texCoords))
+  , m_indices(std::move(other.m_indices))
+  , m_customData(std::move(other.m_customData))
+  , m_shouldRebuildRenderData(true)
+  , m_renderData()
+{
+}
+
+// ----------------------------------------------------------------------------
+
+Mesh&
+Mesh::operator=(Mesh&& other)
+{
+  m_positions = std::move(other.m_positions);
+  m_colors = std::move(other.m_colors);
+  m_normals = std::move(other.m_normals);
+  m_texCoords = std::move(other.m_texCoords);
+  m_indices = std::move(other.m_indices);
+  m_customData = std::move(other.m_customData);
+  m_shouldRebuildRenderData = true;
+  m_renderData = MeshBufferData();
+
+  return *this;
+}
+
 // ----------------------------------------------------------------------------
 
 void
@@ -139,28 +170,28 @@ Mesh::GetRenderData() const
 void
 Mesh::BuildRenderData() const
 {
+  using namespace MeshUtils;
+
   m_renderData = MeshBufferData();
 
   const MeshAttributes attributes = GetMeshAttributes();
 
-  const size_t nFloatsPerVertex =
-    TypesUtils::ComputeNFloatsCountForAttribute(attributes);
+  const size_t nFloatsPerVertex = ComputeNFloatsCountForAttribute(attributes);
   const size_t nVertices = m_positions.size();
 
   std::vector<float>& vertexData = m_renderData.vertexDataValues;
   vertexData.reserve(nVertices * nFloatsPerVertex);
 
   for (size_t i = 0; i < nVertices; ++i) {
-    TypesUtils::PushIntoVector(m_positions[i], vertexData);
+    PushIntoVector(m_positions[i], vertexData);
     if (attributes.hasVertexColor) {
-      TypesUtils::PushIntoVector(
-        m_colors[i], attributes.includeColorAlpha, vertexData);
+      PushIntoVector(m_colors[i], attributes.includeColorAlpha, vertexData);
     }
     if (attributes.hasVertexNormal) {
-      TypesUtils::PushIntoVector(m_normals[i], vertexData);
+      PushIntoVector(m_normals[i], vertexData);
     }
     if (attributes.hasTexCoords) {
-      TypesUtils::PushIntoVector(m_texCoords[i], vertexData);
+      PushIntoVector(m_texCoords[i], vertexData);
     }
   }
 
@@ -169,6 +200,49 @@ Mesh::BuildRenderData() const
   m_renderData.nVertices = nVertices;
 
   m_shouldRebuildRenderData = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Mesh::SetCustomData(const RawDataView& data)
+{
+  m_customData.Reset();
+  m_customData.Append(data);
+}
+
+// ----------------------------------------------------------------------------
+
+const void*
+Mesh::GetCustomData() const
+{
+  return m_customData.GetSize() == 0 ? nullptr : m_customData.GetData();
+}
+
+// ----------------------------------------------------------------------------
+
+void*
+Mesh::GetCustomData()
+{
+  return m_customData.GetSize() == 0 ? nullptr : m_customData.GetData();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Mesh::ForEachVertex(const std::function<void(VertexView)>& action)
+{
+  const size_t nVertices = m_positions.size();
+
+  const bool hasColor = m_colors.size() == nVertices;
+  const bool hasNormal = m_normals.size() == nVertices;
+  const bool hasTexCoord = m_texCoords.size() == nVertices;
+  for (size_t i = 0; i < nVertices; ++i) {
+    action(VertexView{ &m_positions[i],
+                       hasColor ? &m_colors[i] : nullptr,
+                       hasNormal ? &m_normals[i] : nullptr,
+                       hasTexCoord ? &m_texCoords[i] : nullptr });
+  }
 }
 
 // ----------------------------------------------------------------------------

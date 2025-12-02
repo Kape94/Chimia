@@ -13,7 +13,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 ModelID
-CreateModel(const MeshDataView& meshData);
+CreateModel(const MeshDataView& meshData, const eVertexLayout vertexLayout);
 
 MaterialID
 CreateMaterial(const glm::vec3& ambient,
