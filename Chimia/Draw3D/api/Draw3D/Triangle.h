@@ -53,6 +53,25 @@ AddStaticTriangles(const std::vector<VertexPN>& vertices,
                    const std::vector<unsigned>& indices,
                    const MaterialID& material);
 
+// Vertex Position3 + Color3 + Normal3
+
+void
+Triangle(const VertexPCN& v1, const VertexPCN& v2, const VertexPCN& v3);
+
+void
+Triangles(const std::vector<VertexPCN>& vertices);
+
+void
+Triangles(const std::vector<VertexPCN>& vertices,
+          const std::vector<unsigned>& indices);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPCN>& vertices);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPCN>& vertices,
+                   const std::vector<unsigned>& indices);
+
 // General
 
 void

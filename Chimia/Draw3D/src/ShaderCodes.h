@@ -342,6 +342,216 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
           gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
       }
       )";
+
+inline const char* gouraudLitWithVertexColor = R"(
+        #version 330
+      
+        struct DirectionalLight {
+          vec3 ambient;
+          vec3 diffuse;
+          vec3 specular;
+          vec3 direction;
+        };
+      
+        struct PointLight {
+          vec3 ambient;
+          vec3 diffuse;
+          vec3 specular;
+        
+          vec3 position;
+          float constant;
+          float linear;
+          float quadratic;
+        };
+      
+        #define MAX_LIGHTS 4
+      
+        uniform DirectionalLight directionalLights[MAX_LIGHTS];
+        uniform int nDirectionalLights;
+      
+        uniform PointLight pointLights[MAX_LIGHTS];
+        uniform int nPointLights;
+      
+        uniform vec3 viewPosition;
+      
+        uniform mat4 cameraTransform;
+      
+        layout (location = 0) in vec3 vertexPos;
+        layout (location = 1) in vec3 vertexColor;
+        layout (location = 2) in vec3 vertexNorm;
+      
+        out vec3 color;
+      
+        vec3 CalculateDirectionalLight();
+        vec3 CalculatePointLight();
+      
+        void main()
+        {
+            vec3 directional = CalculateDirectionalLight();
+            vec3 point = CalculatePointLight();
+          
+            vec3 result = directional + point;
+            color = result;
+      
+            gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+        }
+      
+      
+        vec3 CalculateDirectionalLight() {
+            vec3 viewDir = normalize(viewPosition - vertexPos);
+          
+            vec3 normal = normalize(vertexNorm);
+      
+            vec3 result = vec3(0.0);
+            int nLights = min(nDirectionalLights, MAX_LIGHTS);
+            for (int i = 0; i < nLights; ++i) {
+                DirectionalLight light = directionalLights[i];
+              
+                vec3 lightDir = normalize(light.direction);
+                vec3 invLightDir = -lightDir;
+              
+                float diff = max(dot(normal, invLightDir), 0.0);
+              
+                vec3 ambient = light.ambient;
+                vec3 diffuse = light.diffuse * diff;
+              
+                result += (ambient + diffuse);
+            }
+            return result * vertexColor; 
+        }
+      
+        vec3 CalculatePointLight() {
+            vec3 viewDir = normalize(viewPosition - vertexPos);
+            vec3 normal = normalize(vertexNorm);
+      
+            vec3 result = vec3(0.0);
+            int nLights = min(nPointLights, MAX_LIGHTS);
+            for (int i = 0; i < nLights; ++i) {
+                PointLight light = pointLights[i];
+              
+                vec3 lightDir = normalize(vertexPos - light.position);
+                vec3 invLightDir = -lightDir;
+              
+                float diff = max(dot(invLightDir, normal), 0.0);
+              
+                float distance = length(light.position - vertexPos);
+                float factor = light.constant + light.linear * distance + light.quadratic * (distance * distance);
+                float attenuation = 1.0 / factor;
+              
+                vec3 ambient = light.ambient * attenuation;
+                vec3 diffuse = light.diffuse * diff * attenuation;
+              
+                result += (ambient + diffuse);
+            }
+            return result * vertexColor;
+        }
+        )";
+
+inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
+          #version 330
+        
+          struct DirectionalLight {
+            vec3 ambient;
+            vec3 diffuse;
+            vec3 specular;
+            vec3 direction;
+          };
+        
+          struct PointLight {
+            vec3 ambient;
+            vec3 diffuse;
+            vec3 specular;
+          
+            vec3 position;
+            float constant;
+            float linear;
+            float quadratic;
+          };
+        
+          #define MAX_LIGHTS 4
+        
+          uniform DirectionalLight directionalLights[MAX_LIGHTS];
+          uniform int nDirectionalLights;
+        
+          uniform PointLight pointLights[MAX_LIGHTS];
+          uniform int nPointLights;
+        
+          uniform vec3 viewPosition;
+        
+          uniform mat4 cameraTransform;
+        
+          layout (location = 0) in vec3 vertexPos;
+          layout (location = 1) in vec3 vertexColor;
+          layout (location = 2) in vec3 vertexNorm;
+          layout (location = 3) in mat4 modelTransform;
+        
+          out vec3 color;
+        
+          vec3 CalculateDirectionalLight();
+          vec3 CalculatePointLight();
+        
+          void main()
+          {
+              vec3 directional = CalculateDirectionalLight();
+              vec3 point = CalculatePointLight();
+            
+              vec3 result = directional + point;
+              color = result;
+        
+              gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+          }
+        
+        
+          vec3 CalculateDirectionalLight() {
+              vec3 viewDir = normalize(viewPosition - vertexPos);
+            
+              vec3 normal = normalize(vertexNorm);
+        
+              vec3 result = vec3(0.0);
+              int nLights = min(nDirectionalLights, MAX_LIGHTS);
+              for (int i = 0; i < nLights; ++i) {
+                  DirectionalLight light = directionalLights[i];
+                
+                  vec3 lightDir = normalize(light.direction);
+                  vec3 invLightDir = -lightDir;
+                
+                  float diff = max(dot(normal, invLightDir), 0.0);
+                
+                  vec3 ambient = light.ambient;
+                  vec3 diffuse = light.diffuse * diff;
+                
+                  result += (ambient + diffuse);
+              }
+              return result * vertexColor; 
+          }
+        
+          vec3 CalculatePointLight() {
+              vec3 viewDir = normalize(viewPosition - vertexPos);
+              vec3 normal = normalize(vertexNorm);
+        
+              vec3 result = vec3(0.0);
+              int nLights = min(nPointLights, MAX_LIGHTS);
+              for (int i = 0; i < nLights; ++i) {
+                  PointLight light = pointLights[i];
+                
+                  vec3 lightDir = normalize(vertexPos - light.position);
+                  vec3 invLightDir = -lightDir;
+                
+                  float diff = max(dot(invLightDir, normal), 0.0);
+                
+                  float distance = length(light.position - vertexPos);
+                  float factor = light.constant + light.linear * distance + light.quadratic * (distance * distance);
+                  float attenuation = 1.0 / factor;
+                
+                  vec3 ambient = light.ambient * attenuation;
+                  vec3 diffuse = light.diffuse * diff * attenuation;
+                
+                  result += (ambient + diffuse);
+                
+              }
+              return result * vertexColor;
+          }
+          )";
 }
 
 namespace Fragment {

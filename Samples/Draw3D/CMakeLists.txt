@@ -37,3 +37,9 @@ target_link_libraries(Samples_Draw3D_ex11 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex12 ex12-basicIlluminationPhongLitRenderer.cpp)
 target_link_libraries(Samples_Draw3D_ex12 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex13 ex13-illuminationVertexColored.cpp)
+target_link_libraries(Samples_Draw3D_ex13 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex14 ex14-litVertexColoredRendererWithModel.cpp)
+target_link_libraries(Samples_Draw3D_ex14 PRIVATE Samples_Draw3D_Dependencies)

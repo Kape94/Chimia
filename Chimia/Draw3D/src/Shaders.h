@@ -32,6 +32,12 @@ PhongLit();
 Rendering::Shader&
 PhongLitWithInstancedTransformAndMaterial();
 
+Rendering::Shader&
+GouraudLitWithVertexColor();
+
+Rendering::Shader&
+GouraudLitWithInstancedTransformAndVertexColor();
+
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

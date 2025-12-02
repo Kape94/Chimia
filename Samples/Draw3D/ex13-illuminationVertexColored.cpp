@@ -1,0 +1,158 @@
+#include "Draw3D/Camera.h"
+#include "Draw3D/Draw3D.h"
+#include "Draw3D/Illumination.h"
+
+#include "Draw3D/Triangle.h"
+#include "Draw3D/Types.h"
+#include "Utils/SamplesUtils.h"
+#include "Utils/Window.h"
+
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
+// ----------------------------------------------------------------------------
+
+glm::vec3
+RandomVec3()
+{
+  using namespace SamplesUtils;
+
+  return glm::vec3{ 0.0f + NormalizedRand() * 1.0f,
+                    0.0f + NormalizedRand() * 1.0f,
+                    0.0f + NormalizedRand() * 1.0f };
+}
+
+void
+DrawTriangle(const glm::vec3& p1,
+             const glm::vec3& color1,
+             const glm::vec3& p2,
+             const glm::vec3& color2,
+             const glm::vec3& p3,
+             const glm::vec3& color3)
+{
+  auto normal = [](const glm::vec3& p) {
+    const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
+    return p - zero;
+  };
+
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPCN{ p1, color1, normal(p1) },
+                           Chimia::Draw3D::VertexPCN{ p2, color2, normal(p2) },
+                           Chimia::Draw3D::VertexPCN{ p3, color3, normal(p3) });
+}
+
+void
+DrawCube()
+{
+  const float size = 1.0f;
+
+  const glm::vec3 p1{ -size, -size, -size };
+  static glm::vec3 color1 = RandomVec3();
+  const glm::vec3 p2{ size, -size, -size };
+  static glm::vec3 color2 = RandomVec3();
+  const glm::vec3 p3{ size, size, -size };
+  static glm::vec3 color3 = RandomVec3();
+  const glm::vec3 p4{ -size, size, -size };
+  static glm::vec3 color4 = RandomVec3();
+
+  const glm::vec3 p5{ -size, -size, size };
+  static glm::vec3 color5 = RandomVec3();
+  const glm::vec3 p6{ size, -size, size };
+  static glm::vec3 color6 = RandomVec3();
+  const glm::vec3 p7{ size, size, size };
+  static glm::vec3 color7 = RandomVec3();
+  const glm::vec3 p8{ -size, size, size };
+  static glm::vec3 color8 = RandomVec3();
+
+  DrawTriangle(p1, color1, p2, color2, p3, color3);
+  DrawTriangle(p3, color3, p4, color4, p1, color1);
+
+  DrawTriangle(p2, color2, p6, color6, p7, color7);
+  DrawTriangle(p7, color7, p3, color3, p2, color2);
+
+  DrawTriangle(p6, color6, p5, color5, p8, color8);
+  DrawTriangle(p8, color8, p7, color7, p6, color6);
+
+  DrawTriangle(p5, color5, p1, color1, p4, color4);
+  DrawTriangle(p4, color4, p8, color8, p5, color5);
+
+  DrawTriangle(p4, color4, p3, color3, p7, color7);
+  DrawTriangle(p7, color7, p8, color8, p4, color4);
+
+  DrawTriangle(p5, color5, p6, color6, p2, color2);
+  DrawTriangle(p2, color2, p1, color1, p5, color5);
+}
+
+void
+DrawUnlitTriangle(const glm::vec3& p1,
+                  const glm::vec3& p2,
+                  const glm::vec3& p3,
+                  const glm::vec3& color)
+{
+  Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
+                           Chimia::Draw3D::VertexPC{ p2, color },
+                           Chimia::Draw3D::VertexPC{ p3, color });
+}
+
+void
+DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
+{
+  const float size = 0.3f;
+
+  const glm::vec3 p1(lightPos + glm::vec3{ -size, 0.0f, -size });
+  const glm::vec3 p2(lightPos + glm::vec3{ size, 0.0f, -size });
+  const glm::vec3 p3(lightPos + glm::vec3{ 0.0f, 0.0f, size });
+  const glm::vec3 p4(lightPos + glm::vec3{ 0.0f, size, 0.0f });
+
+  DrawUnlitTriangle(p1, p2, p4, lightColor);
+  DrawUnlitTriangle(p2, p3, p4, lightColor);
+  DrawUnlitTriangle(p3, p1, p4, lightColor);
+  DrawUnlitTriangle(p3, p2, p1, lightColor);
+}
+
+int
+main()
+{
+  Window w(1280, 960, "Draw3D ex13");
+
+  SamplesUtils::InitRandom();
+  Chimia::Draw3D::Initialize();
+
+  glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
+  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
+
+  Chimia::Draw3D::Camera::Projection::SetPerspective(
+    45.0f, 1.0f, 0.01f, 100.0f);
+  Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
+
+  const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
+  const glm::vec3 lightDir = zero - lightPos;
+
+  Chimia::Draw3D::DirectionalLight dLight{
+    lightDir,
+    { { 0.2f, 0.2f, 0.2f }, { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f } }
+  };
+
+  Chimia::Draw3D::EnableLights(true);
+  Chimia::Draw3D::SetLight(dLight);
+
+  while (!w.ShouldClose()) {
+
+    Chimia::Draw3D::ClearScreen();
+    Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
+
+    DrawCube();
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
+
+    Chimia::Draw3D::Flush();
+
+    w.Swap();
+    w.PollEvents();
+
+    const glm::mat4x4 rotMatrix =
+      glm::rotate(glm::identity<glm::mat4x4>(), 0.01f, { 0.0f, 1.0f, 0.0f });
+    cameraPos = rotMatrix * glm::vec4(cameraPos, 1.0f);
+  }
+  return 0;
+}
+
+// ----------------------------------------------------------------------------

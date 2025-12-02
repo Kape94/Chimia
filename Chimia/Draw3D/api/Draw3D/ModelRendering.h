@@ -15,6 +15,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 // Model Position3 + Color3
+// Model Position3 + COlor3 + Normal3
 
 void
 DrawModel(const ModelID& modelID, const glm::mat4x4& transform);
