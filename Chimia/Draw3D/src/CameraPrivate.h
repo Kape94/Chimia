@@ -2,16 +2,18 @@
 
 #include "Draw3DNamespaceDefs.h"
 
+#include "Rendering/Shader.h"
+
 #include <glm/ext/matrix_float4x4.hpp>
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 namespace CameraPrivate {
-glm::mat4x4
-GetCurrentTransform();
+void
+SetCameraOnShader(Rendering::Shader& shader);
 
-glm::vec3
-GetCameraPosition();
+void
+SetPointOfViewOnShader(Rendering::Shader& shader);
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

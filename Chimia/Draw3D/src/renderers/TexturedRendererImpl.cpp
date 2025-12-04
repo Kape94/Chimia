@@ -229,7 +229,7 @@ TexturedRendererImpl::ConfigureShaderForTriangleDrawing(
   Chimia::Rendering::Shader& shader = Shaders::Textured();
   shader.Use();
 
-  shader.SetUniform("transform", CameraPrivate::GetCurrentTransform());
+  CameraPrivate::SetCameraOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Rendering::TextureUnit::UNIT_1;
 
@@ -251,7 +251,7 @@ TexturedRendererImpl::ConfigureShaderForTransformedModelDrawing(
   Chimia::Rendering::Shader& shader = Shaders::TexturedWithInstancedTransform();
   shader.Use();
 
-  shader.SetUniform("transform", CameraPrivate::GetCurrentTransform());
+  CameraPrivate::SetCameraOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Rendering::TextureUnit::UNIT_1;
 

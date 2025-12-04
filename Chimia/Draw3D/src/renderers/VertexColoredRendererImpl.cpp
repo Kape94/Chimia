@@ -161,7 +161,7 @@ VertexColoredRendererImpl::ConfigureShaderForTriangleDrawing()
 {
   Rendering::Shader& shader = Shaders::VertexColored();
   shader.Use();
-  shader.SetUniform("transform", CameraPrivate::GetCurrentTransform());
+  CameraPrivate::SetCameraOnShader(shader);
 }
 
 // ----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ VertexColoredRendererImpl::ConfigureShaderForTransformedModelDrawing()
 {
   Rendering::Shader& shader = Shaders::VertexColoredWithInstancedTransform();
   shader.Use();
-  shader.SetUniform("transform", CameraPrivate::GetCurrentTransform());
+  CameraPrivate::SetCameraOnShader(shader);
 }
 
 // ----------------------------------------------------------------------------

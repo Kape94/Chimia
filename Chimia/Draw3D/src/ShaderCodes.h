@@ -20,10 +20,10 @@ inline const char* colored = R"(
 
     out vec3 vertexColor;
 
-    uniform mat4 transform;
+    uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = transform * vec4(pos, 1.0);
+      gl_Position = cameraTransform * vec4(pos, 1.0);
       vertexColor = color;
     }
   )";
@@ -37,10 +37,10 @@ inline const char* coloredWithInstancedTransform = R"(
 
     out vec3 vertexColor;
 
-    uniform mat4 transform;
+    uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = transform * modelTransform * vec4(pos, 1.0);
+      gl_Position = cameraTransform * modelTransform * vec4(pos, 1.0);
       vertexColor = color;
     }
   )";
@@ -561,10 +561,10 @@ inline const char* textured = R"(
 
       out vec2 fragUV;
 
-      uniform mat4 transform;
+      uniform mat4 cameraTransform;
 
       void main() {
-        gl_Position = transform * vec4(pos, 1.0);
+        gl_Position = cameraTransform * vec4(pos, 1.0);
         fragUV = uv;
       }
   )";
@@ -578,10 +578,10 @@ inline const char* texturedWithInstancedTransform = R"(
 
     out vec2 fragUV;
 
-    uniform mat4 transform;
+    uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = transform * modelTransform * vec4(pos, 1.0);
+      gl_Position = cameraTransform * modelTransform * vec4(pos, 1.0);
       fragUV = uv;
     }
 )";

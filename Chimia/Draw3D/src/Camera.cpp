@@ -106,18 +106,19 @@ Camera::View::LookAt(const glm::vec3& eye, const glm::vec3& target)
 // CameraPrivate
 // ----------------------------------------------------------------------------
 
-glm::mat4x4
-CameraPrivate::GetCurrentTransform()
+void
+CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
 {
-  return CameraState::projection * CameraState::view;
+  const glm::mat4x4 transform = CameraState::projection * CameraState::view;
+  shader.SetUniform("cameraTransform", transform);
 }
 
 // ----------------------------------------------------------------------------
 
-glm::vec3
-CameraPrivate::GetCameraPosition()
+void
+CameraPrivate::SetPointOfViewOnShader(Rendering::Shader& shader)
 {
-  return CameraState::cameraPosition;
+  shader.SetUniform("viewPosition", CameraState::cameraPosition);
 }
 
 // ----------------------------------------------------------------------------

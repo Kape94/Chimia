@@ -132,8 +132,8 @@ IlluminationPrivate::ConfigureLightsOnShader(Rendering::Shader& shader)
   IlluminationInternal::ConfigureDirectionalLights(shader);
   IlluminationInternal::ConfigurePointLights(shader);
 
-  shader.SetUniform("viewPosition", CameraPrivate::GetCameraPosition());
-  shader.SetUniform("cameraTransform", CameraPrivate::GetCurrentTransform());
+  CameraPrivate::SetPointOfViewOnShader(shader);
+  CameraPrivate::SetCameraOnShader(shader);
 }
 
 // ----------------------------------------------------------------------------
