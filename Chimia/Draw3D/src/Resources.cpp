@@ -30,3 +30,14 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::CreateMaterial(const glm::vec3& ambient,
 }
 
 // ----------------------------------------------------------------------------
+
+TextureID
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateTexture(const unsigned char* textureData,
+                                            const unsigned width,
+                                            const unsigned height)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  return manager.CreateTexture(textureData, width, height);
+}
+
+// ----------------------------------------------------------------------------

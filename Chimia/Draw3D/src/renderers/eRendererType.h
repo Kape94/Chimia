@@ -14,8 +14,9 @@ enum class eRendererType
 {
   NONE = 0,
   VERTEX_COLORED = 1,
-  LIT = 2,
-  VERTEX_COLORED_LIT = 3
+  LIT,
+  TEXTURED,
+  VERTEX_COLORED_LIT
 };
 
 // ----------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
 #include "ResourcesManager.h"
+#include "TexturedRendererImpl.h"
 #include "Types.h"
 #include "VertexColoredRendererImpl.h"
 #include "eRendererType.h"
@@ -18,6 +19,7 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 namespace {
 auto& renderer = VertexColoredRendererImpl::getInstance();
 auto& litRenderer = LitRendererImpl::getInstance();
+auto& texturedRenderer = TexturedRendererImpl::getInstance();
 auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
 
 eVertexLayout
@@ -28,6 +30,9 @@ ModelLayout(const ModelID& modelID)
 
 }
 
+// ----------------------------------------------------------------------------
+// Position3 + Color3
+// Position3 + Color3 + Normal3
 // ----------------------------------------------------------------------------
 
 void
@@ -65,10 +70,12 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
     }
     default:
       assert(false && "Unsuported model layout");
-      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0);
+      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
   }
 }
 
+// ----------------------------------------------------------------------------
+// Position3 + Normal3
 // ----------------------------------------------------------------------------
 
 void
@@ -94,12 +101,40 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
 }
 
 // ----------------------------------------------------------------------------
+// Position3 + TexCoord2
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
+                                        const glm::mat4x4& transform,
+                                        const TextureID& textureID)
+{
+  assert(ModelLayout(modelID) == eVertexLayout::POSITION3_TEXCOORD2);
+
+  texturedRenderer.DrawModelTransformed(modelID, transform, textureID);
+}
+
+// ----------------------------------------------------------------------------
+
+ModelInstanceID
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
+                                             const glm::mat4x4& transform,
+                                             const TextureID& textureID)
+{
+  assert(ModelLayout(modelID) == eVertexLayout::POSITION3_TEXCOORD2);
+
+  return texturedRenderer.AddStaticModel(modelID, transform, textureID);
+}
+
+// ----------------------------------------------------------------------------
+// General
+// ----------------------------------------------------------------------------
 
 void
 CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteStaticModel(
   const ModelInstanceID& instanceID)
 {
-  auto [rendererID, _, __] =
+  auto [rendererID, _, __, ___] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   const auto rendererType = static_cast<eRendererType>(rendererID);
@@ -110,6 +145,10 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteStaticModel(
     }
     case eRendererType::LIT: {
       litRenderer.DeleteStaticModel(instanceID);
+      return;
+    }
+    case eRendererType::TEXTURED: {
+      texturedRenderer.DeleteStaticModel(instanceID);
       return;
     }
     case eRendererType::VERTEX_COLORED_LIT: {

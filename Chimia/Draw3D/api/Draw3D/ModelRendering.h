@@ -35,6 +35,18 @@ AddStaticModel(const ModelID& modelID,
                const glm::mat4x4& transform,
                const MaterialID& materialID);
 
+// Model Position3 + TexCoord2
+
+void
+DrawModel(const ModelID& modelID,
+          const glm::mat4x4& transform,
+          const TextureID& textureID);
+
+ModelInstanceID
+AddStaticModel(const ModelID& modelID,
+               const glm::mat4x4& transform,
+               const TextureID& textureID);
+
 // General
 
 void

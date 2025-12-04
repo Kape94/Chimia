@@ -7,6 +7,7 @@
 #include "InternalTypes.h"
 #include "Model.h"
 #include "ObjectTable.h"
+#include "Rendering/Texture2D.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -32,12 +33,20 @@ public:
 
   const Material* GetMaterial(const MaterialID& materialID);
 
+  TextureID CreateTexture(const unsigned char* textureData,
+                          const unsigned width,
+                          const unsigned height);
+
+  Rendering::Texture2D* GetTexture(const TextureID& textureID);
+
 private:
   ResourcesManager() = default;
 
   ObjectTable<Model> m_modelsTable;
 
   ObjectTable<Material> m_materialsTable;
+
+  ObjectTable<Rendering::Texture2D> m_texturesTable;
 };
 
 // ----------------------------------------------------------------------------

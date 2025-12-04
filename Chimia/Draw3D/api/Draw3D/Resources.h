@@ -21,6 +21,11 @@ CreateMaterial(const glm::vec3& ambient,
                const glm::vec3& specular,
                const float shininess);
 
+TextureID
+CreateTexture(const unsigned char* textureData,
+              const unsigned width,
+              const unsigned height);
+
 // ----------------------------------------------------------------------------
 
 END_CHIMIA_DRAW3D_NAMESPACE

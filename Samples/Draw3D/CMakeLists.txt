@@ -43,3 +43,57 @@ target_link_libraries(Samples_Draw3D_ex13 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex14 ex14-litVertexColoredRendererWithModel.cpp)
 target_link_libraries(Samples_Draw3D_ex14 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex15 ex15-texturedTriangle.cpp)
+target_link_libraries(Samples_Draw3D_ex15 PRIVATE Samples_Draw3D_Dependencies)
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex15
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex15>/assets/blue-light-style.jpg")
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex15
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex15>/assets/solar-flare.jpg"
+)
+
+add_executable(Samples_Draw3D_ex16 ex16-manyTexturedTriangles.cpp)
+target_link_libraries(Samples_Draw3D_ex16 PRIVATE Samples_Draw3D_Dependencies)
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex16
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex16>/assets/blue-light-style.jpg")
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex16
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex16>/assets/solar-flare.jpg"
+)
+
+add_executable(Samples_Draw3D_ex17 ex17-texturedTrianglesMisc.cpp)
+target_link_libraries(Samples_Draw3D_ex17 PRIVATE Samples_Draw3D_Dependencies)
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex17
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex17>/assets/blue-light-style.jpg")
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex17
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex17>/assets/solar-flare.jpg"
+)

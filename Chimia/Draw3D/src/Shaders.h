@@ -38,6 +38,11 @@ GouraudLitWithVertexColor();
 Rendering::Shader&
 GouraudLitWithInstancedTransformAndVertexColor();
 
+Rendering::Shader&
+Textured();
+
+Rendering::Shader&
+TexturedWithInstancedTransform();
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE

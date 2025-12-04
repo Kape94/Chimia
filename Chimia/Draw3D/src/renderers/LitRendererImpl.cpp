@@ -59,6 +59,7 @@ GetShaderForModelDrawing()
 }
 
 constexpr unsigned RENDERER_ID = static_cast<unsigned>(eRendererType::LIT);
+constexpr unsigned NO_TEXTURE = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -126,7 +127,10 @@ LitRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
   const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
 
   return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, Draw3DPrivate::GetMaterialIDValue(materialID));
+    RENDERER_ID,
+    instanceID,
+    Draw3DPrivate::GetMaterialIDValue(materialID),
+    NO_TEXTURE);
 }
 
 // ----------------------------------------------------------------------------
@@ -134,7 +138,7 @@ LitRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
 void
 LitRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [rendererID, instanceIDValue, materialIDValue] =
+  auto [_, instanceIDValue, materialIDValue, __] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   auto renderComponent = FetchTriangleRenderComponentForMaterial(
@@ -191,7 +195,7 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
 {
   auto material = ResourcesManager::GetInstance().GetMaterial(materialID);
   if (material == nullptr) {
-    return Draw3DPrivate::CreateModelInstanceID(0, 0, 0);
+    return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
   }
 
   const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
@@ -202,7 +206,8 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
       { &material->specular, sizeof(glm::vec3) },
       { &material->shininess, sizeof(float) } });
 
-  return Draw3DPrivate::CreateModelInstanceID(RENDERER_ID, localInstanceID);
+  return Draw3DPrivate::CreateModelInstanceID(
+    RENDERER_ID, localInstanceID, NO_TEXTURE);
 }
 
 // ----------------------------------------------------------------------------

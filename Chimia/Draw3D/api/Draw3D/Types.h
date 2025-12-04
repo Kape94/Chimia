@@ -44,16 +44,21 @@ private:
   friend class Draw3DPrivate;
 
   ModelInstanceID() = delete;
-  ModelInstanceID(unsigned rendererID, unsigned modelID, unsigned instanceID)
+  ModelInstanceID(unsigned rendererID,
+                  unsigned modelID,
+                  unsigned instanceID,
+                  unsigned textureID)
     : m_rendererID(rendererID)
     , m_modelID(modelID)
     , m_instanceID(instanceID)
+    , m_textureID(textureID)
   {
   }
 
   unsigned m_rendererID = 0;
   unsigned m_modelID = 0;
   unsigned m_instanceID = 0;
+  unsigned m_textureID = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -64,16 +69,21 @@ private:
   friend class Draw3DPrivate;
 
   TriangleMeshID() = delete;
-  TriangleMeshID(unsigned rendererID, unsigned id, unsigned materialID)
+  TriangleMeshID(unsigned rendererID,
+                 unsigned id,
+                 unsigned materialID,
+                 unsigned textureID)
     : m_rendererID(rendererID)
     , m_id(id)
     , m_materialID(materialID)
+    , m_textureID(textureID)
   {
   }
 
   unsigned m_rendererID = 0;
   unsigned m_id = 0;
   unsigned m_materialID = 0;
+  unsigned m_textureID = 0;
 };
 
 // ----------------------------------------------------------------------------
@@ -85,6 +95,22 @@ private:
 
   MaterialID() = delete;
   MaterialID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
+class TextureID
+{
+private:
+  friend class Draw3DPrivate;
+
+  TextureID() = delete;
+  TextureID(unsigned id)
     : m_id(id)
   {
   }
@@ -162,6 +188,7 @@ enum class eVertexLayout
   UNDEFINED = 0,
   POSITION3_COLOR3,
   POSITION3_NORMAL3,
+  POSITION3_TEXCOORD2,
   POSITION3_COLOR3_NORMAL3
 };
 
@@ -175,6 +202,12 @@ struct VertexPN
 {
   glm::vec3 position;
   glm::vec3 normal;
+};
+
+struct VertexPT
+{
+  glm::vec3 position;
+  glm::vec2 texCoord;
 };
 
 struct VertexPCN

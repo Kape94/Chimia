@@ -1,6 +1,7 @@
 #include "ResourcesManager.h"
 
 #include "Draw3DPrivate.h"
+#include "Rendering/Texture2D.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -61,6 +62,29 @@ const Material*
 ResourcesManager::GetMaterial(const MaterialID& materialID)
 {
   return m_materialsTable.Find(Draw3DPrivate::GetMaterialIDValue(materialID));
+}
+
+// ----------------------------------------------------------------------------
+
+TextureID
+ResourcesManager::CreateTexture(const unsigned char* textureData,
+                                const unsigned width,
+                                const unsigned height)
+{
+  auto [id, texture] = m_texturesTable.Insert();
+
+  texture->Create(textureData, width, height);
+
+  return Draw3DPrivate::CreateTextureID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Texture2D*
+ResourcesManager::GetTexture(const TextureID& textureID)
+{
+  const unsigned idValue = Draw3DPrivate::GetTextureIDValue(textureID);
+  return m_texturesTable.Find(idValue);
 }
 
 // ----------------------------------------------------------------------------

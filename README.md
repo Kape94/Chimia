@@ -14,6 +14,7 @@ TODO: Missing features
   - Fog;
   - Shadowing and per vertex color shadowing;
   - Texture filtering; 
+TODO: Add Phong lightning mode for colored-lit renderer;
 
 ## Build Instructions
 Run `cppm build` to build the project.

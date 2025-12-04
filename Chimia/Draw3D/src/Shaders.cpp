@@ -20,6 +20,8 @@ Chimia::Rendering::Shader phongLit;
 Chimia::Rendering::Shader phongLitWithInstancedTransformAndMaterial;
 Chimia::Rendering::Shader gouraudLitWithVertexColor;
 Chimia::Rendering::Shader gouraudLitWithInstancedTransformAndVertexColor;
+Chimia::Rendering::Shader textured;
+Chimia::Rendering::Shader texturedWithInstancedTransform;
 }
 
 // ----------------------------------------------------------------------------
@@ -55,6 +57,13 @@ Chimia::Draw3D::Shaders::Initialize()
   gouraudLitWithInstancedTransformAndVertexColor.Create(
     ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndVertexColor,
     ShaderCodes::Fragment::gouraudLit);
+
+  textured.Create(ShaderCodes::Vertex::textured,
+                  ShaderCodes::Fragment::textured);
+
+  texturedWithInstancedTransform.Create(
+    ShaderCodes::Vertex::texturedWithInstancedTransform,
+    ShaderCodes::Fragment::textured);
 }
 
 // ----------------------------------------------------------------------------
@@ -119,6 +128,22 @@ Chimia::Rendering::Shader&
 Chimia::Draw3D::Shaders::GouraudLitWithInstancedTransformAndVertexColor()
 {
   return gouraudLitWithInstancedTransformAndVertexColor;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::Textured()
+{
+  return textured;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::TexturedWithInstancedTransform()
+{
+  return texturedWithInstancedTransform;
 }
 
 // ----------------------------------------------------------------------------

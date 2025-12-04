@@ -33,9 +33,10 @@ static const Chimia::Rendering::ShaderAttributes
     Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
   };
 
-constexpr unsigned MATERIAL_ID = 0;
 constexpr unsigned RENDERER_ID =
   static_cast<unsigned>(eRendererType::VERTEX_COLORED);
+constexpr unsigned NO_MATERIAL = 0;
+constexpr unsigned NO_TEXTURE = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -100,7 +101,7 @@ VertexColoredRendererImpl::AddStaticTriangles(const RawDataView& vertexData)
 {
   const unsigned instanceID = m_triangleMeshComponent.AddStaticMesh(vertexData);
   return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, MATERIAL_ID);
+    RENDERER_ID, instanceID, NO_MATERIAL, NO_TEXTURE);
 }
 
 // ----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ VertexColoredRendererImpl::AddStaticTriangles(const RawDataView& vertexData)
 void
 VertexColoredRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [rendererID, instanceID, materialID] =
+  auto [_, instanceID, __, ___] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
   m_triangleMeshComponent.DeleteStaticMesh(instanceID);
 }
@@ -131,7 +132,8 @@ VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
   const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
     modelID, { &transform, sizeof(glm::mat4x4) });
 
-  return Draw3DPrivate::CreateModelInstanceID(RENDERER_ID, localInstanceID);
+  return Draw3DPrivate::CreateModelInstanceID(
+    RENDERER_ID, localInstanceID, NO_TEXTURE);
 }
 
 // ----------------------------------------------------------------------------
