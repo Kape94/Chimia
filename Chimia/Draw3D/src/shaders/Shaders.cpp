@@ -1,6 +1,7 @@
 #include "Shaders.h"
 // ----------------------------------------------------------------------------
 
+#include "ShaderCodebase.h"
 #include "ShaderCodes.h"
 
 #include "Rendering/Shader.h"
@@ -22,6 +23,41 @@ Chimia::Rendering::Shader gouraudLitWithVertexColor;
 Chimia::Rendering::Shader gouraudLitWithInstancedTransformAndVertexColor;
 Chimia::Rendering::Shader textured;
 Chimia::Rendering::Shader texturedWithInstancedTransform;
+
+void
+InitializeCodebase()
+{
+  ShaderCodebase::RegisterCodes({
+    // ----------------------- Vertex --------------------------
+
+    { "vertex::colored", ShaderCodes::Vertex::colored },
+    { "vertex::coloredWithInstancedTransform",
+      ShaderCodes::Vertex::coloredWithInstancedTransform },
+    { "vertex::gouraudLit", ShaderCodes::Vertex::gouraudLit },
+    { "vertex::gouraudLitWithInstancedTransformAndMaterial",
+      ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndMaterial },
+    { "vertex::phongLit", ShaderCodes::Vertex::phongLit },
+    { "vertex::phongLitWithInstancedTransformAndMaterial",
+      ShaderCodes::Vertex::phongLitWithInstancedTransformAndMaterial },
+    { "vertex::gouraudLitWithVertexColor",
+      ShaderCodes::Vertex::gouraudLitWithVertexColor },
+    { "vertex::gouraudLitWithInstancedTransformAndVertexColor",
+      ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndVertexColor },
+    { "vertex::textured", ShaderCodes::Vertex::textured },
+    { "vertex::texturedWithInstancedTransform",
+      ShaderCodes::Vertex::texturedWithInstancedTransform },
+
+    // ----------------------- Fragment --------------------------
+
+    { "fragment::colored", ShaderCodes::Fragment::colored },
+    { "fragment::gouraudLit", ShaderCodes::Fragment::gouraudLit },
+    { "fragment::phongLit", ShaderCodes::Fragment::phongLit },
+    { "fragment::phongLitWithInstancedTransformAndMaterial",
+      ShaderCodes::Fragment::phongLitWithInstancedTransformAndMaterial },
+    { "fragment::textured", ShaderCodes::Fragment::textured },
+  });
+}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -29,41 +65,45 @@ Chimia::Rendering::Shader texturedWithInstancedTransform;
 void
 Chimia::Draw3D::Shaders::Initialize()
 {
-  vertexColored.Create(ShaderCodes::Vertex::colored,
-                       ShaderCodes::Fragment::colored);
+  InitializeCodebase();
+
+  vertexColored.Create(ShaderCodebase::Code("vertex::colored"),
+                       ShaderCodebase::Code("fragment::colored"));
 
   vertexColoredWithInstancedTransform.Create(
-    ShaderCodes::Vertex::coloredWithInstancedTransform,
-    ShaderCodes::Fragment::colored);
+    ShaderCodebase::Code("vertex::coloredWithInstancedTransform"),
+    ShaderCodebase::Code("fragment::colored"));
 
-  gouraudLit.Create(ShaderCodes::Vertex::gouraudLit,
-                    ShaderCodes::Fragment::gouraudLit);
+  gouraudLit.Create(ShaderCodebase::Code("vertex::gouraudLit"),
+                    ShaderCodebase::Code("fragment::gouraudLit"));
 
   gouraudLitWithInstancedTransformAndMaterial.Create(
-    ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndMaterial,
-    ShaderCodes::Fragment::gouraudLit);
+    ShaderCodebase::Code("vertex::gouraudLitWithInstancedTransformAndMaterial"),
+    ShaderCodebase::Code("fragment::gouraudLit"));
 
-  phongLit.Create(ShaderCodes::Vertex::phongLit,
-                  ShaderCodes::Fragment::phongLit);
+  phongLit.Create(ShaderCodebase::Code("vertex::phongLit"),
+                  ShaderCodebase::Code("fragment::phongLit"));
 
   phongLitWithInstancedTransformAndMaterial.Create(
-    ShaderCodes::Vertex::phongLitWithInstancedTransformAndMaterial,
-    ShaderCodes::Fragment::phongLitWithInstancedTransformAndMaterial);
+    ShaderCodebase::Code("vertex::phongLitWithInstancedTransformAndMaterial"),
+    ShaderCodebase::Code(
+      "fragment::phongLitWithInstancedTransformAndMaterial"));
 
   gouraudLitWithVertexColor.Create(
-    ShaderCodes::Vertex::gouraudLitWithVertexColor,
-    ShaderCodes::Fragment::gouraudLit);
+    ShaderCodebase::Code("vertex::gouraudLitWithVertexColor"),
+    ShaderCodebase::Code("fragment::gouraudLit"));
 
   gouraudLitWithInstancedTransformAndVertexColor.Create(
-    ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndVertexColor,
-    ShaderCodes::Fragment::gouraudLit);
+    ShaderCodebase::Code(
+      "vertex::gouraudLitWithInstancedTransformAndVertexColor"),
+    ShaderCodebase::Code("fragment::gouraudLit"));
 
-  textured.Create(ShaderCodes::Vertex::textured,
-                  ShaderCodes::Fragment::textured);
+  textured.Create(ShaderCodebase::Code("vertex::textured"),
+                  ShaderCodebase::Code("fragment::textured"));
 
   texturedWithInstancedTransform.Create(
-    ShaderCodes::Vertex::texturedWithInstancedTransform,
-    ShaderCodes::Fragment::textured);
+    ShaderCodebase::Code("vertex::texturedWithInstancedTransform"),
+    ShaderCodebase::Code("fragment::textured"));
 }
 
 // ----------------------------------------------------------------------------

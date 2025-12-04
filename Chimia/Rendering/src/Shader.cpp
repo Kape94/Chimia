@@ -12,6 +12,14 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
+Shader::Shader(const std::string& vertexShaderCode,
+               const std::string& fragmentShaderCode)
+  : Shader(vertexShaderCode.c_str(), fragmentShaderCode.c_str())
+{
+}
+
+//---------------------------------------------------------------------------------------
+
 Shader::Shader(const char* vertexShaderCode, const char* fragmentShaderCode)
 {
   Create(vertexShaderCode, fragmentShaderCode);
@@ -42,6 +50,15 @@ Shader::operator=(Shader&& other)
 Shader::~Shader()
 {
   Clear();
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+Shader::Create(const std::string& vertexShaderCode,
+               const std::string& fragmentShaderCode)
+{
+  Create(vertexShaderCode.c_str(), fragmentShaderCode.c_str());
 }
 
 //---------------------------------------------------------------------------------------

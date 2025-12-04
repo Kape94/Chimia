@@ -11,7 +11,6 @@ add_library(${TARGET_NAME}
     src/ModelRendering.cpp
     src/Resources.cpp
     src/ResourcesManager.cpp
-    src/Shaders.cpp
     src/Triangle.cpp
     
     src/batch/BatchUtils.cpp
@@ -26,6 +25,9 @@ add_library(${TARGET_NAME}
     src/renderers/TexturedRendererImpl.cpp
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/VertexColoredRendererImpl.cpp
+
+    src/shaders/Shaders.cpp
+    src/shaders/ShaderCodebase.cpp
 )
 
 target_link_libraries(${TARGET_NAME}
@@ -43,6 +45,7 @@ target_include_directories(${TARGET_NAME}
         ./src/
         ./src/batch/
         ./src/renderers/
+        ./src/shaders/
     PUBLIC
         ./api/
 )

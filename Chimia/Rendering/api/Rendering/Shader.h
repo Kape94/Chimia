@@ -21,6 +21,8 @@ class Shader
 public:
   Shader() = default;
 
+  Shader(const std::string& vertexShaderCode,
+         const std::string& fragmentShaderCode);
   Shader(const char* vertexShaderCode, const char* fragmentShaderCode);
 
   Shader(const Shader& other) = delete;
@@ -31,6 +33,8 @@ public:
 
   ~Shader();
 
+  void Create(const std::string& vertexShaderCode,
+              const std::string& fragmentShaderCode);
   void Create(const char* vertexShaderCode, const char* fragmentShaderCode);
 
   void Use();
