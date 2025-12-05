@@ -1,7 +1,10 @@
 #include "ShaderCodebase.h"
 
+#include "Core/Diagnostics.h"
+
 #include <cassert>
 #include <map>
+#include <set>
 
 // ----------------------------------------------------------------------------
 
@@ -13,12 +16,30 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace ShaderCodebaseImpl {
 std::map<std::string, std::string> codeFragments;
+const std::string includeDirective("@include \"");
+
+std::string
+OriginalCode(const std::string& tag);
 
 std::string
 PreProcess(const std::string& originalCode);
 
 bool
-ReplaceInclude(std::string& code);
+ReplaceNextInclude(std::string& code,
+                   std::set<std::string>& alreadyIncludedCodes);
+
+using CodeParts = struct
+{
+  std::string includeTag;
+  std::string codeBeforeInclude;
+  std::string codeAfterInclude;
+};
+CodeParts
+SplitCodeParts(const std::string& code, const size_t includePos);
+
+std::string
+FetchCodeToInclude(const std::string& includeTag,
+                   std::set<std::string>& alreadyIncludedCodes);
 
 }
 
@@ -61,12 +82,7 @@ ShaderCodebase::Code(const std::string& tag)
 {
   using namespace ShaderCodebaseImpl;
 
-  auto it = codeFragments.find(tag);
-  const bool codeExists = it != codeFragments.end();
-
-  assert(codeExists && "Couldn't find code for tag");
-
-  return PreProcess(it->second);
+  return PreProcess(OriginalCode(tag));
 }
 
 // ----------------------------------------------------------------------------
@@ -74,12 +90,31 @@ ShaderCodebase::Code(const std::string& tag)
 // ----------------------------------------------------------------------------
 
 std::string
+ShaderCodebaseImpl::OriginalCode(const std::string& tag)
+{
+  auto it = codeFragments.find(tag);
+  const bool codeExists = it != codeFragments.end();
+
+  if (!codeExists) {
+    std::string msg = "Couldn't find code for tag ";
+    msg += tag;
+    Chimia::Diagnostics::Error(1, msg);
+  }
+
+  return it->second;
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
 ShaderCodebaseImpl::PreProcess(const std::string& originalCode)
 {
+  std::set<std::string> alreadyIncludedCodes;
+
   std::string expandedCode = originalCode;
-  bool handledInclude = ReplaceInclude(expandedCode);
+  bool handledInclude = ReplaceNextInclude(expandedCode, alreadyIncludedCodes);
   while (handledInclude) {
-    handledInclude = ReplaceInclude(expandedCode);
+    handledInclude = ReplaceNextInclude(expandedCode, alreadyIncludedCodes);
   }
 
   return expandedCode;
@@ -88,27 +123,67 @@ ShaderCodebaseImpl::PreProcess(const std::string& originalCode)
 // ----------------------------------------------------------------------------
 
 bool
-ShaderCodebaseImpl::ReplaceInclude(std::string& code)
+ShaderCodebaseImpl::ReplaceNextInclude(
+  std::string& code,
+  std::set<std::string>& alreadyIncludedCodes)
 {
-  const std::string includeDirective("@include\"");
-
   const size_t includePos = code.find(includeDirective);
   if (includePos == std::string::npos) {
     return false;
   }
 
-  const size_t includeStart = includePos + includeDirective.length();
-  const size_t includeEnd = code.find("\"", includeStart);
+  const CodeParts parts = SplitCodeParts(code, includePos);
+  const std::string& includeTag = parts.includeTag;
 
-  const std::string includeTag = code.substr(includeStart, includeEnd);
-  const std::string toBeIncludedCode = ShaderCodebase::Code(includeTag);
+  const std::string codeToBeIncluded =
+    FetchCodeToInclude(includeTag, alreadyIncludedCodes);
 
-  std::string newCode = code.substr(0, includePos);
-  newCode += toBeIncludedCode + "\n";
-  newCode += code.substr(includeEnd);
+  std::string newCode = parts.codeBeforeInclude;
+  newCode += codeToBeIncluded + "\n";
+  newCode += parts.codeAfterInclude;
 
   code = newCode;
   return true;
+}
+
+// ----------------------------------------------------------------------------
+
+ShaderCodebaseImpl::CodeParts
+ShaderCodebaseImpl::SplitCodeParts(const std::string& code,
+                                   const size_t includePos)
+{
+  const size_t includeStart = includePos + includeDirective.length();
+  const size_t includeEnd = code.find('\"', includeStart);
+  const size_t includeTagLenght = includeEnd - includeStart;
+
+  CodeParts parts;
+  parts.includeTag = code.substr(includeStart, includeTagLenght);
+  parts.codeBeforeInclude = code.substr(0, includePos);
+  parts.codeAfterInclude = code.substr(includeEnd + 1);
+
+  return parts;
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
+ShaderCodebaseImpl::FetchCodeToInclude(
+  const std::string& includeTag,
+  std::set<std::string>& alreadyIncludedCodes)
+{
+  const bool codeWasAlreadyIncluded =
+    alreadyIncludedCodes.count(includeTag) > 0;
+
+  if (!codeWasAlreadyIncluded) {
+    alreadyIncludedCodes.insert(includeTag);
+  }
+
+  const std::string skipInclude = "// Skipping include of " + includeTag +
+                                  " as it was already included previously\n";
+  const std::string codeToBeIncluded =
+    codeWasAlreadyIncluded ? skipInclude : OriginalCode(includeTag);
+
+  return codeToBeIncluded;
 }
 
 // ----------------------------------------------------------------------------

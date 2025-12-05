@@ -28,6 +28,13 @@ void
 InitializeCodebase()
 {
   ShaderCodebase::RegisterCodes({
+    // ----------------------- Common --------------------------
+
+    { "common::constants", ShaderCodes::Common::constants },
+    { "common::lightsTypes", ShaderCodes::Common::lightsTypes },
+    { "common::materialType", ShaderCodes::Common::materialType },
+    { "common::calculateLights", ShaderCodes::Common::calculateLights },
+
     // ----------------------- Vertex --------------------------
 
     { "vertex::colored", ShaderCodes::Vertex::colored },
