@@ -48,7 +48,7 @@ FetchCodeToInclude(const std::string& includeTag,
 // ----------------------------------------------------------------------------
 
 void
-ShaderCodebase::RegisterCodes(
+ShaderCodebase::AddCodes(
   const std::initializer_list<std::pair<std::string, std::string>>&
     shaderCodeList)
 {
@@ -56,15 +56,14 @@ ShaderCodebase::RegisterCodes(
     const std::string& tag = tagCodePair.first;
     const std::string& code = tagCodePair.second;
 
-    RegisterPieceOfCode(tag, code);
+    AddToCodebase(tag, code);
   }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ShaderCodebase::RegisterPieceOfCode(const std::string& tag,
-                                    const std::string& code)
+ShaderCodebase::AddToCodebase(const std::string& tag, const std::string& code)
 {
   using namespace ShaderCodebaseImpl;
 

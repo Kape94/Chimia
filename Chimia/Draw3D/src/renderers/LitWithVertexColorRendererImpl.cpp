@@ -42,7 +42,7 @@ GetShaderForTriangleMeshDrawing()
   return Chimia::Draw3D::Config::Lit::IlluminationModel() ==
              eIlluminationModel::GOURAUD
            ? Chimia::Draw3D::Shaders::GouraudLitWithVertexColor()
-           : Chimia::Draw3D::Shaders::GouraudLitWithVertexColor();
+           : Chimia::Draw3D::Shaders::PhongLitWithVertexColor();
 }
 
 Chimia::Rendering::Shader&
@@ -52,7 +52,7 @@ GetShaderForModelDrawing()
            ? Chimia::Draw3D::Shaders::
                GouraudLitWithInstancedTransformAndVertexColor()
            : Chimia::Draw3D::Shaders::
-               GouraudLitWithInstancedTransformAndVertexColor();
+               PhongLitWithInstancedTransformAndVertexColor();
 }
 
 constexpr unsigned RENDERER_ID =

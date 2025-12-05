@@ -39,6 +39,12 @@ Rendering::Shader&
 GouraudLitWithInstancedTransformAndVertexColor();
 
 Rendering::Shader&
+PhongLitWithVertexColor();
+
+Rendering::Shader&
+PhongLitWithInstancedTransformAndVertexColor();
+
+Rendering::Shader&
 Textured();
 
 Rendering::Shader&

@@ -2,7 +2,10 @@
 // ----------------------------------------------------------------------------
 
 #include "ShaderCodebase.h"
-#include "ShaderCodes.h"
+
+#include "glslCodes/Common.h"
+#include "glslCodes/FragmentStage.h"
+#include "glslCodes/VertexStage.h"
 
 #include "Rendering/Shader.h"
 
@@ -21,19 +24,23 @@ Chimia::Rendering::Shader phongLit;
 Chimia::Rendering::Shader phongLitWithInstancedTransformAndMaterial;
 Chimia::Rendering::Shader gouraudLitWithVertexColor;
 Chimia::Rendering::Shader gouraudLitWithInstancedTransformAndVertexColor;
+Chimia::Rendering::Shader phongLitWithVertexColor;
+Chimia::Rendering::Shader phongLitWithInstancedTransformAndVertexColor;
 Chimia::Rendering::Shader textured;
 Chimia::Rendering::Shader texturedWithInstancedTransform;
 
 void
 InitializeCodebase()
 {
-  ShaderCodebase::RegisterCodes({
+  ShaderCodebase::AddCodes({
     // ----------------------- Common --------------------------
 
     { "common::constants", ShaderCodes::Common::constants },
     { "common::lightsTypes", ShaderCodes::Common::lightsTypes },
     { "common::materialType", ShaderCodes::Common::materialType },
     { "common::calculateLights", ShaderCodes::Common::calculateLights },
+    { "common::calculateLightsWithoutMaterial",
+      ShaderCodes::Common::calculateLightsWithoutMaterial },
 
     // ----------------------- Vertex --------------------------
 
@@ -50,6 +57,10 @@ InitializeCodebase()
       ShaderCodes::Vertex::gouraudLitWithVertexColor },
     { "vertex::gouraudLitWithInstancedTransformAndVertexColor",
       ShaderCodes::Vertex::gouraudLitWithInstancedTransformAndVertexColor },
+    { "vertex::phongLitWithVertexColor",
+      ShaderCodes::Vertex::phongLitWithVertexColor },
+    { "vertex::phongLitWithInstancedTransformAndVertexColor",
+      ShaderCodes::Vertex::phongLitWithInstancedTransformAndVertexColor },
     { "vertex::textured", ShaderCodes::Vertex::textured },
     { "vertex::texturedWithInstancedTransform",
       ShaderCodes::Vertex::texturedWithInstancedTransform },
@@ -61,6 +72,8 @@ InitializeCodebase()
     { "fragment::phongLit", ShaderCodes::Fragment::phongLit },
     { "fragment::phongLitWithInstancedTransformAndMaterial",
       ShaderCodes::Fragment::phongLitWithInstancedTransformAndMaterial },
+    { "fragment::phongLitByVertexColor",
+      ShaderCodes::Fragment::phongLitByVertexColor },
     { "fragment::textured", ShaderCodes::Fragment::textured },
   });
 }
@@ -104,6 +117,15 @@ Chimia::Draw3D::Shaders::Initialize()
     ShaderCodebase::Code(
       "vertex::gouraudLitWithInstancedTransformAndVertexColor"),
     ShaderCodebase::Code("fragment::gouraudLit"));
+
+  phongLitWithVertexColor.Create(
+    ShaderCodebase::Code("vertex::phongLitWithVertexColor"),
+    ShaderCodebase::Code("fragment::phongLitByVertexColor"));
+
+  phongLitWithInstancedTransformAndVertexColor.Create(
+    ShaderCodebase::Code(
+      "vertex::phongLitWithInstancedTransformAndVertexColor"),
+    ShaderCodebase::Code("fragment::phongLitByVertexColor"));
 
   textured.Create(ShaderCodebase::Code("vertex::textured"),
                   ShaderCodebase::Code("fragment::textured"));
@@ -175,6 +197,22 @@ Chimia::Rendering::Shader&
 Chimia::Draw3D::Shaders::GouraudLitWithInstancedTransformAndVertexColor()
 {
   return gouraudLitWithInstancedTransformAndVertexColor;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::PhongLitWithVertexColor()
+{
+  return phongLitWithVertexColor;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::PhongLitWithInstancedTransformAndVertexColor()
+{
+  return phongLitWithInstancedTransformAndVertexColor;
 }
 
 // ----------------------------------------------------------------------------

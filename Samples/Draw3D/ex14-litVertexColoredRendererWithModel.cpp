@@ -1,4 +1,5 @@
 #include "Draw3D/Camera.h"
+#include "Draw3D/Config.h"
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Illumination.h"
 #include "Draw3D/ModelRendering.h"
@@ -133,6 +134,9 @@ main()
   Window w(1280, 960, "Draw3D ex14");
 
   SamplesUtils::InitRandom();
+
+  Chimia::Draw3D::Config::Lit::SetIlluminationModel(
+    Chimia::Draw3D::eIlluminationModel::PHONG);
   Chimia::Draw3D::Initialize();
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
