@@ -36,6 +36,7 @@ AddStaticModel(const ModelID& modelID,
                const MaterialID& materialID);
 
 // Model Position3 + TexCoord2
+// Model Position3 + Normal3 + TexCoord2
 
 void
 DrawModel(const ModelID& modelID,

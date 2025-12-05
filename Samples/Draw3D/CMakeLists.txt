@@ -97,3 +97,31 @@ add_custom_command(
     "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
     "$<TARGET_FILE_DIR:Samples_Draw3D_ex17>/assets/solar-flare.jpg"
 )
+
+add_executable(Samples_Draw3D_ex18 ex18-texturedLit.cpp)
+target_link_libraries(Samples_Draw3D_ex18 PRIVATE Samples_Draw3D_Dependencies)
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex18
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/box.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex18>/assets/box.jpg")
+
+add_executable(Samples_Draw3D_ex19 ex19-texturedLitMisc.cpp)
+target_link_libraries(Samples_Draw3D_ex19 PRIVATE Samples_Draw3D_Dependencies)
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex19
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/box.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex19>/assets/box.jpg")
+
+add_custom_command(
+    TARGET Samples_Draw3D_ex19
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
+    "$<TARGET_FILE_DIR:Samples_Draw3D_ex19>/assets/solar-flare.jpg"
+)

@@ -5,6 +5,7 @@
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
 #include "Shaders.h"
+#include "TexturedLitRendererImpl.h"
 #include "TexturedRendererImpl.h"
 #include "VertexColoredRendererImpl.h"
 
@@ -23,6 +24,7 @@ Chimia::Draw3D::Initialize()
   LitRendererImpl::getInstance().Init();
   TexturedRendererImpl::getInstance().Init();
   LitWithVertexColorRendererImpl::getInstance().Init();
+  TexturedLitRendererImpl::getInstance().Init();
 }
 
 // ----------------------------------------------------------------------------
@@ -34,6 +36,7 @@ Chimia::Draw3D::Flush()
   LitRendererImpl::getInstance().Flush();
   TexturedRendererImpl::getInstance().Flush();
   LitWithVertexColorRendererImpl::getInstance().Flush();
+  TexturedLitRendererImpl::getInstance().Flush();
 }
 
 // ----------------------------------------------------------------------------

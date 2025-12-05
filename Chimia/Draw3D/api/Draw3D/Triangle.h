@@ -97,6 +97,31 @@ TriangleMeshID
 AddStaticTriangles(const std::vector<VertexPCN>& vertices,
                    const std::vector<unsigned>& indices);
 
+// Vertex Position3 + Normal3 + TexCoord2
+
+void
+Triangle(const VertexPNT& v1,
+         const VertexPNT& v2,
+         const VertexPNT& v3,
+         const TextureID& texture);
+
+void
+Triangles(const std::vector<VertexPNT>& vertices, const TextureID& texture);
+
+void
+Triangles(const std::vector<VertexPNT>& vertices,
+          const std::vector<unsigned>& indices,
+          const TextureID& texture);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPNT>& vertices,
+                   const TextureID& texture);
+
+TriangleMeshID
+AddStaticTriangles(const std::vector<VertexPNT>& vertices,
+                   const std::vector<unsigned>& indices,
+                   const TextureID& texture);
+
 // General
 
 void

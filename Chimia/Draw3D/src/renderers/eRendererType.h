@@ -16,7 +16,8 @@ enum class eRendererType
   VERTEX_COLORED = 1,
   LIT,
   TEXTURED,
-  VERTEX_COLORED_LIT
+  VERTEX_COLORED_LIT,
+  TEXTURED_LIT,
 };
 
 // ----------------------------------------------------------------------------
