@@ -19,7 +19,8 @@ ModelBatch::Create(const Model& model,
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
-  m_instancedDataSize = instanceAttributes.ComputeTotalSizeOfAttributes();
+  m_instancedDataSizeInBytes =
+    instanceAttributes.ComputeTotalSizeOfAttributes();
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   model.ForEachBuffer(
@@ -28,7 +29,7 @@ ModelBatch::Create(const Model& model,
         reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
     });
 
-  m_instancedInputBuffer.Resize(batchSize * m_instancedDataSize);
+  m_instancedInputBuffer.Resize(batchSize * m_instancedDataSizeInBytes);
 }
 
 // ----------------------------------------------------------------------------
@@ -44,7 +45,7 @@ ModelBatch::AddGPUBuffer(
   inserted.CreateInstanced(
     bufferData,
     vertexAttributes,
-    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSize },
+    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes },
     instanceAttributes);
 }
 
@@ -75,7 +76,7 @@ ModelBatch::Draw(const std::initializer_list<RawDataView>& instanceDatas)
 void
 ModelBatch::HandleFlushByDemand()
 {
-  if (m_instancedInputBuffer.GetAvailableSize() < m_instancedDataSize) {
+  if (m_instancedInputBuffer.GetAvailableSize() < m_instancedDataSizeInBytes) {
     m_onFlush();
     Flush();
   }
@@ -93,15 +94,24 @@ ModelBatch::Flush()
 
   m_onFlush();
 
-  const size_t nInstances = totalInputSize / m_instancedDataSize;
+  const size_t nInstances = totalInputSize / m_instancedDataSizeInBytes;
   for (auto& buffer : m_gpuBuffers) {
-    buffer.LoadInstancedData(RawArrayView{
-      m_instancedInputBuffer.GetData(), nInstances, m_instancedDataSize });
+    buffer.LoadInstancedData(RawArrayView{ m_instancedInputBuffer.GetData(),
+                                           nInstances,
+                                           m_instancedDataSizeInBytes });
 
     buffer.Render();
   }
 
   m_instancedInputBuffer.Reset();
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+ModelBatch::CurrentBatchSize() const
+{
+  return m_instancedInputBuffer.GetMaximumSize() / m_instancedDataSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

@@ -61,13 +61,18 @@ private:
 
   void RenderCurrentBuffers();
 
+  size_t CurrentGPUBatchSizeInBytes() const;
+
+  // Fixed attributes, don't get changed after initial batch creation
   std::function<void()> m_onRender;
   BatchingSettings m_batchingSettings;
+  size_t m_instanceDataSizeInBytes = 0;
+  size_t m_currentGPUBatchSize = 0;
 
+  // Cache attribute to indicate whenever a new instance gets added
   bool m_shouldRebuildBuffers = true;
 
-  size_t m_instanceDataSize = 0;
-  size_t m_instanceBatchDataSize = 0;
+  // The attributes get modified often during rendering
   DataBuffer m_instanceDataBuffer;
   ObjectTable<DataBuffer> m_instanceTable;
   std::vector<Rendering::InstancedBuffer> m_gpuBuffers;

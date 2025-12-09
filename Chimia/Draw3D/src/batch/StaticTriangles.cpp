@@ -19,14 +19,17 @@ StaticTriangles::Create(const BatchingSettings& batchingSettings,
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t sizePerVertex = shaderAttributes.ComputeTotalSizeOfAttributes();
   constexpr size_t nVerticesPerTriangle = 3;
-  const size_t triangleBatchSize =
-    sizePerVertex * nVerticesPerTriangle * batchSize;
+  const size_t triangleSizeInBytes = sizePerVertex * nVerticesPerTriangle;
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, triangleBatchSize },
+  const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
+
+  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
                      shaderAttributes);
-  m_inputBuffer.Resize(triangleBatchSize);
+  m_inputBuffer.Resize(batchSizeInBytes);
 
-  m_batchSize = triangleBatchSize;
+  m_currentGPUBatchSize = batchSize;
+  m_triangleSizeInBytes = triangleSizeInBytes;
+
   m_shouldRebuildBuffers = false;
 }
 
@@ -76,10 +79,11 @@ StaticTriangles::Render()
 bool
 StaticTriangles::CanRenderWithCurrentBuffer() const
 {
-  const size_t trianglesData = m_inputBuffer.GetSize();
+  const size_t trianglesDataInBytes = m_inputBuffer.GetSize();
 
   const bool needToReloadDataOnGPU = m_shouldRebuildBuffers;
-  const bool needToRenderByBatches = trianglesData > m_batchSize;
+  const bool needToRenderByBatches =
+    trianglesDataInBytes > CurrentGPUBatchSizeInBytes();
 
   return !needToReloadDataOnGPU && !needToRenderByBatches;
 }
@@ -116,7 +120,7 @@ StaticTriangles::RenderByBatches()
 
   BatchUtils::ForEachBatchRange(
     inputSize,
-    m_batchSize,
+    CurrentGPUBatchSizeInBytes(),
     [&](const size_t rangeStart, const size_t rangeSize) {
       HandleRenderingForBatchRange(rangeStart, rangeSize);
     });
@@ -133,6 +137,14 @@ StaticTriangles::HandleRenderingForBatchRange(const size_t rangeStart,
 
   m_gpuBuffer.Load(RawDataView{ batchData, rangeSize });
   m_gpuBuffer.Render();
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+StaticTriangles::CurrentGPUBatchSizeInBytes() const
+{
+  return m_currentGPUBatchSize * m_triangleSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

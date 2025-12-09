@@ -41,11 +41,17 @@ private:
   void HandleRenderingForBatchRange(const size_t rangeStart,
                                     const size_t rangeSize);
 
+  size_t CurrentGPUBatchSizeInBytes() const;
+
+  // Cache attribute to indicate whenever a new mesh gets added
   bool m_shouldRebuildBuffers = false;
 
-  size_t m_batchSize = 0;
+  // Fixed attributes, only set during initialization
   BatchingSettings m_batchingSettings;
+  size_t m_triangleSizeInBytes = 0;
+  size_t m_currentGPUBatchSize = 0;
 
+  // These attributes get modified as rendering requests come in
   Rendering::Buffer m_gpuBuffer;
   DataBuffer m_inputBuffer;
   ObjectTable<DataBuffer> m_staticTrianglesTable;

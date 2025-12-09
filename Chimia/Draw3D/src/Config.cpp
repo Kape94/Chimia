@@ -14,13 +14,12 @@ namespace ConfigInternal {
 constexpr size_t UNLIMITED = std::numeric_limits<size_t>::max();
 
 namespace Batching {
+
 BatchingSettings triangleBatching{ 50, UNLIMITED };
-
 BatchingSettings modelBatching{ 10, UNLIMITED };
-
 BatchingSettings triangleBatchingByResource{ 20, UNLIMITED };
-
 BatchingSettings modelBatchingByResource{ 2, UNLIMITED };
+
 }
 
 eIlluminationModel illuminationModel = eIlluminationModel::GOURAUD;

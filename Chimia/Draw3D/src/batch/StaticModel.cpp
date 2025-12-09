@@ -24,19 +24,20 @@ StaticModel::Create(const Model& model,
   m_batchingSettings = batchingSettings;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  const size_t instanceDataSize =
+  const size_t instanceDataSizeInBytes =
     instanceAttributes.ComputeTotalSizeOfAttributes();
-  const size_t instanceBatchDataSize = batchSize * instanceDataSize;
 
   CreateGPUBuffers(model,
                    batchSize,
-                   instanceBatchDataSize,
+                   instanceDataSizeInBytes,
                    vertexAttributes,
                    instanceAttributes);
 
-  m_instanceDataSize = instanceDataSize;
-  m_instanceBatchDataSize = instanceBatchDataSize;
-  m_instanceDataBuffer.Resize(instanceBatchDataSize);
+  m_instanceDataSizeInBytes = instanceDataSizeInBytes;
+  m_currentGPUBatchSize = batchSize;
+
+  const size_t batchDataSizeInBytes = batchSize * instanceDataSizeInBytes;
+  m_instanceDataBuffer.Resize(batchDataSizeInBytes);
 }
 
 // ----------------------------------------------------------------------------
@@ -125,8 +126,9 @@ bool
 StaticModel::CanRenderWithCurrentBuffers() const
 {
   const bool needToReloadDataOnGPU = m_shouldRebuildBuffers;
+
   const bool needToRenderByBatch =
-    m_instanceDataBuffer.GetSize() > m_instanceBatchDataSize;
+    m_instanceDataBuffer.GetSize() > CurrentGPUBatchSizeInBytes();
 
   return !needToReloadDataOnGPU && !needToRenderByBatch;
 }
@@ -164,7 +166,7 @@ StaticModel::RenderByBatches()
 
   BatchUtils::ForEachBatchRange(
     m_instanceDataBuffer.GetSize(),
-    m_instanceBatchDataSize,
+    CurrentGPUBatchSizeInBytes(),
     [&](const size_t rangeStart, const size_t rangeSize) {
       HandleRenderingForBatchRange(rangeStart, rangeSize);
     });
@@ -179,7 +181,7 @@ StaticModel::HandleRenderingForBatchRange(const size_t rangeStart,
   const unsigned char* data = m_instanceDataBuffer.GetData();
   const unsigned char* offsetData = data + rangeStart;
 
-  const unsigned nInstances = rangeSize / m_instanceDataSize;
+  const unsigned nInstances = rangeSize / m_instanceDataSizeInBytes;
 
   LoadBatchAndRender(offsetData, rangeSize, nInstances);
 }
@@ -206,6 +208,14 @@ StaticModel::RenderCurrentBuffers()
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
     gpuBuffer.Render();
   }
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+StaticModel::CurrentGPUBatchSizeInBytes() const
+{
+  return m_currentGPUBatchSize * m_instanceDataSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

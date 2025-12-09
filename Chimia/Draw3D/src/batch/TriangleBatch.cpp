@@ -18,15 +18,17 @@ TriangleBatch::Create(const BatchingSettings& batchingSettings,
   m_batchingSettings = batchingSettings;
 
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
-  m_inputDataSize =
+  const size_t triangleSizeInBytes =
     vertexAttributes.ComputeTotalSizeOfAttributes() * N_VERTICES_IN_TRIANGLE;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  const size_t bufferTotalSize = batchSize * m_inputDataSize;
-  m_inputBuffer.Resize(bufferTotalSize);
+  const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
+  m_inputBuffer.Resize(batchSizeInBytes);
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, bufferTotalSize }, vertexAttributes);
+  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
+                     vertexAttributes);
 
+  m_triangleSizeInBytes = triangleSizeInBytes;
   m_onFlush = onFlush;
 }
 
@@ -48,11 +50,10 @@ void
 TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 {
   const size_t arraySizeInBytes = vertexDataArray.TotalSize();
-  const size_t batchSizeInBytes = m_inputBuffer.GetMaximumSize();
 
   BatchUtils::ForEachBatchRange(
     arraySizeInBytes,
-    batchSizeInBytes,
+    m_triangleSizeInBytes,
     [&](const size_t rangeStart, const size_t rangeSize) {
       const unsigned char* data =
         reinterpret_cast<const unsigned char*>(vertexDataArray.array);
@@ -67,7 +68,7 @@ TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 void
 TriangleBatch::HandleFlushByDemand()
 {
-  if (m_inputBuffer.GetAvailableSize() < m_inputDataSize) {
+  if (m_inputBuffer.GetAvailableSize() < m_triangleSizeInBytes) {
     m_onFlush();
     Flush();
   }
@@ -89,6 +90,14 @@ TriangleBatch::Flush()
   m_gpuBuffer.Render();
 
   m_inputBuffer.Reset();
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+TriangleBatch::CurrentBatchSize() const
+{
+  return m_inputBuffer.GetMaximumSize() / m_triangleSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

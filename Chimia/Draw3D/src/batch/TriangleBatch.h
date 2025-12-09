@@ -33,10 +33,14 @@ public:
 private:
   void HandleFlushByDemand();
 
+  size_t CurrentBatchSize() const;
+
+  // Fixed attributes, defined only on creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
+  size_t m_triangleSizeInBytes = 0;
 
-  size_t m_inputDataSize = 0;
+  // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;
   Rendering::Buffer m_gpuBuffer;
 };

@@ -37,10 +37,14 @@ private:
 
   void HandleFlushByDemand();
 
+  size_t CurrentBatchSize() const;
+
+  // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
+  size_t m_instancedDataSizeInBytes = 0;
 
-  size_t m_instancedDataSize = 0;
+  // These attributes change often, during frame flow
   DataBuffer m_instancedInputBuffer;
   std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
 };
