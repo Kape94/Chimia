@@ -15,12 +15,15 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 void
 StaticModel::Create(const Model& model,
-                    const size_t batchSize,
+                    const BatchingSettings& batchingSettings,
                     const Rendering::ShaderAttributes& vertexAttributes,
                     const Rendering::ShaderAttributes& instanceAttributes,
                     const std::function<void()>& onRender)
 {
   m_onRender = onRender;
+  m_batchingSettings = batchingSettings;
+
+  const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t instanceDataSize =
     instanceAttributes.ComputeTotalSizeOfAttributes();
   const size_t instanceBatchDataSize = batchSize * instanceDataSize;

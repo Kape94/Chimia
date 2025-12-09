@@ -7,6 +7,7 @@
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
+#include "Types.h"
 
 #include <functional>
 #include <initializer_list>
@@ -17,7 +18,7 @@ class ModelBatch
 {
 public:
   void Create(const Model& model,
-              const size_t instanceBatchSize,
+              const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& vertexAttributes,
               const Rendering::ShaderAttributes& instanceAttributes,
               const std::function<void(void)>& onFlush);
@@ -37,6 +38,7 @@ private:
   void HandleFlushByDemand();
 
   std::function<void(void)> m_onFlush;
+  BatchingSettings m_batchingSettings;
 
   size_t m_instancedDataSize = 0;
   DataBuffer m_instancedInputBuffer;

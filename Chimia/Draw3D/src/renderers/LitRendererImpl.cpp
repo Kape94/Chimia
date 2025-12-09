@@ -76,11 +76,10 @@ LitRendererImpl::getInstance()
 void
 LitRendererImpl::Init()
 {
-  m_modelComponent.Init(
-    Config::Batching::ModelBatchingSettings().initialBatchSize,
-    VERTEX_ATTRIBUTES,
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-    [&]() { ConfigureShaderForTransformedModelDrawing(); });
+  m_modelComponent.Init(Config::Batching::ModelBatchingSettings(),
+                        VERTEX_ATTRIBUTES,
+                        TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                        [&]() { ConfigureShaderForTransformedModelDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -159,7 +158,7 @@ LitRendererImpl::FetchTriangleRenderComponentForMaterial(
     renderComponent = m_triangleMeshComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::Batching::TriangleBatchingByResourceSettings().initialBatchSize,
+      Config::Batching::TriangleBatchingByResourceSettings(),
       VERTEX_ATTRIBUTES,
       [&]() { ConfigureShaderForTriangleDrawing(materialID); });
   }

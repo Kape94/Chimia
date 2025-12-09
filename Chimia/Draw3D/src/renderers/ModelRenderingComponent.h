@@ -24,7 +24,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class ModelRenderingComponent
 {
 public:
-  void Init(const size_t modelBatchSize,
+  void Init(const BatchingSettings& batchingSettings,
             const Rendering::ShaderAttributes& vertexAttributes,
             const Rendering::ShaderAttributes& instanceAttributes,
             const std::function<void(void)>& onFlush);
@@ -48,12 +48,11 @@ private:
 
   StaticModel* AllocateBatchForStaticModel(const ModelID& modelID);
 
-  size_t m_batchSize;
+  BatchingSettings m_batchingSettings;
   Rendering::ShaderAttributes m_vertexAttributes;
   Rendering::ShaderAttributes m_instanceAttributes;
   std::function<void(void)> m_onFlush;
 
-  ObjectTable<Model> m_modelsTable;
   ObjectTable<ModelBatch> m_transformedModelsTable;
   ObjectTable<StaticModel> m_staticModelsTable;
 };

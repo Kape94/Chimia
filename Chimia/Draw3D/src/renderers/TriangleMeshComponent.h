@@ -20,7 +20,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class TriangleMeshComponent
 {
 public:
-  void Init(const size_t triangleBatchSize,
+  void Init(const BatchingSettings& batchingSettings,
             const Rendering::ShaderAttributes& vertexAttributes,
             const std::function<void(void)>& onFlush);
 
@@ -33,7 +33,6 @@ public:
   void DeleteStaticMesh(const unsigned meshID);
 
 private:
-  Rendering::ShaderAttributes m_vertexAttributes;
   std::function<void(void)> m_onFlush;
 
   TriangleBatch m_triangleBatch;

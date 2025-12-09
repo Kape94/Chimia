@@ -12,23 +12,23 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 void
 ModelBatch::Create(const Model& model,
-                   const size_t instanceBatchSize,
+                   const BatchingSettings& batchingSettings,
                    const Rendering::ShaderAttributes& vertexAttributes,
                    const Rendering::ShaderAttributes& instanceAttributes,
                    const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
+  m_batchingSettings = batchingSettings;
   m_instancedDataSize = instanceAttributes.ComputeTotalSizeOfAttributes();
 
+  const size_t batchSize = batchingSettings.initialBatchSize;
   model.ForEachBuffer(
     [&](const Rendering::ReusableIndexedVertexBufferObject& reusableBuffer) {
-      AddGPUBuffer(reusableBuffer,
-                   instanceBatchSize,
-                   vertexAttributes,
-                   instanceAttributes);
+      AddGPUBuffer(
+        reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
     });
 
-  m_instancedInputBuffer.Resize(instanceBatchSize * m_instancedDataSize);
+  m_instancedInputBuffer.Resize(batchSize * m_instancedDataSize);
 }
 
 // ----------------------------------------------------------------------------

@@ -11,9 +11,12 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::Create(const size_t batchSize,
+StaticTriangles::Create(const BatchingSettings& batchingSettings,
                         const Rendering::ShaderAttributes& shaderAttributes)
 {
+  m_batchingSettings = batchingSettings;
+
+  const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t sizePerVertex = shaderAttributes.ComputeTotalSizeOfAttributes();
   constexpr size_t nVerticesPerTriangle = 3;
   const size_t triangleBatchSize =

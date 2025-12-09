@@ -11,14 +11,17 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Create(const size_t batchSize,
+TriangleBatch::Create(const BatchingSettings& batchingSettings,
                       const Rendering::ShaderAttributes& vertexAttributes,
                       const std::function<void(void)>& onFlush)
 {
+  m_batchingSettings = batchingSettings;
+
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   m_inputDataSize =
     vertexAttributes.ComputeTotalSizeOfAttributes() * N_VERTICES_IN_TRIANGLE;
 
+  const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t bufferTotalSize = batchSize * m_inputDataSize;
   m_inputBuffer.Resize(bufferTotalSize);
 

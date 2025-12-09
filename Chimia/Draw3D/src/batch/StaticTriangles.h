@@ -3,6 +3,7 @@
 #include "Draw3DNamespaceDefs.h"
 
 #include "Core/DataBuffer.h"
+#include "Types.h"
 
 #include "ObjectTable.h"
 #include "Rendering/Buffer.h"
@@ -19,7 +20,7 @@ class StaticTriangles
 public:
   StaticTriangles() = default;
 
-  void Create(const size_t batchSize,
+  void Create(const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& shaderAttributes);
 
   unsigned AddStaticMesh(const RawDataView& vertexData);
@@ -43,6 +44,7 @@ private:
   bool m_shouldRebuildBuffers = false;
 
   size_t m_batchSize = 0;
+  BatchingSettings m_batchingSettings;
 
   Rendering::Buffer m_gpuBuffer;
   DataBuffer m_inputBuffer;

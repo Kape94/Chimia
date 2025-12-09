@@ -53,16 +53,14 @@ VertexColoredRendererImpl::getInstance()
 void
 VertexColoredRendererImpl::Init()
 {
-  m_triangleMeshComponent.Init(
-    Config::Batching::TriangleBatchingSettings().initialBatchSize,
-    VERTEX_ATTRIBUTES,
-    [&]() { ConfigureShaderForTriangleDrawing(); });
+  m_triangleMeshComponent.Init(Config::Batching::TriangleBatchingSettings(),
+                               VERTEX_ATTRIBUTES,
+                               [&]() { ConfigureShaderForTriangleDrawing(); });
 
-  m_modelComponent.Init(
-    Config::Batching::ModelBatchingSettings().initialBatchSize,
-    VERTEX_ATTRIBUTES,
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-    [&]() { ConfigureShaderForTransformedModelDrawing(); });
+  m_modelComponent.Init(Config::Batching::ModelBatchingSettings(),
+                        VERTEX_ATTRIBUTES,
+                        TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                        [&]() { ConfigureShaderForTransformedModelDrawing(); });
 }
 
 // ----------------------------------------------------------------------------
