@@ -1,5 +1,7 @@
 #include "Config.h"
-#include "Draw3DNamespaceDefs.h"
+#include "Types.h"
+
+#include <limits>
 
 // ----------------------------------------------------------------------------
 
@@ -9,90 +11,61 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace ConfigInternal {
 
-namespace VertexColored {
-size_t triangleBatchSize = 100;
-size_t modelsBatchSize = 2;
+constexpr size_t UNLIMITED = std::numeric_limits<size_t>::max();
+
+namespace Batching {
+BatchingSettings triangleBatching{ 50, UNLIMITED };
+
+BatchingSettings modelBatching{ 10, UNLIMITED };
+
+BatchingSettings triangleBatchingByResource{ 20, UNLIMITED };
+
+BatchingSettings modelBatchingByResource{ 2, UNLIMITED };
 }
 
-namespace Lit {
-size_t triangleBatchSizePerMaterial = 100;
-size_t modelsBatchSize = 2;
 eIlluminationModel illuminationModel = eIlluminationModel::GOURAUD;
-}
 };
 
 // ----------------------------------------------------------------------------
-// VertexColored
+// Batching
 // ----------------------------------------------------------------------------
 
-void
-Config::VertexColored::SetTriangleBatchSize(const size_t batchSize)
+BatchingSettings&
+Config::Batching::TriangleBatchingSettings()
 {
-  ConfigInternal::VertexColored::triangleBatchSize = batchSize;
+  return ConfigInternal::Batching::triangleBatching;
 }
 
-size_t
-Config::VertexColored::TriangleBatchSize()
+BatchingSettings&
+Config::Batching::TriangleBatchingByResourceSettings()
 {
-  return ConfigInternal::VertexColored::triangleBatchSize;
+  return ConfigInternal::Batching::triangleBatchingByResource;
 }
 
-// ----------------------------------------------------------------------------
-
-void
-Config::VertexColored::SetModelsBatchSize(const size_t batchSize)
+BatchingSettings&
+Config::Batching::ModelBatchingSettings()
 {
-  ConfigInternal::VertexColored::modelsBatchSize = batchSize;
+  return ConfigInternal::Batching::modelBatching;
 }
 
-size_t
-Config::VertexColored::ModelsBatchSize()
+BatchingSettings&
+Config::Batching::ModelBatchingByResourceSettings()
 {
-  return ConfigInternal::VertexColored::modelsBatchSize;
-}
-
-// ----------------------------------------------------------------------------
-// Lit
-// ----------------------------------------------------------------------------
-
-void
-Config::Lit::SetTriangleBatchSizePerMaterial(const size_t batchSize)
-{
-  ConfigInternal::Lit::triangleBatchSizePerMaterial = batchSize;
-}
-
-size_t
-Config::Lit::TriangleBatchSizePerMaterial()
-{
-  return ConfigInternal::Lit::triangleBatchSizePerMaterial;
-}
-
-// ----------------------------------------------------------------------------
-
-void
-Config::Lit::SetModelsBatchSize(const size_t batchSize)
-{
-  ConfigInternal::Lit::modelsBatchSize = batchSize;
-}
-
-size_t
-Config::Lit::ModelsBatchSize()
-{
-  return ConfigInternal::Lit::modelsBatchSize;
+  return ConfigInternal::Batching::modelBatchingByResource;
 }
 
 // ----------------------------------------------------------------------------
 
 eIlluminationModel
-Config::Lit::IlluminationModel()
+Config::IlluminationModel()
 {
-  return ConfigInternal::Lit::illuminationModel;
+  return ConfigInternal::illuminationModel;
 }
 
 void
-Config::Lit::SetIlluminationModel(eIlluminationModel model)
+Config::SetIlluminationModel(eIlluminationModel model)
 {
-  ConfigInternal::Lit::illuminationModel = model;
+  ConfigInternal::illuminationModel = model;
 }
 
 // ----------------------------------------------------------------------------

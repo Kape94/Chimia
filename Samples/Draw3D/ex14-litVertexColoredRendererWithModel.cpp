@@ -135,7 +135,7 @@ main()
 
   SamplesUtils::InitRandom();
 
-  Chimia::Draw3D::Config::Lit::SetIlluminationModel(
+  Chimia::Draw3D::Config::SetIlluminationModel(
     Chimia::Draw3D::eIlluminationModel::PHONG);
   Chimia::Draw3D::Initialize();
 

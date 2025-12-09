@@ -45,7 +45,7 @@ constexpr unsigned NO_MATERIAL = 0;
 Chimia::Rendering::Shader&
 GetShaderForTriangleMeshDrawing()
 {
-  return Chimia::Draw3D::Config::Lit::IlluminationModel() ==
+  return Chimia::Draw3D::Config::IlluminationModel() ==
              eIlluminationModel::GOURAUD
            ? Chimia::Draw3D::Shaders::GouraudLitTextured()
            : Chimia::Draw3D::Shaders::PhongLitTextured();
@@ -54,7 +54,7 @@ GetShaderForTriangleMeshDrawing()
 Chimia::Rendering::Shader&
 GetShaderForModelDrawing()
 {
-  return Config::Lit::IlluminationModel() == eIlluminationModel::GOURAUD
+  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
            ? Chimia::Draw3D::Shaders::GouraudLitTexturedWithInstancedTransform()
            : Chimia::Draw3D::Shaders::PhongLitTexturedWithInstancedTransform();
 }
@@ -159,9 +159,9 @@ TexturedLitRendererImpl::FetchTriangleRenderComponentForTexture(
     renderComponent = m_triangleMeshComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::Lit::TriangleBatchSizePerMaterial(), VERTEX_ATTRIBUTES, [&]() {
-        ConfigureShaderForTriangleDrawing(textureID);
-      });
+      Config::Batching::TriangleBatchingByResourceSettings().initialBatchSize,
+      VERTEX_ATTRIBUTES,
+      [&]() { ConfigureShaderForTriangleDrawing(textureID); });
   }
 
   return renderComponent;
@@ -179,7 +179,7 @@ TexturedLitRendererImpl::FetchModelRenderComponentForTexture(
     renderComponent = m_modelComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::Lit::ModelsBatchSize(),
+      Config::Batching::ModelBatchingByResourceSettings().initialBatchSize,
       VERTEX_ATTRIBUTES,
       TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
       [&]() { ConfigureShaderForTransformedModelDrawing(textureID); });

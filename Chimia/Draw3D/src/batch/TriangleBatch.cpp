@@ -1,5 +1,6 @@
 #include "TriangleBatch.h"
 
+#include "BatchUtils.h"
 #include "Core/Types.h"
 #include "Rendering/ShaderAttribute.h"
 
@@ -43,8 +44,19 @@ TriangleBatch::Draw(const std::initializer_list<RawDataView>& vertexDatas)
 void
 TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 {
-  HandleFlushByDemand();
-  m_inputBuffer.Append(vertexDataArray.AsDataView());
+  const size_t arraySizeInBytes = vertexDataArray.TotalSize();
+  const size_t batchSizeInBytes = m_inputBuffer.GetMaximumSize();
+
+  BatchUtils::ForEachBatchRange(
+    arraySizeInBytes,
+    batchSizeInBytes,
+    [&](const size_t rangeStart, const size_t rangeSize) {
+      const unsigned char* data =
+        reinterpret_cast<const unsigned char*>(vertexDataArray.array);
+      const unsigned char* offsetData = data + rangeStart;
+
+      Draw({ RawDataView(offsetData, rangeSize) });
+    });
 }
 
 // ----------------------------------------------------------------------------

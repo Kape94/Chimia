@@ -133,9 +133,9 @@ TexturedRendererImpl::FetchTriangleRenderComponentForTexture(
     renderComponent = m_triangleMeshComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::Lit::TriangleBatchSizePerMaterial(), VERTEX_ATTRIBUTES, [&]() {
-        ConfigureShaderForTriangleDrawing(textureID);
-      });
+      Config::Batching::TriangleBatchingByResourceSettings().initialBatchSize,
+      VERTEX_ATTRIBUTES,
+      [&]() { ConfigureShaderForTriangleDrawing(textureID); });
   }
 
   return renderComponent;
@@ -153,7 +153,7 @@ TexturedRendererImpl::FetchModelRenderComponentForTexture(
     renderComponent = m_modelComponents.Insert(idValue);
 
     renderComponent->Init(
-      Config::Lit::ModelsBatchSize(),
+      Config::Batching::ModelBatchingByResourceSettings().initialBatchSize,
       VERTEX_ATTRIBUTES,
       TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
       [&]() { ConfigureShaderForTransformedModelDrawing(textureID); });

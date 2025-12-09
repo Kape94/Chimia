@@ -137,7 +137,7 @@ main(int argc, char** argv)
 
   Chimia::Draw3D::Initialize();
 
-  Chimia::Draw3D::Config::Lit::SetIlluminationModel(
+  Chimia::Draw3D::Config::SetIlluminationModel(
     Chimia::Draw3D::eIlluminationModel::PHONG);
 
   const std::string assetsDir =

@@ -39,7 +39,7 @@ static const Chimia::Rendering::ShaderAttributes
 Chimia::Rendering::Shader&
 GetShaderForTriangleMeshDrawing()
 {
-  return Chimia::Draw3D::Config::Lit::IlluminationModel() ==
+  return Chimia::Draw3D::Config::IlluminationModel() ==
              eIlluminationModel::GOURAUD
            ? Chimia::Draw3D::Shaders::GouraudLitWithVertexColor()
            : Chimia::Draw3D::Shaders::PhongLitWithVertexColor();
@@ -48,7 +48,7 @@ GetShaderForTriangleMeshDrawing()
 Chimia::Rendering::Shader&
 GetShaderForModelDrawing()
 {
-  return Config::Lit::IlluminationModel() == eIlluminationModel::GOURAUD
+  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
            ? Chimia::Draw3D::Shaders::
                GouraudLitWithInstancedTransformAndVertexColor()
            : Chimia::Draw3D::Shaders::
@@ -75,14 +75,16 @@ LitWithVertexColorRendererImpl::getInstance()
 void
 LitWithVertexColorRendererImpl::Init()
 {
-  m_modelComponent.Init(Config::Lit::ModelsBatchSize(),
-                        VERTEX_ATTRIBUTES,
-                        TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-                        [&]() { ConfigureShaderForTransformedModelDrawing(); });
+  m_modelComponent.Init(
+    Config::Batching::ModelBatchingSettings().initialBatchSize,
+    VERTEX_ATTRIBUTES,
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+    [&]() { ConfigureShaderForTransformedModelDrawing(); });
 
-  m_triangleMeshComponent.Init(Config::Lit::TriangleBatchSizePerMaterial(),
-                               VERTEX_ATTRIBUTES,
-                               [&]() { ConfigureShaderForTriangleDrawing(); });
+  m_triangleMeshComponent.Init(
+    Config::Batching::TriangleBatchingSettings().initialBatchSize,
+    VERTEX_ATTRIBUTES,
+    [&]() { ConfigureShaderForTriangleDrawing(); });
 }
 
 // ----------------------------------------------------------------------------

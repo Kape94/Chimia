@@ -32,6 +32,7 @@ public:
 
   size_t GetSize() const;
   size_t GetAvailableSize() const;
+  size_t GetMaximumSize() const;
 
   void Reset();
 

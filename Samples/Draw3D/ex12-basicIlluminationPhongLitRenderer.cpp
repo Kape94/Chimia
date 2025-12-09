@@ -100,7 +100,7 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  Chimia::Draw3D::Config::Lit::SetIlluminationModel(
+  Chimia::Draw3D::Config::SetIlluminationModel(
     Chimia::Draw3D::eIlluminationModel::PHONG);
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };
