@@ -61,11 +61,7 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
-  LoadInstancedDataInGPU(
-    instancesData.array, instancesData.itemSize, instancesData.nItems);
-  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
-
-  m_nInstances = instancesData.nItems;
+  CreateInstancedBuffer(instancesData, instanceShaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -82,11 +78,7 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
-  LoadInstancedDataInGPU(
-    instancesData.array, instancesData.itemSize, instancesData.nItems);
-  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
-
-  m_nInstances = instancesData.nItems;
+  CreateInstancedBuffer(instancesData, instanceShaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -104,11 +96,7 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(vertexData, indexData, shaderAttributes);
 
-  LoadInstancedDataInGPU(
-    instancesData.array, instancesData.itemSize, instancesData.nItems);
-  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
-
-  m_nInstances = instancesData.nItems;
+  CreateInstancedBuffer(instancesData, instanceShaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -125,11 +113,7 @@ InstancedBuffer::CreateInstanced(
 
   base.Create(vertexData, shaderAttributes);
 
-  LoadInstancedDataInGPU(
-    instancesData.array, instancesData.itemSize, instancesData.nItems);
-  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
-
-  m_nInstances = instancesData.nItems;
+  CreateInstancedBuffer(instancesData, instanceShaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -147,6 +131,46 @@ InstancedBuffer::LoadInstancedData(const RawArrayView& instancesData)
 //---------------------------------------------------------------------------------------
 
 void
+InstancedBuffer::RecreateInstancedBuffer(
+  const RawArrayView& instancesData,
+  const ShaderAttributes& instanceShaderAttributes)
+{
+  /* A quick note: for some reason clearing the buffer and creating a new one
+     right after doesn't works. While debugging I noticed that doing that way,
+     the ID for the buffer wasn't getting changed, and this was kinda messing
+     things in the driver. Doing this way (creating the new buffer first), the
+     m_instancedVBO forcefully acquires a different ID, and I think for some
+     reason this makes the process work in the graphics driver.
+  */
+  const unsigned VAO = GetBaseVAO();
+
+  glBindVertexArray(VAO);
+  unsigned oldVBO = m_instancedVBO;
+
+  // A new buffer will be created and assigned to m_instancedVBO
+  CreateInstancedBuffer(instancesData, instanceShaderAttributes);
+
+  ClearInstancesBuffer(oldVBO);
+  glBindVertexArray(0);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::CreateInstancedBuffer(
+  const RawArrayView& instancesData,
+  const ShaderAttributes& instanceShaderAttributes)
+{
+  LoadInstancedDataInGPU(
+    instancesData.array, instancesData.itemSize, instancesData.nItems);
+  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
+
+  m_nInstances = instancesData.nItems;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
                                         const unsigned instanceDataSize,
                                         const unsigned nInstances)
@@ -157,14 +181,24 @@ InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
 
 //---------------------------------------------------------------------------------------
 
+unsigned
+InstancedBuffer::GetBaseVAO()
+{
+  if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+    return BufferPrivate::GetVAO(*buffer);
+  } else if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+    return BufferPrivate::GetVAO(*indexedBuffer);
+  }
+  return 0;
+}
+
+//---------------------------------------------------------------------------------------
+
 void
 InstancedBuffer::Clear()
 {
   ClearBaseBuffer();
-  if (m_instancedVBO != 0) {
-    glDeleteBuffers(1, &m_instancedVBO);
-    m_instancedVBO = 0;
-  }
+  ClearInstancesBuffer(m_instancedVBO);
 }
 
 //---------------------------------------------------------------------------------------
@@ -176,6 +210,17 @@ InstancedBuffer::ClearBaseBuffer()
     buffer->Clear();
   } else if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
     indexedBuffer->Clear();
+  }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+InstancedBuffer::ClearInstancesBuffer(unsigned& instanceVBO)
+{
+  if (instanceVBO != 0) {
+    glDeleteBuffers(1, &instanceVBO);
+    instanceVBO = 0;
   }
 }
 

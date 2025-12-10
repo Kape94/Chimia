@@ -51,6 +51,7 @@ private:
   Rendering::ShaderAttributes m_vertexAttributes;
   size_t m_triangleSizeInBytes = 0;
 
+  // This attribute only gets changed when a flush by demand happens
   size_t m_trianglesFlushedByDemand = 0;
 
   // These attributes are changed often as rendering requests came in

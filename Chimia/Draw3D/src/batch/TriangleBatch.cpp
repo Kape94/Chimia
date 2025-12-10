@@ -112,10 +112,14 @@ TriangleBatch::DoFlushing()
 void
 TriangleBatch::HandleDynamicResizing()
 {
+  if (m_trianglesFlushedByDemand == 0) {
+    return;
+  }
+
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
   const size_t currentBatchSize = CurrentBatchSize();
 
-  if (m_trianglesFlushedByDemand > 0 && currentBatchSize < maximumAllowed) {
+  if (currentBatchSize < maximumAllowed) {
     const size_t desiredBatchSize =
       currentBatchSize + m_trianglesFlushedByDemand;
     const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);

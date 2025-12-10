@@ -52,6 +52,10 @@ public:
 
   void LoadInstancedData(const RawArrayView& instancesData);
 
+  void RecreateInstancedBuffer(
+    const RawArrayView& instancesData,
+    const ShaderAttributes& instanceShaderAttributes);
+
   void Clear();
 
   void Render() const;
@@ -60,11 +64,17 @@ private:
   void LoadIndexDataInGPU(const unsigned* indexData,
                           const unsigned nIndexDataItems);
 
+  void CreateInstancedBuffer(const RawArrayView& instancesData,
+                             const ShaderAttributes& instanceShaderAttributes);
+
   void LoadInstancedDataInGPU(const void* instancedData,
                               const unsigned instanceDataSize,
                               const unsigned nInstances);
 
   void ClearBaseBuffer();
+  void ClearInstancesBuffer(unsigned& instanceVBO);
+
+  unsigned GetBaseVAO();
 
   void RenderWithRegularBaseBuffer(const Buffer& buffer) const;
   void RenderWithIndexedBaseBuffer(const IndexedBuffer& indexedBuffer) const;

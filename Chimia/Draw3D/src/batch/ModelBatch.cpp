@@ -19,6 +19,7 @@ ModelBatch::Create(const Model& model,
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
+  m_instancedAttributes = instanceAttributes;
   m_instancedDataSizeInBytes =
     instanceAttributes.ComputeTotalSizeOfAttributes();
 
@@ -75,8 +76,11 @@ void
 ModelBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 {
   if (m_instancedInputBuffer.GetAvailableSize() < incomingSizeInBytes) {
-    m_onFlush();
-    Flush();
+    const size_t nInstancesInBuffer =
+      m_instancedInputBuffer.GetSize() / m_instancedDataSizeInBytes;
+    m_nInstancesFlushedByDemand += nInstancesInBuffer;
+
+    DoFlush();
   }
 }
 
@@ -90,9 +94,19 @@ ModelBatch::Flush()
     return;
   }
 
+  DoFlush();
+  HandleDynamicResizing();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ModelBatch::DoFlush()
+{
   m_onFlush();
 
-  const size_t nInstances = totalInputSize / m_instancedDataSizeInBytes;
+  const size_t nInstances =
+    m_instancedInputBuffer.GetSize() / m_instancedDataSizeInBytes;
   for (auto& buffer : m_gpuBuffers) {
     buffer.LoadInstancedData(RawArrayView{ m_instancedInputBuffer.GetData(),
                                            nInstances,
@@ -106,10 +120,46 @@ ModelBatch::Flush()
 
 // ----------------------------------------------------------------------------
 
+void
+ModelBatch::HandleDynamicResizing()
+{
+  if (m_nInstancesFlushedByDemand == 0) {
+    return;
+  }
+
+  const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
+  const size_t batchSize = CurrentBatchSize();
+  if (batchSize < maximumAllowed) {
+    const size_t desiredBatchSize = batchSize + m_nInstancesFlushedByDemand;
+    const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);
+
+    ResizeBatch(newBatchSize);
+  }
+
+  m_nInstancesFlushedByDemand = 0;
+}
+
+// ----------------------------------------------------------------------------
+
 size_t
 ModelBatch::CurrentBatchSize() const
 {
   return m_instancedInputBuffer.GetMaximumSize() / m_instancedDataSizeInBytes;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ModelBatch::ResizeBatch(const size_t batchSize)
+{
+  const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
+  m_instancedInputBuffer.Resize(batchSizeInBytes);
+
+  for (auto& buffer : m_gpuBuffers) {
+    buffer.RecreateInstancedBuffer(
+      RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes },
+      m_instancedAttributes);
+  }
 }
 
 // ----------------------------------------------------------------------------
