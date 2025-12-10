@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
@@ -19,10 +20,8 @@ BEGIN_RENDERLIB_NAMESPACE
 class InstancedBuffer
 {
 public:
-  InstancedBuffer() = default;
-
-  InstancedBuffer(const InstancedBuffer& other) = delete;
-  InstancedBuffer& operator=(const InstancedBuffer& other) = delete;
+  DEFAULT_CONSTUCTIBLE(InstancedBuffer)
+  NON_COPYABLE(InstancedBuffer)
 
   InstancedBuffer(InstancedBuffer&& other) noexcept;
   InstancedBuffer& operator=(InstancedBuffer&& other) noexcept;

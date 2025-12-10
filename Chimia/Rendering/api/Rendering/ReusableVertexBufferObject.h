@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
@@ -14,11 +15,8 @@ BEGIN_RENDERLIB_NAMESPACE
 class ReusableVertexBufferObject
 {
 public:
-  ReusableVertexBufferObject() = default;
-
-  ReusableVertexBufferObject(const ReusableVertexBufferObject& other) = delete;
-  ReusableVertexBufferObject& operator=(
-    const ReusableVertexBufferObject& other) = delete;
+  DEFAULT_CONSTUCTIBLE(ReusableVertexBufferObject)
+  NON_COPYABLE(ReusableVertexBufferObject)
 
   ReusableVertexBufferObject(ReusableVertexBufferObject&& other);
   ReusableVertexBufferObject& operator=(ReusableVertexBufferObject&& other);

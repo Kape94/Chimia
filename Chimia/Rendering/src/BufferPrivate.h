@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedBuffer.h"
@@ -15,6 +16,8 @@ BEGIN_RENDERLIB_NAMESPACE
 class BufferPrivate
 {
 public:
+  STATIC_CLASS(BufferPrivate)
+
   // Buffer
   static unsigned GetVAO(const Buffer& buffer);
   static unsigned GetNVertices(const Buffer& buffer);

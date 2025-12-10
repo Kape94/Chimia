@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
@@ -56,13 +57,8 @@ private:
   void ConfigureShaderForTriangleDrawing(const MaterialID& materialID);
   void ConfigureShaderForTransformedModelDrawing();
 
-  LitRendererImpl() = default;
-
-  LitRendererImpl(const LitRendererImpl& other) = delete;
-  LitRendererImpl& operator=(const LitRendererImpl& other) = delete;
-
-  LitRendererImpl(LitRendererImpl&& other) = delete;
-  LitRendererImpl& operator=(LitRendererImpl&& other) = delete;
+  DEFAULT_CONSTUCTIBLE(LitRendererImpl)
+  NON_COPYABLE_NON_MOVABLE(LitRendererImpl)
 
   ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;
   ModelRenderingComponent m_modelComponent;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "ReusableVertexBufferObject.h"
@@ -16,13 +17,10 @@ BEGIN_RENDERLIB_NAMESPACE
 class Buffer
 {
 public:
-  Buffer() = default;
-
-  Buffer(const Buffer& other) = delete;
-  Buffer& operator=(const Buffer& other) = delete;
+  DEFAULT_CONSTUCTIBLE(Buffer)
+  NON_COPYABLE(Buffer)
 
   Buffer(Buffer&& other) noexcept;
-
   Buffer& operator=(Buffer&& other) noexcept;
 
   Buffer(const RawDataView& vertexData,

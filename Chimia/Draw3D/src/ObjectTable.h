@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include <functional>
@@ -20,8 +21,7 @@ public:
   ObjectTable();
   ~ObjectTable();
 
-  ObjectTable(const ObjectTable&) = delete;
-  ObjectTable& operator=(const ObjectTable&) = delete;
+  NON_COPYABLE_NON_MOVABLE(ObjectTable)
 
   std::pair<unsigned, Object*> Insert();
   Object* Insert(unsigned id);

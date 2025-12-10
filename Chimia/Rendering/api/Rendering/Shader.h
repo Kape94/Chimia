@@ -2,6 +2,7 @@
 
 //---------------------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 #include "TextureUnit.h"
 
@@ -19,14 +20,12 @@ BEGIN_RENDERLIB_NAMESPACE
 class Shader
 {
 public:
-  Shader() = default;
+  DEFAULT_CONSTUCTIBLE(Shader)
+  NON_COPYABLE(Shader)
 
   Shader(const std::string& vertexShaderCode,
          const std::string& fragmentShaderCode);
   Shader(const char* vertexShaderCode, const char* fragmentShaderCode);
-
-  Shader(const Shader& other) = delete;
-  Shader& operator=(const Shader& other) = delete;
 
   Shader(Shader&& other);
   Shader& operator=(Shader&& other);

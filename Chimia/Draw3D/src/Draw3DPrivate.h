@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "InternalTypes.h"
@@ -16,6 +17,8 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class Draw3DPrivate
 {
 public:
+  STATIC_CLASS(Draw3DPrivate)
+
   // ModelID
   static ModelID CreateModelID(unsigned id);
   static unsigned GetModelID(const ModelID& modelID);

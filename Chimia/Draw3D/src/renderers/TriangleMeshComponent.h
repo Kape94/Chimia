@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "StaticTriangles.h"
@@ -20,6 +21,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class TriangleMeshComponent
 {
 public:
+  DEFAULT_CONSTUCTIBLE(TriangleMeshComponent)
+  NON_COPYABLE_NON_MOVABLE(TriangleMeshComponent)
+
   void Init(const BatchingSettings& batchingSettings,
             const Rendering::ShaderAttributes& vertexAttributes,
             const std::function<void(void)>& onFlush);

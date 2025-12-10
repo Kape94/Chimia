@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
@@ -58,13 +59,8 @@ private:
   void ConfigureShaderForTriangleDrawing(const TextureID& textureID);
   void ConfigureShaderForTransformedModelDrawing(const TextureID& textureID);
 
-  TexturedRendererImpl() = default;
-
-  TexturedRendererImpl(const TexturedRendererImpl& other) = delete;
-  TexturedRendererImpl& operator=(const TexturedRendererImpl& other) = delete;
-
-  TexturedRendererImpl(TexturedRendererImpl&& other) = delete;
-  TexturedRendererImpl& operator=(TexturedRendererImpl&& other) = delete;
+  DEFAULT_CONSTUCTIBLE(TexturedRendererImpl)
+  NON_COPYABLE_NON_MOVABLE(TexturedRendererImpl)
 
   ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;
   ObjectTable<ModelRenderingComponent> m_modelComponents;

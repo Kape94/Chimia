@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "Core/DataBuffer.h"
@@ -21,6 +22,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class TriangleBatch
 {
 public:
+  DEFAULT_CONSTUCTIBLE(TriangleBatch)
+  NON_COPYABLE_NON_MOVABLE(TriangleBatch)
+
   void Create(const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& vertexAttributes,
               const std::function<void(void)>& onFlush);

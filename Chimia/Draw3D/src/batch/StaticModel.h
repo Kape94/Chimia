@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "ObjectTable.h"
 
+#include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ShaderAttribute.h"
@@ -24,6 +25,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class StaticModel
 {
 public:
+  DEFAULT_CONSTUCTIBLE(StaticModel)
+  NON_COPYABLE_NON_MOVABLE(StaticModel)
+
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& vertexAttributes,

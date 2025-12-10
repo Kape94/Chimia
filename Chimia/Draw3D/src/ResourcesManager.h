@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "InternalTypes.h"
@@ -40,7 +41,8 @@ public:
   Rendering::Texture2D* GetTexture(const TextureID& textureID);
 
 private:
-  ResourcesManager() = default;
+  DEFAULT_CONSTUCTIBLE(ResourcesManager)
+  NON_COPYABLE_NON_MOVABLE(ResourcesManager)
 
   ObjectTable<Model> m_modelsTable;
 

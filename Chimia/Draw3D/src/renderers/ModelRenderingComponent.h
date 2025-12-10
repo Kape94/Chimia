@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "InternalTypes.h"
@@ -23,6 +24,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class ModelRenderingComponent
 {
 public:
+  DEFAULT_CONSTUCTIBLE(ModelRenderingComponent)
+  NON_COPYABLE_NON_MOVABLE(ModelRenderingComponent)
+
   void Init(const BatchingSettings& batchingSettings,
             const Rendering::ShaderAttributes& vertexAttributes,
             const Rendering::ShaderAttributes& instanceAttributes,

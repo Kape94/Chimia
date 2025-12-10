@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <vector>
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
 //---------------------------------------------------------------------------------------
@@ -16,6 +17,8 @@ BEGIN_RENDERLIB_NAMESPACE
 class ShaderAttribute
 {
 public:
+  NON_DEFAULT_CONSTRUCTIBLE(ShaderAttribute)
+
   ShaderAttribute(const ShaderAttribute& other);
   ShaderAttribute& operator=(const ShaderAttribute& other);
 
@@ -62,7 +65,7 @@ private:
 class ShaderAttributes : public std::vector<ShaderAttribute>
 {
 public:
-  ShaderAttributes() = default;
+  DEFAULT_CONSTUCTIBLE(ShaderAttributes)
 
   ShaderAttributes(const std::initializer_list<ShaderAttribute>& attributes)
     : std::vector<ShaderAttribute>(attributes)

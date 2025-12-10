@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 #include "Texture2D.h"
 
@@ -12,16 +13,12 @@ BEGIN_RENDERLIB_NAMESPACE
 class FrameBuffer
 {
 public:
-  FrameBuffer() = default;
+  DEFAULT_CONSTUCTIBLE(FrameBuffer)
+  NON_COPYABLE_NON_MOVABLE(FrameBuffer)
 
   FrameBuffer(const unsigned width, const unsigned height);
 
   ~FrameBuffer();
-
-  FrameBuffer(const FrameBuffer& other) = delete;
-  FrameBuffer& operator=(const FrameBuffer& other) = delete;
-  FrameBuffer(FrameBuffer&& other) = delete;
-  FrameBuffer& operator=(FrameBuffer&& other) = delete;
 
   void Create(const unsigned width, const unsigned height);
 

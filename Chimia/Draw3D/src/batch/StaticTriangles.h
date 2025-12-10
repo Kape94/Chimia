@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "Core/DataBuffer.h"
@@ -18,7 +19,8 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class StaticTriangles
 {
 public:
-  StaticTriangles() = default;
+  DEFAULT_CONSTUCTIBLE(StaticTriangles)
+  NON_COPYABLE_NON_MOVABLE(StaticTriangles)
 
   void Create(const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& shaderAttributes);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "Buffer.h"
@@ -17,13 +18,11 @@ BEGIN_RENDERLIB_NAMESPACE
 class IndexedBuffer
 {
 public:
-  IndexedBuffer() = default;
+  DEFAULT_CONSTUCTIBLE(IndexedBuffer)
 
-  IndexedBuffer(const IndexedBuffer& other) = delete;
-  IndexedBuffer& operator=(const IndexedBuffer& other) = delete;
+  NON_COPYABLE(IndexedBuffer)
 
   IndexedBuffer(IndexedBuffer&& other) noexcept;
-
   IndexedBuffer& operator=(IndexedBuffer&& other) noexcept;
 
   IndexedBuffer(const RawDataView& vertexData,

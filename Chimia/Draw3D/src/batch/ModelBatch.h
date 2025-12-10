@@ -1,8 +1,11 @@
 #pragma once
 
+// ----------------------------------------------------------------------------
+
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 
+#include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
@@ -12,11 +15,18 @@
 #include <functional>
 #include <initializer_list>
 
+// ----------------------------------------------------------------------------
+
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
 
 class ModelBatch
 {
 public:
+  DEFAULT_CONSTUCTIBLE(ModelBatch)
+  NON_COPYABLE_NON_MOVABLE(ModelBatch)
+
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& vertexAttributes,
@@ -49,4 +59,8 @@ private:
   std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
 };
 
+// ----------------------------------------------------------------------------
+
 END_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------

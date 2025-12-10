@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "TriangleMeshComponent.h"
@@ -47,15 +48,8 @@ private:
   void ConfigureShaderForTriangleDrawing();
   void ConfigureShaderForTransformedModelDrawing();
 
-  VertexColoredRendererImpl() = default;
-
-  VertexColoredRendererImpl(const VertexColoredRendererImpl& other) = delete;
-  VertexColoredRendererImpl& operator=(const VertexColoredRendererImpl& other) =
-    delete;
-
-  VertexColoredRendererImpl(VertexColoredRendererImpl&& other) = delete;
-  VertexColoredRendererImpl& operator=(VertexColoredRendererImpl&& other) =
-    delete;
+  DEFAULT_CONSTUCTIBLE(VertexColoredRendererImpl)
+  NON_COPYABLE_NON_MOVABLE(VertexColoredRendererImpl)
 
   TriangleMeshComponent m_triangleMeshComponent;
   ModelRenderingComponent m_modelComponent;
