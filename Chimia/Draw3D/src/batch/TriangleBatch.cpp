@@ -16,6 +16,7 @@ TriangleBatch::Create(const BatchingSettings& batchingSettings,
                       const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
+  m_vertexAttributes = vertexAttributes;
 
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   const size_t triangleSizeInBytes =
@@ -69,8 +70,10 @@ void
 TriangleBatch::HandleFlushByDemand()
 {
   if (m_inputBuffer.GetAvailableSize() < m_triangleSizeInBytes) {
-    m_onFlush();
-    Flush();
+    const size_t nTrianglesInBuffer =
+      m_inputBuffer.GetSize() / m_triangleSizeInBytes;
+    m_trianglesFlushedByDemand += nTrianglesInBuffer;
+    DoFlushing();
   }
 }
 
@@ -84,12 +87,54 @@ TriangleBatch::Flush()
     return;
   }
 
+  DoFlushing();
+
+  HandleDynamicResizing();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TriangleBatch::DoFlushing()
+{
   m_onFlush();
 
-  m_gpuBuffer.Load(RawDataView{ m_inputBuffer.GetData(), frameInputSize });
+  m_gpuBuffer.Load(
+    RawDataView{ m_inputBuffer.GetData(), m_inputBuffer.GetSize() });
   m_gpuBuffer.Render();
 
   m_inputBuffer.Reset();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TriangleBatch::HandleDynamicResizing()
+{
+  const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
+  const size_t currentBatchSize = CurrentBatchSize();
+
+  if (m_trianglesFlushedByDemand > 0 && currentBatchSize < maximumAllowed) {
+    const size_t desiredBatchSize =
+      currentBatchSize + m_trianglesFlushedByDemand;
+    const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);
+
+    Resize(newBatchSize);
+  }
+
+  m_trianglesFlushedByDemand = 0;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TriangleBatch::Resize(size_t batchSize)
+{
+  const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
+  m_inputBuffer.Resize(newBatchSizeInBytes);
+
+  m_gpuBuffer.Clear();
+  m_gpuBuffer.Create({ nullptr, newBatchSizeInBytes }, m_vertexAttributes);
 }
 
 // ----------------------------------------------------------------------------

@@ -167,7 +167,7 @@ main()
                                    Transform({ 0.5f, 0.8f, 0.0f }, 1.0f));
 
   SamplesUtils::DoAfter(
-    [&]() { Chimia::Draw3D::DeleteStaticModel(staticRedCube); }, 7000);
+    [&]() { Chimia::Draw3D::DeleteStaticModel(staticRedCube); }, 2000);
 
   while (!w.ShouldClose()) {
 

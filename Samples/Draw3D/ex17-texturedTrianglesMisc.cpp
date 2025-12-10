@@ -91,16 +91,16 @@ main(int argc, char** argv)
     Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
 
   SamplesUtils::DoAfter(
-    [&]() { Chimia::Draw3D::DeleteStaticModel(modelInstance1); }, 3000);
+    [&]() { Chimia::Draw3D::DeleteStaticModel(modelInstance1); }, 1000);
 
   SamplesUtils::DoAfter(
-    [&]() { Chimia::Draw3D::DeleteStaticTriangles(triangleStatic); }, 5000);
+    [&]() { Chimia::Draw3D::DeleteStaticTriangles(triangleStatic); }, 2000);
 
   SamplesUtils::DoAfter(
     [&]() {
       Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
     },
-    8000);
+    3000);
 
   while (!w.ShouldClose()) {
     Chimia::Draw3D::ClearScreen();

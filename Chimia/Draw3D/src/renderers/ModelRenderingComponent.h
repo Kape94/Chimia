@@ -5,7 +5,6 @@
 #include "Draw3DNamespaceDefs.h"
 
 #include "InternalTypes.h"
-#include "Model.h"
 #include "ModelBatch.h"
 #include "ObjectTable.h"
 #include "StaticModel.h"

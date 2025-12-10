@@ -33,12 +33,21 @@ public:
 private:
   void HandleFlushByDemand();
 
+  void DoFlushing();
+
+  void HandleDynamicResizing();
+
+  void Resize(size_t batchSize);
+
   size_t CurrentBatchSize() const;
 
   // Fixed attributes, defined only on creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
+  Rendering::ShaderAttributes m_vertexAttributes;
   size_t m_triangleSizeInBytes = 0;
+
+  size_t m_trianglesFlushedByDemand = 0;
 
   // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;

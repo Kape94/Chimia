@@ -55,9 +55,7 @@ private:
   void HandleRenderingForBatchRange(const size_t rangeStart,
                                     const size_t rangeSize);
 
-  void LoadBatchAndRender(const void* instancesData,
-                          const unsigned instancesDataSize,
-                          const unsigned nInstances);
+  void LoadBatchAndRender(const void* instancesData, const unsigned nInstances);
 
   void RenderCurrentBuffers();
 

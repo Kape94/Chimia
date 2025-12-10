@@ -73,8 +73,8 @@ main()
   auto deleteInstance2 = [&]() {
     Chimia::Draw3D::DeleteStaticModel(instance2);
   };
-  SamplesUtils::DoAfter(deleteInstance1, 3000);
-  SamplesUtils::DoAfter(deleteInstance2, 5000);
+  SamplesUtils::DoAfter(deleteInstance1, 1000);
+  SamplesUtils::DoAfter(deleteInstance2, 2000);
 
   while (!w.ShouldClose()) {
 

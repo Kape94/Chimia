@@ -182,20 +182,18 @@ StaticModel::HandleRenderingForBatchRange(const size_t rangeStart,
   const unsigned char* offsetData = data + rangeStart;
 
   const unsigned nInstances = rangeSize / m_instanceDataSizeInBytes;
-
-  LoadBatchAndRender(offsetData, rangeSize, nInstances);
+  LoadBatchAndRender(offsetData, nInstances);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 StaticModel::LoadBatchAndRender(const void* instancesData,
-                                const unsigned instancesDataSize,
                                 const unsigned nInstances)
 {
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
     gpuBuffer.LoadInstancedData(
-      RawArrayView{ instancesData, nInstances, instancesDataSize });
+      RawArrayView{ instancesData, nInstances, m_instanceDataSizeInBytes });
     gpuBuffer.Render();
   }
 }
