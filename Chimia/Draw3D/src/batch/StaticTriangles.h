@@ -38,6 +38,10 @@ private:
 
   void RebuildTrianglesBuffer();
 
+  void HandleDynamicResizing();
+
+  void ResizeGPUBatch(const size_t batchSize);
+
   void RenderByBatches();
 
   void HandleRenderingForBatchRange(const size_t rangeStart,
@@ -50,6 +54,7 @@ private:
 
   // Fixed attributes, only set during initialization
   BatchingSettings m_batchingSettings;
+  Rendering::ShaderAttributes m_vertexAttributes;
   size_t m_triangleSizeInBytes = 0;
   size_t m_currentGPUBatchSize = 0;
 

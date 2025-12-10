@@ -15,6 +15,7 @@ StaticTriangles::Create(const BatchingSettings& batchingSettings,
                         const Rendering::ShaderAttributes& shaderAttributes)
 {
   m_batchingSettings = batchingSettings;
+  m_vertexAttributes = shaderAttributes;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t sizePerVertex = shaderAttributes.ComputeTotalSizeOfAttributes();
@@ -69,6 +70,7 @@ StaticTriangles::Render()
 
   if (m_shouldRebuildBuffers) {
     RebuildTrianglesBuffer();
+    HandleDynamicResizing();
   }
 
   RenderByBatches();
@@ -106,6 +108,36 @@ StaticTriangles::RebuildTrianglesBuffer()
     m_inputBuffer.Append(triangleData.GetData(), triangleData.GetSize());
   });
   m_shouldRebuildBuffers = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticTriangles::HandleDynamicResizing()
+{
+  const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
+  const size_t gpuBatchSize =
+    CurrentGPUBatchSizeInBytes() / m_triangleSizeInBytes;
+
+  const size_t trianglesIncoming =
+    m_inputBuffer.GetSize() / m_triangleSizeInBytes;
+  if (gpuBatchSize < maximumAllowed && gpuBatchSize != trianglesIncoming) {
+    const size_t desiredNewSize = trianglesIncoming;
+    const size_t newBatchSize = std::min(desiredNewSize, maximumAllowed);
+
+    ResizeGPUBatch(newBatchSize);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticTriangles::ResizeGPUBatch(const size_t batchSize)
+{
+  const size_t batchSizeInBytes = batchSize * m_triangleSizeInBytes;
+  m_gpuBuffer.Clear();
+  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
+                     m_vertexAttributes);
 }
 
 // ----------------------------------------------------------------------------
