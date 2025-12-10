@@ -1,5 +1,7 @@
 #include "BatchUtils.h"
+#include "Core/Types.h"
 #include <cstddef>
+#include <numeric>
 
 // ----------------------------------------------------------------------------
 
@@ -38,6 +40,20 @@ BatchUtils::ForEachBatchRange(const size_t totalSize,
 
     action(rangeStart, rangeSize);
   }
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+BatchUtils::TotalDataSize(const std::initializer_list<RawDataView>& dataViews)
+{
+  static auto accumulateDataSizeFn = [](const size_t current,
+                                        const RawDataView& data) {
+    return current + data.size;
+  };
+
+  return std::accumulate(
+    dataViews.begin(), dataViews.end(), 0, accumulateDataSizeFn);
 }
 
 // ----------------------------------------------------------------------------

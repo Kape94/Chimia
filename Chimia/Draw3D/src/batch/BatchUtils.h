@@ -2,10 +2,12 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include <cstddef>
 #include <functional>
+#include <initializer_list>
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -22,6 +24,9 @@ void
 ForEachBatchRange(const size_t totalSize,
                   const size_t batchSize,
                   const std::function<void(size_t, size_t)>& action);
+
+size_t
+TotalDataSize(const std::initializer_list<RawDataView>& dataViews);
 }
 
 // ----------------------------------------------------------------------------

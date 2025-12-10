@@ -54,7 +54,7 @@ ModelBatch::AddGPUBuffer(
 void
 ModelBatch::Draw(const RawDataView& instanceData)
 {
-  HandleFlushByDemand();
+  HandleFlushByDemand(instanceData.size);
 
   m_instancedInputBuffer.Append(instanceData);
 }
@@ -64,19 +64,17 @@ ModelBatch::Draw(const RawDataView& instanceData)
 void
 ModelBatch::Draw(const std::initializer_list<RawDataView>& instanceDatas)
 {
-  HandleFlushByDemand();
-
   for (const auto& instanceData : instanceDatas) {
-    m_instancedInputBuffer.Append(instanceData);
+    Draw(instanceData);
   }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::HandleFlushByDemand()
+ModelBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 {
-  if (m_instancedInputBuffer.GetAvailableSize() < m_instancedDataSizeInBytes) {
+  if (m_instancedInputBuffer.GetAvailableSize() < incomingSizeInBytes) {
     m_onFlush();
     Flush();
   }

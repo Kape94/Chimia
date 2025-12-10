@@ -38,7 +38,8 @@ TriangleBatch::Create(const BatchingSettings& batchingSettings,
 void
 TriangleBatch::Draw(const std::initializer_list<RawDataView>& vertexDatas)
 {
-  HandleFlushByDemand();
+  const size_t incomingSizeInBytes = BatchUtils::TotalDataSize(vertexDatas);
+  HandleFlushByDemand(incomingSizeInBytes);
 
   for (const auto& vertexDataView : vertexDatas) {
     m_inputBuffer.Append(vertexDataView);
@@ -67,9 +68,9 @@ TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::HandleFlushByDemand()
+TriangleBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 {
-  if (m_inputBuffer.GetAvailableSize() < m_triangleSizeInBytes) {
+  if (m_inputBuffer.GetAvailableSize() < incomingSizeInBytes) {
     const size_t nTrianglesInBuffer =
       m_inputBuffer.GetSize() / m_triangleSizeInBytes;
     m_trianglesFlushedByDemand += nTrianglesInBuffer;

@@ -35,7 +35,7 @@ public:
   void Flush();
 
 private:
-  void HandleFlushByDemand();
+  void HandleFlushByDemand(const size_t incomingSizeInBytes);
 
   void DoFlushing();
 

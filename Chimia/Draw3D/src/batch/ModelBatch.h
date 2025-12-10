@@ -45,7 +45,7 @@ private:
     const Rendering::ShaderAttributes& vertexAttributes,
     const Rendering::ShaderAttributes& instanceAttributes);
 
-  void HandleFlushByDemand();
+  void HandleFlushByDemand(const size_t incomingSizeInBytes);
 
   size_t CurrentBatchSize() const;
 
