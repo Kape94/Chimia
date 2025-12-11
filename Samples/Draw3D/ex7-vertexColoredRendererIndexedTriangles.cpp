@@ -78,7 +78,7 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::SyncForTargetFPS(1);
+    SamplesUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

@@ -116,8 +116,7 @@ void
 StaticTriangles::HandleDynamicResizing()
 {
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
-  const size_t gpuBatchSize =
-    CurrentGPUBatchSizeInBytes() / m_triangleSizeInBytes;
+  const size_t gpuBatchSize = m_currentGPUBatchSize;
 
   const size_t trianglesIncoming =
     m_inputBuffer.GetSize() / m_triangleSizeInBytes;
@@ -138,6 +137,8 @@ StaticTriangles::ResizeGPUBatch(const size_t batchSize)
   m_gpuBuffer.Clear();
   m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
                      m_vertexAttributes);
+
+  m_currentGPUBatchSize = batchSize;
 }
 
 // ----------------------------------------------------------------------------

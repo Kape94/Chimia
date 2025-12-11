@@ -108,9 +108,9 @@ main()
                          { -1.0f, 1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f });
   };
-  SamplesUtils::DoAfter(deleteQuad2, 1000);
-  SamplesUtils::DoAfter(deleteQuad1, 2000);
-  SamplesUtils::DoAfter(addQuad, 3000);
+  SamplesUtils::DoAfterSync(deleteQuad2, 1000);
+  SamplesUtils::DoAfterSync(deleteQuad1, 2000);
+  SamplesUtils::DoAfterSync(addQuad, 3000);
 
   while (!w.ShouldClose()) {
 
@@ -121,7 +121,8 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::SyncForTargetFPS(1);
+    SamplesUtils::PollDeferredActions();
+    SamplesUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

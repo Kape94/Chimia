@@ -22,6 +22,7 @@ StaticModel::Create(const Model& model,
 {
   m_onRender = onRender;
   m_batchingSettings = batchingSettings;
+  m_instancedAttributes = instanceAttributes;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t instanceDataSizeInBytes =
@@ -115,6 +116,7 @@ StaticModel::Render()
 
   if (m_shouldRebuildBuffers) {
     RebuildInputBuffer();
+    HandleDynamicResizing();
   }
 
   RenderByBatches();
@@ -151,6 +153,38 @@ StaticModel::RebuildInputBuffer()
     m_instanceDataBuffer.Append(instanceData.GetData(), instanceData.GetSize());
   });
   m_shouldRebuildBuffers = false;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::HandleDynamicResizing()
+{
+  const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
+  const size_t currentBatchSize = m_currentGPUBatchSize;
+
+  const size_t nInstancesInBuffer =
+    m_instanceDataBuffer.GetSize() / m_instanceDataSizeInBytes;
+  if (currentBatchSize < maximumAllowed &&
+      currentBatchSize != nInstancesInBuffer) {
+    const size_t desiredBatchSize = nInstancesInBuffer;
+    const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);
+
+    ResizeBatch(newBatchSize);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void
+StaticModel::ResizeBatch(const size_t batchSize)
+{
+  for (auto& buffer : m_gpuBuffers) {
+    buffer.RecreateInstancedBuffer(
+      RawArrayView{ nullptr, batchSize, m_instanceDataSizeInBytes },
+      m_instancedAttributes);
+  }
+  m_currentGPUBatchSize = batchSize;
 }
 
 // ----------------------------------------------------------------------------

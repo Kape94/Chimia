@@ -73,8 +73,12 @@ main()
   auto deleteInstance2 = [&]() {
     Chimia::Draw3D::DeleteStaticModel(instance2);
   };
-  SamplesUtils::DoAfter(deleteInstance1, 1000);
-  SamplesUtils::DoAfter(deleteInstance2, 2000);
+  auto addInstance1 = [&]() {
+    Chimia::Draw3D::AddStaticModel(modelID, Input::transform1);
+  };
+  SamplesUtils::DoAfterSync(deleteInstance1, 1000);
+  SamplesUtils::DoAfterSync(deleteInstance2, 2000);
+  SamplesUtils::DoAfterSync(addInstance1, 3000);
 
   while (!w.ShouldClose()) {
 
@@ -87,7 +91,8 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::SyncForTargetFPS(1);
+    SamplesUtils::PollDeferredActions();
+    SamplesUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

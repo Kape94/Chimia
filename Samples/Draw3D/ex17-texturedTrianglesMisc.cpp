@@ -90,13 +90,13 @@ main(int argc, char** argv)
   const auto modelInstance1 =
     Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
 
-  SamplesUtils::DoAfter(
+  SamplesUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteStaticModel(modelInstance1); }, 1000);
 
-  SamplesUtils::DoAfter(
+  SamplesUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteStaticTriangles(triangleStatic); }, 2000);
 
-  SamplesUtils::DoAfter(
+  SamplesUtils::DoAfterSync(
     [&]() {
       Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
     },
@@ -111,6 +111,7 @@ main(int argc, char** argv)
 
     w.Swap();
     w.PollEvents();
+    SamplesUtils::PollSingleDeferredAction();
   }
   return 0;
 }

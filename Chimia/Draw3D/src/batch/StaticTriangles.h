@@ -56,9 +56,9 @@ private:
   BatchingSettings m_batchingSettings;
   Rendering::ShaderAttributes m_vertexAttributes;
   size_t m_triangleSizeInBytes = 0;
-  size_t m_currentGPUBatchSize = 0;
 
   // These attributes get modified as rendering requests come in
+  size_t m_currentGPUBatchSize = 0;
   Rendering::Buffer m_gpuBuffer;
   DataBuffer m_inputBuffer;
   ObjectTable<DataBuffer> m_staticTrianglesTable;

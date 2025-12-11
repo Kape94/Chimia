@@ -166,7 +166,7 @@ main()
     Chimia::Draw3D::AddStaticModel(cubeModel,
                                    Transform({ 0.5f, 0.8f, 0.0f }, 1.0f));
 
-  SamplesUtils::DoAfter(
+  SamplesUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteStaticModel(staticRedCube); }, 2000);
 
   while (!w.ShouldClose()) {
@@ -186,6 +186,8 @@ main()
     const glm::mat4x4 rotMatrix =
       glm::rotate(glm::identity<glm::mat4x4>(), 0.01f, { 0.0f, 1.0f, 0.0f });
     cameraPos = rotMatrix * glm::vec4(cameraPos, 1.0f);
+
+    SamplesUtils::PollDeferredActions();
   }
   return 0;
 }

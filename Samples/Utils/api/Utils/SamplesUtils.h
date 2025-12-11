@@ -24,4 +24,12 @@ LogFrameStats();
 
 void
 DoAfter(const std::function<void(void)>& action, const unsigned milliseconds);
+void
+DoAfterSync(const std::function<void(void)>& action,
+            const unsigned milliseconds);
+void
+PollDeferredActions();
+
+void
+PollSingleDeferredAction();
 }

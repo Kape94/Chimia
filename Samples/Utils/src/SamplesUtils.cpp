@@ -4,8 +4,11 @@
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
+#include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
+#include <queue>
 #include <thread>
 
 // ----------------------------------------------------------------------------
@@ -54,6 +57,43 @@ void
 PushTask(std::function<void(void)> action)
 {
   threads.push_back(std::make_unique<AutoJoiningThread>(action));
+}
+
+}
+
+// ----------------------------------------------------------------------------
+
+namespace FunctionQueue {
+std::queue<std::function<void(void)>> m_functionQueue;
+std::mutex m_queueMutex;
+
+void
+MoveToQueue(const std::function<void(void)>& function)
+{
+  std::lock_guard lock(m_queueMutex);
+  m_functionQueue.push(function);
+}
+
+void
+PollQueue()
+{
+  std::lock_guard lock(m_queueMutex);
+  while (m_functionQueue.size() > 0) {
+    auto function = m_functionQueue.front();
+    function();
+    m_functionQueue.pop();
+  }
+}
+
+void
+PollSingleFromQueue()
+{
+  std::lock_guard lock(m_queueMutex);
+  if (m_functionQueue.size() > 0) {
+    auto function = m_functionQueue.front();
+    function();
+    m_functionQueue.pop();
+  }
 }
 
 }
@@ -161,6 +201,35 @@ SamplesUtils::DoAfter(const std::function<void(void)>& action,
 
     action();
   });
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::DoAfterSync(const std::function<void(void)>& action,
+                          const unsigned milliseconds)
+{
+  ThreadPoolLite::PushTask([action, milliseconds]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+
+    FunctionQueue::MoveToQueue(action);
+  });
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::PollDeferredActions()
+{
+  FunctionQueue::PollQueue();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::PollSingleDeferredAction()
+{
+  FunctionQueue::PollSingleFromQueue();
 }
 
 // ----------------------------------------------------------------------------
