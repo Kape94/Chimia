@@ -1,5 +1,7 @@
 #include "ModelRendering.h"
 
+#include "ColoredTexturedLitRendererImpl.h"
+#include "ColoredTexturedRendererImpl.h"
 #include "Draw3DPrivate.h"
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
@@ -23,6 +25,9 @@ auto& litRenderer = LitRendererImpl::getInstance();
 auto& texturedRenderer = TexturedRendererImpl::getInstance();
 auto& texturedLitRenderer = TexturedLitRendererImpl::getInstance();
 auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
+auto& coloredTexturedRenderer = ColoredTexturedRendererImpl::getInstance();
+auto& coloredTexturedLitRenderer =
+  ColoredTexturedLitRendererImpl::getInstance();
 
 eVertexLayout
 ModelLayout(const ModelID& modelID)
@@ -104,7 +109,9 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
 
 // ----------------------------------------------------------------------------
 // Position3 + TexCoord2
+// Position3 + Color3 + TexCoord2
 // Position3 + Normal3 + TexCoord2
+// Position3 + Color3 + Normal3 + TexCoord2
 // ----------------------------------------------------------------------------
 
 void
@@ -120,6 +127,16 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
       texturedLitRenderer.DrawModelTransformed(modelID, transform, textureID);
+      break;
+    }
+    case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
+      coloredTexturedRenderer.DrawModelTransformed(
+        modelID, transform, textureID);
+      break;
+    }
+    case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
+      coloredTexturedLitRenderer.DrawModelTransformed(
+        modelID, transform, textureID);
       break;
     }
     default:
@@ -141,6 +158,14 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
       return texturedLitRenderer.AddStaticModel(modelID, transform, textureID);
+    }
+    case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
+      return coloredTexturedRenderer.AddStaticModel(
+        modelID, transform, textureID);
+    }
+    case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
+      return coloredTexturedLitRenderer.AddStaticModel(
+        modelID, transform, textureID);
     }
     default:
       assert(false && "Unsuported model layout");
@@ -179,6 +204,14 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteStaticModel(
     }
     case eRendererType::TEXTURED_LIT: {
       texturedLitRenderer.DeleteStaticModel(instanceID);
+      return;
+    }
+    case eRendererType::COLORED_TEXTURED: {
+      coloredTexturedRenderer.DeleteStaticModel(instanceID);
+      return;
+    }
+    case eRendererType::COLORED_TEXTURED_LIT: {
+      coloredTexturedLitRenderer.DeleteStaticModel(instanceID);
       return;
     }
     case eRendererType::NONE:

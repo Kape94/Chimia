@@ -28,10 +28,16 @@ Chimia::Rendering::Shader phongLitWithVertexColor;
 Chimia::Rendering::Shader phongLitWithInstancedTransformAndVertexColor;
 Chimia::Rendering::Shader textured;
 Chimia::Rendering::Shader texturedWithInstancedTransform;
+Chimia::Rendering::Shader coloredTextured;
+Chimia::Rendering::Shader coloredTexturedWithInstancedTransform;
 Chimia::Rendering::Shader gouraudLitTextured;
 Chimia::Rendering::Shader gouraudLitTexturedWithInstancedTransform;
 Chimia::Rendering::Shader phongLitTextured;
 Chimia::Rendering::Shader phongLitTexturedWithInstancedTransform;
+Chimia::Rendering::Shader gouraudLitColoredTextured;
+Chimia::Rendering::Shader gouraudLitColoredTexturedWithInstancedTransform;
+Chimia::Rendering::Shader phongLitColoredTextured;
+Chimia::Rendering::Shader phongLitColoredTexturedWithInstancedTransform;
 
 void
 InitializeCodebase()
@@ -68,12 +74,23 @@ InitializeCodebase()
     { "vertex::textured", ShaderCodes::Vertex::textured },
     { "vertex::texturedWithInstancedTransform",
       ShaderCodes::Vertex::texturedWithInstancedTransform },
+    { "vertex::coloredTextured", ShaderCodes::Vertex::coloredTextured },
+    { "vertex::coloredTexturedWithInstancedTransform",
+      ShaderCodes::Vertex::coloredTexturedWithInstancedTransform },
     { "vertex::gouraudLitTextured", ShaderCodes::Vertex::gouraudLitTextured },
     { "vertex::gouraudLitTexturedWithInstancedTransform",
       ShaderCodes::Vertex::gouraudLitTexturedWithInstancedTransform },
     { "vertex::phongLitTextured", ShaderCodes::Vertex::phongLitTextured },
     { "vertex::phongLitTexturedWithInstancedTransform",
       ShaderCodes::Vertex::phongLitTexturedWithInstancedTransform },
+    { "vertex::gouraudLitColoredTextured",
+      ShaderCodes::Vertex::gouraudLitColoredTextured },
+    { "vertex::gouraudLitColoredTexturedWithInstancedTransform",
+      ShaderCodes::Vertex::gouraudLitColoredTexturedWithInstancedTransform },
+    { "vertex::phongLitColoredTextured",
+      ShaderCodes::Vertex::phongLitColoredTextured },
+    { "vertex::phongLitColoredTexturedWithInstancedTransform",
+      ShaderCodes::Vertex::phongLitColoredTexturedWithInstancedTransform },
 
     // ----------------------- Fragment --------------------------
 
@@ -85,9 +102,12 @@ InitializeCodebase()
     { "fragment::phongLitByVertexColor",
       ShaderCodes::Fragment::phongLitByVertexColor },
     { "fragment::textured", ShaderCodes::Fragment::textured },
+    { "fragment::coloredTextured", ShaderCodes::Fragment::coloredTextured },
     { "fragment::gouraudLitTextured",
       ShaderCodes::Fragment::gouraudLitTextured },
     { "fragment::phongLitTextured", ShaderCodes::Fragment::phongLitTextured },
+    { "fragment::phongLitColoredTextured",
+      ShaderCodes::Fragment::phongLitColoredTextured },
   });
 }
 
@@ -147,6 +167,13 @@ Chimia::Draw3D::Shaders::Initialize()
     ShaderCodebase::Code("vertex::texturedWithInstancedTransform"),
     ShaderCodebase::Code("fragment::textured"));
 
+  coloredTextured.Create(ShaderCodebase::Code("vertex::coloredTextured"),
+                         ShaderCodebase::Code("fragment::coloredTextured"));
+
+  coloredTexturedWithInstancedTransform.Create(
+    ShaderCodebase::Code("vertex::coloredTexturedWithInstancedTransform"),
+    ShaderCodebase::Code("fragment::coloredTextured"));
+
   gouraudLitTextured.Create(
     ShaderCodebase::Code("vertex::gouraudLitTextured"),
     ShaderCodebase::Code("fragment::gouraudLitTextured"));
@@ -161,6 +188,24 @@ Chimia::Draw3D::Shaders::Initialize()
   phongLitTexturedWithInstancedTransform.Create(
     ShaderCodebase::Code("vertex::phongLitTexturedWithInstancedTransform"),
     ShaderCodebase::Code("fragment::phongLitTextured"));
+
+  gouraudLitColoredTextured.Create(
+    ShaderCodebase::Code("vertex::gouraudLitColoredTextured"),
+    ShaderCodebase::Code("fragment::gouraudLitTextured"));
+
+  gouraudLitColoredTexturedWithInstancedTransform.Create(
+    ShaderCodebase::Code(
+      "vertex::gouraudLitColoredTexturedWithInstancedTransform"),
+    ShaderCodebase::Code("fragment::gouraudLitTextured"));
+
+  phongLitColoredTextured.Create(
+    ShaderCodebase::Code("vertex::phongLitColoredTextured"),
+    ShaderCodebase::Code("fragment::phongLitColoredTextured"));
+
+  phongLitColoredTexturedWithInstancedTransform.Create(
+    ShaderCodebase::Code(
+      "vertex::phongLitColoredTexturedWithInstancedTransform"),
+    ShaderCodebase::Code("fragment::phongLitColoredTextured"));
 }
 
 // ----------------------------------------------------------------------------
@@ -262,6 +307,22 @@ Chimia::Draw3D::Shaders::TexturedWithInstancedTransform()
 // ----------------------------------------------------------------------------
 
 Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::ColoredTextured()
+{
+  return coloredTextured;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::ColoredTexturedWithInstancedTransform()
+{
+  return coloredTexturedWithInstancedTransform;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
 Chimia::Draw3D::Shaders::GouraudLitTextured()
 {
   return gouraudLitTextured;
@@ -289,6 +350,38 @@ Chimia::Rendering::Shader&
 Chimia::Draw3D::Shaders::PhongLitTexturedWithInstancedTransform()
 {
   return phongLitTexturedWithInstancedTransform;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::GouraudLitColoredTextured()
+{
+  return gouraudLitColoredTextured;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::GouraudLitColoredTexturedWithInstancedTransform()
+{
+  return gouraudLitColoredTexturedWithInstancedTransform;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::PhongLitColoredTextured()
+{
+  return phongLitColoredTextured;
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::Shader&
+Chimia::Draw3D::Shaders::PhongLitColoredTexturedWithInstancedTransform()
+{
+  return phongLitColoredTexturedWithInstancedTransform;
 }
 
 // ----------------------------------------------------------------------------

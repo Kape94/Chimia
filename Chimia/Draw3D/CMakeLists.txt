@@ -19,6 +19,8 @@ add_library(${TARGET_NAME}
     src/batch/StaticTriangles.cpp
     src/batch/TriangleBatch.cpp
 
+    src/renderers/ColoredTexturedLitRendererImpl.cpp
+    src/renderers/ColoredTexturedRendererImpl.cpp
     src/renderers/LitRendererImpl.cpp
     src/renderers/LitWithVertexColorRendererImpl.cpp
     src/renderers/ModelRenderingComponent.cpp

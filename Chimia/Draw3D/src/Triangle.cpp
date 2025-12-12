@@ -2,6 +2,8 @@
 
 // ----------------------------------------------------------------------------
 
+#include "ColoredTexturedLitRendererImpl.h"
+#include "ColoredTexturedRendererImpl.h"
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Draw3DPrivate.h"
@@ -26,6 +28,9 @@ auto& litRenderer = LitRendererImpl::getInstance();
 auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
 auto& texturedRenderer = TexturedRendererImpl::getInstance();
 auto& texturedLitRenderer = TexturedLitRendererImpl::getInstance();
+auto& coloredTexturedRenderer = ColoredTexturedRendererImpl::getInstance();
+auto& coloredTexturedLitRenderer =
+  ColoredTexturedLitRendererImpl::getInstance();
 
 template<class VertexType>
 std::vector<VertexType>
@@ -344,6 +349,137 @@ Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPNT>& vertices,
 }
 
 // ----------------------------------------------------------------------------
+// Position3 + Color3 + TexCoord2
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPCT& v1,
+                         const VertexPCT& v2,
+                         const VertexPCT& v3,
+                         const TextureID& texture)
+{
+  coloredTexturedRenderer.DrawTriangle(v1.position,
+                                       v1.color,
+                                       v1.texCoord,
+                                       v2.position,
+                                       v2.color,
+                                       v2.texCoord,
+                                       v3.position,
+                                       v3.color,
+                                       v3.texCoord,
+                                       texture);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
+                          const TextureID& texture)
+{
+  coloredTexturedRenderer.DrawTriangles(VectorArrayView(vertices), texture);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const TextureID& texture)
+{
+  const std::vector<VertexPCT> unindexedVertex = DropIndices(vertices, indices);
+  Triangles(unindexedVertex, texture);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCT>& vertices,
+                                   const TextureID& texture)
+{
+  return coloredTexturedRenderer.AddStaticTriangles(VectorDataView(vertices),
+                                                    texture);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCT>& vertices,
+                                   const std::vector<unsigned>& indices,
+                                   const TextureID& texture)
+{
+  const std::vector<VertexPCT> unindexedVertex = DropIndices(vertices, indices);
+  return AddStaticTriangles(unindexedVertex, texture);
+}
+
+// ----------------------------------------------------------------------------
+// Position3 + Color3 + Normal3 + TexCoord2
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPCNT& v1,
+                         const VertexPCNT& v2,
+                         const VertexPCNT& v3,
+                         const TextureID& texture)
+{
+  coloredTexturedLitRenderer.DrawTriangle(v1.position,
+                                          v1.color,
+                                          v1.normal,
+                                          v1.texCoord,
+                                          v2.position,
+                                          v2.color,
+                                          v2.normal,
+                                          v2.texCoord,
+                                          v3.position,
+                                          v3.color,
+                                          v3.normal,
+                                          v3.texCoord,
+                                          texture);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
+                          const TextureID& texture)
+{
+  coloredTexturedLitRenderer.DrawTriangles(VectorArrayView(vertices), texture);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const TextureID& texture)
+{
+  const std::vector<VertexPCNT> unindexedVertex =
+    DropIndices(vertices, indices);
+  Triangles(unindexedVertex, texture);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
+                                   const TextureID& texture)
+{
+  return coloredTexturedLitRenderer.AddStaticTriangles(VectorDataView(vertices),
+                                                       texture);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
+                                   const std::vector<unsigned>& indices,
+                                   const TextureID& texture)
+{
+  const std::vector<VertexPCNT> unindexedVertex =
+    DropIndices(vertices, indices);
+  return AddStaticTriangles(unindexedVertex, texture);
+}
+
+// ----------------------------------------------------------------------------
 // General
 // ----------------------------------------------------------------------------
 
@@ -373,6 +509,14 @@ Chimia::Draw3D::DeleteStaticTriangles(const TriangleMeshID& meshID)
     }
     case eRendererType::TEXTURED_LIT: {
       texturedLitRenderer.DeleteStaticTriangles(meshID);
+      return;
+    }
+    case eRendererType::COLORED_TEXTURED: {
+      coloredTexturedRenderer.DeleteStaticTriangles(meshID);
+      return;
+    }
+    case eRendererType::COLORED_TEXTURED_LIT: {
+      coloredTexturedLitRenderer.DeleteStaticTriangles(meshID);
       return;
     }
     case eRendererType::NONE:

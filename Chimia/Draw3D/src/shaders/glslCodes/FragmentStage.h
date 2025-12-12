@@ -199,6 +199,21 @@ inline const char* textured = R"(
       }
     )";
 
+inline const char* coloredTextured = R"(
+      #version 330
+
+      in vec3 fragmentColor;
+      in vec2 fragUV;
+
+      out vec4 fragColor;
+
+      uniform sampler2D tex;
+
+      void main() {
+        fragColor = vec4(fragmentColor * vec3(texture(tex, fragUV)), 1.0);
+      }
+    )";
+
 inline const char* gouraudLitTextured = R"(
       #version 330
 
@@ -256,6 +271,56 @@ inline const char* phongLitTextured = R"(
             nPointLights, 
             pointLights,
             fragmentColor
+          );
+        
+          vec3 result = directional + point;
+          fragColor = vec4(result, 1.0);
+      }
+    )";
+
+inline const char* phongLitColoredTextured = R"(
+      #version 330
+
+      @include "common::constants"
+      @include "common::lightsTypes"
+      @include "common::materialType"
+      @include "common::calculateLightsWithoutMaterial"
+    
+      uniform DirectionalLight directionalLights[MAX_LIGHTS];
+      uniform int nDirectionalLights;
+    
+      uniform PointLight pointLights[MAX_LIGHTS];
+      uniform int nPointLights;
+    
+      uniform vec3 viewPosition;
+      
+      in vec3 fragmentPos;
+      in vec3 fragmentColor;
+      in vec2 fragmentTexCoord;
+      in vec3 fragmentNorm;
+
+      out vec4 fragColor;
+
+      uniform sampler2D tex;
+
+      void main() {
+        vec3 color = vec3(texture(tex, fragmentTexCoord)) * fragmentColor;
+        
+        vec3 directional = CalculateDirectionalLight(
+            viewPosition, 
+            fragmentPos, 
+            fragmentNorm, 
+            nDirectionalLights, 
+            directionalLights,
+            color
+          );
+          vec3 point = CalculatePointLight(
+            viewPosition, 
+            fragmentPos, 
+            fragmentNorm, 
+            nPointLights, 
+            pointLights,
+            color
           );
         
           vec3 result = directional + point;

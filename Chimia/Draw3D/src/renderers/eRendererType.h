@@ -17,7 +17,9 @@ enum class eRendererType
   LIT,
   TEXTURED,
   VERTEX_COLORED_LIT,
+  COLORED_TEXTURED,
   TEXTURED_LIT,
+  COLORED_TEXTURED_LIT,
 };
 
 // ----------------------------------------------------------------------------

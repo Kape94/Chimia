@@ -206,7 +206,9 @@ enum class eVertexLayout
   POSITION3_NORMAL3,
   POSITION3_TEXCOORD2,
   POSITION3_COLOR3_NORMAL3,
-  POSITION3_NORMAL3_TEXCOORD2
+  POSITION3_COLOR3_TEXCOORD2,
+  POSITION3_NORMAL3_TEXCOORD2,
+  POSITION3_COLOR3_NORMAL3_TEXCOORD2,
 };
 
 struct VertexPC
@@ -234,9 +236,24 @@ struct VertexPCN
   glm::vec3 normal;
 };
 
+struct VertexPCT
+{
+  glm::vec3 position;
+  glm::vec3 color;
+  glm::vec2 texCoord;
+};
+
 struct VertexPNT
 {
   glm::vec3 position;
+  glm::vec3 normal;
+  glm::vec2 texCoord;
+};
+
+struct VertexPCNT
+{
+  glm::vec3 position;
+  glm::vec3 color;
   glm::vec3 normal;
   glm::vec2 texCoord;
 };

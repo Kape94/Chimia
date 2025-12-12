@@ -51,6 +51,12 @@ Rendering::Shader&
 TexturedWithInstancedTransform();
 
 Rendering::Shader&
+ColoredTextured();
+
+Rendering::Shader&
+ColoredTexturedWithInstancedTransform();
+
+Rendering::Shader&
 GouraudLitTextured();
 
 Rendering::Shader&
@@ -61,6 +67,18 @@ PhongLitTextured();
 
 Rendering::Shader&
 PhongLitTexturedWithInstancedTransform();
+
+Rendering::Shader&
+GouraudLitColoredTextured();
+
+Rendering::Shader&
+GouraudLitColoredTexturedWithInstancedTransform();
+
+Rendering::Shader&
+PhongLitColoredTextured();
+
+Rendering::Shader&
+PhongLitColoredTexturedWithInstancedTransform();
 }
 
 END_CHIMIA_DRAW3D_NAMESPACE
