@@ -39,6 +39,7 @@ static const Chimia::Rendering::ShaderAttributes
 
 constexpr unsigned RENDERER_ID = static_cast<unsigned>(eRendererType::TEXTURED);
 constexpr unsigned NO_MATERIAL = 0;
+constexpr unsigned NO_RESOURCE_GROUP = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -105,7 +106,8 @@ TexturedRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
     RENDERER_ID,
     instanceID,
     NO_MATERIAL,
-    Draw3DPrivate::GetTextureIDValue(textureID));
+    Draw3DPrivate::GetTextureIDValue(textureID),
+    NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------
@@ -113,7 +115,7 @@ TexturedRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
 void
 TexturedRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [_, instanceIDValue, __, textureIDValue] =
+  auto [_, instanceIDValue, __, textureIDValue, ___] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   auto renderComponent = FetchTriangleRenderComponentForTexture(
@@ -186,7 +188,10 @@ TexturedRendererImpl::AddStaticModel(const ModelID& modelID,
     modelID, { { &transform, sizeof(glm::mat4x4) } });
 
   return Draw3DPrivate::CreateModelInstanceID(
-    RENDERER_ID, localInstanceID, Draw3DPrivate::GetTextureIDValue(textureID));
+    RENDERER_ID,
+    localInstanceID,
+    Draw3DPrivate::GetTextureIDValue(textureID),
+    NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------
@@ -194,7 +199,7 @@ TexturedRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 TexturedRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  auto [_, __, instanceIDValue, textureIDValue] =
+  auto [_, __, instanceIDValue, textureIDValue, ___] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   const TextureID textureID = Draw3DPrivate::CreateTextureID(textureIDValue);

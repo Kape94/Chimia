@@ -77,7 +77,7 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
     }
     default:
       assert(false && "Unsuported model layout");
-      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
+      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0, 0);
   }
 }
 
@@ -169,7 +169,7 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
     }
     default:
       assert(false && "Unsuported model layout");
-      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
+      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0, 0);
   }
 }
 
@@ -181,7 +181,7 @@ void
 CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteStaticModel(
   const ModelInstanceID& instanceID)
 {
-  auto [rendererID, _, __, ___] =
+  auto [rendererID, _, __, ___, ____] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   const auto rendererType = static_cast<eRendererType>(rendererID);

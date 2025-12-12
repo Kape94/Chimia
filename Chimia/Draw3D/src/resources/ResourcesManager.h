@@ -10,6 +10,7 @@
 #include "ObjectTable.h"
 #include "Rendering/Texture2D.h"
 #include "Types.h"
+#include "resources/ResourceGroup.h"
 
 // ----------------------------------------------------------------------------
 
@@ -40,6 +41,17 @@ public:
 
   Rendering::Texture2D* GetTexture(const TextureID& textureID);
 
+  ResourceGroupID CreateResourceGroup();
+
+  void AddResourceToGroup(const std::string& tag,
+                          const MaterialID& material,
+                          const ResourceGroupID& group);
+  void AddResourceToGroup(const std::string& tag,
+                          const TextureID& texture,
+                          const ResourceGroupID& group);
+
+  const ResourcesGroup* GetResourcesGroup(const ResourceGroupID& groupID);
+
 private:
   DEFAULT_CONSTUCTIBLE(ResourcesManager)
   NON_COPYABLE_NON_MOVABLE(ResourcesManager)
@@ -49,6 +61,8 @@ private:
   ObjectTable<Material> m_materialsTable;
 
   ObjectTable<Rendering::Texture2D> m_texturesTable;
+
+  ObjectTable<ResourcesGroup> m_resourceGroups;
 };
 
 // ----------------------------------------------------------------------------

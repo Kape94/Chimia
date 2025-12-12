@@ -59,6 +59,7 @@ constexpr unsigned RENDERER_ID =
   static_cast<unsigned>(eRendererType::VERTEX_COLORED_LIT);
 constexpr unsigned NO_MATERIAL = 0;
 constexpr unsigned NO_TEXTURE = 0;
+constexpr unsigned NO_RESOURCE_GROUP = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -133,7 +134,7 @@ LitWithVertexColorRendererImpl::AddStaticTriangles(
   const unsigned instanceID = m_triangleMeshComponent.AddStaticMesh(vertexData);
 
   return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, NO_MATERIAL, NO_TEXTURE);
+    RENDERER_ID, instanceID, NO_MATERIAL, NO_TEXTURE, NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------
@@ -142,7 +143,7 @@ void
 LitWithVertexColorRendererImpl::DeleteStaticTriangles(
   const TriangleMeshID& meshID)
 {
-  auto [_, instanceIDValue, __, ___] =
+  auto [_, instanceIDValue, __, ___, ____] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   m_triangleMeshComponent.DeleteStaticMesh(instanceIDValue);
@@ -168,7 +169,7 @@ LitWithVertexColorRendererImpl::AddStaticModel(const ModelID& modelID,
     modelID, { { &transform, sizeof(glm::mat4x4) } });
 
   return Draw3DPrivate::CreateModelInstanceID(
-    RENDERER_ID, localInstanceID, NO_MATERIAL);
+    RENDERER_ID, localInstanceID, NO_MATERIAL, NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------

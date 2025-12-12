@@ -9,8 +9,6 @@ add_library(${TARGET_NAME}
     src/Illumination.cpp
     src/Model.cpp
     src/ModelRendering.cpp
-    src/Resources.cpp
-    src/ResourcesManager.cpp
     src/Triangle.cpp
     
     src/batch/BatchUtils.cpp
@@ -21,6 +19,7 @@ add_library(${TARGET_NAME}
 
     src/renderers/ColoredTexturedLitRendererImpl.cpp
     src/renderers/ColoredTexturedRendererImpl.cpp
+    src/renderers/GenericRenderer.cpp
     src/renderers/LitRendererImpl.cpp
     src/renderers/LitWithVertexColorRendererImpl.cpp
     src/renderers/ModelRenderingComponent.cpp
@@ -28,6 +27,10 @@ add_library(${TARGET_NAME}
     src/renderers/TexturedRendererImpl.cpp
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/VertexColoredRendererImpl.cpp
+
+    src/resources/Resources.cpp
+    src/resources/ResourcesGroup.cpp 
+    src/resources/ResourcesManager.cpp
 
     src/shaders/Shaders.cpp
     src/shaders/ShaderCodebase.cpp
@@ -48,6 +51,7 @@ target_include_directories(${TARGET_NAME}
         ./src/
         ./src/batch/
         ./src/renderers/
+        ./src/resources/
         ./src/shaders/
     PUBLIC
         ./api/

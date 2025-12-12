@@ -1,8 +1,11 @@
 #include "ResourcesManager.h"
 
+#include "Core/Diagnostics.h"
+
 #include "Draw3DPrivate.h"
 #include "Rendering/Texture2D.h"
 #include "Types.h"
+#include "resources/ResourceGroup.h"
 
 // ----------------------------------------------------------------------------
 
@@ -85,6 +88,56 @@ ResourcesManager::GetTexture(const TextureID& textureID)
 {
   const unsigned idValue = Draw3DPrivate::GetTextureIDValue(textureID);
   return m_texturesTable.Find(idValue);
+}
+
+// ----------------------------------------------------------------------------
+
+ResourceGroupID
+ResourcesManager::CreateResourceGroup()
+{
+  auto [id, _] = m_resourceGroups.Insert();
+  return Draw3DPrivate::CreateResourceGroupID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ResourcesManager::AddResourceToGroup(const std::string& tag,
+                                     const MaterialID& material,
+                                     const ResourceGroupID& group)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(group);
+  ResourcesGroup* groupInstance = m_resourceGroups.Find(idValue);
+  if (groupInstance == nullptr) {
+    Chimia::Diagnostics::Error(1, "Didn't find group instance");
+  }
+
+  groupInstance->AddResource(tag, material);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ResourcesManager::AddResourceToGroup(const std::string& tag,
+                                     const TextureID& texture,
+                                     const ResourceGroupID& group)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(group);
+  ResourcesGroup* groupInstance = m_resourceGroups.Find(idValue);
+  if (groupInstance == nullptr) {
+    Chimia::Diagnostics::Error(1, "Didn't find group instance");
+  }
+
+  groupInstance->AddResource(tag, texture);
+}
+
+// ----------------------------------------------------------------------------
+
+const ResourcesGroup*
+ResourcesManager::GetResourcesGroup(const ResourceGroupID& groupID)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(groupID);
+  return m_resourceGroups.Find(idValue);
 }
 
 // ----------------------------------------------------------------------------

@@ -27,12 +27,14 @@ public:
   static ModelInstanceID CreateModelInstanceID(unsigned rendererID,
                                                unsigned modelID,
                                                unsigned instanceID,
-                                               unsigned textureID);
+                                               unsigned textureID,
+                                               unsigned resourceID);
   static ModelInstanceID CreateModelInstanceID(
     unsigned rendererID,
     const LocalModelInstanceID& localInstanceID,
-    unsigned textureID);
-  static std::tuple<unsigned, unsigned, unsigned, unsigned>
+    unsigned textureID,
+    unsigned resourceID);
+  static std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>
   GetModelInstanceIDValues(const ModelInstanceID& instanceID);
 
   // LocalModelInstanceID
@@ -51,12 +53,17 @@ public:
   static TextureID CreateTextureID(unsigned id);
   static unsigned GetTextureIDValue(const TextureID& textureID);
 
+  // ResourceGroupID
+  static ResourceGroupID CreateResourceGroupID(unsigned id);
+  static unsigned GetResourceGroupIDValue(const ResourceGroupID& textureID);
+
   // TriangleMeshID
   static TriangleMeshID CreateTriangleMeshID(unsigned rendererID,
                                              unsigned id,
                                              unsigned materialID,
-                                             unsigned textureID);
-  static std::tuple<unsigned, unsigned, unsigned, unsigned>
+                                             unsigned textureID,
+                                             unsigned resourceID);
+  static std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>
   GetTriangleMeshIDValues(const TriangleMeshID& meshID);
 };
 

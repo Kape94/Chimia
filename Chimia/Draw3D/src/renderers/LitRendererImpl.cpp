@@ -60,6 +60,7 @@ GetShaderForModelDrawing()
 
 constexpr unsigned RENDERER_ID = static_cast<unsigned>(eRendererType::LIT);
 constexpr unsigned NO_TEXTURE = 0;
+constexpr unsigned NO_RESOURCE_GROUP = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -130,7 +131,8 @@ LitRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
     RENDERER_ID,
     instanceID,
     Draw3DPrivate::GetMaterialIDValue(materialID),
-    NO_TEXTURE);
+    NO_TEXTURE,
+    NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------
@@ -138,7 +140,7 @@ LitRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
 void
 LitRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [_, instanceIDValue, materialIDValue, __] =
+  auto [_, instanceIDValue, materialIDValue, __, ___] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   auto renderComponent = FetchTriangleRenderComponentForMaterial(
@@ -195,7 +197,7 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
 {
   auto material = ResourcesManager::GetInstance().GetMaterial(materialID);
   if (material == nullptr) {
-    return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
+    return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0, 0);
   }
 
   const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
@@ -207,7 +209,7 @@ LitRendererImpl::AddStaticModel(const ModelID& modelID,
       { &material->shininess, sizeof(float) } });
 
   return Draw3DPrivate::CreateModelInstanceID(
-    RENDERER_ID, localInstanceID, NO_TEXTURE);
+    RENDERER_ID, localInstanceID, NO_TEXTURE, NO_RESOURCE_GROUP);
 }
 
 // ----------------------------------------------------------------------------

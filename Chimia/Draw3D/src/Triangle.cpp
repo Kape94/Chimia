@@ -486,7 +486,7 @@ Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
 void
 Chimia::Draw3D::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [rendererID, _, __, ___] =
+  auto [rendererID, _, __, ___, ____] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   const auto rendererType = static_cast<eRendererType>(rendererID);
