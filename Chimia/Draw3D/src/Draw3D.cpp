@@ -24,12 +24,12 @@ Chimia::Draw3D::Initialize()
   Shaders::Initialize();
 
   VertexColoredRendererImpl::GetRenderer().Init();
-  LitRendererImpl::getInstance().Init();
+  LitRendererImpl::GetRenderer().Init();
   TexturedRendererImpl::GetRenderer().Init();
-  ColoredTexturedRendererImpl::getInstance().Init();
-  LitWithVertexColorRendererImpl::getInstance().Init();
-  TexturedLitRendererImpl::getInstance().Init();
-  ColoredTexturedLitRendererImpl::getInstance().Init();
+  ColoredTexturedRendererImpl::GetRenderer().Init();
+  LitWithVertexColorRendererImpl::GetRenderer().Init();
+  TexturedLitRendererImpl::GetRenderer().Init();
+  ColoredTexturedLitRendererImpl::GetRenderer().Init();
 }
 
 // ----------------------------------------------------------------------------
@@ -38,12 +38,12 @@ void
 Chimia::Draw3D::Flush()
 {
   VertexColoredRendererImpl::GetRenderer().Flush();
-  LitRendererImpl::getInstance().Flush();
+  LitRendererImpl::GetRenderer().Flush();
   TexturedRendererImpl::GetRenderer().Flush();
-  ColoredTexturedRendererImpl::getInstance().Flush();
-  LitWithVertexColorRendererImpl::getInstance().Flush();
-  TexturedLitRendererImpl::getInstance().Flush();
-  ColoredTexturedLitRendererImpl::getInstance().Flush();
+  ColoredTexturedRendererImpl::GetRenderer().Flush();
+  LitWithVertexColorRendererImpl::GetRenderer().Flush();
+  TexturedLitRendererImpl::GetRenderer().Flush();
+  ColoredTexturedLitRendererImpl::GetRenderer().Flush();
 }
 
 // ----------------------------------------------------------------------------

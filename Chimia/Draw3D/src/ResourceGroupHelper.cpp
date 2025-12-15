@@ -63,3 +63,36 @@ ResourceGroupHelper::GetResourceGroup(const TextureID& texture)
 }
 
 // ----------------------------------------------------------------------------
+
+ResourceGroupID
+ResourceGroupHelper::WrapMaterial(const MaterialID& material)
+{
+  using namespace ResourceGroupHelperInternal;
+
+  const ResourceGroupID group = resources.CreateResourceGroup();
+  resources.AddResourceToGroup("default", material, group);
+  return group;
+}
+
+// ----------------------------------------------------------------------------
+
+ResourceGroupID
+ResourceGroupHelper::GetResourceGroup(const MaterialID& material)
+{
+  using namespace ResourceGroupHelperInternal;
+
+  const unsigned materialIDValue = Draw3DPrivate::GetMaterialIDValue(material);
+  const unsigned* groupIDValue = materialGroups.Find(materialIDValue);
+  if (groupIDValue != nullptr) {
+    return Draw3DPrivate::CreateResourceGroupID(*groupIDValue);
+  }
+
+  const ResourceGroupID newGroup = WrapMaterial(material);
+
+  unsigned* newGroupIDValue = materialGroups.Insert(materialIDValue);
+  *newGroupIDValue = Draw3DPrivate::GetResourceGroupIDValue(newGroup);
+
+  return newGroup;
+}
+
+// ----------------------------------------------------------------------------

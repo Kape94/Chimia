@@ -92,6 +92,8 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
     @include "common::materialType"
     @include "common::calculateLights"
   
+    uniform Material material;
+
     uniform DirectionalLight directionalLights[MAX_LIGHTS];
     uniform int nDirectionalLights;
   
@@ -102,10 +104,6 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
   
     in vec3 fragmentPos;
     in vec3 fragmentNorm;
-    in vec3 mAmbient;
-    in vec3 mDiffuse;
-    in vec3 mSpecular;
-    in float mShininess;
   
     out vec4 fragColor;
   
@@ -117,10 +115,7 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
           fragmentNorm, 
           nDirectionalLights, 
           directionalLights,
-          mAmbient,
-          mDiffuse,
-          mSpecular,
-          mShininess
+          material
         );
         vec3 point = CalculatePointLight(
           viewPosition, 
@@ -128,10 +123,7 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
           fragmentNorm, 
           nPointLights, 
           pointLights,
-          mAmbient,
-          mDiffuse,
-          mSpecular,
-          mShininess
+          material
         );
       
         vec3 result = directional + point;

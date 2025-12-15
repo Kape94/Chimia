@@ -23,13 +23,15 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace {
 GenericRenderer& renderer = VertexColoredRendererImpl::GetRenderer();
-auto& litRenderer = LitRendererImpl::getInstance();
+GenericRenderer& litRenderer = LitRendererImpl::GetRenderer();
 GenericRenderer& texturedRenderer = TexturedRendererImpl::GetRenderer();
-auto& texturedLitRenderer = TexturedLitRendererImpl::getInstance();
-auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
-auto& coloredTexturedRenderer = ColoredTexturedRendererImpl::getInstance();
-auto& coloredTexturedLitRenderer =
-  ColoredTexturedLitRendererImpl::getInstance();
+GenericRenderer& texturedLitRenderer = TexturedLitRendererImpl::GetRenderer();
+GenericRenderer& litVertexColoredRenderer =
+  LitWithVertexColorRendererImpl::GetRenderer();
+GenericRenderer& coloredTexturedRenderer =
+  ColoredTexturedRendererImpl::GetRenderer();
+GenericRenderer& coloredTexturedLitRenderer =
+  ColoredTexturedLitRendererImpl::GetRenderer();
 
 eVertexLayout
 ModelLayout(const ModelID& modelID)
@@ -56,7 +58,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
       break;
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
-      litVertexColoredRenderer.DrawModelTransformed(modelID, transform);
+      litVertexColoredRenderer.DrawModelTransformed(
+        modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
     }
     default:
@@ -77,7 +80,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
-      return litVertexColoredRenderer.AddStaticModel(modelID, transform);
+      return litVertexColoredRenderer.AddStaticModel(
+        modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     default:
       assert(false && "Unsuported model layout");
@@ -96,7 +100,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 {
   assert(ModelLayout(modelID) == eVertexLayout::POSITION3_NORMAL3);
 
-  litRenderer.DrawModelTransformed(modelID, transform, materialID);
+  litRenderer.DrawModelTransformed(
+    modelID, transform, ResourceGroupHelper::GetResourceGroup(materialID));
 }
 
 // ----------------------------------------------------------------------------
@@ -108,7 +113,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
 {
   assert(ModelLayout(modelID) == eVertexLayout::POSITION3_NORMAL3);
 
-  return litRenderer.AddStaticModel(modelID, transform, materialID);
+  return litRenderer.AddStaticModel(
+    modelID, transform, ResourceGroupHelper::GetResourceGroup(materialID));
 }
 
 // ----------------------------------------------------------------------------
@@ -131,17 +137,18 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
       break;
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      texturedLitRenderer.DrawModelTransformed(modelID, transform, textureID);
+      texturedLitRenderer.DrawModelTransformed(
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
       coloredTexturedRenderer.DrawModelTransformed(
-        modelID, transform, textureID);
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
       coloredTexturedLitRenderer.DrawModelTransformed(
-        modelID, transform, textureID);
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     default:
@@ -163,15 +170,16 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      return texturedLitRenderer.AddStaticModel(modelID, transform, textureID);
+      return texturedLitRenderer.AddStaticModel(
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
       return coloredTexturedRenderer.AddStaticModel(
-        modelID, transform, textureID);
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
       return coloredTexturedLitRenderer.AddStaticModel(
-        modelID, transform, textureID);
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     default:
       assert(false && "Unsuported model layout");

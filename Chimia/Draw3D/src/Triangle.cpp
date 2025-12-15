@@ -26,13 +26,15 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace {
 GenericRenderer& renderer = VertexColoredRendererImpl::GetRenderer();
-auto& litRenderer = LitRendererImpl::getInstance();
-auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
+GenericRenderer& litRenderer = LitRendererImpl::GetRenderer();
+GenericRenderer& litVertexColoredRenderer =
+  LitWithVertexColorRendererImpl::GetRenderer();
 GenericRenderer& texturedRenderer = TexturedRendererImpl::GetRenderer();
-auto& texturedLitRenderer = TexturedLitRendererImpl::getInstance();
-auto& coloredTexturedRenderer = ColoredTexturedRendererImpl::getInstance();
-auto& coloredTexturedLitRenderer =
-  ColoredTexturedLitRendererImpl::getInstance();
+GenericRenderer& texturedLitRenderer = TexturedLitRendererImpl::GetRenderer();
+GenericRenderer& coloredTexturedRenderer =
+  ColoredTexturedRendererImpl::GetRenderer();
+GenericRenderer& coloredTexturedLitRenderer =
+  ColoredTexturedLitRendererImpl::GetRenderer();
 
 template<class VertexType>
 std::vector<VertexType>
@@ -131,13 +133,14 @@ Chimia::Draw3D::Triangle(const VertexPN& v1,
                          const VertexPN& v3,
                          const MaterialID& material)
 {
-  litRenderer.DrawTriangle(v1.position,
-                           v1.normal,
-                           v2.position,
-                           v2.normal,
-                           v3.position,
-                           v3.normal,
-                           material);
+  LitRendererImpl::DrawTriangle(
+    v1.position,
+    v1.normal,
+    v2.position,
+    v2.normal,
+    v3.position,
+    v3.normal,
+    ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -146,7 +149,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
                           const MaterialID& material)
 {
-  litRenderer.DrawTriangles(VectorArrayView(vertices), material);
+  litRenderer.DrawTriangles(VectorArrayView(vertices),
+                            ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -166,7 +170,8 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPN>& vertices,
                                    const MaterialID& material)
 {
-  return litRenderer.AddStaticTriangles(VectorDataView(vertices), material);
+  return litRenderer.AddStaticTriangles(
+    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -251,15 +256,17 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
                          const VertexPCN& v2,
                          const VertexPCN& v3)
 {
-  litVertexColoredRenderer.DrawTriangle(v1.position,
-                                        v1.color,
-                                        v1.normal,
-                                        v2.position,
-                                        v2.color,
-                                        v2.normal,
-                                        v3.position,
-                                        v3.color,
-                                        v3.normal);
+  LitWithVertexColorRendererImpl::DrawTriangle(
+    v1.position,
+    v1.color,
+    v1.normal,
+    v2.position,
+    v2.color,
+    v2.normal,
+    v3.position,
+    v3.color,
+    v3.normal,
+    ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -267,7 +274,8 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices)
 {
-  litVertexColoredRenderer.DrawTriangles(VectorArrayView(vertices));
+  litVertexColoredRenderer.DrawTriangles(
+    VectorArrayView(vertices), ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -285,7 +293,8 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCN>& vertices)
 {
-  return litVertexColoredRenderer.AddStaticTriangles(VectorDataView(vertices));
+  return litVertexColoredRenderer.AddStaticTriangles(
+    VectorDataView(vertices), ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -308,16 +317,17 @@ Chimia::Draw3D::Triangle(const VertexPNT& v1,
                          const VertexPNT& v3,
                          const TextureID& texture)
 {
-  texturedLitRenderer.DrawTriangle(v1.position,
-                                   v1.normal,
-                                   v1.texCoord,
-                                   v2.position,
-                                   v2.normal,
-                                   v2.texCoord,
-                                   v3.position,
-                                   v3.normal,
-                                   v3.texCoord,
-                                   texture);
+  TexturedLitRendererImpl::DrawTriangle(
+    v1.position,
+    v1.normal,
+    v1.texCoord,
+    v2.position,
+    v2.normal,
+    v2.texCoord,
+    v3.position,
+    v3.normal,
+    v3.texCoord,
+    ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -326,7 +336,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
                           const TextureID& texture)
 {
-  texturedLitRenderer.DrawTriangles(VectorArrayView(vertices), texture);
+  texturedLitRenderer.DrawTriangles(
+    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -346,8 +357,8 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPNT>& vertices,
                                    const TextureID& texture)
 {
-  return texturedLitRenderer.AddStaticTriangles(VectorDataView(vertices),
-                                                texture);
+  return texturedLitRenderer.AddStaticTriangles(
+    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -371,16 +382,17 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v3,
                          const TextureID& texture)
 {
-  coloredTexturedRenderer.DrawTriangle(v1.position,
-                                       v1.color,
-                                       v1.texCoord,
-                                       v2.position,
-                                       v2.color,
-                                       v2.texCoord,
-                                       v3.position,
-                                       v3.color,
-                                       v3.texCoord,
-                                       texture);
+  ColoredTexturedRendererImpl::DrawTriangle(
+    v1.position,
+    v1.color,
+    v1.texCoord,
+    v2.position,
+    v2.color,
+    v2.texCoord,
+    v3.position,
+    v3.color,
+    v3.texCoord,
+    ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -389,7 +401,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
                           const TextureID& texture)
 {
-  coloredTexturedRenderer.DrawTriangles(VectorArrayView(vertices), texture);
+  coloredTexturedRenderer.DrawTriangles(
+    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -409,8 +422,8 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCT>& vertices,
                                    const TextureID& texture)
 {
-  return coloredTexturedRenderer.AddStaticTriangles(VectorDataView(vertices),
-                                                    texture);
+  return coloredTexturedRenderer.AddStaticTriangles(
+    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -434,19 +447,20 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
                          const VertexPCNT& v3,
                          const TextureID& texture)
 {
-  coloredTexturedLitRenderer.DrawTriangle(v1.position,
-                                          v1.color,
-                                          v1.normal,
-                                          v1.texCoord,
-                                          v2.position,
-                                          v2.color,
-                                          v2.normal,
-                                          v2.texCoord,
-                                          v3.position,
-                                          v3.color,
-                                          v3.normal,
-                                          v3.texCoord,
-                                          texture);
+  ColoredTexturedLitRendererImpl::DrawTriangle(
+    v1.position,
+    v1.color,
+    v1.normal,
+    v1.texCoord,
+    v2.position,
+    v2.color,
+    v2.normal,
+    v2.texCoord,
+    v3.position,
+    v3.color,
+    v3.normal,
+    v3.texCoord,
+    ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -455,7 +469,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
                           const TextureID& texture)
 {
-  coloredTexturedLitRenderer.DrawTriangles(VectorArrayView(vertices), texture);
+  coloredTexturedLitRenderer.DrawTriangles(
+    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -476,8 +491,8 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
                                    const TextureID& texture)
 {
-  return coloredTexturedLitRenderer.AddStaticTriangles(VectorDataView(vertices),
-                                                       texture);
+  return coloredTexturedLitRenderer.AddStaticTriangles(
+    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------

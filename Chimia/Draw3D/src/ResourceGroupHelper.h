@@ -22,6 +22,11 @@ WrapTexture(const TextureID& texture);
 ResourceGroupID
 GetResourceGroup(const TextureID& texture);
 
+ResourceGroupID
+WrapMaterial(const MaterialID& material);
+ResourceGroupID
+GetResourceGroup(const MaterialID& material);
+
 }
 
 // ----------------------------------------------------------------------------

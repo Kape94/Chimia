@@ -104,6 +104,8 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
     @include "common::materialType"
     @include "common::calculateLights"
   
+    uniform Material material;
+
     uniform DirectionalLight directionalLights[MAX_LIGHTS];
     uniform int nDirectionalLights;
   
@@ -117,10 +119,6 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
     layout (location = 0) in vec3 vertexPos;
     layout (location = 1) in vec3 vertexNorm;
     layout (location = 2) in mat4 modelTransform;
-    layout (location = 6) in vec3 materialAmbient;
-    layout (location = 7) in vec3 materialDiffuse;
-    layout (location = 8) in vec3 materialSpecular;
-    layout (location = 9) in float materialShininess;
   
     out vec3 color;
   
@@ -135,10 +133,7 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
           norm, 
           nDirectionalLights, 
           directionalLights,
-          materialAmbient,
-          materialDiffuse,
-          materialSpecular,
-          materialShininess
+          material
         );
         vec3 point = CalculatePointLight(
           viewPosition, 
@@ -146,10 +141,7 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
           norm, 
           nPointLights, 
           pointLights,
-          materialAmbient,
-          materialDiffuse,
-          materialSpecular,
-          materialShininess
+          material
         );
       
         vec3 result = directional + point;
@@ -185,17 +177,9 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
       layout (location = 0) in vec3 vertexPos;
       layout (location = 1) in vec3 vertexNorm;
       layout (location = 2) in mat4 modelTransform;
-      layout (location = 6) in vec3 materialAmbient;
-      layout (location = 7) in vec3 materialDiffuse;
-      layout (location = 8) in vec3 materialSpecular;
-      layout (location = 9) in float materialShininess;
     
       out vec3 fragmentPos;
       out vec3 fragmentNorm;
-      out vec3 mAmbient;
-      out vec3 mDiffuse;
-      out vec3 mSpecular;
-      out float mShininess;
 
       uniform mat4 cameraTransform;
 
@@ -203,10 +187,6 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
       {
           fragmentPos = vec3(modelTransform * vec4(vertexPos, 1.0));
           fragmentNorm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
-          mAmbient = materialAmbient;
-          mDiffuse = materialDiffuse;
-          mSpecular = materialSpecular;
-          mShininess = materialShininess;
 
           gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
       }

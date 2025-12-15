@@ -2,7 +2,6 @@
 
 // ----------------------------------------------------------------------------
 
-#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Types.h"

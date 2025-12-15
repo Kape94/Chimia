@@ -1,10 +1,8 @@
 #include "VertexColoredRendererImpl.h"
 
 #include "CameraPrivate.h"
-#include "Core/Types.h"
 #include "GenericRenderer.h"
 #include "ResourceGroup.h"
-#include "ResourcesManager.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
