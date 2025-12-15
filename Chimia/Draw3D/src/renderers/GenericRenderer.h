@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
@@ -13,6 +14,7 @@
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+#include <initializer_list>
 
 // ----------------------------------------------------------------------------
 
@@ -25,12 +27,15 @@ public:
     const unsigned id,
     const Rendering::ShaderAttributes& vertexAttributes,
     const Rendering::ShaderAttributes& instancedAttributes,
-    const void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-    const void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
   void Init();
 
   void Flush();
+
+  void DrawTriangle(const std::initializer_list<RawDataView>& vertexData,
+                    const ResourceGroupID& resourcesID);
 
   void DrawTriangles(const RawArrayView& vertexDataArray,
                      const ResourceGroupID& resourcesID);
@@ -66,9 +71,9 @@ private:
   const Rendering::ShaderAttributes m_vertexAttributes;
   const Rendering::ShaderAttributes m_instancedAttributes;
 
-  const void (*m_setupShaderForTriangleRendering)(const ResourcesGroup&) =
+  void (*const m_setupShaderForTriangleRendering)(const ResourcesGroup&) =
     nullptr;
-  const void (*m_setupShaderForInstancedRendering)(const ResourcesGroup&) =
+  void (*const m_setupShaderForInstancedRendering)(const ResourcesGroup&) =
     nullptr;
 
   ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;

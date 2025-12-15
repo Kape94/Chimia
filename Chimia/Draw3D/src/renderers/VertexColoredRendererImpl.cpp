@@ -1,10 +1,9 @@
 #include "VertexColoredRendererImpl.h"
 
 #include "CameraPrivate.h"
-#include "Config.h"
 #include "Core/Types.h"
-#include "Draw3DPrivate.h"
-#include "InternalTypes.h"
+#include "ResourceGroup.h"
+#include "ResourcesManager.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
@@ -20,24 +19,26 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace {
 
-static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
-  Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-  Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3)
-};
+const ResourceGroupID EMPTY_RESOURCE =
+  ResourcesManager::GetInstance().CreateResourceGroup();
 
-static const Chimia::Rendering::ShaderAttributes
-  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
-    Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
-  };
+void
+ConfigureForTriangleDrawing(const ResourcesGroup& resource)
+{
+  Chimia::Rendering::Shader& shader = Shaders::VertexColored();
+  shader.Use();
+  CameraPrivate::SetCameraOnShader(shader);
+}
 
-constexpr unsigned RENDERER_ID =
-  static_cast<unsigned>(eRendererType::VERTEX_COLORED);
-constexpr unsigned NO_MATERIAL = 0;
-constexpr unsigned NO_TEXTURE = 0;
-constexpr unsigned NO_RESOURCE_GROUP = 0;
+void
+ConfigureForInstancedDrawing(const ResourcesGroup& resource)
+{
+  Chimia::Rendering::Shader& shader =
+    Shaders::VertexColoredWithInstancedTransform();
+  shader.Use();
+  CameraPrivate::SetCameraOnShader(shader);
+}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -45,8 +46,45 @@ constexpr unsigned NO_RESOURCE_GROUP = 0;
 VertexColoredRendererImpl&
 VertexColoredRendererImpl::getInstance()
 {
-  static VertexColoredRendererImpl renderer;
+  static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
+    Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+    Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3)
+  };
+
+  static const Chimia::Rendering::ShaderAttributes
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
+      Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
+    };
+
+  constexpr unsigned RENDERER_ID =
+    static_cast<unsigned>(eRendererType::VERTEX_COLORED);
+
+  static VertexColoredRendererImpl renderer(
+    RENDERER_ID,
+    VERTEX_ATTRIBUTES,
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+    ConfigureForTriangleDrawing,
+    ConfigureForInstancedDrawing);
   return renderer;
+}
+
+// ----------------------------------------------------------------------------
+
+VertexColoredRendererImpl::VertexColoredRendererImpl(
+  const unsigned id,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instancedAttributes,
+  void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  : m_renderer(id,
+               vertexAttributes,
+               instancedAttributes,
+               setupShaderForTriangleRendering,
+               setupShaderForInstancedRendering)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -54,14 +92,7 @@ VertexColoredRendererImpl::getInstance()
 void
 VertexColoredRendererImpl::Init()
 {
-  m_triangleMeshComponent.Init(Config::Batching::TriangleBatchingSettings(),
-                               VERTEX_ATTRIBUTES,
-                               [&]() { ConfigureShaderForTriangleDrawing(); });
-
-  m_modelComponent.Init(Config::Batching::ModelBatchingSettings(),
-                        VERTEX_ATTRIBUTES,
-                        TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-                        [&]() { ConfigureShaderForTransformedModelDrawing(); });
+  m_renderer.Init();
 }
 
 // ----------------------------------------------------------------------------
@@ -77,14 +108,13 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t COL3_SIZE = sizeof(glm::vec3);
 
-  m_triangleMeshComponent.DrawTriangle({
-    { &p1, POS3_SIZE },
-    { &color1, COL3_SIZE },
-    { &p2, POS3_SIZE },
-    { &color2, COL3_SIZE },
-    { &p3, POS3_SIZE },
-    { &color3, COL3_SIZE },
-  });
+  m_renderer.DrawTriangle({ { &p1, POS3_SIZE },
+                            { &color1, COL3_SIZE },
+                            { &p2, POS3_SIZE },
+                            { &color2, COL3_SIZE },
+                            { &p3, POS3_SIZE },
+                            { &color3, COL3_SIZE } },
+                          EMPTY_RESOURCE);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,7 +122,7 @@ VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
 void
 VertexColoredRendererImpl::DrawTriangles(const RawArrayView& vertexDataArray)
 {
-  m_triangleMeshComponent.DrawTriangles(vertexDataArray);
+  m_renderer.DrawTriangles(vertexDataArray, EMPTY_RESOURCE);
 }
 
 // ----------------------------------------------------------------------------
@@ -100,9 +130,7 @@ VertexColoredRendererImpl::DrawTriangles(const RawArrayView& vertexDataArray)
 TriangleMeshID
 VertexColoredRendererImpl::AddStaticTriangles(const RawDataView& vertexData)
 {
-  const unsigned instanceID = m_triangleMeshComponent.AddStaticMesh(vertexData);
-  return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID, instanceID, NO_MATERIAL, NO_TEXTURE, NO_RESOURCE_GROUP);
+  return m_renderer.AddStaticTriangles(vertexData, EMPTY_RESOURCE);
 }
 
 // ----------------------------------------------------------------------------
@@ -110,9 +138,7 @@ VertexColoredRendererImpl::AddStaticTriangles(const RawDataView& vertexData)
 void
 VertexColoredRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [_, instanceID, __, ___, ____] =
-    Draw3DPrivate::GetTriangleMeshIDValues(meshID);
-  m_triangleMeshComponent.DeleteStaticMesh(instanceID);
+  m_renderer.DeleteStaticTriangles(meshID);
 }
 
 // ----------------------------------------------------------------------------
@@ -121,7 +147,7 @@ void
 VertexColoredRendererImpl::DrawModelTransformed(const ModelID& modelID,
                                                 const glm::mat4x4& transform)
 {
-  m_modelComponent.DrawModel(modelID, { &transform, sizeof(glm::mat4x4) });
+  m_renderer.DrawModelTransformed(modelID, transform, EMPTY_RESOURCE);
 }
 
 // ----------------------------------------------------------------------------
@@ -130,11 +156,7 @@ ModelInstanceID
 VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
                                           const glm::mat4x4& transform)
 {
-  const LocalModelInstanceID localInstanceID = m_modelComponent.AddStaticModel(
-    modelID, { &transform, sizeof(glm::mat4x4) });
-
-  return Draw3DPrivate::CreateModelInstanceID(
-    RENDERER_ID, localInstanceID, NO_TEXTURE, NO_RESOURCE_GROUP);
+  return m_renderer.AddStaticModel(modelID, transform, EMPTY_RESOURCE);
 }
 
 // ----------------------------------------------------------------------------
@@ -142,8 +164,7 @@ VertexColoredRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  m_modelComponent.DeleteStaticModel(
-    Draw3DPrivate::CreateLocalModelInstanceID(instanceID));
+  m_renderer.DeleteStaticModel(instanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -151,28 +172,7 @@ VertexColoredRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 void
 VertexColoredRendererImpl::Flush()
 {
-  m_triangleMeshComponent.Flush();
-  m_modelComponent.Flush();
-}
-
-// ----------------------------------------------------------------------------
-
-void
-VertexColoredRendererImpl::ConfigureShaderForTriangleDrawing()
-{
-  Rendering::Shader& shader = Shaders::VertexColored();
-  shader.Use();
-  CameraPrivate::SetCameraOnShader(shader);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-VertexColoredRendererImpl::ConfigureShaderForTransformedModelDrawing()
-{
-  Rendering::Shader& shader = Shaders::VertexColoredWithInstancedTransform();
-  shader.Use();
-  CameraPrivate::SetCameraOnShader(shader);
+  m_renderer.Flush();
 }
 
 // ----------------------------------------------------------------------------

@@ -50,8 +50,8 @@ GenericRenderer::GenericRenderer(
   const unsigned id,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instancedAttributes,
-  const void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-  const void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
   : m_id(id)
   , m_vertexAttributes(vertexAttributes)
   , m_instancedAttributes(instancedAttributes)
@@ -65,6 +65,17 @@ GenericRenderer::GenericRenderer(
 void
 GenericRenderer::Init()
 {
+}
+
+// ----------------------------------------------------------------------------
+
+void
+GenericRenderer::DrawTriangle(
+  const std::initializer_list<RawDataView>& vertexData,
+  const ResourceGroupID& resourcesID)
+{
+  auto renderComponent = FetchTriangleRenderComponentForTexture(resourcesID);
+  renderComponent->DrawTriangle(vertexData);
 }
 
 // ----------------------------------------------------------------------------
@@ -121,7 +132,7 @@ GenericRenderer::FetchTriangleRenderComponentForTexture(
     renderComponent->Init(
       Config::Batching::TriangleBatchingByResourceSettings(),
       m_vertexAttributes,
-      [&]() { ConfigureShaderForTriangleDrawing(resourceID); });
+      [&, resourceID]() { ConfigureShaderForTriangleDrawing(resourceID); });
   }
 
   return renderComponent;
@@ -138,11 +149,13 @@ GenericRenderer::FetchModelRenderComponentForTexture(
   if (renderComponent == nullptr) {
     renderComponent = m_modelComponents.Insert(idValue);
 
-    renderComponent->Init(
-      Config::Batching::ModelBatchingByResourceSettings(),
-      m_vertexAttributes,
-      m_instancedAttributes,
-      [&]() { ConfigureShaderForTransformedModelDrawing(resourceID); });
+    renderComponent->Init(Config::Batching::ModelBatchingByResourceSettings(),
+                          m_vertexAttributes,
+                          m_instancedAttributes,
+                          [&, resourceID]() {
+                            ConfigureShaderForTransformedModelDrawing(
+                              resourceID);
+                          });
   }
 
   return renderComponent;

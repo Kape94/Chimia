@@ -4,9 +4,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
-#include "ModelRenderingComponent.h"
-#include "ObjectTable.h"
-#include "TriangleMeshComponent.h"
+#include "GenericRenderer.h"
 #include "Types.h"
 
 #include <glm/mat4x4.hpp>
@@ -51,19 +49,17 @@ public:
   void DeleteStaticModel(const ModelInstanceID& instanceID);
 
 private:
-  TriangleMeshComponent* FetchTriangleRenderComponentForTexture(
-    const TextureID& textureID);
-  ModelRenderingComponent* FetchModelRenderComponentForTexture(
-    const TextureID& textureID);
+  TexturedRendererImpl(
+    const unsigned id,
+    const Rendering::ShaderAttributes& vertexAttributes,
+    const Rendering::ShaderAttributes& instancedAttributes,
+    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
-  void ConfigureShaderForTriangleDrawing(const TextureID& textureID);
-  void ConfigureShaderForTransformedModelDrawing(const TextureID& textureID);
-
-  DEFAULT_CONSTUCTIBLE(TexturedRendererImpl)
+  NON_DEFAULT_CONSTRUCTIBLE(TexturedRendererImpl)
   NON_COPYABLE_NON_MOVABLE(TexturedRendererImpl)
 
-  ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;
-  ObjectTable<ModelRenderingComponent> m_modelComponents;
+  GenericRenderer m_renderer;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

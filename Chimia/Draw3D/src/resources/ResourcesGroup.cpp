@@ -67,11 +67,27 @@ ResourcesGroup::FindMaterial(const std::string& tag) const
 
 // ----------------------------------------------------------------------------
 
+MaterialID
+ResourcesGroup::FirstMaterial() const
+{
+  return m_materials.front().resource;
+}
+
+// ----------------------------------------------------------------------------
+
 TextureID
 ResourcesGroup::FindTexture(const std::string& tag) const
 {
   const TextureID defaultValue = Draw3DPrivate::CreateTextureID(0);
   return FindByTag(m_textures, tag, defaultValue);
+}
+
+// ----------------------------------------------------------------------------
+
+TextureID
+ResourcesGroup::FirstTexture() const
+{
+  return m_textures.front().resource;
 }
 
 // ----------------------------------------------------------------------------

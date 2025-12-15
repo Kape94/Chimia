@@ -29,7 +29,10 @@ public:
   bool HasTextures() const;
 
   MaterialID FindMaterial(const std::string& tag) const;
+  MaterialID FirstMaterial() const;
+
   TextureID FindTexture(const std::string& tag) const;
+  TextureID FirstTexture() const;
 
 private:
   template<typename ResourceType>

@@ -4,8 +4,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
-#include "ModelRenderingComponent.h"
-#include "TriangleMeshComponent.h"
+#include "GenericRenderer.h"
 #include "Types.h"
 
 #include <glm/mat4x4.hpp>
@@ -48,11 +47,17 @@ private:
   void ConfigureShaderForTriangleDrawing();
   void ConfigureShaderForTransformedModelDrawing();
 
-  DEFAULT_CONSTUCTIBLE(VertexColoredRendererImpl)
+  VertexColoredRendererImpl(
+    const unsigned id,
+    const Rendering::ShaderAttributes& vertexAttributes,
+    const Rendering::ShaderAttributes& instancedAttributes,
+    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+
+  NON_DEFAULT_CONSTRUCTIBLE(VertexColoredRendererImpl)
   NON_COPYABLE_NON_MOVABLE(VertexColoredRendererImpl)
 
-  TriangleMeshComponent m_triangleMeshComponent;
-  ModelRenderingComponent m_modelComponent;
+  GenericRenderer m_renderer;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

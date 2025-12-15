@@ -9,6 +9,7 @@ add_library(${TARGET_NAME}
     src/Illumination.cpp
     src/Model.cpp
     src/ModelRendering.cpp
+    src/ResourceGroupHelper.cpp
     src/Triangle.cpp
     
     src/batch/BatchUtils.cpp

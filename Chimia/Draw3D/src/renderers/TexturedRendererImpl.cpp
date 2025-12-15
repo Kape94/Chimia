@@ -1,18 +1,14 @@
 #include "TexturedRendererImpl.h"
 
 #include "CameraPrivate.h"
-#include "Config.h"
 #include "Core/Types.h"
-#include "Draw3DPrivate.h"
-#include "InternalTypes.h"
-#include "ModelRenderingComponent.h"
+#include "ResourceGroupHelper.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Rendering/TextureUnit.h"
-#include "TriangleMeshComponent.h"
 #include "Types.h"
 #include "eRendererType.h"
 
@@ -23,23 +19,46 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
+void
+ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
+{
+  const TextureID textureID = resource.FirstTexture();
+  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
+  if (texture == nullptr) {
+    return;
+  }
 
-static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
-  Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-  Chimia::Rendering::ShaderAttribute::Float(1 /*texCoord*/, 2)
-};
+  Chimia::Rendering::Shader& shader = Shaders::Textured();
+  shader.Use();
 
-static const Chimia::Rendering::ShaderAttributes
-  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
-    Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-    Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
-  };
+  CameraPrivate::SetCameraOnShader(shader);
 
-constexpr unsigned RENDERER_ID = static_cast<unsigned>(eRendererType::TEXTURED);
-constexpr unsigned NO_MATERIAL = 0;
-constexpr unsigned NO_RESOURCE_GROUP = 0;
+  constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
+
+  texture->Use(TEXTURE_UNIT);
+  shader.SetUniform("tex", TEXTURE_UNIT);
+}
+
+void
+ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
+{
+  const TextureID textureID = resource.FirstTexture();
+  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
+  if (texture == nullptr) {
+    return;
+  }
+
+  Chimia::Rendering::Shader& shader = Shaders::TexturedWithInstancedTransform();
+  shader.Use();
+
+  CameraPrivate::SetCameraOnShader(shader);
+
+  constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
+
+  texture->Use(TEXTURE_UNIT);
+  shader.SetUniform("tex", TEXTURE_UNIT);
+}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -47,8 +66,45 @@ constexpr unsigned NO_RESOURCE_GROUP = 0;
 TexturedRendererImpl&
 TexturedRendererImpl::getInstance()
 {
-  static TexturedRendererImpl renderer;
+  static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
+    Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
+    Chimia::Rendering::ShaderAttribute::Float(1 /*texCoord*/, 2)
+  };
+
+  static const Chimia::Rendering::ShaderAttributes
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
+      Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
+      Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
+    };
+
+  constexpr unsigned RENDERER_ID =
+    static_cast<unsigned>(eRendererType::TEXTURED);
+
+  static TexturedRendererImpl renderer(
+    RENDERER_ID,
+    VERTEX_ATTRIBUTES,
+    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+    ConfigureShaderForTriangleDrawing,
+    ConfigureShaderForTransformedModelDrawing);
   return renderer;
+}
+
+// ----------------------------------------------------------------------------
+
+TexturedRendererImpl::TexturedRendererImpl(
+  const unsigned id,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instancedAttributes,
+  void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  : m_renderer(id,
+               vertexAttributes,
+               instancedAttributes,
+               setupShaderForTriangleRendering,
+               setupShaderForInstancedRendering)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -72,15 +128,16 @@ TexturedRendererImpl::DrawTriangle(const glm::vec3& p1,
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t TEX_COORD2_SIZE = sizeof(glm::vec2);
 
-  auto renderComponent = FetchTriangleRenderComponentForTexture(textureID);
-  renderComponent->DrawTriangle({
-    { &p1, POS3_SIZE },
-    { &p1TexCoord, TEX_COORD2_SIZE },
-    { &p2, POS3_SIZE },
-    { &p2TexCoord, TEX_COORD2_SIZE },
-    { &p3, POS3_SIZE },
-    { &p3TexCoord, TEX_COORD2_SIZE },
-  });
+  m_renderer.DrawTriangle(
+    {
+      { &p1, POS3_SIZE },
+      { &p1TexCoord, TEX_COORD2_SIZE },
+      { &p2, POS3_SIZE },
+      { &p2TexCoord, TEX_COORD2_SIZE },
+      { &p3, POS3_SIZE },
+      { &p3TexCoord, TEX_COORD2_SIZE },
+    },
+    ResourceGroupHelper::GetResourceGroup(textureID));
 }
 
 // ----------------------------------------------------------------------------
@@ -89,8 +146,8 @@ void
 TexturedRendererImpl::DrawTriangles(const RawArrayView& vertexDataArray,
                                     const TextureID& textureID)
 {
-  auto renderComponent = FetchTriangleRenderComponentForTexture(textureID);
-  renderComponent->DrawTriangles(vertexDataArray);
+  m_renderer.DrawTriangles(vertexDataArray,
+                           ResourceGroupHelper::GetResourceGroup(textureID));
 }
 
 // ----------------------------------------------------------------------------
@@ -99,15 +156,8 @@ TriangleMeshID
 TexturedRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
                                          const TextureID& textureID)
 {
-  auto renderComponent = FetchTriangleRenderComponentForTexture(textureID);
-  const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
-
-  return Draw3DPrivate::CreateTriangleMeshID(
-    RENDERER_ID,
-    instanceID,
-    NO_MATERIAL,
-    Draw3DPrivate::GetTextureIDValue(textureID),
-    NO_RESOURCE_GROUP);
+  return m_renderer.AddStaticTriangles(
+    vertexData, ResourceGroupHelper::GetResourceGroup(textureID));
 }
 
 // ----------------------------------------------------------------------------
@@ -115,53 +165,7 @@ TexturedRendererImpl::AddStaticTriangles(const RawDataView& vertexData,
 void
 TexturedRendererImpl::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [_, instanceIDValue, __, textureIDValue, ___] =
-    Draw3DPrivate::GetTriangleMeshIDValues(meshID);
-
-  auto renderComponent = FetchTriangleRenderComponentForTexture(
-    Draw3DPrivate::CreateTextureID(textureIDValue));
-  renderComponent->DeleteStaticMesh(instanceIDValue);
-}
-
-// ----------------------------------------------------------------------------
-
-TriangleMeshComponent*
-TexturedRendererImpl::FetchTriangleRenderComponentForTexture(
-  const TextureID& textureID)
-{
-  const unsigned idValue = Draw3DPrivate::GetTextureIDValue(textureID);
-  auto renderComponent = m_triangleMeshComponents.Find(idValue);
-  if (renderComponent == nullptr) {
-    renderComponent = m_triangleMeshComponents.Insert(idValue);
-
-    renderComponent->Init(
-      Config::Batching::TriangleBatchingByResourceSettings(),
-      VERTEX_ATTRIBUTES,
-      [&]() { ConfigureShaderForTriangleDrawing(textureID); });
-  }
-
-  return renderComponent;
-}
-
-// ----------------------------------------------------------------------------
-
-ModelRenderingComponent*
-TexturedRendererImpl::FetchModelRenderComponentForTexture(
-  const TextureID& textureID)
-{
-  const unsigned idValue = Draw3DPrivate::GetTextureIDValue(textureID);
-  auto renderComponent = m_modelComponents.Find(idValue);
-  if (renderComponent == nullptr) {
-    renderComponent = m_modelComponents.Insert(idValue);
-
-    renderComponent->Init(
-      Config::Batching::ModelBatchingByResourceSettings(),
-      VERTEX_ATTRIBUTES,
-      TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-      [&]() { ConfigureShaderForTransformedModelDrawing(textureID); });
-  }
-
-  return renderComponent;
+  m_renderer.DeleteStaticTriangles(meshID);
 }
 
 // ----------------------------------------------------------------------------
@@ -171,8 +175,8 @@ TexturedRendererImpl::DrawModelTransformed(const ModelID& modelID,
                                            const glm::mat4x4& transform,
                                            const TextureID& textureID)
 {
-  auto modelComponent = FetchModelRenderComponentForTexture(textureID);
-  modelComponent->DrawModel(modelID, { { &transform, sizeof(glm::mat4x4) } });
+  m_renderer.DrawModelTransformed(
+    modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
 }
 
 // ----------------------------------------------------------------------------
@@ -182,16 +186,8 @@ TexturedRendererImpl::AddStaticModel(const ModelID& modelID,
                                      const glm::mat4x4& transform,
                                      const TextureID& textureID)
 {
-  auto modelComponent = FetchModelRenderComponentForTexture(textureID);
-
-  const LocalModelInstanceID localInstanceID = modelComponent->AddStaticModel(
-    modelID, { { &transform, sizeof(glm::mat4x4) } });
-
-  return Draw3DPrivate::CreateModelInstanceID(
-    RENDERER_ID,
-    localInstanceID,
-    Draw3DPrivate::GetTextureIDValue(textureID),
-    NO_RESOURCE_GROUP);
+  return m_renderer.AddStaticModel(
+    modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
 }
 
 // ----------------------------------------------------------------------------
@@ -199,14 +195,7 @@ TexturedRendererImpl::AddStaticModel(const ModelID& modelID,
 void
 TexturedRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  auto [_, __, instanceIDValue, textureIDValue, ___] =
-    Draw3DPrivate::GetModelInstanceIDValues(instanceID);
-
-  const TextureID textureID = Draw3DPrivate::CreateTextureID(textureIDValue);
-  auto modelComponent = FetchModelRenderComponentForTexture(textureID);
-
-  modelComponent->DeleteStaticModel(
-    Draw3DPrivate::CreateLocalModelInstanceID(instanceID));
+  m_renderer.DeleteStaticModel(instanceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -214,54 +203,7 @@ TexturedRendererImpl::DeleteStaticModel(const ModelInstanceID& instanceID)
 void
 TexturedRendererImpl::Flush()
 {
-  m_triangleMeshComponents.ForEach(
-    [](TriangleMeshComponent& triangleRenderer) { triangleRenderer.Flush(); });
-  m_modelComponents.ForEach(
-    [](ModelRenderingComponent& modelRenderer) { modelRenderer.Flush(); });
-}
-
-// ----------------------------------------------------------------------------
-
-void
-TexturedRendererImpl::ConfigureShaderForTriangleDrawing(
-  const TextureID& textureID)
-{
-  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
-  if (texture == nullptr) {
-    return;
-  }
-
-  Chimia::Rendering::Shader& shader = Shaders::Textured();
-  shader.Use();
-
-  CameraPrivate::SetCameraOnShader(shader);
-
-  constexpr auto TEXTURE_UNIT = Rendering::TextureUnit::UNIT_1;
-
-  texture->Use(TEXTURE_UNIT);
-  shader.SetUniform("tex", TEXTURE_UNIT);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-TexturedRendererImpl::ConfigureShaderForTransformedModelDrawing(
-  const TextureID& textureID)
-{
-  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
-  if (texture == nullptr) {
-    return;
-  }
-
-  Chimia::Rendering::Shader& shader = Shaders::TexturedWithInstancedTransform();
-  shader.Use();
-
-  CameraPrivate::SetCameraOnShader(shader);
-
-  constexpr auto TEXTURE_UNIT = Rendering::TextureUnit::UNIT_1;
-
-  texture->Use(TEXTURE_UNIT);
-  shader.SetUniform("tex", TEXTURE_UNIT);
+  m_renderer.Flush();
 }
 
 // ----------------------------------------------------------------------------
