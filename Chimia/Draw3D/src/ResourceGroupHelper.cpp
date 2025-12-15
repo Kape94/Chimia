@@ -15,7 +15,18 @@ namespace ResourceGroupHelperInternal {
 ObjectTable<unsigned> textureGroups;
 ObjectTable<unsigned> materialGroups;
 
+const ResourceGroupID EMPTY_RESOURCE =
+  ResourcesManager::GetInstance().CreateResourceGroup();
+
 static auto& resources = ResourcesManager::GetInstance();
+}
+
+// ----------------------------------------------------------------------------
+
+ResourceGroupID
+ResourceGroupHelper::GetEmptyResource()
+{
+  return ResourceGroupHelperInternal::EMPTY_RESOURCE;
 }
 
 // ----------------------------------------------------------------------------

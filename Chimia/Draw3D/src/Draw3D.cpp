@@ -23,9 +23,9 @@ Chimia::Draw3D::Initialize()
 
   Shaders::Initialize();
 
-  VertexColoredRendererImpl::getInstance().Init();
+  VertexColoredRendererImpl::GetRenderer().Init();
   LitRendererImpl::getInstance().Init();
-  TexturedRendererImpl::getInstance().Init();
+  TexturedRendererImpl::GetRenderer().Init();
   ColoredTexturedRendererImpl::getInstance().Init();
   LitWithVertexColorRendererImpl::getInstance().Init();
   TexturedLitRendererImpl::getInstance().Init();
@@ -37,9 +37,9 @@ Chimia::Draw3D::Initialize()
 void
 Chimia::Draw3D::Flush()
 {
-  VertexColoredRendererImpl::getInstance().Flush();
+  VertexColoredRendererImpl::GetRenderer().Flush();
   LitRendererImpl::getInstance().Flush();
-  TexturedRendererImpl::getInstance().Flush();
+  TexturedRendererImpl::GetRenderer().Flush();
   ColoredTexturedRendererImpl::getInstance().Flush();
   LitWithVertexColorRendererImpl::getInstance().Flush();
   TexturedLitRendererImpl::getInstance().Flush();

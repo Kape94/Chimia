@@ -3,8 +3,10 @@
 #include "ColoredTexturedLitRendererImpl.h"
 #include "ColoredTexturedRendererImpl.h"
 #include "Draw3DPrivate.h"
+#include "GenericRenderer.h"
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
+#include "ResourceGroupHelper.h"
 #include "ResourcesManager.h"
 #include "TexturedLitRendererImpl.h"
 #include "TexturedRendererImpl.h"
@@ -20,9 +22,9 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-auto& renderer = VertexColoredRendererImpl::getInstance();
+GenericRenderer& renderer = VertexColoredRendererImpl::GetRenderer();
 auto& litRenderer = LitRendererImpl::getInstance();
-auto& texturedRenderer = TexturedRendererImpl::getInstance();
+GenericRenderer& texturedRenderer = TexturedRendererImpl::GetRenderer();
 auto& texturedLitRenderer = TexturedLitRendererImpl::getInstance();
 auto& litVertexColoredRenderer = LitWithVertexColorRendererImpl::getInstance();
 auto& coloredTexturedRenderer = ColoredTexturedRendererImpl::getInstance();
@@ -49,7 +51,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR3: {
-      renderer.DrawModelTransformed(modelID, transform);
+      renderer.DrawModelTransformed(
+        modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
@@ -70,7 +73,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR3: {
-      return renderer.AddStaticModel(modelID, transform);
+      return renderer.AddStaticModel(
+        modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
       return litVertexColoredRenderer.AddStaticModel(modelID, transform);
@@ -122,7 +126,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_TEXCOORD2: {
-      texturedRenderer.DrawModelTransformed(modelID, transform, textureID);
+      texturedRenderer.DrawModelTransformed(
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
@@ -154,7 +159,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_TEXCOORD2: {
-      return texturedRenderer.AddStaticModel(modelID, transform, textureID);
+      return texturedRenderer.AddStaticModel(
+        modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
       return texturedLitRenderer.AddStaticModel(modelID, transform, textureID);

@@ -6,9 +6,7 @@
 #include "InternalTypes.h"
 #include "ModelRenderingComponent.h"
 #include "ResourcesManager.h"
-#include "Shaders.h"
 
-#include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
@@ -24,24 +22,6 @@ namespace {
 constexpr unsigned NO_MATERIAL = 0;
 constexpr unsigned NO_TEXTURE = 0;
 
-Chimia::Rendering::Shader&
-GetShaderForTriangleMeshDrawing()
-{
-  return Chimia::Draw3D::Config::IlluminationModel() ==
-             eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLitColoredTextured()
-           : Chimia::Draw3D::Shaders::PhongLitColoredTextured();
-}
-
-Chimia::Rendering::Shader&
-GetShaderForModelDrawing()
-{
-  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::
-               GouraudLitColoredTexturedWithInstancedTransform()
-           : Chimia::Draw3D::Shaders::
-               PhongLitColoredTexturedWithInstancedTransform();
-}
 }
 
 // ----------------------------------------------------------------------------
