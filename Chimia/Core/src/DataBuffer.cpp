@@ -140,6 +140,7 @@ DataBuffer::DeleteRawData()
 {
   if (data != nullptr) {
     free(data);
+    data = nullptr;
   }
 }
 

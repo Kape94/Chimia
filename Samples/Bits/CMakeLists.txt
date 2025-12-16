@@ -22,3 +22,6 @@ target_link_libraries(Samples_Bits_ex6 PRIVATE Samples_Bits_Dependencies)
 
 add_executable(Samples_Bits_ex7 ex7-processInfoUsage.cpp)
 target_link_libraries(Samples_Bits_ex7 PRIVATE Samples_Bits_Dependencies)
+
+add_executable(Samples_Bits_ex8 ex8-bufferOffloading.cpp)
+target_link_libraries(Samples_Bits_ex8 PRIVATE Samples_Bits_Dependencies)

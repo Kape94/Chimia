@@ -4,7 +4,9 @@ set(TARGET_NAME Chimia_Core)
 add_library(${TARGET_NAME}
     src/DataBuffer.cpp
     src/Diagnostics.cpp
+    src/DiskOffloadableDataBuffer.cpp
     src/Mesh.cpp
+    src/Random.cpp
     src/SchemaDataBuffer.cpp
 )
 

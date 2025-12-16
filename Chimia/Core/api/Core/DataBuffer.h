@@ -35,13 +35,13 @@ public:
   size_t GetMaximumSize() const;
 
   void Reset();
+  void Delete();
 
 private:
   void IncreaseSize(const size_t size);
 
   unsigned char* Allocate(const size_t size) const;
 
-  void Delete();
   void DeleteRawData();
 
   size_t RemainingSize() const;
