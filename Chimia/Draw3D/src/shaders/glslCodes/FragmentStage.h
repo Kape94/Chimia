@@ -15,7 +15,7 @@ namespace Fragment {
 inline const char* colored = R"(
     #version 330
 
-    in vec3 fragmentColor;
+    @include "fragmentInputLayout::C3"
 
     out vec4 outputColor;
 
@@ -27,7 +27,7 @@ inline const char* colored = R"(
 inline const char* gouraudLit = R"(
     #version 330
 
-    in vec3 fragmentColor;
+    @include "fragmentInputLayout::C3"
 
     out vec4 outputColor;
 
@@ -47,16 +47,9 @@ inline const char* phongLit = R"(
   
     uniform Material material;
   
-    uniform DirectionalLight directionalLights[MAX_LIGHTS];
-    uniform int nDirectionalLights;
+    @include "common::lightsUniforms"
   
-    uniform PointLight pointLights[MAX_LIGHTS];
-    uniform int nPointLights;
-  
-    uniform vec3 viewPosition;
-  
-    in vec3 fragmentPos;
-    in vec3 fragmentNorm;
+    @include "fragmentInputLayout::P3N3"
   
     out vec4 outputColor;
   
@@ -94,16 +87,9 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
   
     uniform Material material;
 
-    uniform DirectionalLight directionalLights[MAX_LIGHTS];
-    uniform int nDirectionalLights;
+    @include "common::lightsUniforms"
   
-    uniform PointLight pointLights[MAX_LIGHTS];
-    uniform int nPointLights;
-  
-    uniform vec3 viewPosition;
-  
-    in vec3 fragmentPos;
-    in vec3 fragmentNorm;
+    @include "fragmentInputLayout::P3N3"
   
     out vec4 outputColor;
   
@@ -139,17 +125,9 @@ inline const char* phongLitByVertexColor = R"(
       @include "common::materialType"
       @include "common::calculateLightsWithoutMaterial"
     
-      uniform DirectionalLight directionalLights[MAX_LIGHTS];
-      uniform int nDirectionalLights;
+      @include "common::lightsUniforms"
     
-      uniform PointLight pointLights[MAX_LIGHTS];
-      uniform int nPointLights;
-    
-      uniform vec3 viewPosition;
-    
-      in vec3 fragmentPos;
-      in vec3 fragmentColor;
-      in vec3 fragmentNorm;
+      @include "fragmentInputLayout::P3C3N3"
     
       out vec4 outputColor;
     
@@ -180,7 +158,7 @@ inline const char* phongLitByVertexColor = R"(
 inline const char* textured = R"(
       #version 330
 
-      in vec2 fragmentTexCoord;
+      @include "fragmentInputLayout::T2"
 
       out vec4 outputColor;
 
@@ -194,8 +172,7 @@ inline const char* textured = R"(
 inline const char* coloredTextured = R"(
       #version 330
 
-      in vec3 fragmentColor;
-      in vec2 fragmentTexCoord;
+      @include "fragmentInputLayout::C3T2"
 
       out vec4 outputColor;
 
@@ -209,8 +186,7 @@ inline const char* coloredTextured = R"(
 inline const char* gouraudLitTextured = R"(
       #version 330
 
-      in vec2 fragmentTexCoord;
-      in vec3 fragmentLightColor;
+      @include "fragmentInputLayout::T2Light"
 
       out vec4 outputColor;
 
@@ -229,17 +205,9 @@ inline const char* phongLitTextured = R"(
       @include "common::materialType"
       @include "common::calculateLightsWithoutMaterial"
     
-      uniform DirectionalLight directionalLights[MAX_LIGHTS];
-      uniform int nDirectionalLights;
-    
-      uniform PointLight pointLights[MAX_LIGHTS];
-      uniform int nPointLights;
-    
-      uniform vec3 viewPosition;
+      @include "common::lightsUniforms"
       
-      in vec3 fragmentPos;
-      in vec3 fragmentNorm;
-      in vec2 fragmentTexCoord;
+      @include "fragmentInputLayout::P3N3T2"
 
       out vec4 outputColor;
 
@@ -278,18 +246,9 @@ inline const char* phongLitColoredTextured = R"(
       @include "common::materialType"
       @include "common::calculateLightsWithoutMaterial"
     
-      uniform DirectionalLight directionalLights[MAX_LIGHTS];
-      uniform int nDirectionalLights;
-    
-      uniform PointLight pointLights[MAX_LIGHTS];
-      uniform int nPointLights;
-    
-      uniform vec3 viewPosition;
+      @include "common::lightsUniforms"
       
-      in vec3 fragmentPos;
-      in vec3 fragmentColor;
-      in vec3 fragmentNorm;
-      in vec2 fragmentTexCoord;
+      @include "fragmentInputLayout::P3C3N3T2"
 
       out vec4 fragColor;
 

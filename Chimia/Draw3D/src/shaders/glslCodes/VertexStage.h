@@ -15,8 +15,7 @@ namespace Vertex {
 inline const char* colored = R"(
     #version 330
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexColor;
+    @include "vertexInputLayout::P3C3"
 
     out vec3 fragmentColor;
 
@@ -31,9 +30,7 @@ inline const char* colored = R"(
 inline const char* coloredWithInstancedTransform = R"(
     #version 330
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexColor;
-    layout (location = 2) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3C3Instanced"
 
     out vec3 fragmentColor;
 
@@ -55,18 +52,11 @@ inline const char* gouraudLit = R"(
 
   uniform Material material;
 
-  uniform DirectionalLight directionalLights[MAX_LIGHTS];
-  uniform int nDirectionalLights;
-
-  uniform PointLight pointLights[MAX_LIGHTS];
-  uniform int nPointLights;
-
-  uniform vec3 viewPosition;
+  @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexNorm;
+  @include "vertexInputLayout::P3N3"
 
   out vec3 fragmentColor;
 
@@ -106,19 +96,11 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
   
     uniform Material material;
 
-    uniform DirectionalLight directionalLights[MAX_LIGHTS];
-    uniform int nDirectionalLights;
-  
-    uniform PointLight pointLights[MAX_LIGHTS];
-    uniform int nPointLights;
-  
-    uniform vec3 viewPosition;
+    @include "common::lightsUniforms"
   
     uniform mat4 cameraTransform;
   
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexNorm;
-    layout (location = 2) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3N3Instanced"
   
     out vec3 fragmentColor;
   
@@ -154,8 +136,7 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
 inline const char* phongLit = R"(
       #version 330
     
-      layout (location = 0) in vec3 vertexPos;
-      layout (location = 1) in vec3 vertexNorm;
+      @include "vertexInputLayout::P3N3"
 
       out vec3 fragmentPos;
       out vec3 fragmentNorm;
@@ -174,9 +155,7 @@ inline const char* phongLit = R"(
 inline const char* phongLitWithInstancedTransformAndMaterial = R"(
       #version 330
     
-      layout (location = 0) in vec3 vertexPos;
-      layout (location = 1) in vec3 vertexNorm;
-      layout (location = 2) in mat4 instanceTransform;
+      @include "vertexInputLayout::P3N3Instanced"
     
       out vec3 fragmentPos;
       out vec3 fragmentNorm;
@@ -199,19 +178,11 @@ inline const char* gouraudLitWithVertexColor = R"(
         @include "common::lightsTypes"
         @include "common::calculateLightsWithoutMaterial"
       
-        uniform DirectionalLight directionalLights[MAX_LIGHTS];
-        uniform int nDirectionalLights;
-      
-        uniform PointLight pointLights[MAX_LIGHTS];
-        uniform int nPointLights;
-      
-        uniform vec3 viewPosition;
+        @include "common::lightsUniforms"
       
         uniform mat4 cameraTransform;
       
-        layout (location = 0) in vec3 vertexPos;
-        layout (location = 1) in vec3 vertexColor;
-        layout (location = 2) in vec3 vertexNorm;
+        @include "vertexInputLayout::P3C3N3"
       
         out vec3 fragmentColor;
       
@@ -247,20 +218,11 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
           @include "common::lightsTypes"
           @include "common::calculateLightsWithoutMaterial"
         
-          uniform DirectionalLight directionalLights[MAX_LIGHTS];
-          uniform int nDirectionalLights;
-        
-          uniform PointLight pointLights[MAX_LIGHTS];
-          uniform int nPointLights;
-        
-          uniform vec3 viewPosition;
+          @include "common::lightsUniforms"
         
           uniform mat4 cameraTransform;
         
-          layout (location = 0) in vec3 vertexPos;
-          layout (location = 1) in vec3 vertexColor;
-          layout (location = 2) in vec3 vertexNorm;
-          layout (location = 3) in mat4 instanceTransform;
+          @include "vertexInputLayout::P3C3N3Instanced"
         
           out vec3 color;
         
@@ -297,9 +259,7 @@ inline const char* phongLitWithVertexColor = R"(
                     
             uniform mat4 cameraTransform;
           
-            layout (location = 0) in vec3 vertexPos;
-            layout (location = 1) in vec3 vertexColor;
-            layout (location = 2) in vec3 vertexNorm;
+            @include "vertexInputLayout::P3C3N3"
           
             out vec3 fragmentPos;
             out vec3 fragmentColor;
@@ -320,10 +280,7 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
             
               uniform mat4 cameraTransform;
             
-              layout (location = 0) in vec3 vertexPos;
-              layout (location = 1) in vec3 vertexColor;
-              layout (location = 2) in vec3 vertexNorm;
-              layout (location = 3) in mat4 instanceTransform;
+              @include "vertexInputLayout::P3C3N3Instanced"
             
               out vec3 fragmentPos;
               out vec3 fragmentColor;
@@ -342,8 +299,7 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
 inline const char* textured = R"(
       #version 330
 
-      layout (location = 0) in vec3 vertexPos;
-      layout (location = 1) in vec2 vertexTexCoord;
+      @include "vertexInputLayout::P3T2"
 
       out vec2 fragmentTexCoord;
 
@@ -358,9 +314,7 @@ inline const char* textured = R"(
 inline const char* texturedWithInstancedTransform = R"(
     #version 330
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec2 vertexTexCoord;
-    layout (location = 2) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3T2Instanced"
 
     out vec2 fragmentTexCoord;
 
@@ -375,9 +329,7 @@ inline const char* texturedWithInstancedTransform = R"(
 inline const char* coloredTextured = R"(
   #version 330
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexColor;
-  layout (location = 2) in vec2 vertexTexCoord;
+  @include "vertexInputLayout::P3C3T2"
 
   out vec3 fragmentColor;
   out vec2 fragmentTexCoord;
@@ -395,10 +347,7 @@ inline const char* coloredTextured = R"(
 inline const char* coloredTexturedWithInstancedTransform = R"(
 #version 330
 
-layout (location = 0) in vec3 vertexPos;
-layout (location = 1) in vec3 vertexColor;
-layout (location = 2) in vec2 vertexTexCoord;
-layout (location = 3) in mat4 instanceTransform;
+@include "vertexInputLayout::P3C3T2Instanced"
 
 out vec3 fragmentColor;
 out vec2 fragmentTexCoord;
@@ -420,19 +369,11 @@ inline const char* gouraudLitTextured = R"(
   @include "common::lightsTypes"
   @include "common::calculateLightsWithoutMaterial"
 
-  uniform DirectionalLight directionalLights[MAX_LIGHTS];
-  uniform int nDirectionalLights;
-
-  uniform PointLight pointLights[MAX_LIGHTS];
-  uniform int nPointLights;
-
-  uniform vec3 viewPosition;
+  @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexNorm;
-  layout (location = 2) in vec2 vertexTexCoord;
+  @include "vertexInputLayout::P3N3T2"
 
   out vec2 fragmentTexCoord;
   out vec3 fragmentLightColor;
@@ -473,19 +414,10 @@ inline const char* gouraudLitTexturedWithInstancedTransform = R"(
     @include "common::lightsTypes"
     @include "common::calculateLightsWithoutMaterial"
 
-    uniform DirectionalLight directionalLights[MAX_LIGHTS];
-    uniform int nDirectionalLights;
-
-    uniform PointLight pointLights[MAX_LIGHTS];
-    uniform int nPointLights;
-
-    uniform vec3 viewPosition;
+    @include "common::lightsUniforms"
     uniform mat4 cameraTransform;
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexNorm;
-    layout (location = 2) in vec2 vertexTexCoord;
-    layout (location = 3) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3N3T2Instanced"
 
     out vec2 fragmentTexCoord;
     out vec3 fragmentLightColor;
@@ -525,9 +457,7 @@ inline const char* phongLitTextured = R"(
 
   uniform mat4 cameraTransform;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexNorm;
-  layout (location = 2) in vec2 vertexTexCoord;
+  @include "vertexInputLayout::P3N3T2"
 
   out vec3 fragmentPos;
   out vec2 fragmentTexCoord;
@@ -548,10 +478,7 @@ inline const char* phongLitTexturedWithInstancedTransform = R"(
 
     uniform mat4 cameraTransform;
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexNorm;
-    layout (location = 2) in vec2 vertexTexCoord;
-    layout (location = 3) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3N3T2Instanced"
 
     out vec3 fragmentPos;
     out vec3 fragmentNorm;
@@ -573,20 +500,11 @@ inline const char* gouraudLitColoredTextured = R"(
   @include "common::lightsTypes"
   @include "common::calculateLightsWithoutMaterial"
 
-  uniform DirectionalLight directionalLights[MAX_LIGHTS];
-  uniform int nDirectionalLights;
-
-  uniform PointLight pointLights[MAX_LIGHTS];
-  uniform int nPointLights;
-
-  uniform vec3 viewPosition;
+  @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexColor;
-  layout (location = 2) in vec3 vertexNorm;
-  layout (location = 3) in vec2 vertexTexCoord;
+  @include "vertexInputLayout::P3C3N3T2"
 
   out vec2 fragmentTexCoord;
   out vec3 fragmentLightColor;
@@ -627,20 +545,10 @@ inline const char* gouraudLitColoredTexturedWithInstancedTransform = R"(
     @include "common::lightsTypes"
     @include "common::calculateLightsWithoutMaterial"
 
-    uniform DirectionalLight directionalLights[MAX_LIGHTS];
-    uniform int nDirectionalLights;
-
-    uniform PointLight pointLights[MAX_LIGHTS];
-    uniform int nPointLights;
-
-    uniform vec3 viewPosition;
+    @include "common::lightsUniforms"
     uniform mat4 cameraTransform;
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexColor;
-    layout (location = 2) in vec3 vertexNorm;
-    layout (location = 3) in vec2 vertexTexCoord;
-    layout (location = 4) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3C3N3T2Instanced"
 
     out vec2 fragmentTexCoord;
     out vec3 fragmentLightColor;
@@ -680,10 +588,7 @@ inline const char* phongLitColoredTextured = R"(
 
   uniform mat4 cameraTransform;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexColor;
-  layout (location = 2) in vec3 vertexNorm;
-  layout (location = 3) in vec2 vertexTexCoord;
+  @include "vertexInputLayout::P3C3N3T2"
 
   out vec3 fragmentPos;
   out vec3 fragmentColor;
@@ -706,11 +611,7 @@ inline const char* phongLitColoredTexturedWithInstancedTransform = R"(
 
     uniform mat4 cameraTransform;
 
-    layout (location = 0) in vec3 vertexPos;
-    layout (location = 1) in vec3 vertexColor;
-    layout (location = 2) in vec3 vertexNorm;
-    layout (location = 3) in vec2 vertexTexCoord;
-    layout (location = 4) in mat4 instanceTransform;
+    @include "vertexInputLayout::P3C3N3T2Instanced"
 
     out vec3 fragmentPos;
     out vec3 fragmentColor;

@@ -46,6 +46,18 @@ inline const char* lightsTypes = R"(
   };
 )";
 
+inline const char* lightsUniforms = R"(
+  @include "common::constants"
+
+  uniform DirectionalLight directionalLights[MAX_LIGHTS];
+  uniform int nDirectionalLights;
+
+  uniform PointLight pointLights[MAX_LIGHTS];
+  uniform int nPointLights;
+
+  uniform vec3 viewPosition;
+  )";
+
 inline const char* calculateLights = R"(
       @include "common::constants"
 
