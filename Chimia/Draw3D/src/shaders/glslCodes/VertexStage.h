@@ -15,33 +15,33 @@ namespace Vertex {
 inline const char* colored = R"(
     #version 330
 
-    layout (location = 0) in vec3 pos;
-    layout (location = 1) in vec3 color;
+    layout (location = 0) in vec3 vertexPos;
+    layout (location = 1) in vec3 vertexColor;
 
-    out vec3 vertexColor;
+    out vec3 fragmentColor;
 
     uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = cameraTransform * vec4(pos, 1.0);
-      vertexColor = color;
+      gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+      fragmentColor = vertexColor;
     }
   )";
 
 inline const char* coloredWithInstancedTransform = R"(
     #version 330
 
-    layout (location = 0) in vec3 pos;
-    layout (location = 1) in vec3 color;
-    layout (location = 2) in mat4 modelTransform;
+    layout (location = 0) in vec3 vertexPos;
+    layout (location = 1) in vec3 vertexColor;
+    layout (location = 2) in mat4 instanceTransform;
 
-    out vec3 vertexColor;
+    out vec3 fragmentColor;
 
     uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = cameraTransform * modelTransform * vec4(pos, 1.0);
-      vertexColor = color;
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+      fragmentColor = vertexColor;
     }
   )";
 
@@ -68,7 +68,7 @@ inline const char* gouraudLit = R"(
   layout (location = 0) in vec3 vertexPos;
   layout (location = 1) in vec3 vertexNorm;
 
-  out vec3 color;
+  out vec3 fragmentColor;
 
   void main()
   {
@@ -90,7 +90,7 @@ inline const char* gouraudLit = R"(
       );
     
       vec3 result = directional + point;
-	    color = result;
+	    fragmentColor = result;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
   }
@@ -118,14 +118,14 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
   
     layout (location = 0) in vec3 vertexPos;
     layout (location = 1) in vec3 vertexNorm;
-    layout (location = 2) in mat4 modelTransform;
+    layout (location = 2) in mat4 instanceTransform;
   
-    out vec3 color;
+    out vec3 fragmentColor;
   
     void main()
     {
-        vec3 pos = vec3(modelTransform * vec4(vertexPos, 1.0));
-        vec3 norm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+        vec3 pos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+        vec3 norm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
 
         vec3 directional = CalculateDirectionalLight(
           viewPosition, 
@@ -145,9 +145,9 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
         );
       
         vec3 result = directional + point;
-        color = result;
+        fragmentColor = result;
   
-        gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+        gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
     }
     )";
 
@@ -176,7 +176,7 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
     
       layout (location = 0) in vec3 vertexPos;
       layout (location = 1) in vec3 vertexNorm;
-      layout (location = 2) in mat4 modelTransform;
+      layout (location = 2) in mat4 instanceTransform;
     
       out vec3 fragmentPos;
       out vec3 fragmentNorm;
@@ -185,10 +185,10 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
 
       void main()
       {
-          fragmentPos = vec3(modelTransform * vec4(vertexPos, 1.0));
-          fragmentNorm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+          fragmentPos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+          fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
 
-          gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+          gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
       }
       )";
 
@@ -213,7 +213,7 @@ inline const char* gouraudLitWithVertexColor = R"(
         layout (location = 1) in vec3 vertexColor;
         layout (location = 2) in vec3 vertexNorm;
       
-        out vec3 color;
+        out vec3 fragmentColor;
       
         void main()
         {
@@ -234,7 +234,7 @@ inline const char* gouraudLitWithVertexColor = R"(
                           vertexColor);
           
             vec3 result = directional + point;
-            color = result;
+            fragmentColor = result;
       
             gl_Position = cameraTransform * vec4(vertexPos, 1.0);
         }
@@ -260,14 +260,14 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
           layout (location = 0) in vec3 vertexPos;
           layout (location = 1) in vec3 vertexColor;
           layout (location = 2) in vec3 vertexNorm;
-          layout (location = 3) in mat4 modelTransform;
+          layout (location = 3) in mat4 instanceTransform;
         
           out vec3 color;
         
           void main()
           {
-              vec3 pos = vec3(modelTransform * vec4(vertexPos, 1.0));
-              vec3 norm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+              vec3 pos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+              vec3 norm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
 
               vec3 directional = CalculateDirectionalLight(
                                 viewPosition, 
@@ -288,7 +288,7 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
               vec3 result = directional + point;
               color = result;
         
-              gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+              gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
           }
           )";
 
@@ -323,7 +323,7 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
               layout (location = 0) in vec3 vertexPos;
               layout (location = 1) in vec3 vertexColor;
               layout (location = 2) in vec3 vertexNorm;
-              layout (location = 3) in mat4 modelTransform;
+              layout (location = 3) in mat4 instanceTransform;
             
               out vec3 fragmentPos;
               out vec3 fragmentColor;
@@ -331,85 +331,85 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
             
               void main()
               {
-                  fragmentPos = vec3(modelTransform * vec4(vertexPos, 1.0));
+                  fragmentPos = vec3(instanceTransform * vec4(vertexPos, 1.0));
                   fragmentColor = vertexColor;
-                  fragmentNorm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+                  fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
             
-                  gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+                  gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
               }
               )";
 
 inline const char* textured = R"(
       #version 330
 
-      layout (location = 0) in vec3 pos;
-      layout (location = 1) in vec2 uv;
+      layout (location = 0) in vec3 vertexPos;
+      layout (location = 1) in vec2 vertexTexCoord;
 
-      out vec2 fragUV;
+      out vec2 fragmentTexCoord;
 
       uniform mat4 cameraTransform;
 
       void main() {
-        gl_Position = cameraTransform * vec4(pos, 1.0);
-        fragUV = uv;
+        gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+        fragmentTexCoord = vertexTexCoord;
       }
   )";
 
 inline const char* texturedWithInstancedTransform = R"(
     #version 330
 
-    layout (location = 0) in vec3 pos;
-    layout (location = 1) in vec2 uv;
-    layout (location = 2) in mat4 modelTransform;
+    layout (location = 0) in vec3 vertexPos;
+    layout (location = 1) in vec2 vertexTexCoord;
+    layout (location = 2) in mat4 instanceTransform;
 
-    out vec2 fragUV;
+    out vec2 fragmentTexCoord;
 
     uniform mat4 cameraTransform;
 
     void main() {
-      gl_Position = cameraTransform * modelTransform * vec4(pos, 1.0);
-      fragUV = uv;
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+      fragmentTexCoord = vertexTexCoord;
     }
 )";
 
 inline const char* coloredTextured = R"(
   #version 330
 
-  layout (location = 0) in vec3 pos;
-  layout (location = 1) in vec3 col;
-  layout (location = 2) in vec2 uv;
+  layout (location = 0) in vec3 vertexPos;
+  layout (location = 1) in vec3 vertexColor;
+  layout (location = 2) in vec2 vertexTexCoord;
 
   out vec3 fragmentColor;
-  out vec2 fragUV;
+  out vec2 fragmentTexCoord;
 
   uniform mat4 cameraTransform;
 
   void main() {
-    gl_Position = cameraTransform * vec4(pos, 1.0);
+    gl_Position = cameraTransform * vec4(vertexPos, 1.0);
 
-    fragmentColor = col;
-    fragUV = uv;
+    fragmentColor = vertexColor;
+    fragmentTexCoord = vertexTexCoord;
   }
 )";
 
 inline const char* coloredTexturedWithInstancedTransform = R"(
 #version 330
 
-layout (location = 0) in vec3 pos;
-layout (location = 1) in vec3 col;
-layout (location = 2) in vec2 uv;
-layout (location = 3) in mat4 modelTransform;
+layout (location = 0) in vec3 vertexPos;
+layout (location = 1) in vec3 vertexColor;
+layout (location = 2) in vec2 vertexTexCoord;
+layout (location = 3) in mat4 instanceTransform;
 
 out vec3 fragmentColor;
-out vec2 fragUV;
+out vec2 fragmentTexCoord;
 
 uniform mat4 cameraTransform;
 
 void main() {
-  gl_Position = cameraTransform * modelTransform * vec4(pos, 1.0);
+  gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
 
-  fragmentColor = col;
-  fragUV = uv;
+  fragmentColor = vertexColor;
+  fragmentTexCoord = vertexTexCoord;
 }
 )";
 
@@ -485,14 +485,14 @@ inline const char* gouraudLitTexturedWithInstancedTransform = R"(
     layout (location = 0) in vec3 vertexPos;
     layout (location = 1) in vec3 vertexNorm;
     layout (location = 2) in vec2 vertexTexCoord;
-    layout (location = 3) in mat4 modelTransform;
+    layout (location = 3) in mat4 instanceTransform;
 
     out vec2 fragmentTexCoord;
     out vec3 fragmentLightColor;
 
     void main() {
-      vec3 pos = vec3(modelTransform * vec4(vertexPos, 1.0));
-      vec3 norm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+      vec3 pos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+      vec3 norm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
       vec3 neutralColor = vec3(1.0, 1.0, 1.0);
 
       vec3 directional = CalculateDirectionalLight(
@@ -516,7 +516,7 @@ inline const char* gouraudLitTexturedWithInstancedTransform = R"(
       fragmentLightColor = result;
       fragmentTexCoord = vertexTexCoord;
 
-      gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
     }
 )";
 
@@ -551,18 +551,18 @@ inline const char* phongLitTexturedWithInstancedTransform = R"(
     layout (location = 0) in vec3 vertexPos;
     layout (location = 1) in vec3 vertexNorm;
     layout (location = 2) in vec2 vertexTexCoord;
-    layout (location = 3) in mat4 modelTransform;
+    layout (location = 3) in mat4 instanceTransform;
 
     out vec3 fragmentPos;
-    out vec2 fragmentTexCoord;
     out vec3 fragmentNorm;
+    out vec2 fragmentTexCoord;
 
     void main() {
-      fragmentPos = vec3(modelTransform * vec4(vertexPos, 1.0));
-      fragmentNorm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+      fragmentPos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+      fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
       fragmentTexCoord = vertexTexCoord;
 
-      gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
     }
 )";
 
@@ -640,14 +640,14 @@ inline const char* gouraudLitColoredTexturedWithInstancedTransform = R"(
     layout (location = 1) in vec3 vertexColor;
     layout (location = 2) in vec3 vertexNorm;
     layout (location = 3) in vec2 vertexTexCoord;
-    layout (location = 4) in mat4 modelTransform;
+    layout (location = 4) in mat4 instanceTransform;
 
     out vec2 fragmentTexCoord;
     out vec3 fragmentLightColor;
 
     void main() {
-      vec3 pos = vec3(modelTransform * vec4(vertexPos, 1.0));
-      vec3 norm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+      vec3 pos = vec3(instanceTransform * vec4(vertexPos, 1.0));
+      vec3 norm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
       vec3 neutralColor = vec3(1.0, 1.0, 1.0);
 
       vec3 directional = CalculateDirectionalLight(
@@ -671,7 +671,7 @@ inline const char* gouraudLitColoredTexturedWithInstancedTransform = R"(
       fragmentLightColor = result * vertexColor;
       fragmentTexCoord = vertexTexCoord;
 
-      gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
     }
 )";
 
@@ -687,8 +687,8 @@ inline const char* phongLitColoredTextured = R"(
 
   out vec3 fragmentPos;
   out vec3 fragmentColor;
-  out vec2 fragmentTexCoord;
   out vec3 fragmentNorm;
+  out vec2 fragmentTexCoord;
 
   void main()
   {
@@ -710,7 +710,7 @@ inline const char* phongLitColoredTexturedWithInstancedTransform = R"(
     layout (location = 1) in vec3 vertexColor;
     layout (location = 2) in vec3 vertexNorm;
     layout (location = 3) in vec2 vertexTexCoord;
-    layout (location = 4) in mat4 modelTransform;
+    layout (location = 4) in mat4 instanceTransform;
 
     out vec3 fragmentPos;
     out vec3 fragmentColor;
@@ -718,12 +718,12 @@ inline const char* phongLitColoredTexturedWithInstancedTransform = R"(
     out vec3 fragmentNorm;
 
     void main() {
-      fragmentPos = vec3(modelTransform * vec4(vertexPos, 1.0));
+      fragmentPos = vec3(instanceTransform * vec4(vertexPos, 1.0));
       fragmentColor = vertexColor;
-      fragmentNorm = mat3(transpose(inverse(modelTransform))) * vertexNorm;
+      fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
       fragmentTexCoord = vertexTexCoord;
 
-      gl_Position = cameraTransform * modelTransform * vec4(vertexPos, 1.0);
+      gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
     }
 )";
 

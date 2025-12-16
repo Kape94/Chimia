@@ -15,25 +15,25 @@ namespace Fragment {
 inline const char* colored = R"(
     #version 330
 
-    in vec3 vertexColor;
+    in vec3 fragmentColor;
 
-    out vec4 fragColor;
+    out vec4 outputColor;
 
     void main() {
-      fragColor = vec4(vertexColor, 1.0);
+      outputColor = vec4(fragmentColor, 1.0);
     }
   )";
 
 inline const char* gouraudLit = R"(
     #version 330
 
-    in vec3 color;
+    in vec3 fragmentColor;
 
-    out vec4 fragColor;
+    out vec4 outputColor;
 
     void main()
     {
-      fragColor = vec4(color, 1.0f);
+      outputColor = vec4(fragmentColor, 1.0f);
     }
   )";
 
@@ -58,7 +58,7 @@ inline const char* phongLit = R"(
     in vec3 fragmentPos;
     in vec3 fragmentNorm;
   
-    out vec4 fragColor;
+    out vec4 outputColor;
   
     void main()
     {
@@ -80,7 +80,7 @@ inline const char* phongLit = R"(
         );
       
         vec3 result = directional + point;
-        fragColor = vec4(result, 1.0);
+        outputColor = vec4(result, 1.0);
     }
     )";
 
@@ -105,7 +105,7 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
     in vec3 fragmentPos;
     in vec3 fragmentNorm;
   
-    out vec4 fragColor;
+    out vec4 outputColor;
   
     void main()
     {
@@ -127,7 +127,7 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
         );
       
         vec3 result = directional + point;
-        fragColor = vec4(result, 1.0f);
+        outputColor = vec4(result, 1.0f);
     }
     )";
 
@@ -151,7 +151,7 @@ inline const char* phongLitByVertexColor = R"(
       in vec3 fragmentColor;
       in vec3 fragmentNorm;
     
-      out vec4 fragColor;
+      out vec4 outputColor;
     
       void main()
       {
@@ -173,21 +173,21 @@ inline const char* phongLitByVertexColor = R"(
           );
         
           vec3 result = directional + point;
-          fragColor = vec4(result, 1.0);
+          outputColor = vec4(result, 1.0);
       }
       )";
 
 inline const char* textured = R"(
       #version 330
 
-      in vec2 fragUV;
+      in vec2 fragmentTexCoord;
 
-      out vec4 fragColor;
+      out vec4 outputColor;
 
       uniform sampler2D tex;
 
       void main() {
-        fragColor = texture(tex, fragUV);
+        outputColor = texture(tex, fragmentTexCoord);
       }
     )";
 
@@ -195,14 +195,14 @@ inline const char* coloredTextured = R"(
       #version 330
 
       in vec3 fragmentColor;
-      in vec2 fragUV;
+      in vec2 fragmentTexCoord;
 
-      out vec4 fragColor;
+      out vec4 outputColor;
 
       uniform sampler2D tex;
 
       void main() {
-        fragColor = vec4(fragmentColor * vec3(texture(tex, fragUV)), 1.0);
+        outputColor = vec4(fragmentColor * vec3(texture(tex, fragmentTexCoord)), 1.0);
       }
     )";
 
@@ -212,12 +212,12 @@ inline const char* gouraudLitTextured = R"(
       in vec2 fragmentTexCoord;
       in vec3 fragmentLightColor;
 
-      out vec4 fragColor;
+      out vec4 outputColor;
 
       uniform sampler2D tex;
 
       void main() {
-        fragColor = vec4(fragmentLightColor, 1.0) * texture(tex, fragmentTexCoord);
+        outputColor = vec4(fragmentLightColor, 1.0) * texture(tex, fragmentTexCoord);
       }
     )";
 
@@ -238,10 +238,10 @@ inline const char* phongLitTextured = R"(
       uniform vec3 viewPosition;
       
       in vec3 fragmentPos;
-      in vec2 fragmentTexCoord;
       in vec3 fragmentNorm;
+      in vec2 fragmentTexCoord;
 
-      out vec4 fragColor;
+      out vec4 outputColor;
 
       uniform sampler2D tex;
 
@@ -266,7 +266,7 @@ inline const char* phongLitTextured = R"(
           );
         
           vec3 result = directional + point;
-          fragColor = vec4(result, 1.0);
+          outputColor = vec4(result, 1.0);
       }
     )";
 
@@ -288,8 +288,8 @@ inline const char* phongLitColoredTextured = R"(
       
       in vec3 fragmentPos;
       in vec3 fragmentColor;
-      in vec2 fragmentTexCoord;
       in vec3 fragmentNorm;
+      in vec2 fragmentTexCoord;
 
       out vec4 fragColor;
 
