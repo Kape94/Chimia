@@ -224,7 +224,7 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
         
           @include "vertexInputLayout::P3C3N3Instanced"
         
-          out vec3 color;
+          out vec3 fragmentColor;
         
           void main()
           {
@@ -248,7 +248,7 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
                             vertexColor);
             
               vec3 result = directional + point;
-              color = result;
+              fragmentColor = result;
         
               gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
           }

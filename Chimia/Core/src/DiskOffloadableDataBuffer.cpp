@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
+#include <vector>
 
 //-----------------------------------------------------------------------------
 
@@ -202,13 +203,13 @@ DiskOffloadableDataBuffer::PullBack()
     Diagnostics::Error(1, "Failed to open disk offloaded file for restoring");
   }
 
-  char readBuffer[m_offloadedSizeInBytes];
-  inFile.read(readBuffer, m_offloadedSizeInBytes);
+  std::vector<char> readBuffer(m_offloadedSizeInBytes);
+  inFile.read(readBuffer.data(), m_offloadedSizeInBytes);
   inFile.close();
   std::remove(m_fileNameInDisk.c_str());
 
   m_inMemoryBuffer.Resize(m_offloadedSizeInBytes);
-  m_inMemoryBuffer.Append({ readBuffer, m_offloadedSizeInBytes });
+  m_inMemoryBuffer.Append(RawDataView{readBuffer.data(), m_offloadedSizeInBytes});
   m_fileNameInDisk = "";
   m_offloadedSizeInBytes = 0;
 }
