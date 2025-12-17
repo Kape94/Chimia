@@ -6,7 +6,6 @@
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 #include "eRendererType.h"
 
@@ -42,25 +41,11 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 GenericRenderer&
 VertexColoredRendererImpl::GetRenderer()
 {
-  static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
-    Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3)
-  };
-
-  static const Chimia::Rendering::ShaderAttributes
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
-      Chimia::Rendering::ShaderAttribute::Float(2 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4)
-    };
-
   constexpr unsigned RENDERER_ID =
     static_cast<unsigned>(eRendererType::VERTEX_COLORED);
 
   static GenericRenderer renderer(RENDERER_ID,
-                                  VERTEX_ATTRIBUTES,
-                                  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                                  eVertexLayout::POSITION3_COLOR3,
                                   ConfigureForTriangleDrawing,
                                   ConfigureForInstancedDrawing);
   return renderer;

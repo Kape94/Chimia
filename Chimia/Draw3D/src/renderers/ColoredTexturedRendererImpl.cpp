@@ -7,7 +7,6 @@
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Rendering/TextureUnit.h"
 #include "Types.h"
 #include "eRendererType.h"
@@ -81,23 +80,8 @@ ColoredTexturedRendererImpl::GetRenderer()
   constexpr unsigned RENDERER_ID =
     static_cast<unsigned>(eRendererType::COLORED_TEXTURED);
 
-  static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
-    Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(2 /*texCoord*/, 2)
-  };
-
-  static const Chimia::Rendering::ShaderAttributes
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
-      Chimia::Rendering::ShaderAttribute::Float(3 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(6 /*transform*/, 4)
-    };
-
   static GenericRenderer renderer(RENDERER_ID,
-                                  VERTEX_ATTRIBUTES,
-                                  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
+                                  eVertexLayout::POSITION3_COLOR3_TEXCOORD2,
                                   ConfigureShaderForTriangleDrawing,
                                   ConfigureShaderForTransformedModelDrawing);
   return renderer;

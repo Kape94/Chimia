@@ -8,7 +8,6 @@
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Rendering/TextureUnit.h"
 #include "Types.h"
 #include "eRendererType.h"
@@ -87,29 +86,14 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
 GenericRenderer&
 ColoredTexturedLitRendererImpl::GetRenderer()
 {
-  static const Chimia::Rendering::ShaderAttributes VERTEX_ATTRIBUTES{
-    Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(2 /*normal*/, 3),
-    Chimia::Rendering::ShaderAttribute::Float(3 /*texCoord*/, 2)
-  };
-
-  static const Chimia::Rendering::ShaderAttributes
-    TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES{
-      Chimia::Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(5 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(6 /*transform*/, 4),
-      Chimia::Rendering::ShaderAttribute::Float(7 /*transform*/, 4)
-    };
-
   constexpr unsigned RENDERER_ID =
     static_cast<unsigned>(eRendererType::COLORED_TEXTURED_LIT);
 
-  static GenericRenderer renderer(RENDERER_ID,
-                                  VERTEX_ATTRIBUTES,
-                                  TRANSFORMED_MODELS_INSTANCE_ATTRIBUTES,
-                                  ConfigureShaderForTriangleDrawing,
-                                  ConfigureShaderForTransformedModelDrawing);
+  static GenericRenderer renderer(
+    RENDERER_ID,
+    eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2,
+    ConfigureShaderForTriangleDrawing,
+    ConfigureShaderForTransformedModelDrawing);
   return renderer;
 }
 

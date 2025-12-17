@@ -6,6 +6,7 @@
 #include "InternalTypes.h"
 #include "ModelRenderingComponent.h"
 #include "ResourcesManager.h"
+#include "VertexLayoutAttributes.h"
 
 #include "Rendering/ShaderAttribute.h"
 #include "TriangleMeshComponent.h"
@@ -22,6 +23,22 @@ namespace {
 constexpr unsigned NO_MATERIAL = 0;
 constexpr unsigned NO_TEXTURE = 0;
 
+}
+
+// ----------------------------------------------------------------------------
+
+GenericRenderer::GenericRenderer(
+  const unsigned id,
+  const eVertexLayout& vertexLayout,
+  void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  : m_id(id)
+  , m_setupShaderForTriangleRendering(setupShaderForTriangleRendering)
+  , m_setupShaderForInstancedRendering(setupShaderForInstancedRendering)
+{
+  const VertexLayoutAttributes layout = GetAttributesForLayout(vertexLayout);
+  m_vertexAttributes = layout.vertexAttributes;
+  m_instancedAttributes = layout.instancedAttributes;
 }
 
 // ----------------------------------------------------------------------------

@@ -28,6 +28,7 @@ add_library(${TARGET_NAME}
     src/renderers/TexturedRendererImpl.cpp
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/VertexColoredRendererImpl.cpp
+    src/renderers/VertexLayoutAttributes.cpp
 
     src/resources/Resources.cpp
     src/resources/ResourcesGroup.cpp 

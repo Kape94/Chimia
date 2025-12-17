@@ -25,6 +25,12 @@ class GenericRenderer
 public:
   GenericRenderer(
     const unsigned id,
+    const eVertexLayout& vertexLayout,
+    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+
+  GenericRenderer(
+    const unsigned id,
     const Rendering::ShaderAttributes& vertexAttributes,
     const Rendering::ShaderAttributes& instancedAttributes,
     void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
@@ -68,8 +74,8 @@ private:
   NON_COPYABLE_NON_MOVABLE(GenericRenderer)
 
   const unsigned m_id;
-  const Rendering::ShaderAttributes m_vertexAttributes;
-  const Rendering::ShaderAttributes m_instancedAttributes;
+  Rendering::ShaderAttributes m_vertexAttributes;
+  Rendering::ShaderAttributes m_instancedAttributes;
 
   void (*const m_setupShaderForTriangleRendering)(const ResourcesGroup&) =
     nullptr;
