@@ -14,6 +14,9 @@
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 namespace ColoredTexturedRendererImpl {
+void
+Init();
+
 GenericRenderer&
 GetRenderer();
 

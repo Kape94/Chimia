@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
+#include "Renderers.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
@@ -10,7 +11,6 @@
 #include "Rendering/Shader.h"
 #include "Rendering/TextureUnit.h"
 #include "Types.h"
-#include "eRendererType.h"
 
 // ----------------------------------------------------------------------------
 
@@ -78,6 +78,19 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
   texture->Use(TEXTURE_UNIT);
   shader.SetUniform("tex", TEXTURE_UNIT);
 }
+
+GenericRenderer* g_renderer = nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TexturedLitRendererImpl::Init()
+{
+  g_renderer =
+    &Renderers::CreateRenderer(eVertexLayout::POSITION3_NORMAL3_TEXCOORD2,
+                               ConfigureShaderForTriangleDrawing,
+                               ConfigureShaderForTransformedModelDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -85,16 +98,7 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 GenericRenderer&
 TexturedLitRendererImpl::GetRenderer()
 {
-  constexpr unsigned RENDERER_ID =
-    static_cast<unsigned>(eRendererType::TEXTURED_LIT);
-
-  static GenericRenderer renderer(RENDERER_ID,
-                                  eVertexLayout::POSITION3_NORMAL3_TEXCOORD2,
-                                  ConfigureShaderForTriangleDrawing,
-                                  ConfigureShaderForTransformedModelDrawing
-
-  );
-  return renderer;
+  return *g_renderer;
 }
 
 // ----------------------------------------------------------------------------

@@ -23,18 +23,13 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 class GenericRenderer
 {
 public:
-  GenericRenderer(
-    const unsigned id,
-    const eVertexLayout& vertexLayout,
-    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+  DEFAULT_CONSTUCTIBLE(GenericRenderer)
 
-  GenericRenderer(
-    const unsigned id,
-    const Rendering::ShaderAttributes& vertexAttributes,
-    const Rendering::ShaderAttributes& instancedAttributes,
-    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+  void Create(const unsigned id,
+              const Rendering::ShaderAttributes& vertexAttributes,
+              const Rendering::ShaderAttributes& instancedAttributes,
+              void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+              void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
   void Init();
 
@@ -70,17 +65,14 @@ private:
   void ConfigureShaderForTransformedModelDrawing(
     const ResourceGroupID& textureID);
 
-  NON_DEFAULT_CONSTRUCTIBLE(GenericRenderer)
   NON_COPYABLE_NON_MOVABLE(GenericRenderer)
 
-  const unsigned m_id;
+  unsigned m_id;
   Rendering::ShaderAttributes m_vertexAttributes;
   Rendering::ShaderAttributes m_instancedAttributes;
 
-  void (*const m_setupShaderForTriangleRendering)(const ResourcesGroup&) =
-    nullptr;
-  void (*const m_setupShaderForInstancedRendering)(const ResourcesGroup&) =
-    nullptr;
+  void (*m_setupShaderForTriangleRendering)(const ResourcesGroup&) = nullptr;
+  void (*m_setupShaderForInstancedRendering)(const ResourcesGroup&) = nullptr;
 
   ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;
   ObjectTable<ModelRenderingComponent> m_modelComponents;

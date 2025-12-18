@@ -24,6 +24,7 @@ add_library(${TARGET_NAME}
     src/renderers/LitRendererImpl.cpp
     src/renderers/LitWithVertexColorRendererImpl.cpp
     src/renderers/ModelRenderingComponent.cpp
+    src/renderers/Renderers.cpp
     src/renderers/TexturedLitRendererImpl.cpp
     src/renderers/TexturedRendererImpl.cpp
     src/renderers/TriangleMeshComponent.cpp

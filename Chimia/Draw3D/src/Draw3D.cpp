@@ -6,9 +6,11 @@
 #include "ColoredTexturedRendererImpl.h"
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
+#include "ModelRenderingPrivate.h"
 #include "Shaders.h"
 #include "TexturedLitRendererImpl.h"
 #include "TexturedRendererImpl.h"
+#include "TrianglePrivate.h"
 #include "VertexColoredRendererImpl.h"
 
 #include "Rendering/Rendering.h"
@@ -23,13 +25,16 @@ Chimia::Draw3D::Initialize()
 
   Shaders::Initialize();
 
-  VertexColoredRendererImpl::GetRenderer().Init();
-  LitRendererImpl::GetRenderer().Init();
-  TexturedRendererImpl::GetRenderer().Init();
-  ColoredTexturedRendererImpl::GetRenderer().Init();
-  LitWithVertexColorRendererImpl::GetRenderer().Init();
-  TexturedLitRendererImpl::GetRenderer().Init();
-  ColoredTexturedLitRendererImpl::GetRenderer().Init();
+  VertexColoredRendererImpl::Init();
+  LitRendererImpl::Init();
+  TexturedRendererImpl::Init();
+  ColoredTexturedRendererImpl::Init();
+  LitWithVertexColorRendererImpl::Init();
+  TexturedLitRendererImpl::Init();
+  ColoredTexturedLitRendererImpl::Init();
+
+  TrianglePrivate::Init();
+  ModelRenderingPrivate::Init();
 }
 
 // ----------------------------------------------------------------------------

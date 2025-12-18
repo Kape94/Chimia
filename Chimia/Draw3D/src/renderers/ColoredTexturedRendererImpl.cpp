@@ -2,6 +2,7 @@
 
 #include "CameraPrivate.h"
 #include "GenericRenderer.h"
+#include "Renderers.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
@@ -9,7 +10,6 @@
 #include "Rendering/Shader.h"
 #include "Rendering/TextureUnit.h"
 #include "Types.h"
-#include "eRendererType.h"
 
 // ----------------------------------------------------------------------------
 
@@ -70,6 +70,19 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
   texture->Use(TEXTURE_UNIT);
   shader.SetUniform("tex", TEXTURE_UNIT);
 }
+
+GenericRenderer* g_renderer = nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ColoredTexturedRendererImpl::Init()
+{
+  g_renderer =
+    &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3_TEXCOORD2,
+                               ConfigureShaderForTriangleDrawing,
+                               ConfigureShaderForTransformedModelDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -77,14 +90,7 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
 GenericRenderer&
 ColoredTexturedRendererImpl::GetRenderer()
 {
-  constexpr unsigned RENDERER_ID =
-    static_cast<unsigned>(eRendererType::COLORED_TEXTURED);
-
-  static GenericRenderer renderer(RENDERER_ID,
-                                  eVertexLayout::POSITION3_COLOR3_TEXCOORD2,
-                                  ConfigureShaderForTriangleDrawing,
-                                  ConfigureShaderForTransformedModelDrawing);
-  return renderer;
+  return *g_renderer;
 }
 
 // ----------------------------------------------------------------------------

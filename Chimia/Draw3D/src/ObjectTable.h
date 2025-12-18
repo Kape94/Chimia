@@ -73,7 +73,7 @@ ObjectTable<Object>::Insert()
   int index = FindAvailableIndex();
   if (index == NOT_FOUND_INDEX) {
     m_objects.resize(m_objects.size() + GROWTH_SIZE);
-    int index = FindAvailableIndex();
+    index = FindAvailableIndex();
   }
 
   Object* newObject = new Object();

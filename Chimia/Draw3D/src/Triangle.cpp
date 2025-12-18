@@ -1,4 +1,5 @@
 #include "Triangle.h"
+#include "TrianglePrivate.h"
 
 // ----------------------------------------------------------------------------
 
@@ -10,12 +11,12 @@
 #include "GenericRenderer.h"
 #include "LitRendererImpl.h"
 #include "LitWithVertexColorRendererImpl.h"
+#include "Renderers.h"
 #include "ResourceGroupHelper.h"
 #include "TexturedLitRendererImpl.h"
 #include "TexturedRendererImpl.h"
 #include "Types.h"
 #include "VertexColoredRendererImpl.h"
-#include "eRendererType.h"
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -25,16 +26,13 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-GenericRenderer& renderer = VertexColoredRendererImpl::GetRenderer();
-GenericRenderer& litRenderer = LitRendererImpl::GetRenderer();
-GenericRenderer& litVertexColoredRenderer =
-  LitWithVertexColorRendererImpl::GetRenderer();
-GenericRenderer& texturedRenderer = TexturedRendererImpl::GetRenderer();
-GenericRenderer& texturedLitRenderer = TexturedLitRendererImpl::GetRenderer();
-GenericRenderer& coloredTexturedRenderer =
-  ColoredTexturedRendererImpl::GetRenderer();
-GenericRenderer& coloredTexturedLitRenderer =
-  ColoredTexturedLitRendererImpl::GetRenderer();
+GenericRenderer* renderer = nullptr;
+GenericRenderer* litRenderer = nullptr;
+GenericRenderer* litVertexColoredRenderer = nullptr;
+GenericRenderer* texturedRenderer = nullptr;
+GenericRenderer* texturedLitRenderer = nullptr;
+GenericRenderer* coloredTexturedRenderer = nullptr;
+GenericRenderer* coloredTexturedLitRenderer = nullptr;
 
 template<class VertexType>
 std::vector<VertexType>
@@ -67,6 +65,22 @@ VectorDataView(const std::vector<T>& vector)
 }
 
 // ----------------------------------------------------------------------------
+// TrianglePrivate
+// ----------------------------------------------------------------------------
+
+void
+TrianglePrivate::Init()
+{
+  renderer = &VertexColoredRendererImpl::GetRenderer();
+  litRenderer = &LitRendererImpl::GetRenderer();
+  litVertexColoredRenderer = &LitWithVertexColorRendererImpl::GetRenderer();
+  texturedRenderer = &TexturedRendererImpl::GetRenderer();
+  texturedLitRenderer = &TexturedLitRendererImpl::GetRenderer();
+  coloredTexturedRenderer = &ColoredTexturedRendererImpl::GetRenderer();
+  coloredTexturedLitRenderer = &ColoredTexturedLitRendererImpl::GetRenderer();
+}
+
+// ----------------------------------------------------------------------------
 // Position3 + Color3
 // ----------------------------------------------------------------------------
 
@@ -90,8 +104,8 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices)
 {
-  renderer.DrawTriangles(VectorArrayView(vertices),
-                         ResourceGroupHelper::GetEmptyResource());
+  renderer->DrawTriangles(VectorArrayView(vertices),
+                          ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -109,8 +123,8 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPC>& vertices)
 {
-  return renderer.AddStaticTriangles(VectorDataView(vertices),
-                                     ResourceGroupHelper::GetEmptyResource());
+  return renderer->AddStaticTriangles(VectorDataView(vertices),
+                                      ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -149,8 +163,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
                           const MaterialID& material)
 {
-  litRenderer.DrawTriangles(VectorArrayView(vertices),
-                            ResourceGroupHelper::GetResourceGroup(material));
+  litRenderer->DrawTriangles(VectorArrayView(vertices),
+                             ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -170,7 +184,7 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPN>& vertices,
                                    const MaterialID& material)
 {
-  return litRenderer.AddStaticTriangles(
+  return litRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(material));
 }
 
@@ -211,7 +225,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
                           const TextureID& texture)
 {
-  texturedRenderer.DrawTriangles(
+  texturedRenderer->DrawTriangles(
     VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -232,7 +246,7 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPT>& vertices,
                                    const TextureID& texture)
 {
-  return texturedRenderer.AddStaticTriangles(
+  return texturedRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -274,7 +288,7 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices)
 {
-  litVertexColoredRenderer.DrawTriangles(
+  litVertexColoredRenderer->DrawTriangles(
     VectorArrayView(vertices), ResourceGroupHelper::GetEmptyResource());
 }
 
@@ -293,7 +307,7 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCN>& vertices)
 {
-  return litVertexColoredRenderer.AddStaticTriangles(
+  return litVertexColoredRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetEmptyResource());
 }
 
@@ -336,7 +350,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
                           const TextureID& texture)
 {
-  texturedLitRenderer.DrawTriangles(
+  texturedLitRenderer->DrawTriangles(
     VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -357,7 +371,7 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPNT>& vertices,
                                    const TextureID& texture)
 {
-  return texturedLitRenderer.AddStaticTriangles(
+  return texturedLitRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -401,7 +415,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
                           const TextureID& texture)
 {
-  coloredTexturedRenderer.DrawTriangles(
+  coloredTexturedRenderer->DrawTriangles(
     VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -422,7 +436,7 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCT>& vertices,
                                    const TextureID& texture)
 {
-  return coloredTexturedRenderer.AddStaticTriangles(
+  return coloredTexturedRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -469,7 +483,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
                           const TextureID& texture)
 {
-  coloredTexturedLitRenderer.DrawTriangles(
+  coloredTexturedLitRenderer->DrawTriangles(
     VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -491,7 +505,7 @@ TriangleMeshID
 Chimia::Draw3D::AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
                                    const TextureID& texture)
 {
-  return coloredTexturedLitRenderer.AddStaticTriangles(
+  return coloredTexturedLitRenderer->AddStaticTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 
@@ -517,39 +531,8 @@ Chimia::Draw3D::DeleteStaticTriangles(const TriangleMeshID& meshID)
   auto [rendererID, _, __, ___, ____] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
-  const auto rendererType = static_cast<eRendererType>(rendererID);
-  switch (rendererType) {
-    case eRendererType::VERTEX_COLORED: {
-      renderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::LIT: {
-      litRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::TEXTURED: {
-      texturedRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::VERTEX_COLORED_LIT: {
-      litVertexColoredRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::TEXTURED_LIT: {
-      texturedLitRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::COLORED_TEXTURED: {
-      coloredTexturedRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::COLORED_TEXTURED_LIT: {
-      coloredTexturedLitRenderer.DeleteStaticTriangles(meshID);
-      return;
-    }
-    case eRendererType::NONE:
-    default:
-      return;
+  if (GenericRenderer* renderer = Renderers::GetRendererByID(rendererID)) {
+    renderer->DeleteStaticTriangles(meshID);
   }
 }
 

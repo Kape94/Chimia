@@ -10,17 +10,10 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-enum class eRendererType
-{
-  NONE = 0,
-  VERTEX_COLORED = 1,
-  LIT,
-  TEXTURED,
-  VERTEX_COLORED_LIT,
-  COLORED_TEXTURED,
-  TEXTURED_LIT,
-  COLORED_TEXTURED_LIT,
-};
+namespace ModelRenderingPrivate {
+void
+Init();
+}
 
 // ----------------------------------------------------------------------------
 

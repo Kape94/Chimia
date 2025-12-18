@@ -2,12 +2,12 @@
 
 #include "CameraPrivate.h"
 #include "GenericRenderer.h"
+#include "Renderers.h"
 #include "ResourceGroup.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
 #include "Types.h"
-#include "eRendererType.h"
 
 // ----------------------------------------------------------------------------
 
@@ -34,6 +34,17 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
   CameraPrivate::SetCameraOnShader(shader);
 }
 
+GenericRenderer* g_renderer = nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexColoredRendererImpl::Init()
+{
+  g_renderer = &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3,
+                                          ConfigureForTriangleDrawing,
+                                          ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -41,14 +52,7 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 GenericRenderer&
 VertexColoredRendererImpl::GetRenderer()
 {
-  constexpr unsigned RENDERER_ID =
-    static_cast<unsigned>(eRendererType::VERTEX_COLORED);
-
-  static GenericRenderer renderer(RENDERER_ID,
-                                  eVertexLayout::POSITION3_COLOR3,
-                                  ConfigureForTriangleDrawing,
-                                  ConfigureForInstancedDrawing);
-  return renderer;
+  return *g_renderer;
 }
 
 // ----------------------------------------------------------------------------

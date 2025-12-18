@@ -3,12 +3,11 @@
 #include "Config.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
+#include "Renderers.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Types.h"
-#include "eRendererType.h"
 #include <glm/ext/vector_float3.hpp>
 
 // ----------------------------------------------------------------------------
@@ -55,6 +54,19 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup&)
   shader.Use();
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 }
+
+GenericRenderer* g_renderer = nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+LitWithVertexColorRendererImpl::Init()
+{
+  g_renderer =
+    &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3_NORMAL3,
+                               ConfigureShaderForTriangleDrawing,
+                               ConfigureShaderForTransformedModelDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -62,14 +74,7 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup&)
 GenericRenderer&
 LitWithVertexColorRendererImpl::GetRenderer()
 {
-  constexpr unsigned RENDERER_ID =
-    static_cast<unsigned>(eRendererType::VERTEX_COLORED_LIT);
-
-  static GenericRenderer renderer(RENDERER_ID,
-                                  eVertexLayout::POSITION3_COLOR3_NORMAL3,
-                                  ConfigureShaderForTriangleDrawing,
-                                  ConfigureShaderForTransformedModelDrawing);
-  return renderer;
+  return *g_renderer;
 }
 
 // ----------------------------------------------------------------------------
