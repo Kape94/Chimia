@@ -4,8 +4,6 @@
 #include "ObjectTable.h"
 #include "VertexLayoutAttributes.h"
 
-#include <memory>
-
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
@@ -13,16 +11,11 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace RenderersInternal {
-std::unique_ptr<ObjectTable<GenericRenderer>> g_renderers = nullptr;
-
 ObjectTable<GenericRenderer>&
 RenderersTable()
 {
-  if (g_renderers == nullptr) {
-    g_renderers.reset(new ObjectTable<GenericRenderer>);
-  }
-
-  return *g_renderers;
+  static ObjectTable<GenericRenderer> renderersTable;
+  return renderersTable;
 }
 }
 

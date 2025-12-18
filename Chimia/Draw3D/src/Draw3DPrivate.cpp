@@ -28,11 +28,9 @@ ModelInstanceID
 Draw3DPrivate::CreateModelInstanceID(unsigned rendererID,
                                      unsigned modelID,
                                      unsigned instanceID,
-                                     unsigned textureID,
                                      unsigned resourceID)
 {
-  return ModelInstanceID(
-    rendererID, modelID, instanceID, textureID, resourceID);
+  return ModelInstanceID(rendererID, modelID, instanceID, resourceID);
 }
 
 // ----------------------------------------------------------------------------
@@ -41,25 +39,22 @@ ModelInstanceID
 Draw3DPrivate::CreateModelInstanceID(
   unsigned rendererID,
   const LocalModelInstanceID& localInstanceID,
-  unsigned textureID,
   unsigned resourceID)
 {
   return ModelInstanceID(rendererID,
                          localInstanceID.m_modelID,
                          localInstanceID.m_instanceID,
-                         textureID,
                          resourceID);
 }
 
 // ----------------------------------------------------------------------------
 
-std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>
+std::tuple<unsigned, unsigned, unsigned, unsigned>
 Draw3DPrivate::GetModelInstanceIDValues(const ModelInstanceID& instanceID)
 {
   return { instanceID.m_rendererID,
            instanceID.m_modelID,
            instanceID.m_instanceID,
-           instanceID.m_textureID,
            instanceID.m_resourceID };
 }
 
@@ -143,23 +138,17 @@ Draw3DPrivate::GetResourceGroupIDValue(const ResourceGroupID& resourceGroupID)
 TriangleMeshID
 Draw3DPrivate::CreateTriangleMeshID(unsigned rendererID,
                                     unsigned id,
-                                    unsigned materialID,
-                                    unsigned textureID,
                                     unsigned resourceID)
 {
-  return TriangleMeshID(rendererID, id, materialID, textureID, resourceID);
+  return TriangleMeshID(rendererID, id, resourceID);
 }
 
 // ----------------------------------------------------------------------------
 
-std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>
+std::tuple<unsigned, unsigned, unsigned>
 Draw3DPrivate::GetTriangleMeshIDValues(const TriangleMeshID& meshID)
 {
-  return { meshID.m_rendererID,
-           meshID.m_id,
-           meshID.m_materialID,
-           meshID.m_textureID,
-           meshID.m_resourceID };
+  return { meshID.m_rendererID, meshID.m_id, meshID.m_resourceID };
 }
 
 // ----------------------------------------------------------------------------

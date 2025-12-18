@@ -17,15 +17,6 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-namespace {
-
-constexpr unsigned NO_MATERIAL = 0;
-constexpr unsigned NO_TEXTURE = 0;
-
-}
-
-// ----------------------------------------------------------------------------
-
 void
 GenericRenderer::Create(
   const unsigned id,
@@ -79,11 +70,7 @@ GenericRenderer::AddStaticTriangles(const RawDataView& vertexData,
   const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
 
   return Draw3DPrivate::CreateTriangleMeshID(
-    m_id,
-    instanceID,
-    NO_MATERIAL,
-    NO_TEXTURE,
-    Draw3DPrivate::GetResourceGroupIDValue(resourceID));
+    m_id, instanceID, Draw3DPrivate::GetResourceGroupIDValue(resourceID));
 }
 
 // ----------------------------------------------------------------------------
@@ -91,7 +78,7 @@ GenericRenderer::AddStaticTriangles(const RawDataView& vertexData,
 void
 GenericRenderer::DeleteStaticTriangles(const TriangleMeshID& meshID)
 {
-  auto [_, instanceIDValue, __, ___, resourceID] =
+  auto [_, instanceIDValue, resourceID] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
   auto renderComponent = FetchTriangleRenderComponentForTexture(
@@ -166,10 +153,7 @@ GenericRenderer::AddStaticModel(const ModelID& modelID,
     modelID, { { &transform, sizeof(glm::mat4x4) } });
 
   return Draw3DPrivate::CreateModelInstanceID(
-    m_id,
-    localInstanceID,
-    NO_TEXTURE,
-    Draw3DPrivate::GetResourceGroupIDValue(resourceID));
+    m_id, localInstanceID, Draw3DPrivate::GetResourceGroupIDValue(resourceID));
 }
 
 // ----------------------------------------------------------------------------
@@ -177,7 +161,7 @@ GenericRenderer::AddStaticModel(const ModelID& modelID,
 void
 GenericRenderer::DeleteStaticModel(const ModelInstanceID& instanceID)
 {
-  auto [_, __, instanceIDValue, ___, resourceIDValue] =
+  auto [_, __, ___, resourceIDValue] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   const ResourceGroupID resourceID =
