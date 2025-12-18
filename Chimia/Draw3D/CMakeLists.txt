@@ -18,18 +18,19 @@ add_library(${TARGET_NAME}
     src/batch/StaticTriangles.cpp
     src/batch/TriangleBatch.cpp
 
-    src/renderers/ColoredTexturedLitRendererImpl.cpp
-    src/renderers/ColoredTexturedRendererImpl.cpp
     src/renderers/GenericRenderer.cpp
-    src/renderers/LitRendererImpl.cpp
-    src/renderers/LitWithVertexColorRendererImpl.cpp
     src/renderers/ModelRenderingComponent.cpp
     src/renderers/Renderers.cpp
-    src/renderers/TexturedLitRendererImpl.cpp
-    src/renderers/TexturedRendererImpl.cpp
     src/renderers/TriangleMeshComponent.cpp
-    src/renderers/VertexColoredRendererImpl.cpp
     src/renderers/VertexLayoutAttributes.cpp
+
+    src/renderers/default/ColoredTexturedLitRendererImpl.cpp
+    src/renderers/default/ColoredTexturedRendererImpl.cpp
+    src/renderers/default/LitRendererImpl.cpp
+    src/renderers/default/LitWithVertexColorRendererImpl.cpp
+    src/renderers/default/TexturedLitRendererImpl.cpp
+    src/renderers/default/TexturedRendererImpl.cpp
+    src/renderers/default/VertexColoredRendererImpl.cpp
 
     src/resources/Resources.cpp
     src/resources/ResourcesGroup.cpp 
@@ -54,6 +55,7 @@ target_include_directories(${TARGET_NAME}
         ./src/
         ./src/batch/
         ./src/renderers/
+        ./src/renderers/default/
         ./src/resources/
         ./src/shaders/
     PUBLIC
