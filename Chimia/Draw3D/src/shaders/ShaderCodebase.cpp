@@ -16,13 +16,25 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace ShaderCodebaseImpl {
 std::map<std::string, std::string> codeFragments;
-const std::string includeDirective("@include \"");
+
+struct Directive
+{
+  std::string start = "";
+  std::string end = "";
+};
+
+const Directive INCLUDE_DIRECTIVE{ "@include \"", "\"" };
+const Directive EMBED_DIRECTIVE{ "@embed(", ")" };
 
 std::string
 OriginalCode(const std::string& tag);
 
 std::string
-PreProcess(const std::string& originalCode);
+PreProcess(const std::string& originalCode,
+           const std::map<std::string, std::string>& embeddedCodes);
+
+std::string
+ApplyIncludes(const std::string& originalCode);
 
 bool
 ReplaceNextInclude(std::string& code,
@@ -35,11 +47,21 @@ using CodeParts = struct
   std::string codeAfterInclude;
 };
 CodeParts
-SplitCodeParts(const std::string& code, const size_t includePos);
+SplitCodeParts(const std::string& code,
+               const size_t directivePos,
+               const Directive& directive);
 
 std::string
 FetchCodeToInclude(const std::string& includeTag,
                    std::set<std::string>& alreadyIncludedCodes);
+
+std::string
+ApplyEmbeddedCode(const std::string originalCode,
+                  const std::map<std::string, std::string>& embeddedCodes);
+
+bool
+ReplaceNextEmbedding(std::string& code,
+                     const std::map<std::string, std::string>& embeddedCodes);
 
 }
 
@@ -79,9 +101,18 @@ ShaderCodebase::AddToCodebase(const std::string& tag, const std::string& code)
 std::string
 ShaderCodebase::Code(const std::string& tag)
 {
+  return Code(tag, {});
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
+ShaderCodebase::Code(const std::string& tag,
+                     const std::map<std::string, std::string>& embeddedCodes)
+{
   using namespace ShaderCodebaseImpl;
 
-  return PreProcess(OriginalCode(tag));
+  return PreProcess(OriginalCode(tag), embeddedCodes);
 }
 
 // ----------------------------------------------------------------------------
@@ -106,7 +137,18 @@ ShaderCodebaseImpl::OriginalCode(const std::string& tag)
 // ----------------------------------------------------------------------------
 
 std::string
-ShaderCodebaseImpl::PreProcess(const std::string& originalCode)
+ShaderCodebaseImpl::PreProcess(
+  const std::string& originalCode,
+  const std::map<std::string, std::string>& embeddedCodes)
+{
+  const std::string codeWithExpandedIncludes = ApplyIncludes(originalCode);
+  return ApplyEmbeddedCode(codeWithExpandedIncludes, embeddedCodes);
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
+ShaderCodebaseImpl::ApplyIncludes(const std::string& originalCode)
 {
   std::set<std::string> alreadyIncludedCodes;
 
@@ -126,12 +168,12 @@ ShaderCodebaseImpl::ReplaceNextInclude(
   std::string& code,
   std::set<std::string>& alreadyIncludedCodes)
 {
-  const size_t includePos = code.find(includeDirective);
+  const size_t includePos = code.find(INCLUDE_DIRECTIVE.start);
   if (includePos == std::string::npos) {
     return false;
   }
 
-  const CodeParts parts = SplitCodeParts(code, includePos);
+  const CodeParts parts = SplitCodeParts(code, includePos, INCLUDE_DIRECTIVE);
   const std::string& includeTag = parts.includeTag;
 
   const std::string codeToBeIncluded =
@@ -149,15 +191,16 @@ ShaderCodebaseImpl::ReplaceNextInclude(
 
 ShaderCodebaseImpl::CodeParts
 ShaderCodebaseImpl::SplitCodeParts(const std::string& code,
-                                   const size_t includePos)
+                                   const size_t directivePos,
+                                   const Directive& directive)
 {
-  const size_t includeStart = includePos + includeDirective.length();
-  const size_t includeEnd = code.find('\"', includeStart);
+  const size_t includeStart = directivePos + directive.start.length();
+  const size_t includeEnd = code.find(directive.end, includeStart);
   const size_t includeTagLenght = includeEnd - includeStart;
 
   CodeParts parts;
   parts.includeTag = code.substr(includeStart, includeTagLenght);
-  parts.codeBeforeInclude = code.substr(0, includePos);
+  parts.codeBeforeInclude = code.substr(0, directivePos);
   parts.codeAfterInclude = code.substr(includeEnd + 1);
 
   return parts;
@@ -183,6 +226,49 @@ ShaderCodebaseImpl::FetchCodeToInclude(
     codeWasAlreadyIncluded ? skipInclude : OriginalCode(includeTag);
 
   return codeToBeIncluded;
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
+ShaderCodebaseImpl::ApplyEmbeddedCode(
+  const std::string originalCode,
+  const std::map<std::string, std::string>& embeddedCodes)
+{
+  std::string expandedCode = originalCode;
+  bool replacedEmbbeding = ReplaceNextEmbedding(expandedCode, embeddedCodes);
+  while (replacedEmbbeding) {
+    replacedEmbbeding = ReplaceNextEmbedding(expandedCode, embeddedCodes);
+  }
+
+  return expandedCode;
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ShaderCodebaseImpl::ReplaceNextEmbedding(
+  std::string& code,
+  const std::map<std::string, std::string>& embeddedCodes)
+{
+  const size_t embedPos = code.find(EMBED_DIRECTIVE.start);
+  if (embedPos == std::string::npos) {
+    return false;
+  }
+
+  const CodeParts parts = SplitCodeParts(code, embedPos, EMBED_DIRECTIVE);
+  const std::string& embedTag = parts.includeTag;
+
+  auto it = embeddedCodes.find(embedTag);
+  const std::string codeToEmbbed =
+    it != embeddedCodes.end() ? it->second : "\n//";
+
+  std::string newCode = parts.codeBeforeInclude;
+  newCode += codeToEmbbed + "\n";
+  newCode += parts.codeAfterInclude;
+
+  code = newCode;
+  return true;
 }
 
 // ----------------------------------------------------------------------------

@@ -21,24 +21,32 @@ inline const char* colored = R"(
 
     uniform mat4 cameraTransform;
 
+    @embed(CUSTOM_UNIFORMS)
+
     void main() {
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
       fragmentColor = vertexColor;
+
+      @embed(OUTPUT_OVERRIDERS)
     }
   )";
 
 inline const char* coloredWithInstancedTransform = R"(
     #version 330
 
+    uniform mat4 cameraTransform;
+
+    @embed(CUSTOM_UNIFORMS)
+
     @include "vertexInputLayout::P3C3Instanced"
 
     out vec3 fragmentColor;
 
-    uniform mat4 cameraTransform;
-
     void main() {
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
       fragmentColor = vertexColor;
+
+      @embed(OUTPUT_OVERRIDERS)
     }
   )";
 
@@ -55,6 +63,8 @@ inline const char* gouraudLit = R"(
   @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
+
+  @embed(CUSTOM_UNIFORMS)
 
   @include "vertexInputLayout::P3N3"
 
@@ -83,6 +93,8 @@ inline const char* gouraudLit = R"(
 	    fragmentColor = result;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
   }
   )";
 
@@ -99,6 +111,8 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
     @include "common::lightsUniforms"
   
     uniform mat4 cameraTransform;
+
+    @embed(CUSTOM_UNIFORMS)
   
     @include "vertexInputLayout::P3N3Instanced"
   
@@ -130,6 +144,8 @@ inline const char* gouraudLitWithInstancedTransformAndMaterial = R"(
         fragmentColor = result;
   
         gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+        @embed(OUTPUT_OVERRIDERS)
     }
     )";
 
@@ -143,12 +159,16 @@ inline const char* phongLit = R"(
       
       uniform mat4 cameraTransform;
 
+      @embed(CUSTOM_UNIFORMS)
+
       void main()
       {
           fragmentPos = vertexPos;
           fragmentNorm = vertexNorm;
           
           gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+          @embed(OUTPUT_OVERRIDERS)
       }
       )";
 
@@ -162,12 +182,16 @@ inline const char* phongLitWithInstancedTransformAndMaterial = R"(
 
       uniform mat4 cameraTransform;
 
+      @embed(CUSTOM_UNIFORMS)
+
       void main()
       {
           fragmentPos = vec3(instanceTransform * vec4(vertexPos, 1.0));
           fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
 
           gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+          @embed(OUTPUT_OVERRIDERS)
       }
       )";
 
@@ -181,6 +205,8 @@ inline const char* gouraudLitWithVertexColor = R"(
         @include "common::lightsUniforms"
       
         uniform mat4 cameraTransform;
+
+        @embed(CUSTOM_UNIFORMS)
       
         @include "vertexInputLayout::P3C3N3"
       
@@ -208,6 +234,8 @@ inline const char* gouraudLitWithVertexColor = R"(
             fragmentColor = result;
       
             gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+            @embed(OUTPUT_OVERRIDERS)
         }
         )";
 
@@ -221,6 +249,8 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
           @include "common::lightsUniforms"
         
           uniform mat4 cameraTransform;
+
+          @embed(CUSTOM_UNIFORMS)
         
           @include "vertexInputLayout::P3C3N3Instanced"
         
@@ -251,6 +281,8 @@ inline const char* gouraudLitWithInstancedTransformAndVertexColor = R"(
               fragmentColor = result;
         
               gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+              @embed(OUTPUT_OVERRIDERS)
           }
           )";
 
@@ -258,6 +290,8 @@ inline const char* phongLitWithVertexColor = R"(
             #version 330
                     
             uniform mat4 cameraTransform;
+
+            @embed(CUSTOM_UNIFORMS)
           
             @include "vertexInputLayout::P3C3N3"
           
@@ -272,6 +306,8 @@ inline const char* phongLitWithVertexColor = R"(
                 fragmentNorm = vertexNorm;
           
                 gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+                @embed(OUTPUT_OVERRIDERS)
             }
             )";
 
@@ -279,6 +315,8 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
               #version 330
             
               uniform mat4 cameraTransform;
+
+              @embed(CUSTOM_UNIFORMS)
             
               @include "vertexInputLayout::P3C3N3Instanced"
             
@@ -293,6 +331,8 @@ inline const char* phongLitWithInstancedTransformAndVertexColor = R"(
                   fragmentNorm = mat3(transpose(inverse(instanceTransform))) * vertexNorm;
             
                   gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+                  @embed(OUTPUT_OVERRIDERS)
               }
               )";
 
@@ -305,9 +345,13 @@ inline const char* textured = R"(
 
       uniform mat4 cameraTransform;
 
+      @embed(CUSTOM_UNIFORMS)
+
       void main() {
         gl_Position = cameraTransform * vec4(vertexPos, 1.0);
         fragmentTexCoord = vertexTexCoord;
+
+        @embed(OUTPUT_OVERRIDERS)
       }
   )";
 
@@ -320,9 +364,13 @@ inline const char* texturedWithInstancedTransform = R"(
 
     uniform mat4 cameraTransform;
 
+    @embed(CUSTOM_UNIFORMS)
+
     void main() {
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
       fragmentTexCoord = vertexTexCoord;
+
+      @embed(OUTPUT_OVERRIDERS)
     }
 )";
 
@@ -336,11 +384,15 @@ inline const char* coloredTextured = R"(
 
   uniform mat4 cameraTransform;
 
+  @embed(CUSTOM_UNIFORMS)
+
   void main() {
     gl_Position = cameraTransform * vec4(vertexPos, 1.0);
 
     fragmentColor = vertexColor;
     fragmentTexCoord = vertexTexCoord;
+
+    @embed(OUTPUT_OVERRIDERS)
   }
 )";
 
@@ -354,11 +406,15 @@ out vec2 fragmentTexCoord;
 
 uniform mat4 cameraTransform;
 
+@embed(CUSTOM_UNIFORMS)
+
 void main() {
   gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
 
   fragmentColor = vertexColor;
   fragmentTexCoord = vertexTexCoord;
+
+  @embed(OUTPUT_OVERRIDERS)
 }
 )";
 
@@ -372,6 +428,8 @@ inline const char* gouraudLitTextured = R"(
   @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
+
+  @embed(CUSTOM_UNIFORMS)
 
   @include "vertexInputLayout::P3N3T2"
 
@@ -404,6 +462,8 @@ inline const char* gouraudLitTextured = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
   }
   )";
 
@@ -416,6 +476,7 @@ inline const char* gouraudLitTexturedWithInstancedTransform = R"(
 
     @include "common::lightsUniforms"
     uniform mat4 cameraTransform;
+    @embed(CUSTOM_UNIFORMS)
 
     @include "vertexInputLayout::P3N3T2Instanced"
 
@@ -449,6 +510,8 @@ inline const char* gouraudLitTexturedWithInstancedTransform = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
     }
 )";
 
@@ -456,6 +519,7 @@ inline const char* phongLitTextured = R"(
   #version 330
 
   uniform mat4 cameraTransform;
+  @embed(CUSTOM_UNIFORMS)
 
   @include "vertexInputLayout::P3N3T2"
 
@@ -470,6 +534,8 @@ inline const char* phongLitTextured = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
   }
   )";
 
@@ -477,6 +543,7 @@ inline const char* phongLitTexturedWithInstancedTransform = R"(
     #version 330
 
     uniform mat4 cameraTransform;
+    @embed(CUSTOM_UNIFORMS)
 
     @include "vertexInputLayout::P3N3T2Instanced"
 
@@ -490,6 +557,8 @@ inline const char* phongLitTexturedWithInstancedTransform = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
     }
 )";
 
@@ -503,6 +572,7 @@ inline const char* gouraudLitColoredTextured = R"(
   @include "common::lightsUniforms"
 
   uniform mat4 cameraTransform;
+  @embed(CUSTOM_UNIFORMS)
 
   @include "vertexInputLayout::P3C3N3T2"
 
@@ -535,6 +605,8 @@ inline const char* gouraudLitColoredTextured = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
   }
   )";
 
@@ -547,6 +619,7 @@ inline const char* gouraudLitColoredTexturedWithInstancedTransform = R"(
 
     @include "common::lightsUniforms"
     uniform mat4 cameraTransform;
+    @embed(CUSTOM_UNIFORMS)
 
     @include "vertexInputLayout::P3C3N3T2Instanced"
 
@@ -580,6 +653,8 @@ inline const char* gouraudLitColoredTexturedWithInstancedTransform = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
     }
 )";
 
@@ -587,6 +662,7 @@ inline const char* phongLitColoredTextured = R"(
   #version 330
 
   uniform mat4 cameraTransform;
+  @embed(CUSTOM_UNIFORMS)
 
   @include "vertexInputLayout::P3C3N3T2"
 
@@ -603,6 +679,8 @@ inline const char* phongLitColoredTextured = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
   }
   )";
 
@@ -610,6 +688,7 @@ inline const char* phongLitColoredTexturedWithInstancedTransform = R"(
     #version 330
 
     uniform mat4 cameraTransform;
+    @embed(CUSTOM_UNIFORMS)
 
     @include "vertexInputLayout::P3C3N3T2Instanced"
 
@@ -625,6 +704,8 @@ inline const char* phongLitColoredTexturedWithInstancedTransform = R"(
       fragmentTexCoord = vertexTexCoord;
 
       gl_Position = cameraTransform * instanceTransform * vec4(vertexPos, 1.0);
+
+      @embed(OUTPUT_OVERRIDERS)
     }
 )";
 

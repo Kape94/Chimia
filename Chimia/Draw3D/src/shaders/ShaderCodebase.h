@@ -5,6 +5,7 @@
 #include "Draw3DNamespaceDefs.h"
 
 #include <initializer_list>
+#include <map>
 #include <string>
 
 // ----------------------------------------------------------------------------
@@ -23,6 +24,10 @@ AddToCodebase(const std::string& tag, const std::string& code);
 
 std::string
 Code(const std::string& tag);
+
+std::string
+Code(const std::string& tag,
+     const std::map<std::string, std::string>& embeddedCodes);
 }
 
 // ----------------------------------------------------------------------------
