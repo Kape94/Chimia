@@ -1,6 +1,7 @@
-#include "VertexColoredRendererImpl.h"
+#include "Color3.h"
 
 #include "CameraPrivate.h"
+#include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Renderers.h"
 #include "ResourceGroup.h"
@@ -12,6 +13,7 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+USING_DEFAULT_RENDERERS_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::Init()
+Color3::Init()
 {
   g_renderer = &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3,
                                           ConfigureForTriangleDrawing,
@@ -50,7 +52,7 @@ VertexColoredRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-VertexColoredRendererImpl::GetRenderer()
+Color3::GetRenderer()
 {
   return *g_renderer;
 }
@@ -58,13 +60,13 @@ VertexColoredRendererImpl::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-VertexColoredRendererImpl::DrawTriangle(const glm::vec3& p1,
-                                        const glm::vec3& color1,
-                                        const glm::vec3& p2,
-                                        const glm::vec3& color2,
-                                        const glm::vec3& p3,
-                                        const glm::vec3& color3,
-                                        const ResourceGroupID& resource)
+Color3::DrawTriangle(const glm::vec3& p1,
+                     const glm::vec3& color1,
+                     const glm::vec3& p2,
+                     const glm::vec3& color2,
+                     const glm::vec3& p3,
+                     const glm::vec3& color3,
+                     const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t COL3_SIZE = sizeof(glm::vec3);

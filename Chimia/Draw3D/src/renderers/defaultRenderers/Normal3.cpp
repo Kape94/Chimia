@@ -1,6 +1,7 @@
-#include "LitRendererImpl.h"
+#include "Normal3.h"
 
 #include "Config.h"
+#include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
 #include "Renderers.h"
@@ -14,6 +15,7 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+USING_DEFAULT_RENDERERS_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -78,7 +80,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::Init()
+Normal3::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(eVertexLayout::POSITION3_NORMAL3,
@@ -89,7 +91,7 @@ LitRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-LitRendererImpl::GetRenderer()
+Normal3::GetRenderer()
 {
   return *g_renderer;
 }
@@ -97,13 +99,13 @@ LitRendererImpl::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-LitRendererImpl::DrawTriangle(const glm::vec3& p1,
-                              const glm::vec3& p1Normal,
-                              const glm::vec3& p2,
-                              const glm::vec3& p2Normal,
-                              const glm::vec3& p3,
-                              const glm::vec3& p3Normal,
-                              const ResourceGroupID& resource)
+Normal3::DrawTriangle(const glm::vec3& p1,
+                      const glm::vec3& p1Normal,
+                      const glm::vec3& p2,
+                      const glm::vec3& p2Normal,
+                      const glm::vec3& p3,
+                      const glm::vec3& p3Normal,
+                      const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t NORM3_SIZE = sizeof(glm::vec3);

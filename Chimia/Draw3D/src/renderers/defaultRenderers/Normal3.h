@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "DefaultRenderersNamespaceDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Types.h"
@@ -13,7 +14,9 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-namespace TexturedRendererImpl {
+BEGIN_DEFAULT_RENDERERS_NAMESPACE
+
+namespace Normal3 {
 void
 Init();
 
@@ -22,13 +25,15 @@ GetRenderer();
 
 void
 DrawTriangle(const glm::vec3& p1,
-             const glm::vec2& p1TexCoord,
+             const glm::vec3& p1Normal,
              const glm::vec3& p2,
-             const glm::vec2& p2TexCoord,
+             const glm::vec3& p2Normal,
              const glm::vec3& p3,
-             const glm::vec2& p3TexCoord,
-             const ResourceGroupID& resources);
-}
+             const glm::vec3& p3Normal,
+             const ResourceGroupID& resource);
+};
+
+END_DEFAULT_RENDERERS_NAMESPACE
 
 END_CHIMIA_DRAW3D_NAMESPACE
 

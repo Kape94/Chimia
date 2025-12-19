@@ -3,20 +3,22 @@
 
 // ----------------------------------------------------------------------------
 
-#include "ColoredTexturedLitRendererImpl.h"
-#include "ColoredTexturedRendererImpl.h"
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Draw3DPrivate.h"
 #include "GenericRenderer.h"
-#include "LitRendererImpl.h"
-#include "LitWithVertexColorRendererImpl.h"
 #include "Renderers.h"
 #include "ResourceGroupHelper.h"
-#include "TexturedLitRendererImpl.h"
-#include "TexturedRendererImpl.h"
 #include "Types.h"
-#include "VertexColoredRendererImpl.h"
+
+#include "defaultRenderers/Color3.h"
+#include "defaultRenderers/Color3Normal3.h"
+#include "defaultRenderers/Color3Normal3TexCoord2.h"
+#include "defaultRenderers/Color3TexCoord2.h"
+#include "defaultRenderers/Normal3.h"
+#include "defaultRenderers/Normal3TexCoord2.h"
+#include "defaultRenderers/TexCoord2.h"
+
 #include <vector>
 
 // ----------------------------------------------------------------------------
@@ -71,13 +73,14 @@ VectorDataView(const std::vector<T>& vector)
 void
 TrianglePrivate::Init()
 {
-  renderer = &VertexColoredRendererImpl::GetRenderer();
-  litRenderer = &LitRendererImpl::GetRenderer();
-  litVertexColoredRenderer = &LitWithVertexColorRendererImpl::GetRenderer();
-  texturedRenderer = &TexturedRendererImpl::GetRenderer();
-  texturedLitRenderer = &TexturedLitRendererImpl::GetRenderer();
-  coloredTexturedRenderer = &ColoredTexturedRendererImpl::GetRenderer();
-  coloredTexturedLitRenderer = &ColoredTexturedLitRendererImpl::GetRenderer();
+  renderer = &DefaultRenderers::Color3::GetRenderer();
+  litRenderer = &DefaultRenderers::Normal3::GetRenderer();
+  texturedRenderer = &DefaultRenderers::TexCoord2::GetRenderer();
+  texturedLitRenderer = &DefaultRenderers::Normal3TexCoord2::GetRenderer();
+  litVertexColoredRenderer = &DefaultRenderers::Color3Normal3::GetRenderer();
+  coloredTexturedRenderer = &DefaultRenderers::Color3TexCoord2::GetRenderer();
+  coloredTexturedLitRenderer =
+    &DefaultRenderers::Color3Normal3TexCoord2::GetRenderer();
 }
 
 // ----------------------------------------------------------------------------
@@ -89,7 +92,7 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                          const VertexPC& v2,
                          const VertexPC& v3)
 {
-  VertexColoredRendererImpl::DrawTriangle(
+  DefaultRenderers::Color3::DrawTriangle(
     v1.position,
     v1.color,
     v2.position,
@@ -147,7 +150,7 @@ Chimia::Draw3D::Triangle(const VertexPN& v1,
                          const VertexPN& v3,
                          const MaterialID& material)
 {
-  LitRendererImpl::DrawTriangle(
+  DefaultRenderers::Normal3::DrawTriangle(
     v1.position,
     v1.normal,
     v2.position,
@@ -209,7 +212,7 @@ Chimia::Draw3D::Triangle(const VertexPT& v1,
                          const VertexPT& v3,
                          const TextureID& texture)
 {
-  TexturedRendererImpl::DrawTriangle(
+  DefaultRenderers::TexCoord2::DrawTriangle(
     v1.position,
     v1.texCoord,
     v2.position,
@@ -270,7 +273,7 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
                          const VertexPCN& v2,
                          const VertexPCN& v3)
 {
-  LitWithVertexColorRendererImpl::DrawTriangle(
+  DefaultRenderers::Color3Normal3::DrawTriangle(
     v1.position,
     v1.color,
     v1.normal,
@@ -331,7 +334,7 @@ Chimia::Draw3D::Triangle(const VertexPNT& v1,
                          const VertexPNT& v3,
                          const TextureID& texture)
 {
-  TexturedLitRendererImpl::DrawTriangle(
+  DefaultRenderers::Normal3TexCoord2::DrawTriangle(
     v1.position,
     v1.normal,
     v1.texCoord,
@@ -396,7 +399,7 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v3,
                          const TextureID& texture)
 {
-  ColoredTexturedRendererImpl::DrawTriangle(
+  DefaultRenderers::Color3TexCoord2::DrawTriangle(
     v1.position,
     v1.color,
     v1.texCoord,
@@ -461,7 +464,7 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
                          const VertexPCNT& v3,
                          const TextureID& texture)
 {
-  ColoredTexturedLitRendererImpl::DrawTriangle(
+  DefaultRenderers::Color3Normal3TexCoord2::DrawTriangle(
     v1.position,
     v1.color,
     v1.normal,

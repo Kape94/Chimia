@@ -24,13 +24,13 @@ add_library(${TARGET_NAME}
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/VertexLayoutAttributes.cpp
 
-    src/renderers/default/ColoredTexturedLitRendererImpl.cpp
-    src/renderers/default/ColoredTexturedRendererImpl.cpp
-    src/renderers/default/LitRendererImpl.cpp
-    src/renderers/default/LitWithVertexColorRendererImpl.cpp
-    src/renderers/default/TexturedLitRendererImpl.cpp
-    src/renderers/default/TexturedRendererImpl.cpp
-    src/renderers/default/VertexColoredRendererImpl.cpp
+    src/renderers/defaultRenderers/Color3.cpp
+    src/renderers/defaultRenderers/Normal3.cpp
+    src/renderers/defaultRenderers/TexCoord2.cpp
+    src/renderers/defaultRenderers/Color3Normal3.cpp
+    src/renderers/defaultRenderers/Color3TexCoord2.cpp
+    src/renderers/defaultRenderers/Normal3TexCoord2.cpp
+    src/renderers/defaultRenderers/Color3Normal3TexCoord2.cpp
 
     src/resources/Resources.cpp
     src/resources/ResourcesGroup.cpp 
@@ -55,7 +55,6 @@ target_include_directories(${TARGET_NAME}
         ./src/
         ./src/batch/
         ./src/renderers/
-        ./src/renderers/default/
         ./src/resources/
         ./src/shaders/
     PUBLIC

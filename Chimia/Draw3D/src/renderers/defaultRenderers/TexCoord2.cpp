@@ -1,9 +1,9 @@
-#include "ColoredTexturedRendererImpl.h"
+#include "TexCoord2.h"
 
 #include "CameraPrivate.h"
+#include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Renderers.h"
-#include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
 
@@ -14,33 +14,21 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+USING_DEFAULT_RENDERERS_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
 namespace {
-
-Chimia::Rendering::Shader&
-GetShaderForTriangleMeshDrawing()
-{
-  return Chimia::Draw3D::Shaders::ColoredTextured();
-}
-
-Chimia::Rendering::Shader&
-GetShaderForModelDrawing()
-{
-  return Chimia::Draw3D::Shaders::ColoredTexturedWithInstancedTransform();
-}
-
 void
-ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
+ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
-  const TextureID textureID = resources.FirstTexture();
+  const TextureID textureID = resource.FirstTexture();
   auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
   if (texture == nullptr) {
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForTriangleMeshDrawing();
+  Chimia::Rendering::Shader& shader = Shaders::Textured();
   shader.Use();
 
   CameraPrivate::SetCameraOnShader(shader);
@@ -52,15 +40,15 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
 }
 
 void
-ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
+ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 {
-  const TextureID textureID = resources.FirstTexture();
+  const TextureID textureID = resource.FirstTexture();
   auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
   if (texture == nullptr) {
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForModelDrawing();
+  Chimia::Rendering::Shader& shader = Shaders::TexturedWithInstancedTransform();
   shader.Use();
 
   CameraPrivate::SetCameraOnShader(shader);
@@ -77,10 +65,10 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-ColoredTexturedRendererImpl::Init()
+TexCoord2::Init()
 {
   g_renderer =
-    &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3_TEXCOORD2,
+    &Renderers::CreateRenderer(eVertexLayout::POSITION3_TEXCOORD2,
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
 }
@@ -88,7 +76,7 @@ ColoredTexturedRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-ColoredTexturedRendererImpl::GetRenderer()
+TexCoord2::GetRenderer()
 {
   return *g_renderer;
 }
@@ -96,35 +84,29 @@ ColoredTexturedRendererImpl::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-ColoredTexturedRendererImpl::DrawTriangle(const glm::vec3& p1,
-                                          const glm::vec3& p1Color,
-                                          const glm::vec2& p1TexCoord,
-                                          const glm::vec3& p2,
-                                          const glm::vec3& p2Color,
-                                          const glm::vec2& p2TexCoord,
-                                          const glm::vec3& p3,
-                                          const glm::vec3& p3Color,
-                                          const glm::vec2& p3TexCoord,
-                                          const ResourceGroupID& resource)
+TexCoord2::DrawTriangle(const glm::vec3& p1,
+                        const glm::vec2& p1TexCoord,
+                        const glm::vec3& p2,
+                        const glm::vec2& p2TexCoord,
+                        const glm::vec3& p3,
+                        const glm::vec2& p3TexCoord,
+                        const ResourceGroupID& resourceID)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
-  constexpr size_t COLOR3_SIZE = sizeof(glm::vec3);
   constexpr size_t TEX_COORD2_SIZE = sizeof(glm::vec2);
 
-  auto& renderer = GetRenderer();
+  static auto& renderer = GetRenderer();
+
   renderer.DrawTriangle(
     {
       { &p1, POS3_SIZE },
-      { &p1Color, COLOR3_SIZE },
       { &p1TexCoord, TEX_COORD2_SIZE },
       { &p2, POS3_SIZE },
-      { &p2Color, COLOR3_SIZE },
       { &p2TexCoord, TEX_COORD2_SIZE },
       { &p3, POS3_SIZE },
-      { &p3Color, COLOR3_SIZE },
       { &p3TexCoord, TEX_COORD2_SIZE },
     },
-    resource);
+    resourceID);
 }
 
 // ----------------------------------------------------------------------------

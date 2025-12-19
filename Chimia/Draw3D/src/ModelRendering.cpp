@@ -1,19 +1,21 @@
 #include "ModelRendering.h"
 
-#include "ColoredTexturedLitRendererImpl.h"
-#include "ColoredTexturedRendererImpl.h"
 #include "Draw3DPrivate.h"
 #include "GenericRenderer.h"
-#include "LitRendererImpl.h"
-#include "LitWithVertexColorRendererImpl.h"
 #include "ModelRenderingPrivate.h"
 #include "Renderers.h"
 #include "ResourceGroupHelper.h"
 #include "ResourcesManager.h"
-#include "TexturedLitRendererImpl.h"
-#include "TexturedRendererImpl.h"
 #include "Types.h"
-#include "VertexColoredRendererImpl.h"
+
+#include "defaultRenderers/Color3.h"
+#include "defaultRenderers/Color3Normal3.h"
+#include "defaultRenderers/Color3Normal3TexCoord2.h"
+#include "defaultRenderers/Color3TexCoord2.h"
+#include "defaultRenderers/Normal3.h"
+#include "defaultRenderers/Normal3TexCoord2.h"
+#include "defaultRenderers/TexCoord2.h"
+
 #include <cassert>
 
 // ----------------------------------------------------------------------------
@@ -46,13 +48,14 @@ ModelLayout(const ModelID& modelID)
 void
 ModelRenderingPrivate::Init()
 {
-  renderer = &VertexColoredRendererImpl::GetRenderer();
-  litRenderer = &LitRendererImpl::GetRenderer();
-  texturedRenderer = &TexturedRendererImpl::GetRenderer();
-  texturedLitRenderer = &TexturedLitRendererImpl::GetRenderer();
-  litVertexColoredRenderer = &LitWithVertexColorRendererImpl::GetRenderer();
-  coloredTexturedRenderer = &ColoredTexturedRendererImpl::GetRenderer();
-  coloredTexturedLitRenderer = &ColoredTexturedLitRendererImpl::GetRenderer();
+  renderer = &DefaultRenderers::Color3::GetRenderer();
+  litRenderer = &DefaultRenderers::Normal3::GetRenderer();
+  texturedRenderer = &DefaultRenderers::TexCoord2::GetRenderer();
+  texturedLitRenderer = &DefaultRenderers::Normal3TexCoord2::GetRenderer();
+  litVertexColoredRenderer = &DefaultRenderers::Color3Normal3::GetRenderer();
+  coloredTexturedRenderer = &DefaultRenderers::Color3TexCoord2::GetRenderer();
+  coloredTexturedLitRenderer =
+    &DefaultRenderers::Color3Normal3TexCoord2::GetRenderer();
 }
 
 // ----------------------------------------------------------------------------

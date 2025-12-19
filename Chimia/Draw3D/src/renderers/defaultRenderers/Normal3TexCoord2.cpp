@@ -1,6 +1,7 @@
-#include "ColoredTexturedLitRendererImpl.h"
+#include "Normal3TexCoord2.h"
 
 #include "Config.h"
+#include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
 #include "Renderers.h"
@@ -15,6 +16,7 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+USING_DEFAULT_RENDERERS_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -25,24 +27,22 @@ GetShaderForTriangleMeshDrawing()
 {
   return Chimia::Draw3D::Config::IlluminationModel() ==
              eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLitColoredTextured()
-           : Chimia::Draw3D::Shaders::PhongLitColoredTextured();
+           ? Chimia::Draw3D::Shaders::GouraudLitTextured()
+           : Chimia::Draw3D::Shaders::PhongLitTextured();
 }
 
 Chimia::Rendering::Shader&
 GetShaderForModelDrawing()
 {
   return Config::IlluminationModel() == eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::
-               GouraudLitColoredTexturedWithInstancedTransform()
-           : Chimia::Draw3D::Shaders::
-               PhongLitColoredTexturedWithInstancedTransform();
+           ? Chimia::Draw3D::Shaders::GouraudLitTexturedWithInstancedTransform()
+           : Chimia::Draw3D::Shaders::PhongLitTexturedWithInstancedTransform();
 }
 
 void
-ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
+ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
-  const TextureID textureID = resources.FirstTexture();
+  const TextureID textureID = resource.FirstTexture();
   auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
   if (texture == nullptr) {
     return;
@@ -59,10 +59,12 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
   shader.SetUniform("tex", TEXTURE_UNIT);
 }
 
+// ----------------------------------------------------------------------------
+
 void
-ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
+ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 {
-  const TextureID textureID = resources.FirstTexture();
+  const TextureID textureID = resource.FirstTexture();
   auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
   if (texture == nullptr) {
     return;
@@ -85,18 +87,18 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-ColoredTexturedLitRendererImpl::Init()
+Normal3TexCoord2::Init()
 {
-  g_renderer = &Renderers::CreateRenderer(
-    eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2,
-    ConfigureShaderForTriangleDrawing,
-    ConfigureShaderForTransformedModelDrawing);
+  g_renderer =
+    &Renderers::CreateRenderer(eVertexLayout::POSITION3_NORMAL3_TEXCOORD2,
+                               ConfigureShaderForTriangleDrawing,
+                               ConfigureShaderForTransformedModelDrawing);
 }
 
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-ColoredTexturedLitRendererImpl::GetRenderer()
+Normal3TexCoord2::GetRenderer()
 {
   return *g_renderer;
 }
@@ -104,22 +106,18 @@ ColoredTexturedLitRendererImpl::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-ColoredTexturedLitRendererImpl::DrawTriangle(const glm::vec3& p1,
-                                             const glm::vec3& p1Color,
-                                             const glm::vec3& p1Normal,
-                                             const glm::vec2& p1TexCoord,
-                                             const glm::vec3& p2,
-                                             const glm::vec3& p2Color,
-                                             const glm::vec3& p2Normal,
-                                             const glm::vec2& p2TexCoord,
-                                             const glm::vec3& p3,
-                                             const glm::vec3& p3Color,
-                                             const glm::vec3& p3Normal,
-                                             const glm::vec2& p3TexCoord,
-                                             const ResourceGroupID& resource)
+Normal3TexCoord2::DrawTriangle(const glm::vec3& p1,
+                               const glm::vec3& p1Normal,
+                               const glm::vec2& p1TexCoord,
+                               const glm::vec3& p2,
+                               const glm::vec3& p2Normal,
+                               const glm::vec2& p2TexCoord,
+                               const glm::vec3& p3,
+                               const glm::vec3& p3Normal,
+                               const glm::vec2& p3TexCoord,
+                               const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
-  constexpr size_t COLOR3_SIZE = sizeof(glm::vec3);
   constexpr size_t TEX_COORD2_SIZE = sizeof(glm::vec2);
   constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
 
@@ -127,15 +125,12 @@ ColoredTexturedLitRendererImpl::DrawTriangle(const glm::vec3& p1,
   renderer.DrawTriangle(
     {
       { &p1, POS3_SIZE },
-      { &p1Color, COLOR3_SIZE },
       { &p1Normal, NORM3_SIZE },
       { &p1TexCoord, TEX_COORD2_SIZE },
       { &p2, POS3_SIZE },
-      { &p2Color, COLOR3_SIZE },
       { &p2Normal, NORM3_SIZE },
       { &p2TexCoord, TEX_COORD2_SIZE },
       { &p3, POS3_SIZE },
-      { &p3Color, COLOR3_SIZE },
       { &p3Normal, NORM3_SIZE },
       { &p3TexCoord, TEX_COORD2_SIZE },
     },

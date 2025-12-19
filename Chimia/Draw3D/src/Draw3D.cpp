@@ -2,16 +2,17 @@
 
 // ----------------------------------------------------------------------------
 
-#include "ColoredTexturedLitRendererImpl.h"
-#include "ColoredTexturedRendererImpl.h"
-#include "LitRendererImpl.h"
-#include "LitWithVertexColorRendererImpl.h"
 #include "ModelRenderingPrivate.h"
 #include "Shaders.h"
-#include "TexturedLitRendererImpl.h"
-#include "TexturedRendererImpl.h"
 #include "TrianglePrivate.h"
-#include "VertexColoredRendererImpl.h"
+
+#include "defaultRenderers/Color3.h"
+#include "defaultRenderers/Color3Normal3.h"
+#include "defaultRenderers/Color3Normal3TexCoord2.h"
+#include "defaultRenderers/Color3TexCoord2.h"
+#include "defaultRenderers/Normal3.h"
+#include "defaultRenderers/Normal3TexCoord2.h"
+#include "defaultRenderers/TexCoord2.h"
 
 #include "Rendering/Rendering.h"
 
@@ -25,13 +26,13 @@ Chimia::Draw3D::Initialize()
 
   Shaders::Initialize();
 
-  VertexColoredRendererImpl::Init();
-  LitRendererImpl::Init();
-  TexturedRendererImpl::Init();
-  ColoredTexturedRendererImpl::Init();
-  LitWithVertexColorRendererImpl::Init();
-  TexturedLitRendererImpl::Init();
-  ColoredTexturedLitRendererImpl::Init();
+  DefaultRenderers::Color3::Init();
+  DefaultRenderers::Normal3::Init();
+  DefaultRenderers::TexCoord2::Init();
+  DefaultRenderers::Color3TexCoord2::Init();
+  DefaultRenderers::Color3Normal3::Init();
+  DefaultRenderers::Normal3TexCoord2::Init();
+  DefaultRenderers::Color3Normal3TexCoord2::Init();
 
   TrianglePrivate::Init();
   ModelRenderingPrivate::Init();
@@ -42,13 +43,13 @@ Chimia::Draw3D::Initialize()
 void
 Chimia::Draw3D::Flush()
 {
-  VertexColoredRendererImpl::GetRenderer().Flush();
-  LitRendererImpl::GetRenderer().Flush();
-  TexturedRendererImpl::GetRenderer().Flush();
-  ColoredTexturedRendererImpl::GetRenderer().Flush();
-  LitWithVertexColorRendererImpl::GetRenderer().Flush();
-  TexturedLitRendererImpl::GetRenderer().Flush();
-  ColoredTexturedLitRendererImpl::GetRenderer().Flush();
+  DefaultRenderers::Color3::GetRenderer().Flush();
+  DefaultRenderers::Normal3::GetRenderer().Flush();
+  DefaultRenderers::TexCoord2::GetRenderer().Flush();
+  DefaultRenderers::Color3Normal3::GetRenderer().Flush();
+  DefaultRenderers::Color3TexCoord2::GetRenderer().Flush();
+  DefaultRenderers::Normal3TexCoord2::GetRenderer().Flush();
+  DefaultRenderers::Color3Normal3TexCoord2::GetRenderer().Flush();
 }
 
 // ----------------------------------------------------------------------------

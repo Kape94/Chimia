@@ -1,6 +1,7 @@
-#include "LitWithVertexColorRendererImpl.h"
+#include "Color3Normal3.h"
 
 #include "Config.h"
+#include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
 #include "Renderers.h"
@@ -13,6 +14,7 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+USING_DEFAULT_RENDERERS_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-LitWithVertexColorRendererImpl::Init()
+Color3Normal3::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3_NORMAL3,
@@ -72,7 +74,7 @@ LitWithVertexColorRendererImpl::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-LitWithVertexColorRendererImpl::GetRenderer()
+Color3Normal3::GetRenderer()
 {
   return *g_renderer;
 }
@@ -80,16 +82,16 @@ LitWithVertexColorRendererImpl::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-LitWithVertexColorRendererImpl::DrawTriangle(const glm::vec3& p1,
-                                             const glm::vec3& p1Color,
-                                             const glm::vec3& p1Normal,
-                                             const glm::vec3& p2,
-                                             const glm::vec3& p2Color,
-                                             const glm::vec3& p2Normal,
-                                             const glm::vec3& p3,
-                                             const glm::vec3& p3Color,
-                                             const glm::vec3& p3Normal,
-                                             const ResourceGroupID& resource)
+Color3Normal3::DrawTriangle(const glm::vec3& p1,
+                            const glm::vec3& p1Color,
+                            const glm::vec3& p1Normal,
+                            const glm::vec3& p2,
+                            const glm::vec3& p2Color,
+                            const glm::vec3& p2Normal,
+                            const glm::vec3& p3,
+                            const glm::vec3& p3Color,
+                            const glm::vec3& p3Normal,
+                            const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t COLOR3_SIZE = sizeof(glm::vec3);
