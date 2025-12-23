@@ -1,10 +1,10 @@
 #include "Normal3TexCoord2.h"
 
-#include "Config.h"
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "IlluminationPrivate.h"
 #include "Renderers.h"
+#include "RenderersUtils.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Shaders.h"
@@ -22,6 +22,9 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 
+constexpr eVertexLayout VERTEX_LAYOUT =
+  eVertexLayout::POSITION3_NORMAL3_TEXCOORD2;
+
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
@@ -34,16 +37,7 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
-  shader.SetUniform("hasVertexColor", false);
-  shader.SetUniform("hasNormal", true);
-  shader.SetUniform("hasTexCoord", true);
-  shader.SetUniform("isInstanced", false);
-  shader.SetUniform("hasMaterial", false);
-  shader.SetUniform("hasTexture", true);
-
-  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
-  shader.SetUniform("lightningModel", illuminationModel);
-
+  RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
@@ -66,16 +60,8 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
-  shader.SetUniform("hasVertexColor", false);
-  shader.SetUniform("hasNormal", true);
-  shader.SetUniform("hasTexCoord", true);
-  shader.SetUniform("isInstanced", true);
-  shader.SetUniform("hasMaterial", false);
-  shader.SetUniform("hasTexture", true);
-
-  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
-  shader.SetUniform("lightningModel", illuminationModel);
-
+  RenderersUtils::ConfigureShaderForInstancedRendering(
+    shader, VERTEX_LAYOUT, resource);
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
@@ -93,7 +79,7 @@ void
 Normal3TexCoord2::Init()
 {
   g_renderer =
-    &Renderers::CreateRenderer(eVertexLayout::POSITION3_NORMAL3_TEXCOORD2,
+    &Renderers::CreateRenderer(VERTEX_LAYOUT,
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
 }

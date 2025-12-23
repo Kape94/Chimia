@@ -4,11 +4,12 @@
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Renderers.h"
+#include "RenderersUtils.h"
 #include "ResourceGroup.h"
 #include "Shaders.h"
+#include "Types.h"
 
 #include "Rendering/Shader.h"
-#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
@@ -19,19 +20,15 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 
+constexpr eVertexLayout VERTEX_LAYOUT = eVertexLayout::POSITION3_COLOR3;
+
 void
 ConfigureForTriangleDrawing(const ResourcesGroup& resource)
 {
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
-  shader.SetUniform("hasVertexColor", true);
-  shader.SetUniform("hasNormal", false);
-  shader.SetUniform("hasTexCoord", false);
-  shader.SetUniform("isInstanced", false);
-  shader.SetUniform("hasMaterial", false);
-  shader.SetUniform("hasTexture", false);
-
+  RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
   CameraPrivate::SetCameraOnShader(shader);
 }
 
@@ -41,12 +38,8 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
-  shader.SetUniform("hasVertexColor", true);
-  shader.SetUniform("hasNormal", false);
-  shader.SetUniform("hasTexCoord", false);
-  shader.SetUniform("isInstanced", true);
-  shader.SetUniform("hasMaterial", false);
-  shader.SetUniform("hasTexture", false);
+  RenderersUtils::ConfigureShaderForInstancedRendering(
+    shader, VERTEX_LAYOUT, resource);
 
   CameraPrivate::SetCameraOnShader(shader);
 }
@@ -59,9 +52,8 @@ GenericRenderer* g_renderer = nullptr;
 void
 Color3::Init()
 {
-  g_renderer = &Renderers::CreateRenderer(eVertexLayout::POSITION3_COLOR3,
-                                          ConfigureForTriangleDrawing,
-                                          ConfigureForInstancedDrawing);
+  g_renderer = &Renderers::CreateRenderer(
+    VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------

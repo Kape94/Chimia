@@ -2,7 +2,7 @@
 
 #include "GenericRenderer.h"
 #include "ObjectTable.h"
-#include "VertexLayoutAttributes.h"
+#include "RenderersUtils.h"
 
 // ----------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ Renderers::CreateRenderer(
   auto [id, renderer] = RenderersInternal::RenderersTable().Insert();
 
   const VertexLayoutAttributes layoutAttributes =
-    GetAttributesForLayout(vertexLayout);
+    RenderersUtils::GetAttributesForLayout(vertexLayout);
 
   renderer->Create(id,
                    layoutAttributes.vertexAttributes,

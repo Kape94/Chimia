@@ -22,7 +22,7 @@ add_library(${TARGET_NAME}
     src/renderers/ModelRenderingComponent.cpp
     src/renderers/Renderers.cpp
     src/renderers/TriangleMeshComponent.cpp
-    src/renderers/VertexLayoutAttributes.cpp
+    src/renderers/RenderersUtils.cpp
 
     src/renderers/defaultRenderers/Color3.cpp
     src/renderers/defaultRenderers/Normal3.cpp
