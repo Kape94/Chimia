@@ -98,7 +98,7 @@ main(int argc, char** argv)
     CreateTextureFromImage(solarFlareAsset);
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -2.0f };
-  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
+  glm::vec3 lightPos{ 0.0f, 10.0f, -5.0f };
 
   Chimia::Draw3D::Camera::Projection::SetPerspective(
     45.0f, 1.0f, 0.01f, 100.0f);

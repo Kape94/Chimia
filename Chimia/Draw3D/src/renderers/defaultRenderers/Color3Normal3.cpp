@@ -20,40 +20,41 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 
-Chimia::Rendering::Shader&
-GetShaderForTriangleMeshDrawing()
-{
-  return Chimia::Draw3D::Config::IlluminationModel() ==
-             eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLitWithVertexColor()
-           : Chimia::Draw3D::Shaders::PhongLitWithVertexColor();
-}
-
-Chimia::Rendering::Shader&
-GetShaderForModelDrawing()
-{
-  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::
-               GouraudLitWithInstancedTransformAndVertexColor()
-           : Chimia::Draw3D::Shaders::
-               PhongLitWithInstancedTransformAndVertexColor();
-}
-
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup&)
 {
-  Chimia::Rendering::Shader& shader = GetShaderForTriangleMeshDrawing();
-
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", true);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", false);
+  shader.SetUniform("isInstanced", false);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", false);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
+
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 }
 
 void
 ConfigureShaderForTransformedModelDrawing(const ResourcesGroup&)
 {
-  Chimia::Rendering::Shader& shader = GetShaderForModelDrawing();
-
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", true);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", false);
+  shader.SetUniform("isInstanced", true);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", false);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
+
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 }
 

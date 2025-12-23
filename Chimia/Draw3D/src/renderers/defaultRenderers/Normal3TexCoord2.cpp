@@ -22,23 +22,6 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 
-Chimia::Rendering::Shader&
-GetShaderForTriangleMeshDrawing()
-{
-  return Chimia::Draw3D::Config::IlluminationModel() ==
-             eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLitTextured()
-           : Chimia::Draw3D::Shaders::PhongLitTextured();
-}
-
-Chimia::Rendering::Shader&
-GetShaderForModelDrawing()
-{
-  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLitTexturedWithInstancedTransform()
-           : Chimia::Draw3D::Shaders::PhongLitTexturedWithInstancedTransform();
-}
-
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
@@ -48,8 +31,18 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForTriangleMeshDrawing();
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", true);
+  shader.SetUniform("isInstanced", false);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", true);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
 
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 
@@ -70,8 +63,18 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForModelDrawing();
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", true);
+  shader.SetUniform("isInstanced", true);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", true);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
 
   IlluminationPrivate::ConfigureLightsOnShader(shader);
 

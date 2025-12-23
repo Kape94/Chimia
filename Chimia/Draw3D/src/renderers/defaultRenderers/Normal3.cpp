@@ -21,25 +21,6 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 
-Chimia::Rendering::Shader&
-GetShaderForTriangleMeshDrawing()
-{
-  return Chimia::Draw3D::Config::IlluminationModel() ==
-             eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::GouraudLit()
-           : Chimia::Draw3D::Shaders::PhongLit();
-}
-
-Chimia::Rendering::Shader&
-GetShaderForModelDrawing()
-{
-  return Config::IlluminationModel() == eIlluminationModel::GOURAUD
-           ? Chimia::Draw3D::Shaders::
-               GouraudLitWithInstancedTransformAndMaterial()
-           : Chimia::Draw3D::Shaders::
-               PhongLitWithInstancedTransformAndMaterial();
-}
-
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
@@ -49,9 +30,19 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForTriangleMeshDrawing();
-
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", false);
+  shader.SetUniform("isInstanced", false);
+  shader.SetUniform("hasMaterial", true);
+  shader.SetUniform("hasTexture", false);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
+
   IlluminationPrivate::ConfigureLightsOnShader(shader);
   IlluminationPrivate::ConfigureMaterialOnShader(*material, shader);
 }
@@ -67,9 +58,19 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = GetShaderForModelDrawing();
-
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", true);
+  shader.SetUniform("hasTexCoord", false);
+  shader.SetUniform("isInstanced", true);
+  shader.SetUniform("hasMaterial", true);
+  shader.SetUniform("hasTexture", false);
+
+  const int illuminationModel = static_cast<int>(Config::IlluminationModel());
+  shader.SetUniform("lightningModel", illuminationModel);
+
   IlluminationPrivate::ConfigureLightsOnShader(shader);
   IlluminationPrivate::ConfigureMaterialOnShader(*material, shader);
 }

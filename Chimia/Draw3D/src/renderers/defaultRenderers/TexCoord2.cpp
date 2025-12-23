@@ -28,8 +28,15 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = Shaders::Textured();
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", false);
+  shader.SetUniform("hasTexCoord", true);
+  shader.SetUniform("isInstanced", false);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", true);
 
   CameraPrivate::SetCameraOnShader(shader);
 
@@ -48,8 +55,15 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
     return;
   }
 
-  Chimia::Rendering::Shader& shader = Shaders::TexturedWithInstancedTransform();
+  Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
+
+  shader.SetUniform("hasVertexColor", false);
+  shader.SetUniform("hasNormal", false);
+  shader.SetUniform("hasTexCoord", true);
+  shader.SetUniform("isInstanced", true);
+  shader.SetUniform("hasMaterial", false);
+  shader.SetUniform("hasTexture", true);
 
   CameraPrivate::SetCameraOnShader(shader);
 
