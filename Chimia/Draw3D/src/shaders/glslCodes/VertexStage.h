@@ -37,13 +37,13 @@ inline const char* generic = R"(
   uniform int lightningModel;
 
   layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec3 vertexColor;
+  layout (location = 1) in vec4 vertexColor;
   layout (location = 2) in vec3 vertexNorm;
   layout (location = 3) in vec2 vertexTexCoord;
   layout (location = 4) in mat4 instanceTransform;
 
   out vec3 fragmentPos;
-  out vec3 fragmentColor;
+  out vec4 fragmentColor;
   out vec3 fragmentNorm;
   out vec2 fragmentTexCoord;
 
@@ -100,18 +100,18 @@ inline const char* generic = R"(
       }
     }
 
-    vec3 result = directional + point;
+    vec4 result = vec4(directional + point, 1.0f);
 
     fragmentPos = pos;
     fragmentNorm = norm;
 
     if (shouldCalculateLights)
     {
-      fragmentColor = hasVertexColor && !hasMaterial ? result * vertexColor : result;
+      fragmentColor = hasMaterial ? result : result * vertexColor;
     }
     else 
     {
-      fragmentColor = hasVertexColor ? vertexColor : vec3(1.0, 1.0, 1.0);
+      fragmentColor = hasVertexColor ? vertexColor : vec4(1.0, 1.0, 1.0, 1.0);
     }
     fragmentTexCoord = vertexTexCoord;
 

@@ -35,7 +35,7 @@ inline const char* generic = R"(
       uniform int lightningModel;
 
       in vec3 fragmentPos;
-      in vec3 fragmentColor;
+      in vec4 fragmentColor;
       in vec3 fragmentNorm;
       in vec2 fragmentTexCoord;
 
@@ -45,10 +45,10 @@ inline const char* generic = R"(
       @embed(CUSTOM_UNIFORMS)
 
       void main() {
-        vec3 color = fragmentColor;
+        vec4 color = fragmentColor;
         if (hasTexture && hasTexCoord)
         {
-          color = vec3(texture(tex, fragmentTexCoord)) * color;
+          color = texture(tex, fragmentTexCoord) * color;
         }        
 
         vec3 directional = vec3(0.0, 0.0, 0.0);
@@ -78,13 +78,14 @@ inline const char* generic = R"(
             }
             else
             {
+              vec3 neutralColor = vec3(1.0, 1.0, 1.0);
               directional = CalculateDirectionalLight(
                 viewPosition, 
                 fragmentPos, 
                 fragmentNorm, 
                 nDirectionalLights, 
                 directionalLights,
-                color
+                neutralColor
               );
               point = CalculatePointLight(
                 viewPosition, 
@@ -92,14 +93,22 @@ inline const char* generic = R"(
                 fragmentNorm, 
                 nPointLights, 
                 pointLights,
-                color
+                neutralColor
               );
             }
         }
 
-        outputColor = shouldCalculateLights ? vec4(directional + point, 1.0) : vec4(color, 1.0);
+        if (shouldCalculateLights)
+        {
+          vec4 shadedColor = vec4(directional + point, 1.0);
+          outputColor = hasMaterial ? shadedColor : shadedColor * color;
+        }
+        else 
+        {
+          outputColor = color;
+        }
         
-          @embed(OUTPUT_OVERRIDERS)
+        @embed(OUTPUT_OVERRIDERS)
       }
     )";
 }
