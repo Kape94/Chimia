@@ -1,4 +1,4 @@
-#include "TriangleBatch.h"
+#include "ImmediateTrianglesBatch.h"
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
@@ -11,9 +11,10 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Create(const BatchingSettings& batchingSettings,
-                      const Rendering::ShaderAttributes& vertexAttributes,
-                      const std::function<void(void)>& onFlush)
+ImmediateTrianglesBatch::Create(
+  const BatchingSettings& batchingSettings,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
   m_vertexAttributes = vertexAttributes;
@@ -36,7 +37,8 @@ TriangleBatch::Create(const BatchingSettings& batchingSettings,
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Draw(const std::initializer_list<RawDataView>& vertexDatas)
+ImmediateTrianglesBatch::Draw(
+  const std::initializer_list<RawDataView>& vertexDatas)
 {
   const size_t incomingSizeInBytes = BatchUtils::TotalDataSize(vertexDatas);
   HandleFlushByDemand(incomingSizeInBytes);
@@ -49,7 +51,7 @@ TriangleBatch::Draw(const std::initializer_list<RawDataView>& vertexDatas)
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Draw(const RawArrayView& vertexDataArray)
+ImmediateTrianglesBatch::Draw(const RawArrayView& vertexDataArray)
 {
   const size_t arraySizeInBytes = vertexDataArray.TotalSize();
 
@@ -68,7 +70,7 @@ TriangleBatch::Draw(const RawArrayView& vertexDataArray)
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
+ImmediateTrianglesBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 {
   if (m_inputBuffer.GetAvailableSize() < incomingSizeInBytes) {
     const size_t nTrianglesInBuffer =
@@ -81,7 +83,7 @@ TriangleBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Flush()
+ImmediateTrianglesBatch::Flush()
 {
   const size_t frameInputSize = m_inputBuffer.GetSize();
   if (frameInputSize == 0) {
@@ -96,7 +98,7 @@ TriangleBatch::Flush()
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::DoFlushing()
+ImmediateTrianglesBatch::DoFlushing()
 {
   m_onFlush();
 
@@ -110,7 +112,7 @@ TriangleBatch::DoFlushing()
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::HandleDynamicResizing()
+ImmediateTrianglesBatch::HandleDynamicResizing()
 {
   if (m_trianglesFlushedByDemand == 0) {
     return;
@@ -133,7 +135,7 @@ TriangleBatch::HandleDynamicResizing()
 // ----------------------------------------------------------------------------
 
 void
-TriangleBatch::Resize(size_t batchSize)
+ImmediateTrianglesBatch::Resize(size_t batchSize)
 {
   const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
   m_inputBuffer.Resize(newBatchSizeInBytes);
@@ -145,7 +147,7 @@ TriangleBatch::Resize(size_t batchSize)
 // ----------------------------------------------------------------------------
 
 size_t
-TriangleBatch::CurrentBatchSize() const
+ImmediateTrianglesBatch::CurrentBatchSize() const
 {
   return m_inputBuffer.GetMaximumSize() / m_triangleSizeInBytes;
 }

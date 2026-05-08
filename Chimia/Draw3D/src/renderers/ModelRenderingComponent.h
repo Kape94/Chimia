@@ -5,10 +5,10 @@
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
+#include "ImmediateModelInstancesBatch.h"
 #include "InternalTypes.h"
-#include "ModelBatch.h"
 #include "ObjectTable.h"
-#include "StaticModel.h"
+#include "RetainedModelInstancesBatch.h"
 #include "Types.h"
 
 #include "Rendering/ShaderAttribute.h"
@@ -47,17 +47,19 @@ public:
   void DeleteStaticModel(const LocalModelInstanceID& instanceID);
 
 private:
-  ModelBatch* AllocateBatchForModelDrawing(const ModelID& modelID);
+  ImmediateModelInstancesBatch* AllocateBatchForModelDrawing(
+    const ModelID& modelID);
 
-  StaticModel* AllocateBatchForStaticModel(const ModelID& modelID);
+  RetainedModelInstancesBatch* AllocateBatchForStaticModel(
+    const ModelID& modelID);
 
   BatchingSettings m_batchingSettings;
   Rendering::ShaderAttributes m_vertexAttributes;
   Rendering::ShaderAttributes m_instanceAttributes;
   std::function<void(void)> m_onFlush;
 
-  ObjectTable<ModelBatch> m_transformedModelsTable;
-  ObjectTable<StaticModel> m_staticModelsTable;
+  ObjectTable<ImmediateModelInstancesBatch> m_transformedModelsTable;
+  ObjectTable<RetainedModelInstancesBatch> m_staticModelsTable;
 };
 
 // ----------------------------------------------------------------------------

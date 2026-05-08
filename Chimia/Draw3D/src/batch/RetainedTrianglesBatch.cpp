@@ -1,4 +1,4 @@
-#include "StaticTriangles.h"
+#include "RetainedTrianglesBatch.h"
 
 #include "BatchUtils.h"
 #include "Core/DataBuffer.h"
@@ -11,8 +11,9 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::Create(const BatchingSettings& batchingSettings,
-                        const Rendering::ShaderAttributes& shaderAttributes)
+RetainedTrianglesBatch::Create(
+  const BatchingSettings& batchingSettings,
+  const Rendering::ShaderAttributes& shaderAttributes)
 {
   m_batchingSettings = batchingSettings;
   m_vertexAttributes = shaderAttributes;
@@ -37,7 +38,7 @@ StaticTriangles::Create(const BatchingSettings& batchingSettings,
 // ----------------------------------------------------------------------------
 
 unsigned
-StaticTriangles::AddStaticMesh(const RawDataView& vertexData)
+RetainedTrianglesBatch::AddStaticMesh(const RawDataView& vertexData)
 {
   auto [meshID, triangleData] = m_staticTrianglesTable.Insert();
   triangleData->Append(vertexData);
@@ -50,7 +51,7 @@ StaticTriangles::AddStaticMesh(const RawDataView& vertexData)
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::DeleteStaticMesh(const unsigned meshID)
+RetainedTrianglesBatch::DeleteStaticMesh(const unsigned meshID)
 {
   m_staticTrianglesTable.Delete(meshID);
   m_shouldRebuildBuffers = true;
@@ -59,7 +60,7 @@ StaticTriangles::DeleteStaticMesh(const unsigned meshID)
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::Render()
+RetainedTrianglesBatch::Render()
 {
   if (CanRenderWithCurrentBuffer()) {
     if (HasSomethingToRender()) {
@@ -79,7 +80,7 @@ StaticTriangles::Render()
 // ----------------------------------------------------------------------------
 
 bool
-StaticTriangles::CanRenderWithCurrentBuffer() const
+RetainedTrianglesBatch::CanRenderWithCurrentBuffer() const
 {
   const size_t trianglesDataInBytes = m_inputBuffer.GetSize();
 
@@ -93,7 +94,7 @@ StaticTriangles::CanRenderWithCurrentBuffer() const
 // ----------------------------------------------------------------------------
 
 bool
-StaticTriangles::HasSomethingToRender() const
+RetainedTrianglesBatch::HasSomethingToRender() const
 {
   return m_inputBuffer.GetSize() > 0;
 }
@@ -101,7 +102,7 @@ StaticTriangles::HasSomethingToRender() const
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::RebuildTrianglesBuffer()
+RetainedTrianglesBatch::RebuildTrianglesBuffer()
 {
   m_inputBuffer.Reset();
   m_staticTrianglesTable.ForEach([&](const DataBuffer& triangleData) {
@@ -113,7 +114,7 @@ StaticTriangles::RebuildTrianglesBuffer()
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::HandleDynamicResizing()
+RetainedTrianglesBatch::HandleDynamicResizing()
 {
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
   const size_t gpuBatchSize = m_currentGPUBatchSize;
@@ -131,7 +132,7 @@ StaticTriangles::HandleDynamicResizing()
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::ResizeGPUBatch(const size_t batchSize)
+RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_triangleSizeInBytes;
   m_gpuBuffer.Clear();
@@ -144,7 +145,7 @@ StaticTriangles::ResizeGPUBatch(const size_t batchSize)
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::RenderByBatches()
+RetainedTrianglesBatch::RenderByBatches()
 {
   const size_t inputSize = m_inputBuffer.GetSize();
   if (inputSize == 0) {
@@ -162,8 +163,8 @@ StaticTriangles::RenderByBatches()
 // ----------------------------------------------------------------------------
 
 void
-StaticTriangles::HandleRenderingForBatchRange(const size_t rangeStart,
-                                              const size_t rangeSize)
+RetainedTrianglesBatch::HandleRenderingForBatchRange(const size_t rangeStart,
+                                                     const size_t rangeSize)
 {
   const unsigned char* data = m_inputBuffer.GetData();
   const unsigned char* batchData = data + rangeStart;
@@ -175,7 +176,7 @@ StaticTriangles::HandleRenderingForBatchRange(const size_t rangeStart,
 // ----------------------------------------------------------------------------
 
 size_t
-StaticTriangles::CurrentGPUBatchSizeInBytes() const
+RetainedTrianglesBatch::CurrentGPUBatchSizeInBytes() const
 {
   return m_currentGPUBatchSize * m_triangleSizeInBytes;
 }

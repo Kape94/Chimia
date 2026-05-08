@@ -5,8 +5,8 @@
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
-#include "StaticTriangles.h"
-#include "TriangleBatch.h"
+#include "ImmediateTrianglesBatch.h"
+#include "RetainedTrianglesBatch.h"
 
 #include "Rendering/ShaderAttribute.h"
 
@@ -39,8 +39,8 @@ public:
 private:
   std::function<void(void)> m_onFlush;
 
-  TriangleBatch m_triangleBatch;
-  StaticTriangles m_staticTriangles;
+  ImmediateTrianglesBatch m_triangleBatch;
+  RetainedTrianglesBatch m_staticTriangles;
 };
 
 // ----------------------------------------------------------------------------

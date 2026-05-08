@@ -19,11 +19,11 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class TriangleBatch
+class ImmediateTrianglesBatch
 {
 public:
-  DEFAULT_CONSTUCTIBLE(TriangleBatch)
-  NON_COPYABLE_NON_MOVABLE(TriangleBatch)
+  DEFAULT_CONSTUCTIBLE(ImmediateTrianglesBatch)
+  NON_COPYABLE_NON_MOVABLE(ImmediateTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& vertexAttributes,

@@ -13,10 +13,10 @@ add_library(${TARGET_NAME}
     src/Triangle.cpp
     
     src/batch/BatchUtils.cpp
-    src/batch/ModelBatch.cpp
-    src/batch/StaticModel.cpp
-    src/batch/StaticTriangles.cpp
-    src/batch/TriangleBatch.cpp
+    src/batch/ImmediateModelInstancesBatch.cpp
+    src/batch/ImmediateTrianglesBatch.cpp
+    src/batch/RetainedModelInstancesBatch.cpp
+    src/batch/RetainedTrianglesBatch.cpp
 
     src/renderers/GenericRenderer.cpp
     src/renderers/ModelRenderingComponent.cpp

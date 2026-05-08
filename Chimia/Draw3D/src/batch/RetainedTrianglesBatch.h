@@ -16,11 +16,11 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class StaticTriangles
+class RetainedTrianglesBatch
 {
 public:
-  DEFAULT_CONSTUCTIBLE(StaticTriangles)
-  NON_COPYABLE_NON_MOVABLE(StaticTriangles)
+  DEFAULT_CONSTUCTIBLE(RetainedTrianglesBatch)
+  NON_COPYABLE_NON_MOVABLE(RetainedTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
               const Rendering::ShaderAttributes& shaderAttributes);

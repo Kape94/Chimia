@@ -1,4 +1,4 @@
-#include "StaticModel.h"
+#include "RetainedModelInstancesBatch.h"
 
 #include "BatchUtils.h"
 #include "Core/DataBuffer.h"
@@ -14,11 +14,12 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::Create(const Model& model,
-                    const BatchingSettings& batchingSettings,
-                    const Rendering::ShaderAttributes& vertexAttributes,
-                    const Rendering::ShaderAttributes& instanceAttributes,
-                    const std::function<void()>& onRender)
+RetainedModelInstancesBatch::Create(
+  const Model& model,
+  const BatchingSettings& batchingSettings,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instanceAttributes,
+  const std::function<void()>& onRender)
 {
   m_onRender = onRender;
   m_batchingSettings = batchingSettings;
@@ -44,7 +45,7 @@ StaticModel::Create(const Model& model,
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::CreateGPUBuffers(
+RetainedModelInstancesBatch::CreateGPUBuffers(
   const Model& model,
   const size_t batchSize,
   const size_t instanceBatchDataSize,
@@ -66,7 +67,7 @@ StaticModel::CreateGPUBuffers(
 // ----------------------------------------------------------------------------
 
 unsigned
-StaticModel::AddInstance(const RawDataView& instanceData)
+RetainedModelInstancesBatch::AddInstance(const RawDataView& instanceData)
 {
   auto [instanceID, newInstance] = m_instanceTable.Insert();
   newInstance->Append(instanceData);
@@ -79,7 +80,7 @@ StaticModel::AddInstance(const RawDataView& instanceData)
 // ----------------------------------------------------------------------------
 
 unsigned
-StaticModel::AddInstance(
+RetainedModelInstancesBatch::AddInstance(
   const std::initializer_list<RawDataView>& instanceDatas)
 {
   auto [instanceID, newInstance] = m_instanceTable.Insert();
@@ -95,7 +96,7 @@ StaticModel::AddInstance(
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::DeleteInstance(unsigned instanceID)
+RetainedModelInstancesBatch::DeleteInstance(unsigned instanceID)
 {
   m_instanceTable.Delete(instanceID);
   m_shouldRebuildBuffers = true;
@@ -104,7 +105,7 @@ StaticModel::DeleteInstance(unsigned instanceID)
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::Render()
+RetainedModelInstancesBatch::Render()
 {
   if (CanRenderWithCurrentBuffers()) {
     if (HasSomethingToRender()) {
@@ -125,7 +126,7 @@ StaticModel::Render()
 // ----------------------------------------------------------------------------
 
 bool
-StaticModel::CanRenderWithCurrentBuffers() const
+RetainedModelInstancesBatch::CanRenderWithCurrentBuffers() const
 {
   const bool needToReloadDataOnGPU = m_shouldRebuildBuffers;
 
@@ -138,7 +139,7 @@ StaticModel::CanRenderWithCurrentBuffers() const
 // ----------------------------------------------------------------------------
 
 bool
-StaticModel::HasSomethingToRender() const
+RetainedModelInstancesBatch::HasSomethingToRender() const
 {
   return m_instanceDataBuffer.GetSize() > 0;
 }
@@ -146,7 +147,7 @@ StaticModel::HasSomethingToRender() const
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::RebuildInputBuffer()
+RetainedModelInstancesBatch::RebuildInputBuffer()
 {
   m_instanceDataBuffer.Reset();
   m_instanceTable.ForEach([&](const DataBuffer& instanceData) {
@@ -158,7 +159,7 @@ StaticModel::RebuildInputBuffer()
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::HandleDynamicResizing()
+RetainedModelInstancesBatch::HandleDynamicResizing()
 {
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
   const size_t currentBatchSize = m_currentGPUBatchSize;
@@ -177,7 +178,7 @@ StaticModel::HandleDynamicResizing()
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::ResizeBatch(const size_t batchSize)
+RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   for (auto& buffer : m_gpuBuffers) {
     buffer.RecreateInstancedBuffer(
@@ -190,7 +191,7 @@ StaticModel::ResizeBatch(const size_t batchSize)
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::RenderByBatches()
+RetainedModelInstancesBatch::RenderByBatches()
 {
   if (!HasSomethingToRender()) {
     return;
@@ -209,8 +210,9 @@ StaticModel::RenderByBatches()
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::HandleRenderingForBatchRange(const size_t rangeStart,
-                                          const size_t rangeSize)
+RetainedModelInstancesBatch::HandleRenderingForBatchRange(
+  const size_t rangeStart,
+  const size_t rangeSize)
 {
   const unsigned char* data = m_instanceDataBuffer.GetData();
   const unsigned char* offsetData = data + rangeStart;
@@ -222,8 +224,8 @@ StaticModel::HandleRenderingForBatchRange(const size_t rangeStart,
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::LoadBatchAndRender(const void* instancesData,
-                                const unsigned nInstances)
+RetainedModelInstancesBatch::LoadBatchAndRender(const void* instancesData,
+                                                const unsigned nInstances)
 {
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
     gpuBuffer.LoadInstancedData(
@@ -235,7 +237,7 @@ StaticModel::LoadBatchAndRender(const void* instancesData,
 // ----------------------------------------------------------------------------
 
 void
-StaticModel::RenderCurrentBuffers()
+RetainedModelInstancesBatch::RenderCurrentBuffers()
 {
   for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
     gpuBuffer.Render();
@@ -245,7 +247,7 @@ StaticModel::RenderCurrentBuffers()
 // ----------------------------------------------------------------------------
 
 size_t
-StaticModel::CurrentGPUBatchSizeInBytes() const
+RetainedModelInstancesBatch::CurrentGPUBatchSizeInBytes() const
 {
   return m_currentGPUBatchSize * m_instanceDataSizeInBytes;
 }

@@ -22,11 +22,11 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class StaticModel
+class RetainedModelInstancesBatch
 {
 public:
-  DEFAULT_CONSTUCTIBLE(StaticModel)
-  NON_COPYABLE_NON_MOVABLE(StaticModel)
+  DEFAULT_CONSTUCTIBLE(RetainedModelInstancesBatch)
+  NON_COPYABLE_NON_MOVABLE(RetainedModelInstancesBatch)
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,

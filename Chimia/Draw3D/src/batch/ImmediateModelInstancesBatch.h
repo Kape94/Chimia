@@ -21,11 +21,11 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class ModelBatch
+class ImmediateModelInstancesBatch
 {
 public:
-  DEFAULT_CONSTUCTIBLE(ModelBatch)
-  NON_COPYABLE_NON_MOVABLE(ModelBatch)
+  DEFAULT_CONSTUCTIBLE(ImmediateModelInstancesBatch)
+  NON_COPYABLE_NON_MOVABLE(ImmediateModelInstancesBatch)
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,

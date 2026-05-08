@@ -1,4 +1,5 @@
-#include "ModelBatch.h"
+#include "ImmediateModelInstancesBatch.h"
+
 #include "Core/Types.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
@@ -11,11 +12,12 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Create(const Model& model,
-                   const BatchingSettings& batchingSettings,
-                   const Rendering::ShaderAttributes& vertexAttributes,
-                   const Rendering::ShaderAttributes& instanceAttributes,
-                   const std::function<void(void)>& onFlush)
+ImmediateModelInstancesBatch::Create(
+  const Model& model,
+  const BatchingSettings& batchingSettings,
+  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderAttributes& instanceAttributes,
+  const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
@@ -36,7 +38,7 @@ ModelBatch::Create(const Model& model,
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::AddGPUBuffer(
+ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::ReusableIndexedVertexBufferObject& bufferData,
   const size_t instanceBatchSize,
   const Rendering::ShaderAttributes& vertexAttributes,
@@ -53,7 +55,7 @@ ModelBatch::AddGPUBuffer(
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Draw(const RawDataView& instanceData)
+ImmediateModelInstancesBatch::Draw(const RawDataView& instanceData)
 {
   HandleFlushByDemand(instanceData.size);
 
@@ -63,7 +65,8 @@ ModelBatch::Draw(const RawDataView& instanceData)
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Draw(const std::initializer_list<RawDataView>& instanceDatas)
+ImmediateModelInstancesBatch::Draw(
+  const std::initializer_list<RawDataView>& instanceDatas)
 {
   for (const auto& instanceData : instanceDatas) {
     Draw(instanceData);
@@ -73,7 +76,8 @@ ModelBatch::Draw(const std::initializer_list<RawDataView>& instanceDatas)
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
+ImmediateModelInstancesBatch::HandleFlushByDemand(
+  const size_t incomingSizeInBytes)
 {
   if (m_instancedInputBuffer.GetAvailableSize() < incomingSizeInBytes) {
     const size_t nInstancesInBuffer =
@@ -87,7 +91,7 @@ ModelBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::Flush()
+ImmediateModelInstancesBatch::Flush()
 {
   const size_t totalInputSize = m_instancedInputBuffer.GetSize();
   if (totalInputSize == 0) {
@@ -101,7 +105,7 @@ ModelBatch::Flush()
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::DoFlush()
+ImmediateModelInstancesBatch::DoFlush()
 {
   m_onFlush();
 
@@ -121,7 +125,7 @@ ModelBatch::DoFlush()
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::HandleDynamicResizing()
+ImmediateModelInstancesBatch::HandleDynamicResizing()
 {
   if (m_nInstancesFlushedByDemand == 0) {
     return;
@@ -142,7 +146,7 @@ ModelBatch::HandleDynamicResizing()
 // ----------------------------------------------------------------------------
 
 size_t
-ModelBatch::CurrentBatchSize() const
+ImmediateModelInstancesBatch::CurrentBatchSize() const
 {
   return m_instancedInputBuffer.GetMaximumSize() / m_instancedDataSizeInBytes;
 }
@@ -150,7 +154,7 @@ ModelBatch::CurrentBatchSize() const
 // ----------------------------------------------------------------------------
 
 void
-ModelBatch::ResizeBatch(const size_t batchSize)
+ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
   m_instancedInputBuffer.Resize(batchSizeInBytes);

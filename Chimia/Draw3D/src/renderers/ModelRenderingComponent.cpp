@@ -1,12 +1,10 @@
 #include "ModelRenderingComponent.h"
 
 #include "Draw3DPrivate.h"
-#include "ModelBatch.h"
 #include "ResourcesManager.h"
 
 #include "Core/Diagnostics.h"
 #include "Rendering/ShaderAttribute.h"
-#include "StaticModel.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -33,8 +31,10 @@ ModelRenderingComponent::Init(
 void
 ModelRenderingComponent::Flush()
 {
-  m_transformedModelsTable.ForEach([](ModelBatch& model) { model.Flush(); });
-  m_staticModelsTable.ForEach([](StaticModel& model) { model.Render(); });
+  m_transformedModelsTable.ForEach(
+    [](ImmediateModelInstancesBatch& model) { model.Flush(); });
+  m_staticModelsTable.ForEach(
+    [](RetainedModelInstancesBatch& model) { model.Render(); });
 }
 
 // ----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ ModelRenderingComponent::DrawModel(const ModelID& modelID,
                                    const RawDataView& instanceData)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
-  ModelBatch* batch = m_transformedModelsTable.Find(id);
+  ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Find(id);
   if (batch == nullptr) {
     batch = AllocateBatchForModelDrawing(modelID);
     if (batch == nullptr) {
@@ -63,7 +63,7 @@ ModelRenderingComponent::DrawModel(
   const std::initializer_list<RawDataView>& instanceDatas)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
-  ModelBatch* batch = m_transformedModelsTable.Find(id);
+  ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Find(id);
   if (batch == nullptr) {
     batch = AllocateBatchForModelDrawing(modelID);
     if (batch == nullptr) {
@@ -76,12 +76,12 @@ ModelRenderingComponent::DrawModel(
 
 // ----------------------------------------------------------------------------
 
-ModelBatch*
+ImmediateModelInstancesBatch*
 ModelRenderingComponent::AllocateBatchForModelDrawing(const ModelID& modelID)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  ModelBatch* batch = m_transformedModelsTable.Insert(id);
+  ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Insert(id);
   if (batch == nullptr) {
     Chimia::Diagnostics::Error(
       1,
@@ -107,7 +107,7 @@ ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  StaticModel* staticModel = m_staticModelsTable.Find(id);
+  RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Find(id);
   if (staticModel == nullptr) {
     staticModel = AllocateBatchForStaticModel(modelID);
     if (staticModel == nullptr) {
@@ -128,7 +128,7 @@ ModelRenderingComponent::AddStaticModel(
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  StaticModel* staticModel = m_staticModelsTable.Find(id);
+  RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Find(id);
   if (staticModel == nullptr) {
     staticModel = AllocateBatchForStaticModel(modelID);
     if (staticModel == nullptr) {
@@ -142,12 +142,12 @@ ModelRenderingComponent::AddStaticModel(
 
 // ----------------------------------------------------------------------------
 
-StaticModel*
+RetainedModelInstancesBatch*
 ModelRenderingComponent::AllocateBatchForStaticModel(const ModelID& modelID)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  StaticModel* staticModel = m_staticModelsTable.Insert(id);
+  RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Insert(id);
   if (staticModel == nullptr) {
     Chimia::Diagnostics::Error(
       1,
@@ -174,7 +174,7 @@ ModelRenderingComponent::DeleteStaticModel(
   const auto [modelIDValue, instanceIDValue] =
     Draw3DPrivate::GetLocalModelInstanceIDValues(instanceID);
 
-  StaticModel* model = m_staticModelsTable.Find(modelIDValue);
+  RetainedModelInstancesBatch* model = m_staticModelsTable.Find(modelIDValue);
   if (model == nullptr) {
     return;
   }
