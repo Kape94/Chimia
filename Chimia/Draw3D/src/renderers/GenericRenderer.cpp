@@ -46,7 +46,7 @@ GenericRenderer::DrawTriangle(
   const std::initializer_list<RawDataView>& vertexData,
   const ResourceGroupID& resourcesID)
 {
-  auto renderComponent = FetchTriangleRenderComponentForTexture(resourcesID);
+  auto renderComponent = FetchTriangleRenderComponentForResource(resourcesID);
   renderComponent->DrawTriangle(vertexData);
 }
 
@@ -56,18 +56,18 @@ void
 GenericRenderer::DrawTriangles(const RawArrayView& vertexDataArray,
                                const ResourceGroupID& resourceID)
 {
-  auto renderComponent = FetchTriangleRenderComponentForTexture(resourceID);
+  auto renderComponent = FetchTriangleRenderComponentForResource(resourceID);
   renderComponent->DrawTriangles(vertexDataArray);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
-GenericRenderer::AddStaticTriangles(const RawDataView& vertexData,
-                                    const ResourceGroupID& resourceID)
+GenericRenderer::AddRetainedTriangles(const RawDataView& vertexData,
+                                      const ResourceGroupID& resourceID)
 {
-  auto renderComponent = FetchTriangleRenderComponentForTexture(resourceID);
-  const unsigned instanceID = renderComponent->AddStaticMesh(vertexData);
+  auto renderComponent = FetchTriangleRenderComponentForResource(resourceID);
+  const unsigned instanceID = renderComponent->AddRetainedMesh(vertexData);
 
   return Draw3DPrivate::CreateTriangleMeshID(
     m_id, instanceID, Draw3DPrivate::GetResourceGroupIDValue(resourceID));
@@ -76,20 +76,20 @@ GenericRenderer::AddStaticTriangles(const RawDataView& vertexData,
 // ----------------------------------------------------------------------------
 
 void
-GenericRenderer::DeleteStaticTriangles(const TriangleMeshID& meshID)
+GenericRenderer::DeleteRetainedTriangles(const TriangleMeshID& meshID)
 {
   auto [_, instanceIDValue, resourceID] =
     Draw3DPrivate::GetTriangleMeshIDValues(meshID);
 
-  auto renderComponent = FetchTriangleRenderComponentForTexture(
+  auto renderComponent = FetchTriangleRenderComponentForResource(
     Draw3DPrivate::CreateResourceGroupID(resourceID));
-  renderComponent->DeleteStaticMesh(instanceIDValue);
+  renderComponent->DeleteRetainedMesh(instanceIDValue);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshComponent*
-GenericRenderer::FetchTriangleRenderComponentForTexture(
+GenericRenderer::FetchTriangleRenderComponentForResource(
   const ResourceGroupID& resourceID)
 {
   const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(resourceID);
@@ -109,7 +109,7 @@ GenericRenderer::FetchTriangleRenderComponentForTexture(
 // ----------------------------------------------------------------------------
 
 ModelRenderingComponent*
-GenericRenderer::FetchModelRenderComponentForTexture(
+GenericRenderer::FetchModelRenderComponentForResource(
   const ResourceGroupID& resourceID)
 {
   const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(resourceID);
@@ -136,20 +136,20 @@ GenericRenderer::DrawModelTransformed(const ModelID& modelID,
                                       const glm::mat4x4& transform,
                                       const ResourceGroupID& resourceID)
 {
-  auto modelComponent = FetchModelRenderComponentForTexture(resourceID);
+  auto modelComponent = FetchModelRenderComponentForResource(resourceID);
   modelComponent->DrawModel(modelID, { { &transform, sizeof(glm::mat4x4) } });
 }
 
 // ----------------------------------------------------------------------------
 
 ModelInstanceID
-GenericRenderer::AddStaticModel(const ModelID& modelID,
-                                const glm::mat4x4& transform,
-                                const ResourceGroupID& resourceID)
+GenericRenderer::AddRetainedModel(const ModelID& modelID,
+                                  const glm::mat4x4& transform,
+                                  const ResourceGroupID& resourceID)
 {
-  auto modelComponent = FetchModelRenderComponentForTexture(resourceID);
+  auto modelComponent = FetchModelRenderComponentForResource(resourceID);
 
-  const LocalModelInstanceID localInstanceID = modelComponent->AddStaticModel(
+  const LocalModelInstanceID localInstanceID = modelComponent->AddRetainedModel(
     modelID, { { &transform, sizeof(glm::mat4x4) } });
 
   return Draw3DPrivate::CreateModelInstanceID(
@@ -159,16 +159,16 @@ GenericRenderer::AddStaticModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 void
-GenericRenderer::DeleteStaticModel(const ModelInstanceID& instanceID)
+GenericRenderer::DeleteRetainedModel(const ModelInstanceID& instanceID)
 {
   auto [_, __, ___, resourceIDValue] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   const ResourceGroupID resourceID =
     Draw3DPrivate::CreateResourceGroupID(resourceIDValue);
-  auto modelComponent = FetchModelRenderComponentForTexture(resourceID);
+  auto modelComponent = FetchModelRenderComponentForResource(resourceID);
 
-  modelComponent->DeleteStaticModel(
+  modelComponent->DeleteRetainedModel(
     Draw3DPrivate::CreateLocalModelInstanceID(instanceID));
 }
 

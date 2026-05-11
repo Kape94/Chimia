@@ -163,11 +163,11 @@ main()
     Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3_NORMAL3);
 
   const Chimia::Draw3D::ModelInstanceID staticRedCube =
-    Chimia::Draw3D::AddStaticModel(cubeModel,
-                                   Transform({ 0.5f, 0.8f, 0.0f }, 1.0f));
+    Chimia::Draw3D::AddRetainedModel(cubeModel,
+                                     Transform({ 0.5f, 0.8f, 0.0f }, 1.0f));
 
   SamplesUtils::DoAfterSync(
-    [&]() { Chimia::Draw3D::DeleteStaticModel(staticRedCube); }, 2000);
+    [&]() { Chimia::Draw3D::DeleteRetainedModel(staticRedCube); }, 2000);
 
   while (!w.ShouldClose()) {
 

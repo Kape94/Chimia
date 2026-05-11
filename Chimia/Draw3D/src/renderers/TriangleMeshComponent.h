@@ -33,8 +33,8 @@ public:
   void DrawTriangle(const std::initializer_list<RawDataView>& vertexData);
   void DrawTriangles(const RawArrayView& vertexDataArray);
 
-  unsigned AddStaticMesh(const RawDataView& vertexData);
-  void DeleteStaticMesh(const unsigned meshID);
+  unsigned AddRetainedMesh(const RawDataView& vertexData);
+  void DeleteRetainedMesh(const unsigned meshID);
 
 private:
   std::function<void(void)> m_onFlush;

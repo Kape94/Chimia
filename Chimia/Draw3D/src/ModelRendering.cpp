@@ -87,17 +87,17 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 ModelInstanceID
-CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
-                                             const glm::mat4x4& transform)
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
+                                               const glm::mat4x4& transform)
 {
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR3: {
-      return renderer->AddStaticModel(
+      return renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
-      return litVertexColoredRenderer->AddStaticModel(
+      return litVertexColoredRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     default:
@@ -124,13 +124,13 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 ModelInstanceID
-CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
-                                             const glm::mat4x4& transform,
-                                             const MaterialID& materialID)
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
+                                               const glm::mat4x4& transform,
+                                               const MaterialID& materialID)
 {
   assert(ModelLayout(modelID) == eVertexLayout::POSITION3_NORMAL3);
 
-  return litRenderer->AddStaticModel(
+  return litRenderer->AddRetainedModel(
     modelID, transform, ResourceGroupHelper::GetResourceGroup(materialID));
 }
 
@@ -176,26 +176,26 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 ModelInstanceID
-CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
-                                             const glm::mat4x4& transform,
-                                             const TextureID& textureID)
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
+                                               const glm::mat4x4& transform,
+                                               const TextureID& textureID)
 {
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_TEXCOORD2: {
-      return texturedRenderer->AddStaticModel(
+      return texturedRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      return texturedLitRenderer->AddStaticModel(
+      return texturedLitRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
-      return coloredTexturedRenderer->AddStaticModel(
+      return coloredTexturedRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
-      return coloredTexturedLitRenderer->AddStaticModel(
+      return coloredTexturedLitRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     default:
@@ -209,14 +209,14 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddStaticModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 void
-CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteStaticModel(
+CHIMIA_DRAW3D_NAMESPACE_NAME::DeleteRetainedModel(
   const ModelInstanceID& instanceID)
 {
   auto [rendererID, _, __, ___] =
     Draw3DPrivate::GetModelInstanceIDValues(instanceID);
 
   if (GenericRenderer* renderer = Renderers::GetRendererByID(rendererID)) {
-    renderer->DeleteStaticModel(instanceID);
+    renderer->DeleteRetainedModel(instanceID);
   }
 }
 

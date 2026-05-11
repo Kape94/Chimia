@@ -38,19 +38,19 @@ public:
   void DrawModel(const ModelID& modelID,
                  const std::initializer_list<RawDataView>& instanceDatas);
 
-  LocalModelInstanceID AddStaticModel(const ModelID& modelID,
-                                      const RawDataView& instanceData);
-  LocalModelInstanceID AddStaticModel(
+  LocalModelInstanceID AddRetainedModel(const ModelID& modelID,
+                                        const RawDataView& instanceData);
+  LocalModelInstanceID AddRetainedModel(
     const ModelID& modelID,
     const std::initializer_list<RawDataView>& instanceDatas);
 
-  void DeleteStaticModel(const LocalModelInstanceID& instanceID);
+  void DeleteRetainedModel(const LocalModelInstanceID& instanceID);
 
 private:
-  ImmediateModelInstancesBatch* AllocateBatchForModelDrawing(
+  ImmediateModelInstancesBatch* AllocateImmediateBatchForModelInstances(
     const ModelID& modelID);
 
-  RetainedModelInstancesBatch* AllocateBatchForStaticModel(
+  RetainedModelInstancesBatch* AllocateRetainedBatchForModelInstances(
     const ModelID& modelID);
 
   BatchingSettings m_batchingSettings;

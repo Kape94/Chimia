@@ -117,7 +117,7 @@ main(int argc, char** argv)
 
   const glm::vec3 standardNormal{ 0.0f, 0.0f, -1.0f };
 
-  const auto t1 = Chimia::Draw3D::AddStaticTriangles(
+  const auto t1 = Chimia::Draw3D::AddRetainedTriangles(
     { Chimia::Draw3D::VertexPNT{
         { -1.0f, -1.0f, 0.0f }, standardNormal, { 0.0f, 0.0f } },
       Chimia::Draw3D::VertexPNT{
@@ -131,14 +131,14 @@ main(int argc, char** argv)
     Chimia::Draw3D::eVertexLayout::POSITION3_NORMAL3_TEXCOORD2);
 
   const auto instance1 =
-    Chimia::Draw3D::AddStaticModel(model, Input::transform2, texture1);
+    Chimia::Draw3D::AddRetainedModel(model, Input::transform2, texture1);
   const auto instance2 =
-    Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture2);
+    Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture2);
 
   SamplesUtils::DoAfterSync(
-    [&]() { Chimia::Draw3D::DeleteStaticTriangles(t1); }, 1000);
+    [&]() { Chimia::Draw3D::DeleteRetainedTriangles(t1); }, 1000);
   SamplesUtils::DoAfterSync(
-    [&]() { Chimia::Draw3D::DeleteStaticModel(instance1); }, 2000);
+    [&]() { Chimia::Draw3D::DeleteRetainedModel(instance1); }, 2000);
 
   while (!w.ShouldClose()) {
 

@@ -22,11 +22,11 @@ Triangles(const std::vector<VertexPC>& vertices,
           const std::vector<unsigned>& indices);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPC>& vertices);
+AddRetainedTriangles(const std::vector<VertexPC>& vertices);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPC>& vertices,
-                   const std::vector<unsigned>& indices);
+AddRetainedTriangles(const std::vector<VertexPC>& vertices,
+                     const std::vector<unsigned>& indices);
 
 // Vertex Position3 + Normal3
 
@@ -45,13 +45,13 @@ Triangles(const std::vector<VertexPN>& vertices,
           const MaterialID& material);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPN>& vertices,
-                   const MaterialID& material);
+AddRetainedTriangles(const std::vector<VertexPN>& vertices,
+                     const MaterialID& material);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPN>& vertices,
-                   const std::vector<unsigned>& indices,
-                   const MaterialID& material);
+AddRetainedTriangles(const std::vector<VertexPN>& vertices,
+                     const std::vector<unsigned>& indices,
+                     const MaterialID& material);
 
 // Vertex Position3 + TexCoord2
 
@@ -70,13 +70,13 @@ Triangles(const std::vector<VertexPT>& vertices,
           const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPT>& vertices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPT>& vertices,
+                     const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPT>& vertices,
-                   const std::vector<unsigned>& indices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPT>& vertices,
+                     const std::vector<unsigned>& indices,
+                     const TextureID& texture);
 
 // Vertex Position3 + Color3 + Normal3
 
@@ -91,11 +91,11 @@ Triangles(const std::vector<VertexPCN>& vertices,
           const std::vector<unsigned>& indices);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCN>& vertices);
+AddRetainedTriangles(const std::vector<VertexPCN>& vertices);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCN>& vertices,
-                   const std::vector<unsigned>& indices);
+AddRetainedTriangles(const std::vector<VertexPCN>& vertices,
+                     const std::vector<unsigned>& indices);
 
 // Vertex Position3 + Normal3 + TexCoord2
 
@@ -114,13 +114,13 @@ Triangles(const std::vector<VertexPNT>& vertices,
           const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPNT>& vertices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
+                     const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPNT>& vertices,
-                   const std::vector<unsigned>& indices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
+                     const std::vector<unsigned>& indices,
+                     const TextureID& texture);
 
 // Vertex Position3 + Color3 + TexCoord2
 
@@ -139,13 +139,13 @@ Triangles(const std::vector<VertexPCT>& vertices,
           const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCT>& vertices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
+                     const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCT>& vertices,
-                   const std::vector<unsigned>& indices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
+                     const std::vector<unsigned>& indices,
+                     const TextureID& texture);
 
 // Vertex Position3 + Color3 + Normal3 + TexCoord2
 
@@ -164,18 +164,18 @@ Triangles(const std::vector<VertexPCNT>& vertices,
           const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
+                     const TextureID& texture);
 
 TriangleMeshID
-AddStaticTriangles(const std::vector<VertexPCNT>& vertices,
-                   const std::vector<unsigned>& indices,
-                   const TextureID& texture);
+AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
+                     const std::vector<unsigned>& indices,
+                     const TextureID& texture);
 
 // General
 
 void
-DeleteStaticTriangles(const TriangleMeshID& meshID);
+DeleteRetainedTriangles(const TriangleMeshID& meshID);
 
 END_CHIMIA_DRAW3D_NAMESPACE
 

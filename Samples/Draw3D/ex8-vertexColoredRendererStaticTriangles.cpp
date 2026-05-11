@@ -37,7 +37,7 @@ AddStaticQuad(const glm::vec3& p1,
                               { color1.r, color1.g, color1.b } },
   };
 
-  return Chimia::Draw3D::AddStaticTriangles(vertexData);
+  return Chimia::Draw3D::AddRetainedTriangles(vertexData);
 }
 
 Chimia::Draw3D::TriangleMeshID
@@ -64,7 +64,7 @@ AddStaticQuadIndexed(const glm::vec3& p1,
 
   const std::vector<unsigned> indices{ 0, 1, 2, 2, 3, 0 };
 
-  return Chimia::Draw3D::AddStaticTriangles(vertexData, indices);
+  return Chimia::Draw3D::AddRetainedTriangles(vertexData, indices);
 }
 
 // ----------------------------------------------------------------------------
@@ -96,8 +96,8 @@ main()
                          { -1.0f, 1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f });
 
-  auto deleteQuad1 = [&]() { Chimia::Draw3D::DeleteStaticTriangles(quad1); };
-  auto deleteQuad2 = [&]() { Chimia::Draw3D::DeleteStaticTriangles(quad2); };
+  auto deleteQuad1 = [&]() { Chimia::Draw3D::DeleteRetainedTriangles(quad1); };
+  auto deleteQuad2 = [&]() { Chimia::Draw3D::DeleteRetainedTriangles(quad2); };
   auto addQuad = [&]() {
     AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f },

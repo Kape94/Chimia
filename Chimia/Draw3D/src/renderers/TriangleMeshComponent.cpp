@@ -48,7 +48,7 @@ TriangleMeshComponent::DrawTriangles(const RawArrayView& vertexDataArray)
 // ----------------------------------------------------------------------------
 
 unsigned
-TriangleMeshComponent::AddStaticMesh(const RawDataView& vertexData)
+TriangleMeshComponent::AddRetainedMesh(const RawDataView& vertexData)
 {
   return m_staticTriangles.AddStaticMesh(vertexData);
 }
@@ -56,7 +56,7 @@ TriangleMeshComponent::AddStaticMesh(const RawDataView& vertexData)
 // ----------------------------------------------------------------------------
 
 void
-TriangleMeshComponent::DeleteStaticMesh(const unsigned meshID)
+TriangleMeshComponent::DeleteRetainedMesh(const unsigned meshID)
 {
   m_staticTriangles.DeleteStaticMesh(meshID);
 }

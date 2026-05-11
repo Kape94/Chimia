@@ -40,25 +40,25 @@ public:
 
   void DrawTriangles(const RawArrayView& vertexDataArray,
                      const ResourceGroupID& resourcesID);
-  TriangleMeshID AddStaticTriangles(const RawDataView& vertexData,
-                                    const ResourceGroupID& textureID);
+  TriangleMeshID AddRetainedTriangles(const RawDataView& vertexData,
+                                      const ResourceGroupID& textureID);
 
-  void DeleteStaticTriangles(const TriangleMeshID& meshID);
+  void DeleteRetainedTriangles(const TriangleMeshID& meshID);
 
   void DrawModelTransformed(const ModelID& modelID,
                             const glm::mat4x4& transform,
                             const ResourceGroupID& textureID);
 
-  ModelInstanceID AddStaticModel(const ModelID& modelID,
-                                 const glm::mat4x4& transform,
-                                 const ResourceGroupID& textureID);
+  ModelInstanceID AddRetainedModel(const ModelID& modelID,
+                                   const glm::mat4x4& transform,
+                                   const ResourceGroupID& textureID);
 
-  void DeleteStaticModel(const ModelInstanceID& instanceID);
+  void DeleteRetainedModel(const ModelInstanceID& instanceID);
 
 private:
-  TriangleMeshComponent* FetchTriangleRenderComponentForTexture(
+  TriangleMeshComponent* FetchTriangleRenderComponentForResource(
     const ResourceGroupID& textureID);
-  ModelRenderingComponent* FetchModelRenderComponentForTexture(
+  ModelRenderingComponent* FetchModelRenderComponentForResource(
     const ResourceGroupID& textureID);
 
   void ConfigureShaderForTriangleDrawing(const ResourceGroupID& textureID);

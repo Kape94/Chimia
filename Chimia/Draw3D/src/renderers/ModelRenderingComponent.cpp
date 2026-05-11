@@ -46,7 +46,7 @@ ModelRenderingComponent::DrawModel(const ModelID& modelID,
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
   ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Find(id);
   if (batch == nullptr) {
-    batch = AllocateBatchForModelDrawing(modelID);
+    batch = AllocateImmediateBatchForModelInstances(modelID);
     if (batch == nullptr) {
       return;
     }
@@ -65,7 +65,7 @@ ModelRenderingComponent::DrawModel(
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
   ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Find(id);
   if (batch == nullptr) {
-    batch = AllocateBatchForModelDrawing(modelID);
+    batch = AllocateImmediateBatchForModelInstances(modelID);
     if (batch == nullptr) {
       return;
     }
@@ -77,7 +77,8 @@ ModelRenderingComponent::DrawModel(
 // ----------------------------------------------------------------------------
 
 ImmediateModelInstancesBatch*
-ModelRenderingComponent::AllocateBatchForModelDrawing(const ModelID& modelID)
+ModelRenderingComponent::AllocateImmediateBatchForModelInstances(
+  const ModelID& modelID)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
@@ -102,14 +103,14 @@ ModelRenderingComponent::AllocateBatchForModelDrawing(const ModelID& modelID)
 // ----------------------------------------------------------------------------
 
 LocalModelInstanceID
-ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
-                                        const RawDataView& instanceData)
+ModelRenderingComponent::AddRetainedModel(const ModelID& modelID,
+                                          const RawDataView& instanceData)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
   RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Find(id);
   if (staticModel == nullptr) {
-    staticModel = AllocateBatchForStaticModel(modelID);
+    staticModel = AllocateRetainedBatchForModelInstances(modelID);
     if (staticModel == nullptr) {
       return Draw3DPrivate::CreateLocalModelInstanceID(0, 0);
     }
@@ -122,7 +123,7 @@ ModelRenderingComponent::AddStaticModel(const ModelID& modelID,
 // ----------------------------------------------------------------------------
 
 LocalModelInstanceID
-ModelRenderingComponent::AddStaticModel(
+ModelRenderingComponent::AddRetainedModel(
   const ModelID& modelID,
   const std::initializer_list<RawDataView>& instanceDatas)
 {
@@ -130,7 +131,7 @@ ModelRenderingComponent::AddStaticModel(
 
   RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Find(id);
   if (staticModel == nullptr) {
-    staticModel = AllocateBatchForStaticModel(modelID);
+    staticModel = AllocateRetainedBatchForModelInstances(modelID);
     if (staticModel == nullptr) {
       return Draw3DPrivate::CreateLocalModelInstanceID(0, 0);
     }
@@ -143,7 +144,8 @@ ModelRenderingComponent::AddStaticModel(
 // ----------------------------------------------------------------------------
 
 RetainedModelInstancesBatch*
-ModelRenderingComponent::AllocateBatchForStaticModel(const ModelID& modelID)
+ModelRenderingComponent::AllocateRetainedBatchForModelInstances(
+  const ModelID& modelID)
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
@@ -168,7 +170,7 @@ ModelRenderingComponent::AllocateBatchForStaticModel(const ModelID& modelID)
 // ----------------------------------------------------------------------------
 
 void
-ModelRenderingComponent::DeleteStaticModel(
+ModelRenderingComponent::DeleteRetainedModel(
   const LocalModelInstanceID& instanceID)
 {
   const auto [modelIDValue, instanceIDValue] =

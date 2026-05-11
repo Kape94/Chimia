@@ -21,7 +21,7 @@ void
 DrawModel(const ModelID& modelID, const glm::mat4x4& transform);
 
 ModelInstanceID
-AddStaticModel(const ModelID& modelID, const glm::mat4x4& transform);
+AddRetainedModel(const ModelID& modelID, const glm::mat4x4& transform);
 
 // Model Position3 + Normal3
 
@@ -31,9 +31,9 @@ DrawModel(const ModelID& modelID,
           const MaterialID& materialID);
 
 ModelInstanceID
-AddStaticModel(const ModelID& modelID,
-               const glm::mat4x4& transform,
-               const MaterialID& materialID);
+AddRetainedModel(const ModelID& modelID,
+                 const glm::mat4x4& transform,
+                 const MaterialID& materialID);
 
 // Model Position3 + TexCoord2
 // Model Position3 + Color3 + TexCoord2
@@ -46,14 +46,14 @@ DrawModel(const ModelID& modelID,
           const TextureID& textureID);
 
 ModelInstanceID
-AddStaticModel(const ModelID& modelID,
-               const glm::mat4x4& transform,
-               const TextureID& textureID);
+AddRetainedModel(const ModelID& modelID,
+                 const glm::mat4x4& transform,
+                 const TextureID& textureID);
 
 // General
 
 void
-DeleteStaticModel(const ModelInstanceID& instanceID);
+DeleteRetainedModel(const ModelInstanceID& instanceID);
 
 // ----------------------------------------------------------------------------
 

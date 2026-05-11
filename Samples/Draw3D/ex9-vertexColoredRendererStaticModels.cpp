@@ -63,18 +63,18 @@ main()
     Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3);
 
   const Chimia::Draw3D::ModelInstanceID instance1 =
-    Chimia::Draw3D::AddStaticModel(modelID, Input::transform1);
+    Chimia::Draw3D::AddRetainedModel(modelID, Input::transform1);
   const Chimia::Draw3D::ModelInstanceID instance2 =
-    Chimia::Draw3D::AddStaticModel(modelID, Input::transform2);
+    Chimia::Draw3D::AddRetainedModel(modelID, Input::transform2);
 
   auto deleteInstance1 = [&]() {
-    Chimia::Draw3D::DeleteStaticModel(instance1);
+    Chimia::Draw3D::DeleteRetainedModel(instance1);
   };
   auto deleteInstance2 = [&]() {
-    Chimia::Draw3D::DeleteStaticModel(instance2);
+    Chimia::Draw3D::DeleteRetainedModel(instance2);
   };
   auto addInstance1 = [&]() {
-    Chimia::Draw3D::AddStaticModel(modelID, Input::transform1);
+    Chimia::Draw3D::AddRetainedModel(modelID, Input::transform1);
   };
   SamplesUtils::DoAfterSync(deleteInstance1, 1000);
   SamplesUtils::DoAfterSync(deleteInstance2, 2000);

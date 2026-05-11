@@ -80,7 +80,7 @@ main(int argc, char** argv)
     { Input::vertexData, Input::nVertices, Input::indices },
     Chimia::Draw3D::eVertexLayout::POSITION3_TEXCOORD2);
 
-  const auto triangleStatic = Chimia::Draw3D::AddStaticTriangles(
+  const auto triangleStatic = Chimia::Draw3D::AddRetainedTriangles(
     { Chimia::Draw3D::VertexPT{ { 0.0f, -1.0f, 0.0f }, { 0.0f, 0.0f } },
       Chimia::Draw3D::VertexPT{ { 0.5f, -1.0f, 0.0f }, { 1.0f, 0.0f } },
       Chimia::Draw3D::VertexPT{ { 0.5f, -0.7f, 0.0f }, { 1.0f, 1.0f } } },
@@ -88,17 +88,17 @@ main(int argc, char** argv)
     texture2);
 
   const auto modelInstance1 =
-    Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
+    Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture1);
 
   SamplesUtils::DoAfterSync(
-    [&]() { Chimia::Draw3D::DeleteStaticModel(modelInstance1); }, 1000);
+    [&]() { Chimia::Draw3D::DeleteRetainedModel(modelInstance1); }, 1000);
 
   SamplesUtils::DoAfterSync(
-    [&]() { Chimia::Draw3D::DeleteStaticTriangles(triangleStatic); }, 2000);
+    [&]() { Chimia::Draw3D::DeleteRetainedTriangles(triangleStatic); }, 2000);
 
   SamplesUtils::DoAfterSync(
     [&]() {
-      Chimia::Draw3D::AddStaticModel(model, Input::transform1, texture1);
+      Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture1);
     },
     3000);
 
