@@ -22,7 +22,7 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 
 namespace {
 constexpr eVertexLayout VERTEX_LAYOUT =
-  eVertexLayout::POSITION3_COLOR3_TEXCOORD2;
+  eVertexLayout::POSITION3_COLOR4_TEXCOORD2;
 
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
@@ -93,31 +93,31 @@ Color3TexCoord2::GetRenderer()
 
 void
 Color3TexCoord2::DrawTriangle(const glm::vec3& p1,
-                              const glm::vec3& p1Color,
+                              const glm::vec4& p1Color,
                               const glm::vec2& p1TexCoord,
                               const glm::vec3& p2,
-                              const glm::vec3& p2Color,
+                              const glm::vec4& p2Color,
                               const glm::vec2& p2TexCoord,
                               const glm::vec3& p3,
-                              const glm::vec3& p3Color,
+                              const glm::vec4& p3Color,
                               const glm::vec2& p3TexCoord,
                               const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
-  constexpr size_t COLOR3_SIZE = sizeof(glm::vec3);
+  constexpr size_t COLOR4_SIZE = sizeof(glm::vec4);
   constexpr size_t TEX_COORD2_SIZE = sizeof(glm::vec2);
 
   auto& renderer = GetRenderer();
   renderer.DrawTriangle(
     {
       { &p1, POS3_SIZE },
-      { &p1Color, COLOR3_SIZE },
+      { &p1Color, COLOR4_SIZE },
       { &p1TexCoord, TEX_COORD2_SIZE },
       { &p2, POS3_SIZE },
-      { &p2Color, COLOR3_SIZE },
+      { &p2Color, COLOR4_SIZE },
       { &p2TexCoord, TEX_COORD2_SIZE },
       { &p3, POS3_SIZE },
-      { &p3Color, COLOR3_SIZE },
+      { &p3Color, COLOR4_SIZE },
       { &p3TexCoord, TEX_COORD2_SIZE },
     },
     resource);

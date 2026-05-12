@@ -69,12 +69,12 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 {
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
-    case eVertexLayout::POSITION3_COLOR3: {
+    case eVertexLayout::POSITION3_COLOR4: {
       renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
       litVertexColoredRenderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
@@ -92,11 +92,11 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
 {
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
-    case eVertexLayout::POSITION3_COLOR3: {
+    case eVertexLayout::POSITION3_COLOR4: {
       return renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
       return litVertexColoredRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
@@ -158,12 +158,12 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
-    case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
       coloredTexturedRenderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
       coloredTexturedLitRenderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
@@ -190,11 +190,11 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
       return texturedLitRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
-    case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
       return coloredTexturedRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
       return coloredTexturedLitRenderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }

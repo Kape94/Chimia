@@ -12,23 +12,24 @@
 
 // ----------------------------------------------------------------------------
 
-glm::vec3
-RandomVec3()
+glm::vec4
+RandomVec4()
 {
   using namespace SamplesUtils;
 
-  return glm::vec3{ 0.0f + NormalizedRand() * 1.0f,
+  return glm::vec4{ 0.0f + NormalizedRand() * 1.0f,
+                    0.0f + NormalizedRand() * 1.0f,
                     0.0f + NormalizedRand() * 1.0f,
                     0.0f + NormalizedRand() * 1.0f };
 }
 
 void
 DrawTriangle(const glm::vec3& p1,
-             const glm::vec3& color1,
+             const glm::vec4& color1,
              const glm::vec3& p2,
-             const glm::vec3& color2,
+             const glm::vec4& color2,
              const glm::vec3& p3,
-             const glm::vec3& color3)
+             const glm::vec4& color3)
 {
   auto normal = [](const glm::vec3& p) {
     const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
@@ -46,22 +47,22 @@ DrawCube()
   const float size = 1.0f;
 
   const glm::vec3 p1{ -size, -size, -size };
-  static glm::vec3 color1 = RandomVec3();
+  static glm::vec4 color1 = RandomVec4();
   const glm::vec3 p2{ size, -size, -size };
-  static glm::vec3 color2 = RandomVec3();
+  static glm::vec4 color2 = RandomVec4();
   const glm::vec3 p3{ size, size, -size };
-  static glm::vec3 color3 = RandomVec3();
+  static glm::vec4 color3 = RandomVec4();
   const glm::vec3 p4{ -size, size, -size };
-  static glm::vec3 color4 = RandomVec3();
+  static glm::vec4 color4 = RandomVec4();
 
   const glm::vec3 p5{ -size, -size, size };
-  static glm::vec3 color5 = RandomVec3();
+  static glm::vec4 color5 = RandomVec4();
   const glm::vec3 p6{ size, -size, size };
-  static glm::vec3 color6 = RandomVec3();
+  static glm::vec4 color6 = RandomVec4();
   const glm::vec3 p7{ size, size, size };
-  static glm::vec3 color7 = RandomVec3();
+  static glm::vec4 color7 = RandomVec4();
   const glm::vec3 p8{ -size, size, size };
-  static glm::vec3 color8 = RandomVec3();
+  static glm::vec4 color8 = RandomVec4();
 
   DrawTriangle(p1, color1, p2, color2, p3, color3);
   DrawTriangle(p3, color3, p4, color4, p1, color1);
@@ -86,7 +87,7 @@ void
 DrawUnlitTriangle(const glm::vec3& p1,
                   const glm::vec3& p2,
                   const glm::vec3& p3,
-                  const glm::vec3& color)
+                  const glm::vec4& color)
 {
   Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
                            Chimia::Draw3D::VertexPC{ p2, color },
@@ -94,7 +95,7 @@ DrawUnlitTriangle(const glm::vec3& p1,
 }
 
 void
-DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
+DrawLight(const glm::vec3& lightPos, const glm::vec4& lightColor)
 {
   const float size = 0.3f;
 
@@ -141,7 +142,7 @@ main()
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
     DrawCube();
-    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

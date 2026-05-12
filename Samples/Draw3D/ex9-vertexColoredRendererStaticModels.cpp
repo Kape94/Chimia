@@ -14,12 +14,12 @@
 namespace Input {
 // clang-format off
   const std::vector<float> vertexData {
-    // x      y      z      r     g     b
-      0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-      0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f,
-      0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
-      0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-      -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    // x      y      z      r     g     b     a
+      0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+      0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, 1.0f,
+      0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+      0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+      -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f
   };
   const size_t nVertices = 5;
 
@@ -60,7 +60,7 @@ main()
 
   const Chimia::Draw3D::ModelID modelID = Chimia::Draw3D::CreateModel(
     { Input::vertexData, Input::nVertices, Input::indices },
-    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3);
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR4);
 
   const Chimia::Draw3D::ModelInstanceID instance1 =
     Chimia::Draw3D::AddRetainedModel(modelID, Input::transform1);

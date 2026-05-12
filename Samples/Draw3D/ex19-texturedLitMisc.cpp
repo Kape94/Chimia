@@ -21,7 +21,7 @@
 namespace Input {
 // clang-format off
     const std::vector<float> vertexData {
-      // x      y      z      nx ny   nz    u  v
+      // x      y      z      nx   ny   nz    u  v
         0.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
         0.5f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.0f,
         0.5f, 0.5f, 0.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.5f,

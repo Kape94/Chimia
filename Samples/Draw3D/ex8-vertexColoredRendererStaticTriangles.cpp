@@ -12,29 +12,29 @@
 
 Chimia::Draw3D::TriangleMeshID
 AddStaticQuad(const glm::vec3& p1,
-              const glm::vec3& color1,
+              const glm::vec4& color1,
               const glm::vec3& p2,
-              const glm::vec3& color2,
+              const glm::vec4& color2,
               const glm::vec3& p3,
-              const glm::vec3& color3,
+              const glm::vec4& color3,
               const glm::vec3& p4,
-              const glm::vec3& color4)
+              const glm::vec4& color4)
 {
   const std::vector<Chimia::Draw3D::VertexPC> vertexData{
     // First triangle
     Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
-                              { color1.r, color1.g, color1.b } },
+                              { color1.r, color1.g, color1.b, color1.a } },
     Chimia::Draw3D::VertexPC{ { p2.x, p2.y, p2.z },
-                              { color2.r, color2.g, color2.b } },
+                              { color2.r, color2.g, color2.b, color2.a } },
     Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
-                              { color3.r, color3.g, color3.b } },
+                              { color3.r, color3.g, color3.b, color3.a } },
     // Second triangle
     Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
-                              { color3.r, color3.g, color3.b } },
+                              { color3.r, color3.g, color3.b, color3.a } },
     Chimia::Draw3D::VertexPC{ { p4.x, p4.y, p4.z },
-                              { color4.r, color4.g, color4.b } },
+                              { color4.r, color4.g, color4.b, color4.a } },
     Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
-                              { color1.r, color1.g, color1.b } },
+                              { color1.r, color1.g, color1.b, color1.a } },
   };
 
   return Chimia::Draw3D::AddRetainedTriangles(vertexData);
@@ -42,24 +42,24 @@ AddStaticQuad(const glm::vec3& p1,
 
 Chimia::Draw3D::TriangleMeshID
 AddStaticQuadIndexed(const glm::vec3& p1,
-                     const glm::vec3& color1,
+                     const glm::vec4& color1,
                      const glm::vec3& p2,
-                     const glm::vec3& color2,
+                     const glm::vec4& color2,
                      const glm::vec3& p3,
-                     const glm::vec3& color3,
+                     const glm::vec4& color3,
                      const glm::vec3& p4,
-                     const glm::vec3& color4)
+                     const glm::vec4& color4)
 {
   const std::vector<Chimia::Draw3D::VertexPC> vertexData{
     // First triangle
     Chimia::Draw3D::VertexPC{ { p1.x, p1.y, p1.z },
-                              { color1.r, color1.g, color1.b } },
+                              { color1.r, color1.g, color1.b, color1.a } },
     Chimia::Draw3D::VertexPC{ { p2.x, p2.y, p2.z },
-                              { color2.r, color2.g, color2.b } },
+                              { color2.r, color2.g, color2.b, color2.a } },
     Chimia::Draw3D::VertexPC{ { p3.x, p3.y, p3.z },
-                              { color3.r, color3.g, color3.b } },
+                              { color3.r, color3.g, color3.b, color3.a } },
     Chimia::Draw3D::VertexPC{ { p4.x, p4.y, p4.z },
-                              { color4.r, color4.g, color4.b } },
+                              { color4.r, color4.g, color4.b, color4.a } },
   };
 
   const std::vector<unsigned> indices{ 0, 1, 2, 2, 3, 0 };
@@ -78,35 +78,35 @@ main()
 
   const Chimia::Draw3D::TriangleMeshID quad1 =
     AddStaticQuad({ -0.5f, -0.5f, 0.0f },
-                  { 1.0f, 0.0f, 0.0f },
+                  { 1.0f, 0.0f, 0.0f, 1.0f },
                   { 0.5f, -0.5f, 0.0f },
-                  { 0.0f, 1.0f, 0.0f },
+                  { 0.0f, 1.0f, 0.0f, 1.0f },
                   { 0.5f, 0.5f, 0.0f },
-                  { 0.0f, 0.0f, 1.0f },
+                  { 0.0f, 0.0f, 1.0f, 1.0f },
                   { -0.5f, 0.5f, 0.0f },
-                  { 1.0f, 0.0f, 1.0f });
+                  { 1.0f, 0.0f, 1.0f, 1.0f });
 
   const Chimia::Draw3D::TriangleMeshID quad2 =
     AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
-                         { 1.0f, 0.0f, 0.0f },
+                         { 1.0f, 0.0f, 0.0f, 1.0f },
                          { 0.0f, -1.0f, 0.0f },
+                         { 0.0f, 1.0f, 0.0f, 1.0f },
                          { 0.0f, 1.0f, 0.0f },
-                         { 0.0f, 1.0f, 0.0f },
-                         { 0.0f, 0.0f, 1.0f },
+                         { 0.0f, 0.0f, 1.0f, 1.0f },
                          { -1.0f, 1.0f, 0.0f },
-                         { 1.0f, 0.0f, 1.0f });
+                         { 1.0f, 0.0f, 1.0f, 1.0f });
 
   auto deleteQuad1 = [&]() { Chimia::Draw3D::DeleteRetainedTriangles(quad1); };
   auto deleteQuad2 = [&]() { Chimia::Draw3D::DeleteRetainedTriangles(quad2); };
   auto addQuad = [&]() {
     AddStaticQuadIndexed({ -1.0f, -1.0f, 0.0f },
-                         { 1.0f, 0.0f, 1.0f },
+                         { 1.0f, 0.0f, 1.0f, 1.0f },
                          { 0.0f, -1.0f, 0.0f },
-                         { 0.0f, 1.0f, 1.0f },
+                         { 0.0f, 1.0f, 1.0f, 1.0f },
                          { 0.0f, 1.0f, 0.0f },
-                         { 0.0f, 0.0f, 1.0f },
+                         { 0.0f, 0.0f, 1.0f, 1.0f },
                          { -1.0f, 1.0f, 0.0f },
-                         { 1.0f, 0.0f, 1.0f });
+                         { 1.0f, 0.0f, 1.0f, 1.0f });
   };
   SamplesUtils::DoAfterSync(deleteQuad2, 1000);
   SamplesUtils::DoAfterSync(deleteQuad1, 2000);

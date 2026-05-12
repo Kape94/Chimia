@@ -88,7 +88,7 @@ void
 DrawUnlitTriangle(const glm::vec3& p1,
                   const glm::vec3& p2,
                   const glm::vec3& p3,
-                  const glm::vec3& color)
+                  const glm::vec4& color)
 {
   Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
                            Chimia::Draw3D::VertexPC{ p2, color },
@@ -96,7 +96,7 @@ DrawUnlitTriangle(const glm::vec3& p1,
 }
 
 void
-DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
+DrawLight(const glm::vec3& lightPos, const glm::vec4& lightColor)
 {
   const float size = 0.3f;
 
@@ -170,7 +170,7 @@ main(int argc, char** argv)
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
 
     DrawLitCube(texture1);
-    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

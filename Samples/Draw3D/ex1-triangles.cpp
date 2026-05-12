@@ -32,7 +32,7 @@ public:
 private:
   glm::vec3 m_pos;
   glm::vec3 m_dir;
-  glm::vec3 m_col;
+  glm::vec4 m_col;
   float m_velocity;
   float m_size;
 };
@@ -44,9 +44,10 @@ Triangle::Triangle()
   m_pos = glm::vec3{ -1.0f + NormalizedRand() * 2.0f,
                      -1.0f + NormalizedRand() * 2.0f,
                      0.0f };
-  m_col = glm::vec3{ 0.0f + NormalizedRand() * 1.0f,
+  m_col = glm::vec4{ 0.0f + NormalizedRand() * 1.0f,
                      0.0f + NormalizedRand() * 1.0f,
-                     0.0f + NormalizedRand() * 1.0f };
+                     0.0f + NormalizedRand() * 1.0f,
+                     1.0f };
   m_size = 0.01f + 0.02f * NormalizedRand();
 
   const unsigned randomPos = Rand() % initialDirs.size();

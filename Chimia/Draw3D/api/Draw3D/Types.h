@@ -213,19 +213,19 @@ struct PointLight
 enum class eVertexLayout
 {
   UNDEFINED = 0,
-  POSITION3_COLOR3,
+  POSITION3_COLOR4,
   POSITION3_NORMAL3,
   POSITION3_TEXCOORD2,
-  POSITION3_COLOR3_NORMAL3,
-  POSITION3_COLOR3_TEXCOORD2,
+  POSITION3_COLOR4_NORMAL3,
+  POSITION3_COLOR4_TEXCOORD2,
   POSITION3_NORMAL3_TEXCOORD2,
-  POSITION3_COLOR3_NORMAL3_TEXCOORD2,
+  POSITION3_COLOR4_NORMAL3_TEXCOORD2,
 };
 
 struct VertexPC
 {
   glm::vec3 position;
-  glm::vec3 color;
+  glm::vec4 color;
 };
 
 struct VertexPN
@@ -243,14 +243,14 @@ struct VertexPT
 struct VertexPCN
 {
   glm::vec3 position;
-  glm::vec3 color;
+  glm::vec4 color;
   glm::vec3 normal;
 };
 
 struct VertexPCT
 {
   glm::vec3 position;
-  glm::vec3 color;
+  glm::vec4 color;
   glm::vec2 texCoord;
 };
 
@@ -264,7 +264,7 @@ struct VertexPNT
 struct VertexPCNT
 {
   glm::vec3 position;
-  glm::vec3 color;
+  glm::vec4 color;
   glm::vec3 normal;
   glm::vec2 texCoord;
 };

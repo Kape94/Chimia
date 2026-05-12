@@ -16,12 +16,13 @@
 namespace Input {
 // clang-format off
 std::vector<float> vertexData{
-  0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f, 0.0f, 0.0f, 
-  1.0f,  0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 
-  1.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f, 1.0f, 1.0f, 
-  0.0f,  0.0f,  0.0f, 0.2f,  0.0f, 8.0f, 0.0f, 0.0f, 
-  -1.0f, 0.0f, 0.0f, 0.0f,  0.5f, 1.0f, 0.0f, 1.0f, 
-  -1.0f, -1.0f, 0.0f, 0.4f,  0.7f, 0.5f, 1.0f, 1.0f, 
+  //  x      y.      z.       r.     g.     b.     a.    u.    v 
+  0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
+  1.0f,  0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 
+  1.0f,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
+  0.0f,  0.0f,  0.0f, 0.2f,  0.0f, 8.0f, 1.0f, 0.0f, 0.0f, 
+  -1.0f, 0.0f, 0.0f, 0.0f,  0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 
+  -1.0f, -1.0f, 0.0f, 0.4f,  0.7f, 0.5f, 1.0f, 1.0f, 1.0f, 
 };
 
 
@@ -78,15 +79,15 @@ main(int argc, char** argv)
 
   const auto model = Chimia::Draw3D::CreateModel(
     { Input::vertexData, Input::nVertices, Input::indices },
-    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3_TEXCOORD2);
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR4_TEXCOORD2);
 
   const auto triangleStatic = Chimia::Draw3D::AddRetainedTriangles(
     { Chimia::Draw3D::VertexPCT{
-        { 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
+        { 0.0f, -1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f } },
       Chimia::Draw3D::VertexPCT{
-        { 0.5f, -1.0f, 0.0f }, { 0.0f, 1.0f, 0.7f }, { 1.0f, 0.0f } },
+        { 0.5f, -1.0f, 0.0f }, { 0.0f, 1.0f, 0.7f, 1.0f }, { 1.0f, 0.0f } },
       Chimia::Draw3D::VertexPCT{
-        { 0.5f, -0.7f, 0.0f }, { 0.2f, 0.3f, 0.8f }, { 1.0f, 1.0f } } },
+        { 0.5f, -0.7f, 0.0f }, { 0.2f, 0.3f, 0.8f, 1.0f }, { 1.0f, 1.0f } } },
     { 0, 1, 2 },
     texture2);
 

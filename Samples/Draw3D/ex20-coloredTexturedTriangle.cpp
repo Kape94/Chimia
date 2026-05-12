@@ -22,11 +22,11 @@ namespace Input {
 // clang-format off
     const std::vector<float> vertexData {
       // x      y      z    r     g     b    nx    ny     nz    u     v
-        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.0f, 0.4f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.5f,
-        0.0f, 1.0f, 0.0f, 0.0f, 0.2f, 0.8f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
-        -1.0f, 0.0f, 0.0f, 0.0f, 7.0f, 4.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
+        0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.0f,
+        0.5f, 0.5f, 0.0f, 0.4f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, -1.0f, 0.5f, 0.5f,
+        0.0f, 1.0f, 0.0f, 0.0f, 0.2f, 0.8f, 1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f, 0.0f, 0.0f, 0.0f, 7.0f, 4.0f, 1.0f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f
     };
     const size_t nVertices = 5;
   
@@ -119,22 +119,22 @@ main(int argc, char** argv)
 
   const auto t1 = Chimia::Draw3D::AddRetainedTriangles(
     { Chimia::Draw3D::VertexPCNT{ { -1.0f, -1.0f, 0.0f },
-                                  { 1.0f, 0.0f, 0.0f },
+                                  { 1.0f, 0.0f, 0.0f, 1.0f },
                                   standardNormal,
                                   { 0.0f, 0.0f } },
       Chimia::Draw3D::VertexPCNT{ { -0.5f, -1.0f, 0.0f },
-                                  { 0.0f, 1.0f, 0.0f },
+                                  { 0.0f, 1.0f, 0.0f, 1.0f },
                                   standardNormal,
                                   { 0.8f, 0.0f } },
       Chimia::Draw3D::VertexPCNT{ { -0.5f, -0.5f, 0.0f },
-                                  { 0.0f, 0.0f, 1.0f },
+                                  { 0.0f, 0.0f, 1.0f, 1.0f },
                                   standardNormal,
                                   { 0.8f, 1.0f } } },
     texture2);
 
   const auto model = Chimia::Draw3D::CreateModel(
     { Input::vertexData, Input::nVertices, Input::indices },
-    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2);
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2);
 
   const auto instance1 =
     Chimia::Draw3D::AddRetainedModel(model, Input::transform2, texture1);

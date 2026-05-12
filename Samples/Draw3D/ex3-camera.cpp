@@ -32,19 +32,19 @@ main()
     Chimia::Draw3D::Camera::View::LookAt(cameraPos, { 0.0f, 0.0f, 0.0f });
     Chimia::Draw3D::Triangle(
       Chimia::Draw3D::VertexPC{ { -vertexSize, -vertexSize, 0.0f },
-                                { 1.0f, 0.0f, 0.0f } },
+                                { 1.0f, 0.0f, 0.0f, 1.0f } },
       Chimia::Draw3D::VertexPC{ { vertexSize, -vertexSize, 0.0f },
-                                { 0.0f, 1.0f, 0.0f } },
+                                { 0.0f, 1.0f, 0.0f, 1.0f } },
       Chimia::Draw3D::VertexPC{ { -vertexSize, vertexSize, 0.0f },
-                                { 0.0f, 0.0f, 1.0f } });
+                                { 0.0f, 0.0f, 1.0f, 1.0f } });
 
     Chimia::Draw3D::Triangle(
       Chimia::Draw3D::VertexPC{ { vertexSize, -vertexSize, 0.0f },
-                                { 1.0f, 0.0f, 0.0f } },
+                                { 1.0f, 0.0f, 0.0f, 1.0f } },
       Chimia::Draw3D::VertexPC{ { vertexSize, vertexSize, 0.0f },
-                                { 0.0f, 1.0f, 0.0f } },
+                                { 0.0f, 1.0f, 0.0f, 1.0f } },
       Chimia::Draw3D::VertexPC{ { -vertexSize, vertexSize, 0.0f },
-                                { 0.0f, 0.0f, 1.0f } });
+                                { 0.0f, 0.0f, 1.0f, 1.0f } });
 
     Chimia::Draw3D::Flush();
 

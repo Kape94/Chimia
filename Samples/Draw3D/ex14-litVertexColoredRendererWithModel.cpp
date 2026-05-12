@@ -21,11 +21,11 @@ struct ModelData
   std::vector<unsigned> indexData;
 };
 
-const std::vector<glm::vec3> g_possibleColors{ { 1.0f, 0.0f, 0.0f },
-                                               { 0.0f, 1.0f, 0.0f },
-                                               { 0.0f, 0.0f, 1.0f },
-                                               { 0.5f, 0.0f, 1.0f },
-                                               { 0.5f, 0.5f, 1.0f } };
+const std::vector<glm::vec4> g_possibleColors{ { 1.0f, 0.0f, 0.0f, 1.0f },
+                                               { 0.0f, 1.0f, 0.0f, 1.0f },
+                                               { 0.0f, 0.0f, 1.0f, 1.0f },
+                                               { 0.5f, 0.0f, 1.0f, 1.0f },
+                                               { 0.5f, 0.5f, 1.0f, 1.0f } };
 
 void
 AppendPointInVertexData(std::vector<float>& vertexData, const glm::vec3& point)
@@ -38,12 +38,20 @@ AppendPointInVertexData(std::vector<float>& vertexData, const glm::vec3& point)
   const size_t randomIndex =
     static_cast<size_t>(SamplesUtils::NormalizedRand() *
                         static_cast<float>(g_possibleColors.size()));
-  const glm::vec3& color = g_possibleColors[randomIndex];
+  const glm::vec4& color = g_possibleColors[randomIndex];
 
   const glm::vec3 n = normal(point);
-  vertexData.insert(
-    vertexData.end(),
-    { point.x, point.y, point.z, color.r, color.g, color.b, n.x, n.y, n.z });
+  vertexData.insert(vertexData.end(),
+                    { point.x,
+                      point.y,
+                      point.z,
+                      color.r,
+                      color.g,
+                      color.b,
+                      color.a,
+                      n.x,
+                      n.y,
+                      n.z });
 }
 
 ModelData
@@ -90,7 +98,7 @@ void
 DrawUnlitTriangle(const glm::vec3& p1,
                   const glm::vec3& p2,
                   const glm::vec3& p3,
-                  const glm::vec3& color)
+                  const glm::vec4& color)
 {
   Chimia::Draw3D::Triangle(Chimia::Draw3D::VertexPC{ p1, color },
                            Chimia::Draw3D::VertexPC{ p2, color },
@@ -98,7 +106,7 @@ DrawUnlitTriangle(const glm::vec3& p1,
 }
 
 void
-DrawLight(const glm::vec3& lightPos, const glm::vec3& lightColor)
+DrawLight(const glm::vec3& lightPos, const glm::vec4& lightColor)
 {
   const float size = 0.3f;
 
@@ -160,7 +168,7 @@ main()
   ModelData modelData = CreateCubeGeometry();
   const Chimia::Draw3D::ModelID cubeModel = Chimia::Draw3D::CreateModel(
     { modelData.vertexData, modelData.nVertices, modelData.indexData },
-    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3_NORMAL3);
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR4_NORMAL3);
 
   const Chimia::Draw3D::ModelInstanceID staticRedCube =
     Chimia::Draw3D::AddRetainedModel(cubeModel,
@@ -176,7 +184,7 @@ main()
 
     Chimia::Draw3D::DrawModel(cubeModel, Transform({ 0.0f, 0.0f, 0.0f }, 2.0f));
     Chimia::Draw3D::DrawModel(cubeModel, Transform({ 0.5f, 0.0f, 0.0f }, 1.0f));
-    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f });
+    DrawLight(lightPos, { 1.0f, 1.0f, 1.0f, 1.0f });
 
     Chimia::Draw3D::Flush();
 

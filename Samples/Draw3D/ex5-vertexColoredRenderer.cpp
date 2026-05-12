@@ -28,7 +28,9 @@ SampleVertex::SampleVertex(const glm::vec3& pos)
   using namespace SamplesUtils;
 
   m_vertex.position = pos;
-  m_vertex.color = { NormalizedRand(), NormalizedRand(), NormalizedRand() };
+  m_vertex.color = {
+    NormalizedRand(), NormalizedRand(), NormalizedRand(), 1.0f
+  };
   m_direction = { NormalizedRand(), NormalizedRand(), NormalizedRand() };
   m_changeVelocity = 0.005f + NormalizedRand() * 0.015f;
 }
@@ -36,7 +38,7 @@ SampleVertex::SampleVertex(const glm::vec3& pos)
 void
 SampleVertex::UpdateColor()
 {
-  glm::vec3& color = m_vertex.color;
+  glm::vec4& color = m_vertex.color;
   if (color.r >= 1.0f)
     m_direction.r = -1.0f;
   if (color.r <= 0.0f)
@@ -50,7 +52,7 @@ SampleVertex::UpdateColor()
   if (color.b <= 0.0f)
     m_direction.b = 1.0f;
 
-  color += m_direction * m_changeVelocity;
+  color += glm::vec4(m_direction, 0.0f) * m_changeVelocity;
 }
 
 const Chimia::Draw3D::VertexPC&

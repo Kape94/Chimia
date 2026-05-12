@@ -26,7 +26,7 @@ PositionAttribute()
 Rendering::ShaderAttribute
 ColorAttribute()
 {
-  return Rendering::ShaderAttribute::Float(1 /*color*/, 3);
+  return Rendering::ShaderAttribute::Float(1 /*color*/, 4);
 }
 
 Rendering::ShaderAttribute
@@ -53,28 +53,28 @@ TransformAttributes()
 bool
 HasColor(const eVertexLayout& layout)
 {
-  return layout == eVertexLayout::POSITION3_COLOR3 ||
-         layout == eVertexLayout::POSITION3_COLOR3_NORMAL3 ||
-         layout == eVertexLayout::POSITION3_COLOR3_TEXCOORD2 ||
-         layout == eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2;
+  return layout == eVertexLayout::POSITION3_COLOR4 ||
+         layout == eVertexLayout::POSITION3_COLOR4_NORMAL3 ||
+         layout == eVertexLayout::POSITION3_COLOR4_TEXCOORD2 ||
+         layout == eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2;
 }
 
 bool
 HasNormal(const eVertexLayout& layout)
 {
   return layout == eVertexLayout::POSITION3_NORMAL3 ||
-         layout == eVertexLayout::POSITION3_COLOR3_NORMAL3 ||
+         layout == eVertexLayout::POSITION3_COLOR4_NORMAL3 ||
          layout == eVertexLayout::POSITION3_NORMAL3_TEXCOORD2 ||
-         layout == eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2;
+         layout == eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2;
 }
 
 bool
 HasTexCoord(const eVertexLayout& layout)
 {
   return layout == eVertexLayout::POSITION3_TEXCOORD2 ||
-         layout == eVertexLayout::POSITION3_COLOR3_TEXCOORD2 ||
+         layout == eVertexLayout::POSITION3_COLOR4_TEXCOORD2 ||
          layout == eVertexLayout::POSITION3_NORMAL3_TEXCOORD2 ||
-         layout == eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2;
+         layout == eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2;
 }
 
 void
@@ -105,7 +105,7 @@ RenderersUtils::GetAttributesForLayout(const eVertexLayout& layout)
   using namespace RenderersUtilsPrivate;
 
   switch (layout) {
-    case eVertexLayout::POSITION3_COLOR3: {
+    case eVertexLayout::POSITION3_COLOR4: {
       return { { PositionAttribute(), ColorAttribute() },
                TransformAttributes() };
     }
@@ -117,11 +117,11 @@ RenderersUtils::GetAttributesForLayout(const eVertexLayout& layout)
       return { { PositionAttribute(), TexCoordAttribute() },
                TransformAttributes() };
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
       return { { PositionAttribute(), ColorAttribute(), NormalAttribute() },
                TransformAttributes() };
     }
-    case eVertexLayout::POSITION3_COLOR3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
       return { { PositionAttribute(), ColorAttribute(), TexCoordAttribute() },
                TransformAttributes() };
     }
@@ -129,7 +129,7 @@ RenderersUtils::GetAttributesForLayout(const eVertexLayout& layout)
       return { { PositionAttribute(), NormalAttribute(), TexCoordAttribute() },
                TransformAttributes() };
     }
-    case eVertexLayout::POSITION3_COLOR3_NORMAL3_TEXCOORD2: {
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
       return { { PositionAttribute(),
                  ColorAttribute(),
                  NormalAttribute(),

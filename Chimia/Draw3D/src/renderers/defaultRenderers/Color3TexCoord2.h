@@ -25,13 +25,13 @@ GetRenderer();
 
 void
 DrawTriangle(const glm::vec3& p1,
-             const glm::vec3& p1Color,
+             const glm::vec4& p1Color,
              const glm::vec2& p1TexCoord,
              const glm::vec3& p2,
-             const glm::vec3& p2Color,
+             const glm::vec4& p2Color,
              const glm::vec2& p2TexCoord,
              const glm::vec3& p3,
-             const glm::vec3& p3Color,
+             const glm::vec4& p3Color,
              const glm::vec2& p3TexCoord,
              const ResourceGroupID& resource);
 };

@@ -17,12 +17,13 @@ namespace Inputs {
 
 // clang-format off
 std::vector<float> vertexData{
-  0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
-  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, 0.0f,
-  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 
-  0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f,
-  -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 
-  -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+  //  x          y          z         r.        g         b         a
+  0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 
+  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 
+  0.0f,  0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+  -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 
+  -1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f
 };
 const size_t nVertices = 6;
 
@@ -63,7 +64,7 @@ main()
 
   const Chimia::Draw3D::ModelID modelID = Chimia::Draw3D::CreateModel(
     { Inputs::vertexData, Inputs::nVertices, Inputs::indices },
-    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR3);
+    Chimia::Draw3D::eVertexLayout::POSITION3_COLOR4);
 
   while (!w.ShouldClose()) {
 
@@ -74,9 +75,12 @@ main()
     Chimia::Draw3D::DrawModel(modelID, Inputs::transform3);
 
     Chimia::Draw3D::Triangle(
-      Chimia::Draw3D::VertexPC{ { -1.0f, -1.0f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-      Chimia::Draw3D::VertexPC{ { -1.0f, -0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-      Chimia::Draw3D::VertexPC{ { -0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } });
+      Chimia::Draw3D::VertexPC{ { -1.0f, -1.0f, 0.0f },
+                                { 1.0f, 0.0f, 0.0f, 1.0f } },
+      Chimia::Draw3D::VertexPC{ { -1.0f, -0.5f, 0.0f },
+                                { 0.0f, 1.0f, 0.0f, 1.0f } },
+      Chimia::Draw3D::VertexPC{ { -0.5f, -0.5f, 0.0f },
+                                { 0.0f, 0.0f, 1.0f, 1.0f } });
 
     Chimia::Draw3D::Flush();
 
