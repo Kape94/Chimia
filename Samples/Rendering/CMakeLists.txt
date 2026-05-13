@@ -98,3 +98,8 @@ target_link_libraries(Samples_Rendering_ex12 PRIVATE Samples_Rendering_DefaultDe
 add_executable(Samples_Rendering_ex13 ex13-reusableVertexBufferWithInstancing.cpp)
 target_link_libraries(Samples_Rendering_ex13 PRIVATE Samples_Rendering_DefaultDeps)
 
+# 14) Color blending
+
+add_executable(Samples_Rendering_ex14 ex14-colorBlending.cpp)
+target_link_libraries(Samples_Rendering_ex14 PRIVATE Samples_Rendering_DefaultDeps)
+

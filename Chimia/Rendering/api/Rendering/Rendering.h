@@ -28,6 +28,9 @@ Clear(const float r = 0.0f,
 void
 EnableDepthTest(const bool enable);
 
+void
+EnableColorBlend(const bool enable);
+
 //---------------------------------------------------------------------------------------
 
 END_RENDERLIB_NAMESPACE

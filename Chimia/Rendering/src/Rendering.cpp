@@ -51,3 +51,18 @@ Chimia::Rendering::EnableDepthTest(const bool enable)
 }
 
 //---------------------------------------------------------------------------------------
+
+void
+Chimia::Rendering::EnableColorBlend(const bool enable)
+{
+  constexpr GLenum glBlendOption = GL_BLEND;
+
+  if (enable) {
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(glBlendOption);
+  } else {
+    glDisable(glBlendOption);
+  }
+}
+
+//---------------------------------------------------------------------------------------
