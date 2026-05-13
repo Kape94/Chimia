@@ -53,6 +53,15 @@ Chimia::Rendering::EnableDepthTest(const bool enable)
 //---------------------------------------------------------------------------------------
 
 void
+Chimia::Rendering::EnableDepthMask(const bool enable)
+{
+  const GLboolean enableValue = enable ? GL_TRUE : GL_FALSE;
+  glDepthMask(enableValue);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 Chimia::Rendering::EnableColorBlend(const bool enable)
 {
   constexpr GLenum glBlendOption = GL_BLEND;

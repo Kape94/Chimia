@@ -29,6 +29,9 @@ void
 EnableDepthTest(const bool enable);
 
 void
+EnableDepthMask(const bool enable);
+
+void
 EnableColorBlend(const bool enable);
 
 //---------------------------------------------------------------------------------------
