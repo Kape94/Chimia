@@ -65,37 +65,3 @@ Color4Normal3::GetRenderer()
 }
 
 // ----------------------------------------------------------------------------
-
-void
-Color4Normal3::DrawTriangle(const glm::vec3& p1,
-                            const glm::vec4& p1Color,
-                            const glm::vec3& p1Normal,
-                            const glm::vec3& p2,
-                            const glm::vec4& p2Color,
-                            const glm::vec3& p2Normal,
-                            const glm::vec3& p3,
-                            const glm::vec4& p3Color,
-                            const glm::vec3& p3Normal,
-                            const ResourceGroupID& resource)
-{
-  constexpr size_t POS3_SIZE = sizeof(glm::vec3);
-  constexpr size_t COLOR4_SIZE = sizeof(glm::vec4);
-  constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
-
-  auto& renderer = GetRenderer();
-  renderer.DrawTriangle(
-    {
-      { &p1, POS3_SIZE },
-      { &p1Color, COLOR4_SIZE },
-      { &p1Normal, NORM3_SIZE },
-      { &p2, POS3_SIZE },
-      { &p2Color, COLOR4_SIZE },
-      { &p2Normal, NORM3_SIZE },
-      { &p3, POS3_SIZE },
-      { &p3Color, COLOR4_SIZE },
-      { &p3Normal, NORM3_SIZE },
-    },
-    resource);
-}
-
-// ----------------------------------------------------------------------------

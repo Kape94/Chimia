@@ -23,17 +23,6 @@ Init();
 GenericRenderer&
 GetRenderer();
 
-void
-DrawTriangle(const glm::vec3& p1,
-             const glm::vec4& p1Color,
-             const glm::vec3& p1Normal,
-             const glm::vec3& p2,
-             const glm::vec4& p2Color,
-             const glm::vec3& p2Normal,
-             const glm::vec3& p3,
-             const glm::vec4& p3Color,
-             const glm::vec3& p3Normal,
-             const ResourceGroupID& resource);
 };
 
 END_DEFAULT_RENDERERS_NAMESPACE

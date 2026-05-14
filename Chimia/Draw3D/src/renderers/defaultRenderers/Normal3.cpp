@@ -83,30 +83,3 @@ Normal3::GetRenderer()
 }
 
 // ----------------------------------------------------------------------------
-
-void
-Normal3::DrawTriangle(const glm::vec3& p1,
-                      const glm::vec3& p1Normal,
-                      const glm::vec3& p2,
-                      const glm::vec3& p2Normal,
-                      const glm::vec3& p3,
-                      const glm::vec3& p3Normal,
-                      const ResourceGroupID& resource)
-{
-  constexpr size_t POS3_SIZE = sizeof(glm::vec3);
-  constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
-
-  auto& renderer = GetRenderer();
-  renderer.DrawTriangle(
-    {
-      { &p1, POS3_SIZE },
-      { &p1Normal, NORM3_SIZE },
-      { &p2, POS3_SIZE },
-      { &p2Normal, NORM3_SIZE },
-      { &p3, POS3_SIZE },
-      { &p3Normal, NORM3_SIZE },
-    },
-    resource);
-}
-
-// ----------------------------------------------------------------------------
