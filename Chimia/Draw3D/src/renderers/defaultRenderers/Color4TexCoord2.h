@@ -5,7 +5,6 @@
 #include "DefaultRenderersNamespaceDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "GenericRenderer.h"
-#include "Types.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
