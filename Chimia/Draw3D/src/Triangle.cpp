@@ -11,10 +11,10 @@
 #include "ResourceGroupHelper.h"
 #include "Types.h"
 
-#include "defaultRenderers/Color3.h"
-#include "defaultRenderers/Color3Normal3.h"
-#include "defaultRenderers/Color3Normal3TexCoord2.h"
-#include "defaultRenderers/Color3TexCoord2.h"
+#include "defaultRenderers/Color4.h"
+#include "defaultRenderers/Color4Normal3.h"
+#include "defaultRenderers/Color4Normal3TexCoord2.h"
+#include "defaultRenderers/Color4TexCoord2.h"
 #include "defaultRenderers/Normal3.h"
 #include "defaultRenderers/Normal3TexCoord2.h"
 #include "defaultRenderers/TexCoord2.h"
@@ -73,18 +73,18 @@ VectorDataView(const std::vector<T>& vector)
 void
 TrianglePrivate::Init()
 {
-  renderer = &DefaultRenderers::Color3::GetRenderer();
+  renderer = &DefaultRenderers::Color4::GetRenderer();
   litRenderer = &DefaultRenderers::Normal3::GetRenderer();
   texturedRenderer = &DefaultRenderers::TexCoord2::GetRenderer();
   texturedLitRenderer = &DefaultRenderers::Normal3TexCoord2::GetRenderer();
-  litVertexColoredRenderer = &DefaultRenderers::Color3Normal3::GetRenderer();
-  coloredTexturedRenderer = &DefaultRenderers::Color3TexCoord2::GetRenderer();
+  litVertexColoredRenderer = &DefaultRenderers::Color4Normal3::GetRenderer();
+  coloredTexturedRenderer = &DefaultRenderers::Color4TexCoord2::GetRenderer();
   coloredTexturedLitRenderer =
-    &DefaultRenderers::Color3Normal3TexCoord2::GetRenderer();
+    &DefaultRenderers::Color4Normal3TexCoord2::GetRenderer();
 }
 
 // ----------------------------------------------------------------------------
-// Position3 + Color3
+// Position3 + Color4
 // ----------------------------------------------------------------------------
 
 void
@@ -92,7 +92,7 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                          const VertexPC& v2,
                          const VertexPC& v3)
 {
-  DefaultRenderers::Color3::DrawTriangle(
+  DefaultRenderers::Color4::DrawTriangle(
     v1.position,
     v1.color,
     v2.position,
@@ -265,7 +265,7 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
 }
 
 // ----------------------------------------------------------------------------
-// Position3 + Color3 + Normal3
+// Position3 + Color4 + Normal3
 // ----------------------------------------------------------------------------
 
 void
@@ -273,7 +273,7 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
                          const VertexPCN& v2,
                          const VertexPCN& v3)
 {
-  DefaultRenderers::Color3Normal3::DrawTriangle(
+  DefaultRenderers::Color4Normal3::DrawTriangle(
     v1.position,
     v1.color,
     v1.normal,
@@ -390,7 +390,7 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
 }
 
 // ----------------------------------------------------------------------------
-// Position3 + Color3 + TexCoord2
+// Position3 + Color4 + TexCoord2
 // ----------------------------------------------------------------------------
 
 void
@@ -399,7 +399,7 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v3,
                          const TextureID& texture)
 {
-  DefaultRenderers::Color3TexCoord2::DrawTriangle(
+  DefaultRenderers::Color4TexCoord2::DrawTriangle(
     v1.position,
     v1.color,
     v1.texCoord,
@@ -455,7 +455,7 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
 }
 
 // ----------------------------------------------------------------------------
-// Position3 + Color3 + Normal3 + TexCoord2
+// Position3 + Color4 + Normal3 + TexCoord2
 // ----------------------------------------------------------------------------
 
 void
@@ -464,7 +464,7 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
                          const VertexPCNT& v3,
                          const TextureID& texture)
 {
-  DefaultRenderers::Color3Normal3TexCoord2::DrawTriangle(
+  DefaultRenderers::Color4Normal3TexCoord2::DrawTriangle(
     v1.position,
     v1.color,
     v1.normal,

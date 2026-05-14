@@ -24,13 +24,13 @@ add_library(${TARGET_NAME}
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/RenderersUtils.cpp
 
-    src/renderers/defaultRenderers/Color3.cpp
+    src/renderers/defaultRenderers/Color4.cpp
     src/renderers/defaultRenderers/Normal3.cpp
     src/renderers/defaultRenderers/TexCoord2.cpp
-    src/renderers/defaultRenderers/Color3Normal3.cpp
-    src/renderers/defaultRenderers/Color3TexCoord2.cpp
+    src/renderers/defaultRenderers/Color4Normal3.cpp
+    src/renderers/defaultRenderers/Color4TexCoord2.cpp
     src/renderers/defaultRenderers/Normal3TexCoord2.cpp
-    src/renderers/defaultRenderers/Color3Normal3TexCoord2.cpp
+    src/renderers/defaultRenderers/Color4Normal3TexCoord2.cpp
 
     src/resources/Resources.cpp
     src/resources/ResourcesGroup.cpp 

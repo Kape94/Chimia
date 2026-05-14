@@ -9,7 +9,7 @@
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-// Vertex Position3 + Color3
+// Vertex Position3 + Color4
 
 void
 Triangle(const VertexPC& v1, const VertexPC& v2, const VertexPC& v3);
@@ -78,7 +78,7 @@ AddRetainedTriangles(const std::vector<VertexPT>& vertices,
                      const std::vector<unsigned>& indices,
                      const TextureID& texture);
 
-// Vertex Position3 + Color3 + Normal3
+// Vertex Position3 + Color4 + Normal3
 
 void
 Triangle(const VertexPCN& v1, const VertexPCN& v2, const VertexPCN& v3);
@@ -122,7 +122,7 @@ AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
                      const std::vector<unsigned>& indices,
                      const TextureID& texture);
 
-// Vertex Position3 + Color3 + TexCoord2
+// Vertex Position3 + Color4 + TexCoord2
 
 void
 Triangle(const VertexPCT& v1,
@@ -147,7 +147,7 @@ AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
                      const std::vector<unsigned>& indices,
                      const TextureID& texture);
 
-// Vertex Position3 + Color3 + Normal3 + TexCoord2
+// Vertex Position3 + Color4 + Normal3 + TexCoord2
 
 void
 Triangle(const VertexPCNT& v1,

@@ -1,4 +1,4 @@
-#include "Color3.h"
+#include "Color4.h"
 
 #include "CameraPrivate.h"
 #include "DefaultRenderersNamespaceDefs.h"
@@ -50,7 +50,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-Color3::Init()
+Color4::Init()
 {
   g_renderer = &Renderers::CreateRenderer(
     VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
@@ -59,7 +59,7 @@ Color3::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-Color3::GetRenderer()
+Color4::GetRenderer()
 {
   return *g_renderer;
 }
@@ -67,7 +67,7 @@ Color3::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-Color3::DrawTriangle(const glm::vec3& p1,
+Color4::DrawTriangle(const glm::vec3& p1,
                      const glm::vec4& color1,
                      const glm::vec3& p2,
                      const glm::vec4& color2,

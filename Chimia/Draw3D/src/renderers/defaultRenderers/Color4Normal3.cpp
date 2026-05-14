@@ -1,4 +1,4 @@
-#include "Color3Normal3.h"
+#include "Color4Normal3.h"
 
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
@@ -48,7 +48,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-Color3Normal3::Init()
+Color4Normal3::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
@@ -59,7 +59,7 @@ Color3Normal3::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-Color3Normal3::GetRenderer()
+Color4Normal3::GetRenderer()
 {
   return *g_renderer;
 }
@@ -67,7 +67,7 @@ Color3Normal3::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-Color3Normal3::DrawTriangle(const glm::vec3& p1,
+Color4Normal3::DrawTriangle(const glm::vec3& p1,
                             const glm::vec4& p1Color,
                             const glm::vec3& p1Normal,
                             const glm::vec3& p2,

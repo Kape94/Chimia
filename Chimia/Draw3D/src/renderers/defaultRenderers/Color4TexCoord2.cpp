@@ -1,8 +1,8 @@
-#include "Color3Normal3TexCoord2.h"
+#include "Color4TexCoord2.h"
 
+#include "CameraPrivate.h"
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
-#include "IlluminationPrivate.h"
 #include "Renderers.h"
 #include "RenderersUtils.h"
 #include "ResourceGroup.h"
@@ -21,9 +21,8 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-
 constexpr eVertexLayout VERTEX_LAYOUT =
-  eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2;
+  eVertexLayout::POSITION3_COLOR4_TEXCOORD2;
 
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
@@ -38,7 +37,7 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
   shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resources);
-  IlluminationPrivate::ConfigureLightsOnShader(shader);
+  CameraPrivate::SetCameraOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
 
@@ -60,7 +59,7 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resources);
-  IlluminationPrivate::ConfigureLightsOnShader(shader);
+  CameraPrivate::SetCameraOnShader(shader);
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
 
@@ -74,7 +73,7 @@ GenericRenderer* g_renderer = nullptr;
 // ----------------------------------------------------------------------------
 
 void
-Color3Normal3TexCoord2::Init()
+Color4TexCoord2::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
@@ -85,7 +84,7 @@ Color3Normal3TexCoord2::Init()
 // ----------------------------------------------------------------------------
 
 GenericRenderer&
-Color3Normal3TexCoord2::GetRenderer()
+Color4TexCoord2::GetRenderer()
 {
   return *g_renderer;
 }
@@ -93,39 +92,32 @@ Color3Normal3TexCoord2::GetRenderer()
 // ----------------------------------------------------------------------------
 
 void
-Color3Normal3TexCoord2::DrawTriangle(const glm::vec3& p1,
-                                     const glm::vec4& p1Color,
-                                     const glm::vec3& p1Normal,
-                                     const glm::vec2& p1TexCoord,
-                                     const glm::vec3& p2,
-                                     const glm::vec4& p2Color,
-                                     const glm::vec3& p2Normal,
-                                     const glm::vec2& p2TexCoord,
-                                     const glm::vec3& p3,
-                                     const glm::vec4& p3Color,
-                                     const glm::vec3& p3Normal,
-                                     const glm::vec2& p3TexCoord,
-                                     const ResourceGroupID& resource)
+Color4TexCoord2::DrawTriangle(const glm::vec3& p1,
+                              const glm::vec4& p1Color,
+                              const glm::vec2& p1TexCoord,
+                              const glm::vec3& p2,
+                              const glm::vec4& p2Color,
+                              const glm::vec2& p2TexCoord,
+                              const glm::vec3& p3,
+                              const glm::vec4& p3Color,
+                              const glm::vec2& p3TexCoord,
+                              const ResourceGroupID& resource)
 {
   constexpr size_t POS3_SIZE = sizeof(glm::vec3);
   constexpr size_t COLOR4_SIZE = sizeof(glm::vec4);
   constexpr size_t TEX_COORD2_SIZE = sizeof(glm::vec2);
-  constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
 
   auto& renderer = GetRenderer();
   renderer.DrawTriangle(
     {
       { &p1, POS3_SIZE },
       { &p1Color, COLOR4_SIZE },
-      { &p1Normal, NORM3_SIZE },
       { &p1TexCoord, TEX_COORD2_SIZE },
       { &p2, POS3_SIZE },
       { &p2Color, COLOR4_SIZE },
-      { &p2Normal, NORM3_SIZE },
       { &p2TexCoord, TEX_COORD2_SIZE },
       { &p3, POS3_SIZE },
       { &p3Color, COLOR4_SIZE },
-      { &p3Normal, NORM3_SIZE },
       { &p3TexCoord, TEX_COORD2_SIZE },
     },
     resource);
