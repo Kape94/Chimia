@@ -36,6 +36,9 @@ GenericRenderer* normal3TexCoord2Renderer = nullptr;
 GenericRenderer* color4TexCoord2Renderer = nullptr;
 GenericRenderer* color4Normal3TexCoord2Renderer = nullptr;
 
+GenericRenderer* color4TransparentRenderer = nullptr;
+GenericRenderer* color4TexCoord2TransparentRenderer = nullptr;
+
 constexpr size_t POS3_SIZE = sizeof(glm::vec3);
 constexpr size_t COLOR4_SIZE = sizeof(glm::vec4);
 constexpr size_t NORM3_SIZE = sizeof(glm::vec3);
@@ -69,6 +72,45 @@ VectorDataView(const std::vector<T>& vector)
 {
   return { vector.data(), vector.size() * sizeof(T) };
 }
+
+template<typename Vertex>
+bool
+IsTransparent(const Vertex& v)
+{
+  return v.color.a < 0.98f;
+}
+
+template<typename Vertex>
+bool
+IsTransparent(const Vertex& v1, const Vertex& v2, const Vertex& v3)
+{
+  return IsTransparent(v1) || IsTransparent(v2) || IsTransparent(v3);
+}
+
+template<typename Vertex>
+bool
+IsTransparent(const std::vector<Vertex>& vertices)
+{
+  for (const Vertex& v : vertices) {
+    if (IsTransparent(v)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+GenericRenderer*
+GetColor4Renderer(const bool isTransparent)
+{
+  return isTransparent ? color4TransparentRenderer : color4Renderer;
+}
+
+GenericRenderer*
+GetColor4TexCoord2Renderer(const bool isTransparent)
+{
+  return isTransparent ? color4TexCoord2TransparentRenderer
+                       : color4TexCoord2Renderer;
+}
 }
 
 // ----------------------------------------------------------------------------
@@ -86,6 +128,11 @@ TrianglePrivate::Init()
   color4TexCoord2Renderer = &DefaultRenderers::Color4TexCoord2::GetRenderer();
   color4Normal3TexCoord2Renderer =
     &DefaultRenderers::Color4Normal3TexCoord2::GetRenderer();
+
+  color4TransparentRenderer =
+    &DefaultRenderers::Color4::GetTransparentRenderer();
+  color4TexCoord2TransparentRenderer =
+    &DefaultRenderers::Color4TexCoord2::GetTransparentRenderer();
 }
 
 // ----------------------------------------------------------------------------
@@ -97,13 +144,16 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                          const VertexPC& v2,
                          const VertexPC& v3)
 {
-  color4Renderer->DrawTriangle({ { &v1.position, POS3_SIZE },
-                                 { &v1.color, COLOR4_SIZE },
-                                 { &v2.position, POS3_SIZE },
-                                 { &v2.color, COLOR4_SIZE },
-                                 { &v3.position, POS3_SIZE },
-                                 { &v3.color, COLOR4_SIZE } },
-                               ResourceGroupHelper::GetEmptyResource());
+  const bool isTransparent = IsTransparent(v1, v2, v3);
+  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
+
+  renderer->DrawTriangle({ { &v1.position, POS3_SIZE },
+                           { &v1.color, COLOR4_SIZE },
+                           { &v2.position, POS3_SIZE },
+                           { &v2.color, COLOR4_SIZE },
+                           { &v3.position, POS3_SIZE },
+                           { &v3.color, COLOR4_SIZE } },
+                         ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -111,8 +161,11 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices)
 {
-  color4Renderer->DrawTriangles(VectorArrayView(vertices),
-                                ResourceGroupHelper::GetEmptyResource());
+  const bool isTransparent = IsTransparent(vertices);
+  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
+
+  renderer->DrawTriangles(VectorArrayView(vertices),
+                          ResourceGroupHelper::GetEmptyResource());
 }
 
 // ----------------------------------------------------------------------------
@@ -130,7 +183,10 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices)
 {
-  return color4Renderer->AddRetainedTriangles(
+  const bool isTransparent = IsTransparent(vertices);
+  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
+
+  return renderer->AddRetainedTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetEmptyResource());
 }
 
@@ -411,17 +467,19 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v3,
                          const TextureID& texture)
 {
-  color4TexCoord2Renderer->DrawTriangle(
-    { { &v1.position, POS3_SIZE },
-      { &v1.color, COLOR4_SIZE },
-      { &v1.texCoord, TEX_COORD2_SIZE },
-      { &v2.position, POS3_SIZE },
-      { &v2.color, COLOR4_SIZE },
-      { &v2.texCoord, TEX_COORD2_SIZE },
-      { &v3.position, POS3_SIZE },
-      { &v3.color, COLOR4_SIZE },
-      { &v3.texCoord, TEX_COORD2_SIZE } },
-    ResourceGroupHelper::GetResourceGroup(texture));
+  const bool isTransparent = IsTransparent(v1, v2, v3);
+  GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
+
+  renderer->DrawTriangle({ { &v1.position, POS3_SIZE },
+                           { &v1.color, COLOR4_SIZE },
+                           { &v1.texCoord, TEX_COORD2_SIZE },
+                           { &v2.position, POS3_SIZE },
+                           { &v2.color, COLOR4_SIZE },
+                           { &v2.texCoord, TEX_COORD2_SIZE },
+                           { &v3.position, POS3_SIZE },
+                           { &v3.color, COLOR4_SIZE },
+                           { &v3.texCoord, TEX_COORD2_SIZE } },
+                         ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -430,8 +488,11 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
                           const TextureID& texture)
 {
-  color4TexCoord2Renderer->DrawTriangles(
-    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  const bool isTransparent = IsTransparent(vertices);
+  GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
+
+  renderer->DrawTriangles(VectorArrayView(vertices),
+                          ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -451,7 +512,10 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
                                      const TextureID& texture)
 {
-  return color4TexCoord2Renderer->AddRetainedTriangles(
+  const bool isTransparent = IsTransparent(vertices);
+  GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
+
+  return renderer->AddRetainedTriangles(
     VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
 }
 

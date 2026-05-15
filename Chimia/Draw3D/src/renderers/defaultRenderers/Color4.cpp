@@ -45,6 +45,7 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 }
 
 GenericRenderer* g_renderer = nullptr;
+GenericRenderer* g_transparentRenderer = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -54,6 +55,9 @@ Color4::Init()
 {
   g_renderer = &Renderers::CreateRenderer(
     VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
+
+  g_transparentRenderer = &Renderers::CreateRenderer(
+    VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -62,6 +66,14 @@ GenericRenderer&
 Color4::GetRenderer()
 {
   return *g_renderer;
+}
+
+// ----------------------------------------------------------------------------
+
+GenericRenderer&
+Color4::GetTransparentRenderer()
+{
+  return *g_transparentRenderer;
 }
 
 // ----------------------------------------------------------------------------

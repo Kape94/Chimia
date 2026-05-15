@@ -160,3 +160,6 @@ add_custom_command(
     "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
     "$<TARGET_FILE_DIR:Samples_Draw3D_ex21>/assets/solar-flare.jpg"
 )
+
+add_executable(Samples_Draw3D_ex22 ex22-transparentTriangles.cpp)
+target_link_libraries(Samples_Draw3D_ex22 PRIVATE Samples_Draw3D_Dependencies)

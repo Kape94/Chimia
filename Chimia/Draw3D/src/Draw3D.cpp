@@ -50,6 +50,15 @@ Chimia::Draw3D::Flush()
   DefaultRenderers::Color4TexCoord2::GetRenderer().Flush();
   DefaultRenderers::Normal3TexCoord2::GetRenderer().Flush();
   DefaultRenderers::Color4Normal3TexCoord2::GetRenderer().Flush();
+
+  Chimia::Rendering::EnableDepthMask(false);
+  Chimia::Rendering::EnableColorBlend(true);
+
+  DefaultRenderers::Color4::GetTransparentRenderer().Flush();
+  DefaultRenderers::Color4TexCoord2::GetTransparentRenderer().Flush();
+
+  Chimia::Rendering::EnableDepthMask(true);
+  Chimia::Rendering::EnableColorBlend(false);
 }
 
 // ----------------------------------------------------------------------------
@@ -57,7 +66,7 @@ Chimia::Draw3D::Flush()
 void
 Chimia::Draw3D::ClearScreen()
 {
-  Rendering::Clear();
+  Chimia::Rendering::Clear(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // ----------------------------------------------------------------------------
