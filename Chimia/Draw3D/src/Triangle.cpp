@@ -144,6 +144,53 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                          const VertexPC& v2,
                          const VertexPC& v3)
 {
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices)
+{
+  Triangles(vertices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
+                          const std::vector<unsigned>& indices)
+{
+  Triangles(vertices, indices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices)
+{
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices,
+                                     const std::vector<unsigned>& indices)
+{
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPC& v1,
+                         const VertexPC& v2,
+                         const VertexPC& v3,
+                         const ResourceGroupID& resource)
+{
   const bool isTransparent = IsTransparent(v1, v2, v3);
   GenericRenderer* renderer = GetColor4Renderer(isTransparent);
 
@@ -153,51 +200,53 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                            { &v2.color, COLOR4_SIZE },
                            { &v3.position, POS3_SIZE },
                            { &v3.color, COLOR4_SIZE } },
-                         ResourceGroupHelper::GetEmptyResource());
-}
-
-// ----------------------------------------------------------------------------
-
-void
-Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices)
-{
-  const bool isTransparent = IsTransparent(vertices);
-  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
-
-  renderer->DrawTriangles(VectorArrayView(vertices),
-                          ResourceGroupHelper::GetEmptyResource());
+                         resource);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
-                          const std::vector<unsigned>& indices)
-{
-  const std::vector<VertexPC> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex);
-}
-
-// ----------------------------------------------------------------------------
-
-TriangleMeshID
-Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices)
+                          const ResourceGroupID& resource)
 {
   const bool isTransparent = IsTransparent(vertices);
   GenericRenderer* renderer = GetColor4Renderer(isTransparent);
 
-  return renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetEmptyResource());
+  renderer->DrawTriangles(VectorArrayView(vertices), resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const ResourceGroupID& resource)
+{
+  const std::vector<VertexPC> unindexedVertex = DropIndices(vertices, indices);
+  Triangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices,
-                                     const std::vector<unsigned>& indices)
+                                     const ResourceGroupID& resource)
+{
+  const bool isTransparent = IsTransparent(vertices);
+  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
+
+  return renderer->AddRetainedTriangles(VectorDataView(vertices), resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const ResourceGroupID& resource)
 {
   const std::vector<VertexPC> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -210,16 +259,7 @@ Chimia::Draw3D::Triangle(const VertexPN& v1,
                          const VertexPN& v3,
                          const MaterialID& material)
 {
-  normal3Renderer->DrawTriangle(
-    {
-      { &v1.position, POS3_SIZE },
-      { &v1.normal, NORM3_SIZE },
-      { &v2.position, POS3_SIZE },
-      { &v2.normal, NORM3_SIZE },
-      { &v3.position, POS3_SIZE },
-      { &v3.normal, NORM3_SIZE },
-    },
-    ResourceGroupHelper::GetResourceGroup(material));
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -228,8 +268,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
                           const MaterialID& material)
 {
-  normal3Renderer->DrawTriangles(
-    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(material));
+  Triangles(vertices, ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -239,8 +278,7 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
                           const std::vector<unsigned>& indices,
                           const MaterialID& material)
 {
-  const std::vector<VertexPN> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex, material);
+  Triangles(vertices, indices, ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -249,8 +287,8 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPN>& vertices,
                                      const MaterialID& material)
 {
-  return normal3Renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(material));
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetResourceGroup(material));
 }
 
 // ----------------------------------------------------------------------------
@@ -260,8 +298,69 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPN>& vertices,
                                      const std::vector<unsigned>& indices,
                                      const MaterialID& material)
 {
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetResourceGroup(material));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPN& v1,
+                         const VertexPN& v2,
+                         const VertexPN& v3,
+                         const ResourceGroupID& resource)
+{
+  normal3Renderer->DrawTriangle(
+    {
+      { &v1.position, POS3_SIZE },
+      { &v1.normal, NORM3_SIZE },
+      { &v2.position, POS3_SIZE },
+      { &v2.normal, NORM3_SIZE },
+      { &v3.position, POS3_SIZE },
+      { &v3.normal, NORM3_SIZE },
+    },
+    resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
+                          const ResourceGroupID& resource)
+{
+  normal3Renderer->DrawTriangles(VectorArrayView(vertices), resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const ResourceGroupID& resource)
+{
   const std::vector<VertexPN> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex, material);
+  Triangles(unindexedVertex, resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPN>& vertices,
+                                     const ResourceGroupID& resource)
+{
+  return normal3Renderer->AddRetainedTriangles(VectorDataView(vertices),
+                                               resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPN>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const ResourceGroupID& resource)
+{
+  const std::vector<VertexPN> unindexedVertex = DropIndices(vertices, indices);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -274,16 +373,7 @@ Chimia::Draw3D::Triangle(const VertexPT& v1,
                          const VertexPT& v3,
                          const TextureID& texture)
 {
-  texCoord2Renderer->DrawTriangle(
-    {
-      { &v1.position, POS3_SIZE },
-      { &v1.texCoord, TEX_COORD2_SIZE },
-      { &v2.position, POS3_SIZE },
-      { &v2.texCoord, TEX_COORD2_SIZE },
-      { &v3.position, POS3_SIZE },
-      { &v3.texCoord, TEX_COORD2_SIZE },
-    },
-    ResourceGroupHelper::GetResourceGroup(texture));
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -292,8 +382,7 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
                           const TextureID& texture)
 {
-  texCoord2Renderer->DrawTriangles(
-    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  Triangles(vertices, ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -303,8 +392,7 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
                           const std::vector<unsigned>& indices,
                           const TextureID& texture)
 {
-  const std::vector<VertexPT> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex, texture);
+  Triangles(vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -313,8 +401,8 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
                                      const TextureID& texture)
 {
-  return texCoord2Renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetResourceGroup(texture));
 }
 
 // ----------------------------------------------------------------------------
@@ -324,8 +412,69 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
                                      const std::vector<unsigned>& indices,
                                      const TextureID& texture)
 {
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPT& v1,
+                         const VertexPT& v2,
+                         const VertexPT& v3,
+                         const ResourceGroupID& resource)
+{
+  texCoord2Renderer->DrawTriangle(
+    {
+      { &v1.position, POS3_SIZE },
+      { &v1.texCoord, TEX_COORD2_SIZE },
+      { &v2.position, POS3_SIZE },
+      { &v2.texCoord, TEX_COORD2_SIZE },
+      { &v3.position, POS3_SIZE },
+      { &v3.texCoord, TEX_COORD2_SIZE },
+    },
+    resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
+                          const ResourceGroupID& resource)
+{
+  texCoord2Renderer->DrawTriangles(VectorArrayView(vertices), resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const ResourceGroupID& resource)
+{
   const std::vector<VertexPT> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex, texture);
+  Triangles(unindexedVertex, resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
+                                     const ResourceGroupID& resource)
+{
+  return texCoord2Renderer->AddRetainedTriangles(VectorDataView(vertices),
+                                                 resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const ResourceGroupID& resource)
+{
+  const std::vector<VertexPT> unindexedVertex = DropIndices(vertices, indices);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -336,6 +485,53 @@ void
 Chimia::Draw3D::Triangle(const VertexPCN& v1,
                          const VertexPCN& v2,
                          const VertexPCN& v3)
+{
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices)
+{
+  Triangles(vertices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices,
+                          const std::vector<unsigned>& indices)
+{
+  Triangles(vertices, indices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCN>& vertices)
+{
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCN>& vertices,
+                                     const std::vector<unsigned>& indices)
+{
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetEmptyResource());
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPCN& v1,
+                         const VertexPCN& v2,
+                         const VertexPCN& v3,
+                         const ResourceGroupID& resource)
 {
   color4Normal3Renderer->DrawTriangle(
     {
@@ -349,45 +545,48 @@ Chimia::Draw3D::Triangle(const VertexPCN& v1,
       { &v3.color, COLOR4_SIZE },
       { &v3.normal, NORM3_SIZE },
     },
-    ResourceGroupHelper::GetEmptyResource());
-}
-
-// ----------------------------------------------------------------------------
-
-void
-Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices)
-{
-  color4Normal3Renderer->DrawTriangles(VectorArrayView(vertices),
-                                       ResourceGroupHelper::GetEmptyResource());
+    resource);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices,
-                          const std::vector<unsigned>& indices)
+                          const ResourceGroupID& resource)
 {
-  const std::vector<VertexPCN> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex);
+  color4Normal3Renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
 
-TriangleMeshID
-Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCN>& vertices)
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCN>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const ResourceGroupID& resource)
 {
-  return color4Normal3Renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetEmptyResource());
+  const std::vector<VertexPCN> unindexedVertex = DropIndices(vertices, indices);
+  Triangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCN>& vertices,
-                                     const std::vector<unsigned>& indices)
+                                     const ResourceGroupID& resource)
+{
+  return color4Normal3Renderer->AddRetainedTriangles(VectorDataView(vertices),
+                                                     resource);
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCN>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const ResourceGroupID& resource)
 {
   const std::vector<VertexPCN> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -399,6 +598,57 @@ Chimia::Draw3D::Triangle(const VertexPNT& v1,
                          const VertexPNT& v2,
                          const VertexPNT& v3,
                          const TextureID& texture)
+{
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPNT& v1,
+                         const VertexPNT& v2,
+                         const VertexPNT& v3,
+                         const ResourceGroupID& resource)
 {
   normal3TexCoord2Renderer->DrawTriangle(
     {
@@ -412,17 +662,16 @@ Chimia::Draw3D::Triangle(const VertexPNT& v1,
       { &v3.normal, NORM3_SIZE },
       { &v3.texCoord, TEX_COORD2_SIZE },
     },
-    ResourceGroupHelper::GetResourceGroup(texture));
+    resource);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
-  normal3TexCoord2Renderer->DrawTriangles(
-    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  normal3TexCoord2Renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -430,20 +679,20 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
                           const std::vector<unsigned>& indices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
   const std::vector<VertexPNT> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex, texture);
+  Triangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   return normal3TexCoord2Renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+    VectorDataView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -451,10 +700,10 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
                                      const std::vector<unsigned>& indices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   const std::vector<VertexPNT> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex, texture);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -466,6 +715,57 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v2,
                          const VertexPCT& v3,
                          const TextureID& texture)
+{
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPCT& v1,
+                         const VertexPCT& v2,
+                         const VertexPCT& v3,
+                         const ResourceGroupID& resource)
 {
   const bool isTransparent = IsTransparent(v1, v2, v3);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
@@ -479,20 +779,19 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                            { &v3.position, POS3_SIZE },
                            { &v3.color, COLOR4_SIZE },
                            { &v3.texCoord, TEX_COORD2_SIZE } },
-                         ResourceGroupHelper::GetResourceGroup(texture));
+                         resource);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
   const bool isTransparent = IsTransparent(vertices);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
 
-  renderer->DrawTriangles(VectorArrayView(vertices),
-                          ResourceGroupHelper::GetResourceGroup(texture));
+  renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -500,23 +799,22 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
                           const std::vector<unsigned>& indices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
   const std::vector<VertexPCT> unindexedVertex = DropIndices(vertices, indices);
-  Triangles(unindexedVertex, texture);
+  Triangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   const bool isTransparent = IsTransparent(vertices);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
 
-  return renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  return renderer->AddRetainedTriangles(VectorDataView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -524,10 +822,10 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
                                      const std::vector<unsigned>& indices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   const std::vector<VertexPCT> unindexedVertex = DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex, texture);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -539,6 +837,57 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
                          const VertexPCNT& v2,
                          const VertexPCNT& v3,
                          const TextureID& texture)
+{
+  Triangle(v1, v2, v3, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
+                          const std::vector<unsigned>& indices,
+                          const TextureID& texture)
+{
+  Triangles(vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(vertices,
+                              ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+TriangleMeshID
+Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
+                                     const std::vector<unsigned>& indices,
+                                     const TextureID& texture)
+{
+  return AddRetainedTriangles(
+    vertices, indices, ResourceGroupHelper::GetResourceGroup(texture));
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Triangle(const VertexPCNT& v1,
+                         const VertexPCNT& v2,
+                         const VertexPCNT& v3,
+                         const ResourceGroupID& resource)
 {
   color4Normal3TexCoord2Renderer->DrawTriangle(
     {
@@ -555,17 +904,17 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
       { &v3.normal, NORM3_SIZE },
       { &v3.texCoord, TEX_COORD2_SIZE },
     },
-    ResourceGroupHelper::GetResourceGroup(texture));
+    resource);
 }
 
 // ----------------------------------------------------------------------------
 
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
-  color4Normal3TexCoord2Renderer->DrawTriangles(
-    VectorArrayView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+  color4Normal3TexCoord2Renderer->DrawTriangles(VectorArrayView(vertices),
+                                                resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -573,21 +922,21 @@ Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
 void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
                           const std::vector<unsigned>& indices,
-                          const TextureID& texture)
+                          const ResourceGroupID& resource)
 {
   const std::vector<VertexPCNT> unindexedVertex =
     DropIndices(vertices, indices);
-  Triangles(unindexedVertex, texture);
+  Triangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
 
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   return color4Normal3TexCoord2Renderer->AddRetainedTriangles(
-    VectorDataView(vertices), ResourceGroupHelper::GetResourceGroup(texture));
+    VectorDataView(vertices), resource);
 }
 
 // ----------------------------------------------------------------------------
@@ -595,11 +944,11 @@ Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
 TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
                                      const std::vector<unsigned>& indices,
-                                     const TextureID& texture)
+                                     const ResourceGroupID& resource)
 {
   const std::vector<VertexPCNT> unindexedVertex =
     DropIndices(vertices, indices);
-  return AddRetainedTriangles(unindexedVertex, texture);
+  return AddRetainedTriangles(unindexedVertex, resource);
 }
 
 // ----------------------------------------------------------------------------
