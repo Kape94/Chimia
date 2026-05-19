@@ -4,6 +4,7 @@
 #include "GenericRenderer.h"
 #include "ModelRenderingPrivate.h"
 #include "Renderers.h"
+#include "ResourceGroup.h"
 #include "ResourceGroupHelper.h"
 #include "ResourcesManager.h"
 #include "Types.h"
@@ -25,13 +26,13 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-GenericRenderer* renderer = nullptr;
-GenericRenderer* litRenderer = nullptr;
-GenericRenderer* texturedRenderer = nullptr;
-GenericRenderer* texturedLitRenderer = nullptr;
-GenericRenderer* litVertexColoredRenderer = nullptr;
-GenericRenderer* coloredTexturedRenderer = nullptr;
-GenericRenderer* coloredTexturedLitRenderer = nullptr;
+GenericRenderer* color4Renderer = nullptr;
+GenericRenderer* normal3Renderer = nullptr;
+GenericRenderer* texCoord2Renderer = nullptr;
+GenericRenderer* normal3TexCoord2Renderer = nullptr;
+GenericRenderer* color4Normal3Renderer = nullptr;
+GenericRenderer* color4TexCoord2Renderer = nullptr;
+GenericRenderer* color4Normal3TexCoord2Renderer = nullptr;
 
 eVertexLayout
 ModelLayout(const ModelID& modelID)
@@ -48,13 +49,13 @@ ModelLayout(const ModelID& modelID)
 void
 ModelRenderingPrivate::Init()
 {
-  renderer = &DefaultRenderers::Color4::GetRenderer();
-  litRenderer = &DefaultRenderers::Normal3::GetRenderer();
-  texturedRenderer = &DefaultRenderers::TexCoord2::GetRenderer();
-  texturedLitRenderer = &DefaultRenderers::Normal3TexCoord2::GetRenderer();
-  litVertexColoredRenderer = &DefaultRenderers::Color4Normal3::GetRenderer();
-  coloredTexturedRenderer = &DefaultRenderers::Color4TexCoord2::GetRenderer();
-  coloredTexturedLitRenderer =
+  color4Renderer = &DefaultRenderers::Color4::GetRenderer();
+  normal3Renderer = &DefaultRenderers::Normal3::GetRenderer();
+  texCoord2Renderer = &DefaultRenderers::TexCoord2::GetRenderer();
+  normal3TexCoord2Renderer = &DefaultRenderers::Normal3TexCoord2::GetRenderer();
+  color4Normal3Renderer = &DefaultRenderers::Color4Normal3::GetRenderer();
+  color4TexCoord2Renderer = &DefaultRenderers::Color4TexCoord2::GetRenderer();
+  color4Normal3TexCoord2Renderer =
     &DefaultRenderers::Color4Normal3TexCoord2::GetRenderer();
 }
 
@@ -70,12 +71,12 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR4: {
-      renderer->DrawModelTransformed(
+      color4Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
     }
     case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
-      litVertexColoredRenderer->DrawModelTransformed(
+      color4Normal3Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
       break;
     }
@@ -93,11 +94,11 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR4: {
-      return renderer->AddRetainedModel(
+      return color4Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
-      return litVertexColoredRenderer->AddRetainedModel(
+      return color4Normal3Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetEmptyResource());
     }
     default:
@@ -117,7 +118,7 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
 {
   assert(ModelLayout(modelID) == eVertexLayout::POSITION3_NORMAL3);
 
-  litRenderer->DrawModelTransformed(
+  normal3Renderer->DrawModelTransformed(
     modelID, transform, ResourceGroupHelper::GetResourceGroup(materialID));
 }
 
@@ -130,7 +131,7 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
 {
   assert(ModelLayout(modelID) == eVertexLayout::POSITION3_NORMAL3);
 
-  return litRenderer->AddRetainedModel(
+  return normal3Renderer->AddRetainedModel(
     modelID, transform, ResourceGroupHelper::GetResourceGroup(materialID));
 }
 
@@ -149,22 +150,22 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_TEXCOORD2: {
-      texturedRenderer->DrawModelTransformed(
+      texCoord2Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      texturedLitRenderer->DrawModelTransformed(
+      normal3TexCoord2Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
-      coloredTexturedRenderer->DrawModelTransformed(
+      color4TexCoord2Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
     case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
-      coloredTexturedLitRenderer->DrawModelTransformed(
+      color4Normal3TexCoord2Renderer->DrawModelTransformed(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
       break;
     }
@@ -183,19 +184,19 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
     case eVertexLayout::POSITION3_TEXCOORD2: {
-      return texturedRenderer->AddRetainedModel(
+      return texCoord2Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      return texturedLitRenderer->AddRetainedModel(
+      return normal3TexCoord2Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
-      return coloredTexturedRenderer->AddRetainedModel(
+      return color4TexCoord2Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
-      return coloredTexturedLitRenderer->AddRetainedModel(
+      return color4Normal3TexCoord2Renderer->AddRetainedModel(
         modelID, transform, ResourceGroupHelper::GetResourceGroup(textureID));
     }
     default:
@@ -206,6 +207,121 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
 
 // ----------------------------------------------------------------------------
 // General
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
+                                        const glm::mat4x4& transform,
+                                        const ResourceGroupID& resource)
+{
+  const ResourcesGroup* group =
+    ResourcesManager::GetInstance().GetResourcesGroup(resource);
+  const bool hasTexture = group != nullptr && group->HasTextures();
+  const bool hasMaterial = group != nullptr && group->HasMaterials();
+
+  const eVertexLayout layout = ModelLayout(modelID);
+  switch (layout) {
+    case eVertexLayout::POSITION3_COLOR4: {
+      color4Renderer->DrawModelTransformed(modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_NORMAL3: {
+      assert(hasMaterial &&
+             "DrawModel: Missing material for model with PN layout");
+      normal3Renderer->DrawModelTransformed(modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_TEXCOORD2: {
+      assert(hasTexture &&
+             "DrawModel: Missing texture for model with PT layout");
+      texCoord2Renderer->DrawModelTransformed(modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
+      color4Normal3Renderer->DrawModelTransformed(modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
+      assert(hasTexture &&
+             "DrawModel: Missing texture for model with PCT layout");
+      color4TexCoord2Renderer->DrawModelTransformed(
+        modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
+      assert(hasTexture &&
+             "DrawModel: Missing texture for model with PNT layout");
+      normal3TexCoord2Renderer->DrawModelTransformed(
+        modelID, transform, resource);
+      break;
+    }
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
+      assert(hasTexture &&
+             "DrawModel: Missing texture for model with PCNT layout");
+      color4Normal3TexCoord2Renderer->DrawModelTransformed(
+        modelID, transform, resource);
+      break;
+    }
+    default:
+      assert(false && "Unsuported model layout");
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+ModelInstanceID
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
+                                               const glm::mat4x4& transform,
+                                               const ResourceGroupID& resource)
+{
+  const ResourcesGroup* group =
+    ResourcesManager::GetInstance().GetResourcesGroup(resource);
+  const bool hasTexture = group != nullptr && group->HasTextures();
+  const bool hasMaterial = group != nullptr && group->HasMaterials();
+
+  const eVertexLayout layout = ModelLayout(modelID);
+  switch (layout) {
+    case eVertexLayout::POSITION3_COLOR4: {
+      return color4Renderer->AddRetainedModel(modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_NORMAL3: {
+      assert(hasMaterial &&
+             "AddRetainedModel: Missing material for model with PN layout");
+      return normal3Renderer->AddRetainedModel(modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_TEXCOORD2: {
+      assert(hasTexture &&
+             "AddRetainedModel: Missing texture for model with PT layout");
+      return texCoord2Renderer->AddRetainedModel(modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
+      return color4Normal3Renderer->AddRetainedModel(
+        modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
+      assert(hasTexture &&
+             "AddRetainedModel: Missing texture for model with PCT layout");
+      return color4TexCoord2Renderer->AddRetainedModel(
+        modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
+      assert(hasTexture &&
+             "AddRetainedModel: Missing texture for model with PNT layout");
+      return normal3TexCoord2Renderer->AddRetainedModel(
+        modelID, transform, resource);
+    }
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
+      assert(hasTexture &&
+             "AddRetainedModel: Missing texture for model with PCNT layout");
+      return color4Normal3TexCoord2Renderer->AddRetainedModel(
+        modelID, transform, resource);
+    }
+    default:
+      assert(false && "Unsuported model layout");
+      return Draw3DPrivate::CreateModelInstanceID(0, 0, 0, 0);
+  }
+}
+
 // ----------------------------------------------------------------------------
 
 void

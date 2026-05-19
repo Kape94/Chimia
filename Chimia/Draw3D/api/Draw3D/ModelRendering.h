@@ -53,6 +53,16 @@ AddRetainedModel(const ModelID& modelID,
 // General
 
 void
+DrawModel(const ModelID& modelID,
+          const glm::mat4x4& transform,
+          const ResourceGroupID& resource);
+
+ModelInstanceID
+AddRetainedModel(const ModelID& modelID,
+                 const glm::mat4x4& transform,
+                 const ResourceGroupID& resource);
+
+void
 DeleteRetainedModel(const ModelInstanceID& instanceID);
 
 // ----------------------------------------------------------------------------
