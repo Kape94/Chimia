@@ -53,6 +53,9 @@ public:
   void AddResourceToGroup(const std::string& tag,
                           const TextureID& texture,
                           const ResourceGroupID& group);
+  void AddResourceToGroup(const std::string& tag,
+                          const OpacityFactorID& opacityFactor,
+                          const ResourceGroupID& group);
 
   const ResourcesGroup* GetResourcesGroup(const ResourceGroupID& groupID);
 

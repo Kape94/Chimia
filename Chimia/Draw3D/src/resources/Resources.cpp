@@ -50,3 +50,43 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::CreateOpacityFactor(const float value)
 }
 
 // ----------------------------------------------------------------------------
+
+ResourceGroupID
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateResourceGroup()
+{
+  auto& manager = ResourcesManager::GetInstance();
+  return manager.CreateResourceGroup();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddResourceToGroup(const MaterialID& material,
+                                                 const ResourceGroupID& group)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  manager.AddResourceToGroup("any", material, group);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddResourceToGroup(const TextureID& texture,
+                                                 const ResourceGroupID& group)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  manager.AddResourceToGroup("any", texture, group);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddResourceToGroup(
+  const OpacityFactorID& opacityFactor,
+  const ResourceGroupID& group)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  manager.AddResourceToGroup("any", opacityFactor, group);
+}
+
+// ----------------------------------------------------------------------------

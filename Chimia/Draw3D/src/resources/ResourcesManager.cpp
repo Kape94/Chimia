@@ -154,6 +154,22 @@ ResourcesManager::AddResourceToGroup(const std::string& tag,
 
 // ----------------------------------------------------------------------------
 
+void
+ResourcesManager::AddResourceToGroup(const std::string& tag,
+                                     const OpacityFactorID& opacityFactor,
+                                     const ResourceGroupID& group)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(group);
+  ResourcesGroup* groupInstance = m_resourceGroups.Find(idValue);
+  if (groupInstance == nullptr) {
+    Chimia::Diagnostics::Error(1, "Didn't find group instance");
+  }
+
+  groupInstance->AddResource(tag, opacityFactor);
+}
+
+// ----------------------------------------------------------------------------
+
 const ResourcesGroup*
 ResourcesManager::GetResourcesGroup(const ResourceGroupID& groupID)
 {

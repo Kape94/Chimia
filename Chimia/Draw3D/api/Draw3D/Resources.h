@@ -29,6 +29,19 @@ CreateTexture(const unsigned char* textureData,
 OpacityFactorID
 CreateOpacityFactor(const float value);
 
+ResourceGroupID
+CreateResourceGroup();
+
+void
+AddResourceToGroup(const MaterialID& material, const ResourceGroupID& group);
+
+void
+AddResourceToGroup(const TextureID& texture, const ResourceGroupID& group);
+
+void
+AddResourceToGroup(const OpacityFactorID& opacityFactor,
+                   const ResourceGroupID& group);
+
 // ----------------------------------------------------------------------------
 
 END_CHIMIA_DRAW3D_NAMESPACE

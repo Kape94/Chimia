@@ -55,6 +55,7 @@ Chimia::Draw3D::Flush()
   Chimia::Rendering::EnableColorBlend(true);
 
   DefaultRenderers::Color4::GetTransparentRenderer().Flush();
+  DefaultRenderers::TexCoord2::GetTransparentRenderer().Flush();
   DefaultRenderers::Color4TexCoord2::GetTransparentRenderer().Flush();
 
   Chimia::Rendering::EnableDepthMask(true);

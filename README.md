@@ -15,6 +15,7 @@ Transparency open problems:
   - Include transparent pipeline setting wrap in shader configuration steps;
 - Mixture color with alpha. Changing the mixture color from opaque to transparent might imply in moving batches from one renderer to another;
   - Allow only opaque mixture color, and then provide a transparency number as a separate resource;
+- Transparency is not enabled in models currently;
 
 ## Build Instructions
 Run `cppm build` to build the project.

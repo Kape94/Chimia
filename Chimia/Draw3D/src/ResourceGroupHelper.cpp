@@ -24,7 +24,7 @@ static auto& resources = ResourcesManager::GetInstance();
 const ResourcesGroup*
 GetResourcesGroup(const ResourceGroupID& resourceID)
 {
-  return ResourceGroupHelperInternal::resources.GetResourcesGroup(resourceID);
+  return resources.GetResourcesGroup(resourceID);
 }
 
 }
