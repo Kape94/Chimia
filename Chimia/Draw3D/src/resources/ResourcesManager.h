@@ -41,6 +41,10 @@ public:
 
   Rendering::Texture2D* GetTexture(const TextureID& textureID);
 
+  OpacityFactorID CreateOpacityFactor(const float value);
+
+  const float* GetOpacityFactor(const OpacityFactorID& opacityFactorID);
+
   ResourceGroupID CreateResourceGroup();
 
   void AddResourceToGroup(const std::string& tag,
@@ -61,6 +65,8 @@ private:
   ObjectTable<Material> m_materialsTable;
 
   ObjectTable<Rendering::Texture2D> m_texturesTable;
+
+  ObjectTable<float> m_opacityFactors;
 
   ObjectTable<ResourcesGroup> m_resourceGroups;
 };

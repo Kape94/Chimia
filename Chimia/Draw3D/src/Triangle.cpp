@@ -82,15 +82,27 @@ IsTransparent(const Vertex& v)
 
 template<typename Vertex>
 bool
-IsTransparent(const Vertex& v1, const Vertex& v2, const Vertex& v3)
+IsTransparent(const Vertex& v1,
+              const Vertex& v2,
+              const Vertex& v3,
+              const ResourceGroupID& resource)
 {
+  if (ResourceGroupHelper::HasOpacityFactor(resource)) {
+    return true;
+  }
+
   return IsTransparent(v1) || IsTransparent(v2) || IsTransparent(v3);
 }
 
 template<typename Vertex>
 bool
-IsTransparent(const std::vector<Vertex>& vertices)
+IsTransparent(const std::vector<Vertex>& vertices,
+              const ResourceGroupID& resource)
 {
+  if (ResourceGroupHelper::HasOpacityFactor(resource)) {
+    return true;
+  }
+
   for (const Vertex& v : vertices) {
     if (IsTransparent(v)) {
       return true;
@@ -191,9 +203,9 @@ Chimia::Draw3D::Triangle(const VertexPC& v1,
                          const VertexPC& v3,
                          const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(v1, v2, v3);
-  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
+  const bool isTransparent = IsTransparent(v1, v2, v3, resource);
 
+  GenericRenderer* renderer = GetColor4Renderer(isTransparent);
   renderer->DrawTriangle({ { &v1.position, POS3_SIZE },
                            { &v1.color, COLOR4_SIZE },
                            { &v2.position, POS3_SIZE },
@@ -209,7 +221,8 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPC>& vertices,
                           const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(vertices);
+  const bool isTransparent = IsTransparent(vertices, resource);
+
   GenericRenderer* renderer = GetColor4Renderer(isTransparent);
 
   renderer->DrawTriangles(VectorArrayView(vertices), resource);
@@ -232,7 +245,7 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPC>& vertices,
                                      const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(vertices);
+  const bool isTransparent = IsTransparent(vertices, resource);
   GenericRenderer* renderer = GetColor4Renderer(isTransparent);
 
   return renderer->AddRetainedTriangles(VectorDataView(vertices), resource);
@@ -310,6 +323,9 @@ Chimia::Draw3D::Triangle(const VertexPN& v1,
                          const VertexPN& v3,
                          const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasMaterial(resource) &&
+         "No material provided for PN triangle");
+
   normal3Renderer->DrawTriangle(
     {
       { &v1.position, POS3_SIZE },
@@ -328,6 +344,9 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPN>& vertices,
                           const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasMaterial(resource) &&
+         "No material provided for PN triangle");
+
   normal3Renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
@@ -348,6 +367,9 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPN>& vertices,
                                      const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasMaterial(resource) &&
+         "No material provided for PN triangle");
+
   return normal3Renderer->AddRetainedTriangles(VectorDataView(vertices),
                                                resource);
 }
@@ -424,6 +446,9 @@ Chimia::Draw3D::Triangle(const VertexPT& v1,
                          const VertexPT& v3,
                          const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PT triangle");
+
   texCoord2Renderer->DrawTriangle(
     {
       { &v1.position, POS3_SIZE },
@@ -442,6 +467,9 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPT>& vertices,
                           const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PT triangle");
+
   texCoord2Renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
@@ -462,6 +490,9 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPT>& vertices,
                                      const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PT triangle");
+
   return texCoord2Renderer->AddRetainedTriangles(VectorDataView(vertices),
                                                  resource);
 }
@@ -650,6 +681,9 @@ Chimia::Draw3D::Triangle(const VertexPNT& v1,
                          const VertexPNT& v3,
                          const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PNT triangle");
+
   normal3TexCoord2Renderer->DrawTriangle(
     {
       { &v1.position, POS3_SIZE },
@@ -671,6 +705,9 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPNT>& vertices,
                           const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PNT triangle");
+
   normal3TexCoord2Renderer->DrawTriangles(VectorArrayView(vertices), resource);
 }
 
@@ -691,6 +728,9 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPNT>& vertices,
                                      const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PNT triangle");
+
   return normal3TexCoord2Renderer->AddRetainedTriangles(
     VectorDataView(vertices), resource);
 }
@@ -767,7 +807,10 @@ Chimia::Draw3D::Triangle(const VertexPCT& v1,
                          const VertexPCT& v3,
                          const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(v1, v2, v3);
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCT triangle");
+
+  const bool isTransparent = IsTransparent(v1, v2, v3, resource);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
 
   renderer->DrawTriangle({ { &v1.position, POS3_SIZE },
@@ -788,7 +831,10 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCT>& vertices,
                           const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(vertices);
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCT triangle");
+
+  const bool isTransparent = IsTransparent(vertices, resource);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
 
   renderer->DrawTriangles(VectorArrayView(vertices), resource);
@@ -811,7 +857,10 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCT>& vertices,
                                      const ResourceGroupID& resource)
 {
-  const bool isTransparent = IsTransparent(vertices);
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCT triangle");
+
+  const bool isTransparent = IsTransparent(vertices, resource);
   GenericRenderer* renderer = GetColor4TexCoord2Renderer(isTransparent);
 
   return renderer->AddRetainedTriangles(VectorDataView(vertices), resource);
@@ -889,6 +938,9 @@ Chimia::Draw3D::Triangle(const VertexPCNT& v1,
                          const VertexPCNT& v3,
                          const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCNT triangle");
+
   color4Normal3TexCoord2Renderer->DrawTriangle(
     {
       { &v1.position, POS3_SIZE },
@@ -913,6 +965,9 @@ void
 Chimia::Draw3D::Triangles(const std::vector<VertexPCNT>& vertices,
                           const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCNT triangle");
+
   color4Normal3TexCoord2Renderer->DrawTriangles(VectorArrayView(vertices),
                                                 resource);
 }
@@ -935,6 +990,9 @@ TriangleMeshID
 Chimia::Draw3D::AddRetainedTriangles(const std::vector<VertexPCNT>& vertices,
                                      const ResourceGroupID& resource)
 {
+  assert(ResourceGroupHelper::HasTexture(resource) &&
+         "No texture provided for PCNT triangle");
+
   return color4Normal3TexCoord2Renderer->AddRetainedTriangles(
     VectorDataView(vertices), resource);
 }

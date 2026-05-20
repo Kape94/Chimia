@@ -4,7 +4,6 @@
 #include "GenericRenderer.h"
 #include "ModelRenderingPrivate.h"
 #include "Renderers.h"
-#include "ResourceGroup.h"
 #include "ResourceGroupHelper.h"
 #include "ResourcesManager.h"
 #include "Types.h"
@@ -214,10 +213,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::DrawModel(const ModelID& modelID,
                                         const glm::mat4x4& transform,
                                         const ResourceGroupID& resource)
 {
-  const ResourcesGroup* group =
-    ResourcesManager::GetInstance().GetResourcesGroup(resource);
-  const bool hasTexture = group != nullptr && group->HasTextures();
-  const bool hasMaterial = group != nullptr && group->HasMaterials();
+  const bool hasTexture = ResourceGroupHelper::HasTexture(resource);
+  const bool hasMaterial = ResourceGroupHelper::HasMaterial(resource);
 
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {
@@ -274,10 +271,8 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddRetainedModel(const ModelID& modelID,
                                                const glm::mat4x4& transform,
                                                const ResourceGroupID& resource)
 {
-  const ResourcesGroup* group =
-    ResourcesManager::GetInstance().GetResourcesGroup(resource);
-  const bool hasTexture = group != nullptr && group->HasTextures();
-  const bool hasMaterial = group != nullptr && group->HasMaterials();
+  const bool hasTexture = ResourceGroupHelper::HasTexture(resource);
+  const bool hasMaterial = ResourceGroupHelper::HasMaterial(resource);
 
   const eVertexLayout layout = ModelLayout(modelID);
   switch (layout) {

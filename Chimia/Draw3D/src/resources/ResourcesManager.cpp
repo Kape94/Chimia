@@ -92,6 +92,27 @@ ResourcesManager::GetTexture(const TextureID& textureID)
 
 // ----------------------------------------------------------------------------
 
+OpacityFactorID
+ResourcesManager::CreateOpacityFactor(const float value)
+{
+  auto [id, newFactor] = m_opacityFactors.Insert();
+  *newFactor = value;
+
+  return Draw3DPrivate::CreateOpacityFactorID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+const float*
+ResourcesManager::GetOpacityFactor(const OpacityFactorID& opacityFactorID)
+{
+  const unsigned idValue =
+    Draw3DPrivate::GetOpacityFactorIDValue(opacityFactorID);
+  return m_opacityFactors.Find(idValue);
+}
+
+// ----------------------------------------------------------------------------
+
 ResourceGroupID
 ResourcesManager::CreateResourceGroup()
 {

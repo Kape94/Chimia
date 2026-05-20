@@ -42,6 +42,15 @@ ResourcesGroup::AddResource(const std::string& tag, const TextureID& texture)
 
 // ----------------------------------------------------------------------------
 
+void
+ResourcesGroup::AddResource(const std::string& tag,
+                            const OpacityFactorID& opacityFactor)
+{
+  m_opacityFactors.push_back({ tag, opacityFactor });
+}
+
+// ----------------------------------------------------------------------------
+
 bool
 ResourcesGroup::HasMaterials() const
 {
@@ -54,6 +63,14 @@ bool
 ResourcesGroup::HasTextures() const
 {
   return !m_textures.empty();
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ResourcesGroup::HasOpacityFactor() const
+{
+  return !m_opacityFactors.empty();
 }
 
 // ----------------------------------------------------------------------------
@@ -88,6 +105,23 @@ TextureID
 ResourcesGroup::FirstTexture() const
 {
   return m_textures.front().resource;
+}
+
+// ----------------------------------------------------------------------------
+
+OpacityFactorID
+ResourcesGroup::FindOpacityFactor(const std::string& tag) const
+{
+  const OpacityFactorID defaultValue = Draw3DPrivate::CreateOpacityFactorID(0);
+  return FindByTag(m_opacityFactors, tag, defaultValue);
+}
+
+// ----------------------------------------------------------------------------
+
+OpacityFactorID
+ResourcesGroup::FirstOpacityFactor() const
+{
+  return m_opacityFactors.front().resource;
 }
 
 // ----------------------------------------------------------------------------

@@ -125,6 +125,22 @@ private:
 
 // ----------------------------------------------------------------------------
 
+class OpacityFactorID
+{
+private:
+  friend class Draw3DPrivate;
+
+  OpacityFactorID() = delete;
+  OpacityFactorID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 class ResourceGroupID
 {
 private:

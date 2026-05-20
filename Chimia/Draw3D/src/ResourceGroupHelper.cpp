@@ -2,6 +2,7 @@
 
 #include "Draw3DPrivate.h"
 #include "ObjectTable.h"
+#include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Types.h"
 
@@ -19,6 +20,13 @@ const ResourceGroupID EMPTY_RESOURCE =
   ResourcesManager::GetInstance().CreateResourceGroup();
 
 static auto& resources = ResourcesManager::GetInstance();
+
+const ResourcesGroup*
+GetResourcesGroup(const ResourceGroupID& resourceID)
+{
+  return ResourceGroupHelperInternal::resources.GetResourcesGroup(resourceID);
+}
+
 }
 
 // ----------------------------------------------------------------------------
@@ -93,6 +101,36 @@ ResourceGroupHelper::GetResourceGroup(const MaterialID& material)
   *newGroupIDValue = Draw3DPrivate::GetResourceGroupIDValue(newGroup);
 
   return newGroup;
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ResourceGroupHelper::HasMaterial(const ResourceGroupID& resource)
+{
+  const ResourcesGroup* group =
+    ResourceGroupHelperInternal::GetResourcesGroup(resource);
+  return group != nullptr && group->HasMaterials();
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ResourceGroupHelper::HasTexture(const ResourceGroupID& resource)
+{
+  const ResourcesGroup* group =
+    ResourceGroupHelperInternal::GetResourcesGroup(resource);
+  return group != nullptr && group->HasTextures();
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ResourceGroupHelper::HasOpacityFactor(const ResourceGroupID& resource)
+{
+  const ResourcesGroup* group =
+    ResourceGroupHelperInternal::GetResourcesGroup(resource);
+  return group != nullptr && group->HasOpacityFactor();
 }
 
 // ----------------------------------------------------------------------------

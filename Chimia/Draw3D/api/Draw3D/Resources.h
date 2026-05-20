@@ -26,6 +26,9 @@ CreateTexture(const unsigned char* textureData,
               const unsigned width,
               const unsigned height);
 
+OpacityFactorID
+CreateOpacityFactor(const float value);
+
 // ----------------------------------------------------------------------------
 
 END_CHIMIA_DRAW3D_NAMESPACE

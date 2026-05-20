@@ -41,3 +41,12 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::CreateTexture(const unsigned char* textureData,
 }
 
 // ----------------------------------------------------------------------------
+
+OpacityFactorID
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateOpacityFactor(const float value)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  return manager.CreateOpacityFactor(value);
+}
+
+// ----------------------------------------------------------------------------

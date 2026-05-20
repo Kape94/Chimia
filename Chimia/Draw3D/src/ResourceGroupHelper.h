@@ -27,6 +27,13 @@ WrapMaterial(const MaterialID& material);
 ResourceGroupID
 GetResourceGroup(const MaterialID& material);
 
+bool
+HasMaterial(const ResourceGroupID& resource);
+bool
+HasTexture(const ResourceGroupID& resource);
+bool
+HasOpacityFactor(const ResourceGroupID& resource);
+
 }
 
 // ----------------------------------------------------------------------------
