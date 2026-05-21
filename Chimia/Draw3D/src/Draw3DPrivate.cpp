@@ -135,6 +135,22 @@ Draw3DPrivate::GetOpacityFactorIDValue(const OpacityFactorID& opacityID)
 
 // ----------------------------------------------------------------------------
 
+MixtureColorID
+Draw3DPrivate::CreateMixtureColorID(unsigned id)
+{
+  return MixtureColorID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+Draw3DPrivate::GetMixtureColorIDValue(const MixtureColorID& colorID)
+{
+  return colorID.m_id;
+}
+
+// ----------------------------------------------------------------------------
+
 ResourceGroupID
 Draw3DPrivate::CreateResourceGroupID(unsigned id)
 {

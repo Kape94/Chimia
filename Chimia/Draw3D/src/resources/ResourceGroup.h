@@ -26,10 +26,12 @@ public:
   void AddResource(const std::string& tag, const TextureID& texture);
   void AddResource(const std::string& tag,
                    const OpacityFactorID& opacityFactor);
+  void AddResource(const std::string& tag, const MixtureColorID& mixtureColor);
 
   bool HasMaterials() const;
   bool HasTextures() const;
   bool HasOpacityFactor() const;
+  bool HasMixtureColor() const;
 
   MaterialID FindMaterial(const std::string& tag) const;
   MaterialID FirstMaterial() const;
@@ -39,6 +41,9 @@ public:
 
   OpacityFactorID FindOpacityFactor(const std::string& tag) const;
   OpacityFactorID FirstOpacityFactor() const;
+
+  MixtureColorID FindMixtureColor(const std::string& tag) const;
+  MixtureColorID FirstMixtureColor() const;
 
 private:
   template<typename ResourceType>
@@ -51,6 +56,7 @@ private:
   std::vector<TaggedResource<MaterialID>> m_materials;
   std::vector<TaggedResource<TextureID>> m_textures;
   std::vector<TaggedResource<OpacityFactorID>> m_opacityFactors;
+  std::vector<TaggedResource<MixtureColorID>> m_mixtureColors;
 };
 
 // ----------------------------------------------------------------------------

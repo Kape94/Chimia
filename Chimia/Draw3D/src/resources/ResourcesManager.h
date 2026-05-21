@@ -48,6 +48,13 @@ public:
   void UpdateOpacityFactor(const OpacityFactorID& opacityID,
                            const float newValue);
 
+  MixtureColorID CreateMixtureColor(const glm::vec3& color);
+
+  const glm::vec3* GetMixtureColor(const MixtureColorID& colorID);
+
+  void UpdateMixtureColor(const MixtureColorID& colorID,
+                          const glm::vec3& newColor);
+
   ResourceGroupID CreateResourceGroup();
 
   void AddResourceToGroup(const std::string& tag,
@@ -58,6 +65,9 @@ public:
                           const ResourceGroupID& group);
   void AddResourceToGroup(const std::string& tag,
                           const OpacityFactorID& opacityFactor,
+                          const ResourceGroupID& group);
+  void AddResourceToGroup(const std::string& tag,
+                          const MixtureColorID& mixtureColor,
                           const ResourceGroupID& group);
 
   const ResourcesGroup* GetResourcesGroup(const ResourceGroupID& groupID);
@@ -73,6 +83,8 @@ private:
   ObjectTable<Rendering::Texture2D> m_texturesTable;
 
   ObjectTable<float> m_opacityFactors;
+
+  ObjectTable<glm::vec3> m_mixtureColors;
 
   ObjectTable<ResourcesGroup> m_resourceGroups;
 };

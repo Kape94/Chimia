@@ -61,6 +61,24 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::UpdateOpacityFactor(
 
 // ----------------------------------------------------------------------------
 
+MixtureColorID
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateMixtureColor(const glm::vec3& color)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  return manager.CreateMixtureColor(color);
+}
+
+// -------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::UpdateMixtureColor(const MixtureColorID& colorID,
+                                                 const glm::vec3& newColor)
+{
+  ResourcesManager::GetInstance().UpdateMixtureColor(colorID, newColor);
+}
+
+// ----------------------------------------------------------------------------
+
 ResourceGroupID
 CHIMIA_DRAW3D_NAMESPACE_NAME::CreateResourceGroup()
 {
@@ -97,6 +115,17 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::AddResourceToGroup(
 {
   auto& manager = ResourcesManager::GetInstance();
   manager.AddResourceToGroup("any", opacityFactor, group);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::AddResourceToGroup(
+  const MixtureColorID& mixtureColor,
+  const ResourceGroupID& group)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  manager.AddResourceToGroup("any", mixtureColor, group);
 }
 
 // ----------------------------------------------------------------------------

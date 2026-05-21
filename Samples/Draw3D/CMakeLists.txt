@@ -166,3 +166,6 @@ target_link_libraries(Samples_Draw3D_ex22 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex23 ex23-opacityFactor.cpp)
 target_link_libraries(Samples_Draw3D_ex23 PRIVATE Samples_Draw3D_Dependencies)
+
+add_executable(Samples_Draw3D_ex24 ex24-mixtureColor.cpp)
+target_link_libraries(Samples_Draw3D_ex24 PRIVATE Samples_Draw3D_Dependencies)

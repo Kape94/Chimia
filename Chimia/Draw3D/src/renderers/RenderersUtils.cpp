@@ -1,10 +1,12 @@
 #include "RenderersUtils.h"
 
 #include "Config.h"
+#include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Types.h"
 
 #include "Core/Diagnostics.h"
+#include "Rendering/Shader.h"
 #include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
@@ -97,6 +99,22 @@ ConfigureOpacity(Rendering::Shader& shader,
 }
 
 void
+ConfigureMixtureColor(Rendering::Shader& shader,
+                      const ResourcesGroup& resources)
+{
+  if (resources.HasMixtureColor()) {
+    const MixtureColorID colorID = resources.FirstMixtureColor();
+    const glm::vec3* color =
+      ResourcesManager::GetInstance().GetMixtureColor(colorID);
+
+    shader.SetUniform("mixtureColor", *color);
+
+  } else {
+    shader.SetUniform("mixtureColor", glm::vec3(1.0f, 1.0f, 1.0f));
+  }
+}
+
+void
 ConfigureShaderForRendering(Rendering::Shader& shader,
                             const eVertexLayout& layout,
                             const bool isInstancedRendering,
@@ -113,6 +131,7 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
   shader.SetUniform("lightningModel", illuminationModel);
 
   ConfigureOpacity(shader, layout, resources);
+  ConfigureMixtureColor(shader, resources);
 }
 }
 

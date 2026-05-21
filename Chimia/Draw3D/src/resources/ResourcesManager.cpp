@@ -124,6 +124,37 @@ ResourcesManager::UpdateOpacityFactor(const OpacityFactorID& opacityID,
 
 // ----------------------------------------------------------------------------
 
+MixtureColorID
+ResourcesManager::CreateMixtureColor(const glm::vec3& color)
+{
+  auto [id, newColor] = m_mixtureColors.Insert();
+  *newColor = color;
+
+  return Draw3DPrivate::CreateMixtureColorID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+const glm::vec3*
+ResourcesManager::GetMixtureColor(const MixtureColorID& colorID)
+{
+  const int id = Draw3DPrivate::GetMixtureColorIDValue(colorID);
+  return m_mixtureColors.Find(id);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ResourcesManager::UpdateMixtureColor(const MixtureColorID& colorID,
+                                     const glm::vec3& newColor)
+{
+  if (auto color = const_cast<glm::vec3*>(GetMixtureColor(colorID))) {
+    *color = newColor;
+  }
+}
+
+// ----------------------------------------------------------------------------
+
 ResourceGroupID
 ResourcesManager::CreateResourceGroup()
 {
@@ -177,6 +208,22 @@ ResourcesManager::AddResourceToGroup(const std::string& tag,
   }
 
   groupInstance->AddResource(tag, opacityFactor);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ResourcesManager::AddResourceToGroup(const std::string& tag,
+                                     const MixtureColorID& mixtureColor,
+                                     const ResourceGroupID& group)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(group);
+  ResourcesGroup* groupInstance = m_resourceGroups.Find(idValue);
+  if (groupInstance == nullptr) {
+    Chimia::Diagnostics::Error(1, "Didn't find group instance");
+  }
+
+  groupInstance->AddResource(tag, mixtureColor);
 }
 
 // ----------------------------------------------------------------------------

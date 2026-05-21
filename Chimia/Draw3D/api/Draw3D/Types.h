@@ -141,6 +141,22 @@ private:
 
 // ----------------------------------------------------------------------------
 
+class MixtureColorID
+{
+private:
+  friend class Draw3DPrivate;
+
+  MixtureColorID() = delete;
+  MixtureColorID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 class ResourceGroupID
 {
 private:

@@ -34,6 +34,7 @@ inline const char* generic = R"(
 
       uniform int lightningModel;
       uniform float opacity;
+      uniform vec3 mixtureColor;
 
       in vec3 fragmentPos;
       in vec4 fragmentColor;
@@ -109,6 +110,7 @@ inline const char* generic = R"(
           outputColor = color * vec4(1.0, 1.0, 1.0, opacity);
         }
         
+        outputColor *= vec4(mixtureColor, 1.0);
         @embed(OUTPUT_OVERRIDERS)
       }
     )";

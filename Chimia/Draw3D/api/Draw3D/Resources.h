@@ -32,6 +32,12 @@ CreateOpacityFactor(const float value);
 void
 UpdateOpacityFactor(const OpacityFactorID& opacityID, const float newValue);
 
+MixtureColorID
+CreateMixtureColor(const glm::vec3& color);
+
+void
+UpdateMixtureColor(const MixtureColorID& colorID, const glm::vec3& newColor);
+
 ResourceGroupID
 CreateResourceGroup();
 
@@ -43,6 +49,10 @@ AddResourceToGroup(const TextureID& texture, const ResourceGroupID& group);
 
 void
 AddResourceToGroup(const OpacityFactorID& opacityFactor,
+                   const ResourceGroupID& group);
+
+void
+AddResourceToGroup(const MixtureColorID& mixtureColor,
                    const ResourceGroupID& group);
 
 // ----------------------------------------------------------------------------

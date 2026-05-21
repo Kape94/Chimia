@@ -51,6 +51,15 @@ ResourcesGroup::AddResource(const std::string& tag,
 
 // ----------------------------------------------------------------------------
 
+void
+ResourcesGroup::AddResource(const std::string& tag,
+                            const MixtureColorID& colorID)
+{
+  m_mixtureColors.push_back({ tag, colorID });
+}
+
+// ----------------------------------------------------------------------------
+
 bool
 ResourcesGroup::HasMaterials() const
 {
@@ -71,6 +80,14 @@ bool
 ResourcesGroup::HasOpacityFactor() const
 {
   return !m_opacityFactors.empty();
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+ResourcesGroup::HasMixtureColor() const
+{
+  return !m_mixtureColors.empty();
 }
 
 // ----------------------------------------------------------------------------
@@ -122,6 +139,23 @@ OpacityFactorID
 ResourcesGroup::FirstOpacityFactor() const
 {
   return m_opacityFactors.front().resource;
+}
+
+// ----------------------------------------------------------------------------
+
+MixtureColorID
+ResourcesGroup::FindMixtureColor(const std::string& tag) const
+{
+  const MixtureColorID defaultValue = Draw3DPrivate::CreateMixtureColorID(0);
+  return FindByTag(m_mixtureColors, tag, defaultValue);
+}
+
+// ----------------------------------------------------------------------------
+
+MixtureColorID
+ResourcesGroup::FirstMixtureColor() const
+{
+  return m_mixtureColors.front().resource;
 }
 
 // ----------------------------------------------------------------------------

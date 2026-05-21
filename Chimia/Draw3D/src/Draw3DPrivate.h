@@ -55,6 +55,10 @@ public:
   static OpacityFactorID CreateOpacityFactorID(unsigned id);
   static unsigned GetOpacityFactorIDValue(const OpacityFactorID& opacityID);
 
+  // MixtureColorID
+  static MixtureColorID CreateMixtureColorID(unsigned id);
+  static unsigned GetMixtureColorIDValue(const MixtureColorID& colorID);
+
   // ResourceGroupID
   static ResourceGroupID CreateResourceGroupID(unsigned id);
   static unsigned GetResourceGroupIDValue(const ResourceGroupID& textureID);
