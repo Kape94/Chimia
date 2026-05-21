@@ -45,6 +45,9 @@ public:
 
   const float* GetOpacityFactor(const OpacityFactorID& opacityFactorID);
 
+  void UpdateOpacityFactor(const OpacityFactorID& opacityID,
+                           const float newValue);
+
   ResourceGroupID CreateResourceGroup();
 
   void AddResourceToGroup(const std::string& tag,

@@ -29,6 +29,9 @@ CreateTexture(const unsigned char* textureData,
 OpacityFactorID
 CreateOpacityFactor(const float value);
 
+void
+UpdateOpacityFactor(const OpacityFactorID& opacityID, const float newValue);
+
 ResourceGroupID
 CreateResourceGroup();
 

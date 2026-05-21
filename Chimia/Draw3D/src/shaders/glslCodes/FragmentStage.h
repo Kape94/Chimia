@@ -33,6 +33,7 @@ inline const char* generic = R"(
       uniform bool hasTexture;
 
       uniform int lightningModel;
+      uniform float opacity;
 
       in vec3 fragmentPos;
       in vec4 fragmentColor;
@@ -105,7 +106,7 @@ inline const char* generic = R"(
         }
         else 
         {
-          outputColor = color;
+          outputColor = color * vec4(1.0, 1.0, 1.0, opacity);
         }
         
         @embed(OUTPUT_OVERRIDERS)

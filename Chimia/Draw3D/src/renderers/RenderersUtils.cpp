@@ -1,6 +1,7 @@
 #include "RenderersUtils.h"
 
 #include "Config.h"
+#include "ResourcesManager.h"
 #include "Types.h"
 
 #include "Core/Diagnostics.h"
@@ -78,6 +79,24 @@ HasTexCoord(const eVertexLayout& layout)
 }
 
 void
+ConfigureOpacity(Rendering::Shader& shader,
+                 const eVertexLayout& layout,
+                 const ResourcesGroup& resources)
+{
+  const bool allowsOpacity = !HasNormal(layout) && resources.HasOpacityFactor();
+
+  if (allowsOpacity) {
+    const OpacityFactorID opacityID = resources.FirstOpacityFactor();
+    const float* opacity =
+      ResourcesManager::GetInstance().GetOpacityFactor(opacityID);
+
+    shader.SetUniform("opacity", *opacity);
+  } else {
+    shader.SetUniform("opacity", 1.0f);
+  }
+}
+
+void
 ConfigureShaderForRendering(Rendering::Shader& shader,
                             const eVertexLayout& layout,
                             const bool isInstancedRendering,
@@ -92,6 +111,8 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
 
   const int illuminationModel = static_cast<int>(Config::IlluminationModel());
   shader.SetUniform("lightningModel", illuminationModel);
+
+  ConfigureOpacity(shader, layout, resources);
 }
 }
 

@@ -49,6 +49,16 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::CreateOpacityFactor(const float value)
   return manager.CreateOpacityFactor(value);
 }
 
+// -------------------------------------------------------------------------
+
+void
+CHIMIA_DRAW3D_NAMESPACE_NAME::UpdateOpacityFactor(
+  const OpacityFactorID& opacityID,
+  const float newValue)
+{
+  ResourcesManager::GetInstance().UpdateOpacityFactor(opacityID, newValue);
+}
+
 // ----------------------------------------------------------------------------
 
 ResourceGroupID

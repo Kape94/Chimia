@@ -113,6 +113,17 @@ ResourcesManager::GetOpacityFactor(const OpacityFactorID& opacityFactorID)
 
 // ----------------------------------------------------------------------------
 
+void
+ResourcesManager::UpdateOpacityFactor(const OpacityFactorID& opacityID,
+                                      const float newValue)
+{
+  if (float* opacityValue = const_cast<float*>(GetOpacityFactor(opacityID))) {
+    *opacityValue = newValue;
+  }
+}
+
+// ----------------------------------------------------------------------------
+
 ResourceGroupID
 ResourcesManager::CreateResourceGroup()
 {
