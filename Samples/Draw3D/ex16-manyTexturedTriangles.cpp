@@ -5,9 +5,6 @@
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "Utils/stb_image.h"
-
 // ----------------------------------------------------------------------------
 
 constexpr unsigned NUM_TRIANGLES = 2000;
@@ -121,12 +118,12 @@ CreateTextureFromImage(const std::string& imagePath)
 {
   int width, height, _nChannels;
   unsigned char* texData =
-    stbi_load(imagePath.c_str(), &width, &height, &_nChannels, 0);
+    SamplesUtils::ReadImage(imagePath.c_str(), width, height, _nChannels);
 
   const Chimia::Draw3D::TextureID texture =
     Chimia::Draw3D::CreateTexture(texData, width, height);
 
-  stbi_image_free(texData);
+  SamplesUtils::FreeImageData(texData);
 
   return texture;
 }

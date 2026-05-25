@@ -51,3 +51,14 @@ Window::PollEvents()
 }
 
 //---------------------------------------------------------------------------------------
+
+std::pair<int, int>
+Window::GetFramebufferSize() const
+{
+  int width, height;
+  glfwGetFramebufferSize(window, &width, &height);
+
+  return { width, height };
+}
+
+//---------------------------------------------------------------------------------------

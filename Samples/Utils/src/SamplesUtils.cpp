@@ -1,5 +1,13 @@
 #include "SamplesUtils.h"
 
+#include "OpenGLHelpers.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
@@ -230,6 +238,41 @@ void
 SamplesUtils::PollSingleDeferredAction()
 {
   FunctionQueue::PollSingleFromQueue();
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::SaveScreenshot(const Window& window, const std::string& imagePath)
+{
+  const auto [width, height] = window.GetFramebufferSize();
+  const int nComp = 3;
+
+  std::vector<GLubyte> pixels(width * height * nComp);
+
+  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+
+  stbi_flip_vertically_on_write(true);
+  stbi_write_bmp(imagePath.c_str(), width, height, nComp, pixels.data());
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned char*
+SamplesUtils::ReadImage(const std::string& imagePath,
+                        int& width,
+                        int& height,
+                        int& nChannels)
+{
+  return stbi_load(imagePath.c_str(), &width, &height, &nChannels, 0);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::FreeImageData(unsigned char* imageData)
+{
+  stbi_image_free(imageData);
 }
 
 // ----------------------------------------------------------------------------

@@ -8,10 +8,6 @@
 #include "Draw3D/Types.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
-#include <imgui.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "Utils/stb_image.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -65,12 +61,12 @@ CreateTextureFromImage(const std::string& imagePath)
 {
   int width, height, _nChannels;
   unsigned char* texData =
-    stbi_load(imagePath.c_str(), &width, &height, &_nChannels, 0);
+    SamplesUtils::ReadImage(imagePath.c_str(), width, height, _nChannels);
 
   const Chimia::Draw3D::TextureID texture =
     Chimia::Draw3D::CreateTexture(texData, width, height);
 
-  stbi_image_free(texData);
+  SamplesUtils::FreeImageData(texData);
 
   return texture;
 }

@@ -9,9 +9,6 @@
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "Utils/stb_image.h"
-
 namespace Inputs {
 
 constexpr unsigned SCR_WIDTH = 800;
@@ -142,11 +139,11 @@ main(int argc, char** argv)
     SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   unsigned char* texData =
-    stbi_load(solarFlareAsset.c_str(), &width, &height, &nChannels, 0);
+    SamplesUtils::ReadImage(solarFlareAsset.c_str(), width, height, nChannels);
 
   Chimia::Rendering::Texture2D texture(texData, width, height);
 
-  stbi_image_free(texData);
+  SamplesUtils::FreeImageData(texData);
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;

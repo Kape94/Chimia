@@ -12,6 +12,11 @@ target_link_libraries(${TARGET_NAME}
 )
 
 target_include_directories(${TARGET_NAME}
+    SYSTEM PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/api/Utils/stb_image
+)
+
+target_include_directories(${TARGET_NAME}
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/api
     PRIVATE

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Window.h"
+
 #include <functional>
 #include <string>
 
@@ -32,4 +34,17 @@ PollDeferredActions();
 
 void
 PollSingleDeferredAction();
+
+void
+SaveScreenshot(const Window& window, const std::string& imagePath);
+
+unsigned char*
+ReadImage(const std::string& imagePath,
+          int& width,
+          int& height,
+          int& nChannels);
+
+void
+FreeImageData(unsigned char* imageData);
+
 }

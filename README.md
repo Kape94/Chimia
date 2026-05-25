@@ -8,6 +8,10 @@
 - [Graphics] Fog;
 - [Graphics] Morph target animation;
   - [Rendering] VAO with multi buffer shader bindings;
+- [General] Testing tooling
+  - [Rendering] Saving current viewport to an image;
+  - [Core] Printing things to a log;
+  - [Utils] Comparing images + Comparing text files; 
 - [Core] Create class for representing a model/mesh;
 - [Graphics] Post processing effects: HDR, bloom, anti aliasing;
 - [Graphics] Texture filtering; 

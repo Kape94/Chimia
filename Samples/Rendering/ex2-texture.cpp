@@ -9,9 +9,6 @@
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "Utils/stb_image.h"
-
 namespace Inputs {
 
 namespace ShaderCodes {
@@ -88,20 +85,21 @@ main(int argc, char** argv)
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   unsigned char* texData =
-    stbi_load(blueLightAsset.c_str(), &width, &height, &nChannels, 0);
+    SamplesUtils::ReadImage(blueLightAsset.c_str(), width, height, nChannels);
 
   Chimia::Rendering::Texture2D texture;
   texture.Create(texData, width, height);
 
-  stbi_image_free(texData);
+  SamplesUtils::FreeImageData(texData);
 
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
-  texData = stbi_load(solarFlareAsset.c_str(), &width, &height, &nChannels, 0);
+  texData =
+    SamplesUtils::ReadImage(solarFlareAsset.c_str(), width, height, nChannels);
 
   Chimia::Rendering::Texture2D texture2;
   texture2.Create(texData, width, height);
 
-  stbi_image_free(texData);
+  SamplesUtils::FreeImageData(texData);
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 class GLFWwindow;
 
 //---------------------------------------------------------------------------------------
@@ -16,6 +18,8 @@ public:
   void Swap();
 
   void PollEvents();
+
+  std::pair<int, int> GetFramebufferSize() const;
 
 private:
   GLFWwindow* window = nullptr;
