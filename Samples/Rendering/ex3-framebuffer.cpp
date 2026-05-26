@@ -138,10 +138,11 @@ main(int argc, char** argv)
   const std::string assetsDir =
     SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
-  unsigned char* texData =
-    SamplesUtils::ReadImage(solarFlareAsset.c_str(), width, height, nChannels);
+  SamplesUtils::Image texData =
+    SamplesUtils::ReadImage(solarFlareAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture(texData, width, height);
+  Chimia::Rendering::Texture2D texture(
+    texData.data, texData.width, texData.height);
 
   SamplesUtils::FreeImageData(texData);
 

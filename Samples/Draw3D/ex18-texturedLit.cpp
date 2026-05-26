@@ -113,12 +113,10 @@ DrawLight(const glm::vec3& lightPos, const glm::vec4& lightColor)
 Chimia::Draw3D::TextureID
 CreateTextureFromImage(const std::string& imagePath)
 {
-  int width, height, _nChannels;
-  unsigned char* texData =
-    SamplesUtils::ReadImage(imagePath.c_str(), width, height, _nChannels);
+  SamplesUtils::Image texData = SamplesUtils::ReadImage(imagePath.c_str());
 
   const Chimia::Draw3D::TextureID texture =
-    Chimia::Draw3D::CreateTexture(texData, width, height);
+    Chimia::Draw3D::CreateTexture(texData.data, texData.width, texData.height);
 
   SamplesUtils::FreeImageData(texData);
 

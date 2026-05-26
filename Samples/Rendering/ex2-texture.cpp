@@ -84,20 +84,18 @@ main(int argc, char** argv)
   int width, height, nChannels;
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
-  unsigned char* texData =
-    SamplesUtils::ReadImage(blueLightAsset.c_str(), width, height, nChannels);
+  SamplesUtils::Image texData = SamplesUtils::ReadImage(blueLightAsset.c_str());
 
   Chimia::Rendering::Texture2D texture;
-  texture.Create(texData, width, height);
+  texture.Create(texData.data, texData.width, texData.height);
 
   SamplesUtils::FreeImageData(texData);
 
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
-  texData =
-    SamplesUtils::ReadImage(solarFlareAsset.c_str(), width, height, nChannels);
+  texData = SamplesUtils::ReadImage(solarFlareAsset.c_str());
 
   Chimia::Rendering::Texture2D texture2;
-  texture2.Create(texData, width, height);
+  texture2.Create(texData.data, texData.width, texData.height);
 
   SamplesUtils::FreeImageData(texData);
 

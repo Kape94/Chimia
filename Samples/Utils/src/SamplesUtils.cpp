@@ -258,21 +258,23 @@ SamplesUtils::SaveScreenshot(const Window& window, const std::string& imagePath)
 
 // ----------------------------------------------------------------------------
 
-unsigned char*
-SamplesUtils::ReadImage(const std::string& imagePath,
-                        int& width,
-                        int& height,
-                        int& nChannels)
+SamplesUtils::Image
+SamplesUtils::ReadImage(const std::string& imagePath)
 {
-  return stbi_load(imagePath.c_str(), &width, &height, &nChannels, 0);
+  int width = 0, height = 0, nChannels = 0;
+
+  unsigned char* data =
+    stbi_load(imagePath.c_str(), &width, &height, &nChannels, 0);
+
+  return Image{ data, width, height, nChannels };
 }
 
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::FreeImageData(unsigned char* imageData)
+SamplesUtils::FreeImageData(SamplesUtils::Image& image)
 {
-  stbi_image_free(imageData);
+  stbi_image_free(image.data);
 }
 
 // ----------------------------------------------------------------------------

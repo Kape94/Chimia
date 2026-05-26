@@ -35,16 +35,21 @@ PollDeferredActions();
 void
 PollSingleDeferredAction();
 
+struct Image
+{
+  unsigned char* data = nullptr;
+  int width = 0;
+  int height = 0;
+  int nChannels = 0;
+};
+
 void
 SaveScreenshot(const Window& window, const std::string& imagePath);
 
-unsigned char*
-ReadImage(const std::string& imagePath,
-          int& width,
-          int& height,
-          int& nChannels);
+Image
+ReadImage(const std::string& imagePath);
 
 void
-FreeImageData(unsigned char* imageData);
+FreeImageData(Image& image);
 
 }

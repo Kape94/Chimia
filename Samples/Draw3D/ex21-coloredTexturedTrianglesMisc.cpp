@@ -42,12 +42,10 @@ const glm::mat4x4 transform2{ 0.2f, 0.0f, 0.0f, 0.0f,
 Chimia::Draw3D::TextureID
 CreateTextureFromImage(const std::string& imagePath)
 {
-  int width, height, _nChannels;
-  unsigned char* texData =
-    SamplesUtils::ReadImage(imagePath.c_str(), width, height, _nChannels);
+  SamplesUtils::Image texData = SamplesUtils::ReadImage(imagePath.c_str());
 
   const Chimia::Draw3D::TextureID texture =
-    Chimia::Draw3D::CreateTexture(texData, width, height);
+    Chimia::Draw3D::CreateTexture(texData.data, texData.width, texData.height);
 
   SamplesUtils::FreeImageData(texData);
 
