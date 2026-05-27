@@ -2,13 +2,13 @@
 
 // ----------------------------------------------------------------------------
 
-#include "ImporterNamespaceDefs.h"
+#include "MediaNamespaceDefs.h"
 
 #include <vector>
 
 // ----------------------------------------------------------------------------
 
-BEGIN_CHIMIA_IMPORTER_NAMESPACE
+BEGIN_CHIMIA_MEDIA_NAMESPACE
 
 struct Vector2f
 {
@@ -53,6 +53,6 @@ struct BufferData
   std::vector<unsigned> indices;
 };
 
-END_CHIMIA_IMPORTER_NAMESPACE
+END_CHIMIA_MEDIA_NAMESPACE
 
 // ----------------------------------------------------------------------------

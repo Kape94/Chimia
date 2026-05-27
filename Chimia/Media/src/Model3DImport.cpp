@@ -1,5 +1,5 @@
 #include "Model3DImport.h"
-#include "ImporterTypes.h"
+#include "MediaTypes.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/mesh.h>
@@ -9,7 +9,7 @@
 
 // ----------------------------------------------------------------------------
 
-USING_CHIMIA_IMPORTER_NAMESPACE
+USING_CHIMIA_MEDIA_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ FillBufferFromMesh(const Mesh& mesh,
 // ----------------------------------------------------------------------------
 
 std::vector<Mesh>
-Chimia::Importer::ImportMeshes(const std::string& path)
+Chimia::Media::ImportMeshes(const std::string& path)
 {
   Assimp::Importer importer;
   const aiScene* scene = importer.ReadFile(
@@ -65,7 +65,7 @@ Chimia::Importer::ImportMeshes(const std::string& path)
 // ----------------------------------------------------------------------------
 
 std::vector<BufferData>
-Chimia::Importer::PackBufferDataFromMeshes(
+Chimia::Media::PackBufferDataFromMeshes(
   const std::vector<Mesh>& meshes,
   const MeshAttributesToInclude& attributes)
 {

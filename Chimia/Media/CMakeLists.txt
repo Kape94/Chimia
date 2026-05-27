@@ -1,5 +1,5 @@
 
-set(TARGET_NAME Chimia_Importer)
+set(TARGET_NAME Chimia_Media)
 
 add_library(${TARGET_NAME}
     src/Model3DImport.cpp
@@ -9,7 +9,7 @@ target_include_directories(${TARGET_NAME}
     PUBLIC
         ./api/
     PRIVATE
-        ./api/Importer/
+        ./api/Media/
 )
 
 target_link_libraries(${TARGET_NAME} 

@@ -1,4 +1,5 @@
-#include "Importer/Model3DImport.h"
+#include "Media/MediaTypes.h"
+#include "Media/Model3DImport.h"
 
 #include "Utils/OpenGLHelpers.h"
 #include "Utils/SamplesUtils.h"
@@ -11,12 +12,14 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
 const char* vertexShaderSource = R"(
     #version 330 core
     layout (location = 0) in vec3 aPos;
+    layout (location = 1) in vec3 aCol;
 
     uniform mat4 transform;
 
@@ -25,7 +28,7 @@ const char* vertexShaderSource = R"(
     void main()
     {
         gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-        vertexColor = aPos;
+        vertexColor = aCol;
     }
     )";
 
@@ -35,32 +38,14 @@ const char* fragmentShaderSource = R"(
     in vec3 vertexColor;
     void main()
     {
-        FragColor = vec4(vertexColor, 1.0f); // A magenta color
+        FragColor = vec4(vertexColor, 1.0f);
     }
     )";
 
 int
 main(int argc, char** argv)
 {
-  const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
-
-  const std::string modelPath = assetsDir + "Untitled.obj";
-
-  std::vector<float> vertices;
-  std::vector<unsigned> indices;
-
-  std::vector<Chimia::Importer::Mesh> meshes =
-    Chimia::Importer::ImportMeshes(modelPath);
-
-  for (const auto& v : meshes.front().vertices) {
-    vertices.insert(vertices.end(), { v.x, v.y, v.z });
-  }
-  for (const auto& i : meshes.front().indices) {
-    indices.push_back(i);
-  }
-
-  Window w(1280, 960, "Importer ex1");
+  Window w(1280, 960, "Importer ex2");
 
   glewExperimental = true;
   glewInit();
@@ -70,8 +55,40 @@ main(int argc, char** argv)
   const int shaderID =
     createShaderProgram(vertexShaderSource, fragmentShaderSource);
 
-  Mesh m;
-  m.setup(vertices, indices);
+  const std::string assetsDir =
+    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+
+  const std::string modelPath = assetsDir + "ObjectPair.obj";
+
+  std::vector<Chimia::Media::Mesh> meshes =
+    Chimia::Media::ImportMeshes(modelPath);
+  auto bufferDatas =
+    Chimia::Media::PackBufferDataFromMeshes(meshes,
+                                            { .includeColors = true,
+                                              .includeNormals = false,
+                                              .includeTexCoords = false });
+
+  auto adjustShaderAttribs = []() {
+    glVertexAttribPointer(
+      0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          6 * sizeof(GLfloat),
+                          (void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+  };
+
+  std::vector<Mesh> renderMeshes;
+  for (const auto& data : bufferDatas) {
+
+    Mesh& createdMesh = renderMeshes.emplace_back();
+    createdMesh.setup(data.vertexData, data.indices);
+    createdMesh.adjust(adjustShaderAttribs);
+  }
 
   glm::vec3 cameraPos{ 0.0f, 1.0f, 5.0f };
   glm::mat4x4 view =
@@ -86,12 +103,11 @@ main(int argc, char** argv)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(shaderID);
-    glProgramUniformMatrix4fv(shaderID,
-                              transformLoc,
-                              1,
-                              GL_FALSE /*transpose*/,
-                              glm::value_ptr(transform));
-    m.draw();
+    glProgramUniformMatrix4fv(
+      shaderID, transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+    for (const auto& m : renderMeshes) {
+      m.draw();
+    }
 
     w.Swap();
 
