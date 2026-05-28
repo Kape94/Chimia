@@ -40,8 +40,6 @@ public:
   void Save(const std::string& path, const bool flipVertically);
 
 private:
-  void FreeImageData(Image& image);
-
   const unsigned char* GetPixelPointer(const int i, const int j) const;
   unsigned char* GetPixelPointer(const int i, const int j);
 
