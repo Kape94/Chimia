@@ -9,7 +9,7 @@ find_package(imgui CONFIG REQUIRED)
 
 add_subdirectory(Chimia)
 
-option(BUILD_SAMPLES OFF)
-if (BUILD_SAMPLES)
-    add_subdirectory(Samples)
+option(BUILD_EXTRAS OFF)
+if (BUILD_EXTRAS)
+    add_subdirectory(Extras)
 endif()
