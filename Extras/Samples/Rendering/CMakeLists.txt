@@ -3,7 +3,7 @@ add_library(Samples_Rendering_DefaultDeps INTERFACE)
 
 target_link_libraries(Samples_Rendering_DefaultDeps
     INTERFACE
-        Samples_Utils
+        Extras_Utils
         Chimia_Rendering  
 )
 

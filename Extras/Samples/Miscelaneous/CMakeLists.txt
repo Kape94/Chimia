@@ -3,7 +3,7 @@ add_library(Samples_Misc_DefaultDeps INTERFACE)
 
 target_link_libraries(Samples_Misc_DefaultDeps
   INTERFACE
-    Samples_Utils
+    Extras_Utils
     GLEW::GLEW 
     glm::glm
 )

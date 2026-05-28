@@ -4,7 +4,7 @@ add_library(Samples_Media_DefaultDeps INTERFACE)
 target_link_libraries(Samples_Media_DefaultDeps
   INTERFACE
     Chimia_Media
-    Samples_Utils 
+    Extras_Utils 
     GLEW::GLEW 
     glm::glm
 )
