@@ -6,14 +6,12 @@ add_library(${TARGET_NAME}
     src/Window.cpp
 )
 
+# TODO: This link shouldn't be public at all
 target_link_libraries(${TARGET_NAME} 
+    PUBLIC
+        Chimia_Media
     PRIVATE
         glfw
-)
-
-target_include_directories(${TARGET_NAME}
-    SYSTEM PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/api/Utils/stb_image
 )
 
 target_include_directories(${TARGET_NAME}

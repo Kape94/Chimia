@@ -60,7 +60,7 @@ main(int argc, char** argv)
     indices.push_back(i);
   }
 
-  Window w(1280, 960, "Importer ex1");
+  Window w(1280, 960, "Media ex1");
 
   glewExperimental = true;
   glewInit();

@@ -45,7 +45,7 @@ const char* fragmentShaderSource = R"(
 int
 main(int argc, char** argv)
 {
-  Window w(1280, 960, "Importer ex2");
+  Window w(1280, 960, "Media ex2");
 
   glewExperimental = true;
   glewInit();

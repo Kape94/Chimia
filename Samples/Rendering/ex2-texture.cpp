@@ -1,4 +1,5 @@
 #include "Core/Types.h"
+#include "Media/Image.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedBuffer.h"
@@ -81,23 +82,17 @@ main(int argc, char** argv)
   const std::string assetsDir =
     SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
 
-  int width, height, nChannels;
-
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
-  SamplesUtils::Image texData = SamplesUtils::ReadImage(blueLightAsset.c_str());
+  Chimia::Media::Image texData(blueLightAsset.c_str());
 
   Chimia::Rendering::Texture2D texture;
-  texture.Create(texData.data, texData.width, texData.height);
-
-  SamplesUtils::FreeImageData(texData);
+  texture.Create(texData.RawData(), texData.Width(), texData.Height());
 
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
-  texData = SamplesUtils::ReadImage(solarFlareAsset.c_str());
+  Chimia::Media::Image texData2(solarFlareAsset.c_str());
 
   Chimia::Rendering::Texture2D texture2;
-  texture2.Create(texData.data, texData.width, texData.height);
-
-  SamplesUtils::FreeImageData(texData);
+  texture2.Create(texData2.RawData(), texData2.Width(), texData2.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;

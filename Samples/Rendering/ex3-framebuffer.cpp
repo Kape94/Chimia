@@ -133,18 +133,13 @@ main(int argc, char** argv)
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
-  int width, height, nChannels;
-
   const std::string assetsDir =
     SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
-  SamplesUtils::Image texData =
-    SamplesUtils::ReadImage(solarFlareAsset.c_str());
+  Chimia::Media::Image texData(solarFlareAsset.c_str());
 
   Chimia::Rendering::Texture2D texture(
-    texData.data, texData.width, texData.height);
-
-  SamplesUtils::FreeImageData(texData);
+    texData.RawData(), texData.Width(), texData.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;

@@ -2,6 +2,8 @@
 
 #include "Window.h"
 
+#include "Media/Image.h"
+
 #include <functional>
 #include <string>
 
@@ -38,36 +40,10 @@ PollDeferredActions();
 void
 PollSingleDeferredAction();
 
-struct Image
-{
-  unsigned char* data = nullptr;
-  int width = 0;
-  int height = 0;
-  int nChannels = 0;
-};
-
 void
 SaveScreenshot(const Window& window, const std::string& imagePath);
 
-Image
-ReadImage(const std::string& imagePath);
-
-glm::vec3
-GetRGBPixel(const int i, const int j, const Image& image);
-
-glm::vec4
-GetRGBAPixel(const int i, const int j, const Image& image);
-
-void
-SetRGBPixel(const glm::vec3& color, const int i, const int j, Image& image);
-
-void
-SetRGBAPixel(const glm::vec4& color, const int i, const int j, Image& image);
-
 float
-ImageDifferece(const Image& i1, const Image& i2);
-
-void
-FreeImageData(Image& image);
+ImageDifferece(const Chimia::Media::Image& i1, const Chimia::Media::Image& i2);
 
 }

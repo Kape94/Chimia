@@ -10,12 +10,10 @@
 Chimia::Draw3D::TextureID
 CreateTextureFromImage(const std::string& imagePath)
 {
-  SamplesUtils::Image texData = SamplesUtils::ReadImage(imagePath.c_str());
+  Chimia::Media::Image texData(imagePath.c_str());
 
-  const Chimia::Draw3D::TextureID texture =
-    Chimia::Draw3D::CreateTexture(texData.data, texData.width, texData.height);
-
-  SamplesUtils::FreeImageData(texData);
+  const Chimia::Draw3D::TextureID texture = Chimia::Draw3D::CreateTexture(
+    texData.RawData(), texData.Width(), texData.Height());
 
   return texture;
 }

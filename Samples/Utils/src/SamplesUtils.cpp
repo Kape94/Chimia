@@ -1,13 +1,8 @@
 #include "SamplesUtils.h"
 
+#include "Media/Image.h"
 #include "OpenGLHelpers.h"
 #include <cassert>
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 #include <chrono>
 #include <cstdlib>
@@ -249,144 +244,35 @@ SamplesUtils::SaveScreenshot(const Window& window, const std::string& imagePath)
   const auto [width, height] = window.GetFramebufferSize();
   const int nComp = 3;
 
-  std::vector<GLubyte> pixels(width * height * nComp);
+  std::vector<unsigned char> pixels(width * height * nComp);
 
   glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
 
-  stbi_flip_vertically_on_write(true);
-  stbi_write_bmp(imagePath.c_str(), width, height, nComp, pixels.data());
-}
-
-// ----------------------------------------------------------------------------
-
-SamplesUtils::Image
-SamplesUtils::ReadImage(const std::string& imagePath)
-{
-  int width = 0, height = 0, nChannels = 0;
-
-  unsigned char* data =
-    stbi_load(imagePath.c_str(), &width, &height, &nChannels, 0);
-
-  return Image{ data, width, height, nChannels };
-}
-
-// ----------------------------------------------------------------------------
-
-glm::vec3
-SamplesUtils::GetRGBPixel(const int i, const int j, const Image& image)
-{
-  assert(image.nChannels == 3 && "GetRGBAPixel: image doesn't have 3 channels");
-  const unsigned char* data = image.data;
-
-  const int offset = image.nChannels * (image.width * j + i);
-  const unsigned char* pixelData = data + offset;
-
-  auto normalized = [](const unsigned char v) -> float {
-    return static_cast<float>(v) / 256.0f;
-  };
-
-  const unsigned char r = pixelData[0];
-  const unsigned char g = pixelData[1];
-  const unsigned char b = pixelData[2];
-
-  return { normalized(r), normalized(g), normalized(b) };
-}
-
-// ----------------------------------------------------------------------------
-
-glm::vec4
-SamplesUtils::GetRGBAPixel(const int i, const int j, const Image& image)
-{
-  assert(image.nChannels == 4 && "GetRGBAPixel: image doesn't have 4 channels");
-  const unsigned char* data = image.data;
-
-  const int offset = image.nChannels * (image.width * j + i);
-  const unsigned char* pixelData = data + offset;
-
-  auto normalized = [](const unsigned char v) -> float {
-    return static_cast<float>(v) / 256.0f;
-  };
-
-  const unsigned char r = pixelData[0];
-  const unsigned char g = pixelData[1];
-  const unsigned char b = pixelData[2];
-  const unsigned char a = pixelData[3];
-
-  return { normalized(r), normalized(g), normalized(b), normalized(a) };
-}
-
-// ----------------------------------------------------------------------------
-
-void
-SamplesUtils::SetRGBPixel(const glm::vec3& color,
-                          const int i,
-                          const int j,
-                          Image& image)
-{
-  assert(image.nChannels == 3 && "SetRGBPixel: image doesn't have 3 channels");
-  unsigned char* data = image.data;
-
-  const int offset = image.nChannels * (image.width * j + i);
-  unsigned char* pixelData = data + offset;
-
-  auto toUnsigned = [](const float v) -> unsigned char {
-    return static_cast<unsigned char>(v * 256.0f);
-  };
-
-  pixelData[0] = toUnsigned(color.r);
-  pixelData[1] = toUnsigned(color.g);
-  pixelData[2] = toUnsigned(color.b);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-SamplesUtils::SetRGBAPixel(const glm::vec4& color,
-                           const int i,
-                           const int j,
-                           Image& image)
-{
-  assert(image.nChannels == 4 && "SetRGBAPixel: image doesn't have 4 channels");
-  unsigned char* data = image.data;
-
-  const int offset = image.nChannels * (image.width * j + i);
-  unsigned char* pixelData = data + offset;
-
-  auto toUnsigned = [](const float v) -> unsigned char {
-    return static_cast<unsigned char>(v * 256.0f);
-  };
-
-  pixelData[0] = toUnsigned(color.r);
-  pixelData[1] = toUnsigned(color.g);
-  pixelData[2] = toUnsigned(color.b);
-  pixelData[3] = toUnsigned(color.a);
+  Chimia::Media::Image image(width, height, nComp, pixels.data());
+  image.Save("", true /*flipVertically*/);
 }
 
 // ----------------------------------------------------------------------------
 
 float
-SamplesUtils::ImageDifferece(const Image& i1, const Image& i2)
+SamplesUtils::ImageDifferece(const Chimia::Media::Image& i1,
+                             const Chimia::Media::Image& i2)
 {
-  if (i1.width != i2.width || i1.height != i2.height ||
-      i1.nChannels != i2.nChannels) {
+  if (i1.Width() != i2.Width() || i1.Height() != i2.Height() ||
+      i1.NChannels() != i2.NChannels()) {
     return 100.0f;
   }
 
-  Image diffImage;
-  diffImage.width = i1.width;
-  diffImage.height = i1.height;
-  diffImage.nChannels = i1.nChannels;
-  diffImage.data =
-    new unsigned char[diffImage.width * diffImage.height * diffImage.nChannels];
+  Chimia::Media::Image diffImage(i1.Width(), i1.Height(), i1.NChannels());
 
   float diff = 0.0f;
-  float totalPixelArea = (float)i1.width * i1.height;
+  float totalPixelArea = (float)i1.Width() * i1.Height();
   float pixelContribution = 1.0f / totalPixelArea;
-  if (i1.nChannels == 3) {
-    for (int i = 0; i < i1.width; ++i) {
-      for (int j = 0; j < i1.height; ++j) {
-        const glm::vec3 c1 = GetRGBPixel(i, j, i1);
-        const glm::vec3 c2 = GetRGBPixel(i, j, i2);
+  if (i1.NChannels() == 3) {
+    for (int i = 0; i < i1.Width(); ++i) {
+      for (int j = 0; j < i1.Height(); ++j) {
+        const glm::vec3 c1 = i1.GetRGBPixel(i, j);
+        const glm::vec3 c2 = i2.GetRGBPixel(i, j);
 
         diff +=
           pixelContribution * (std::abs(c1.r - c2.r) + std::abs(c1.g - c2.g) +
@@ -395,14 +281,14 @@ SamplesUtils::ImageDifferece(const Image& i1, const Image& i2)
         glm::vec3 diffPixel{ std::abs(c1.r - c2.r),
                              std::abs(c1.g - c2.g),
                              std::abs(c1.b - c2.b) };
-        SetRGBPixel(diffPixel, i, j, diffImage);
+        diffImage.SetRGBPixel(diffPixel, i, j);
       }
     }
-  } else if (i1.nChannels == 4) {
-    for (int i = 0; i < i1.width; ++i) {
-      for (int j = 0; j < i1.height; ++j) {
-        const glm::vec4 c1 = GetRGBAPixel(i, j, i1);
-        const glm::vec4 c2 = GetRGBAPixel(i, j, i2);
+  } else if (i1.NChannels() == 4) {
+    for (int i = 0; i < i1.Width(); ++i) {
+      for (int j = 0; j < i1.Height(); ++j) {
+        const glm::vec4 c1 = i1.GetRGBAPixel(i, j);
+        const glm::vec4 c2 = i2.GetRGBAPixel(i, j);
 
         diff +=
           pixelContribution * (std::abs(c1.r - c2.r) + std::abs(c1.g - c2.g) +
@@ -411,31 +297,16 @@ SamplesUtils::ImageDifferece(const Image& i1, const Image& i2)
                              std::abs(c1.g - c2.g),
                              std::abs(c1.b - c2.b),
                              std::abs(c1.a - c2.a) };
-        SetRGBAPixel(diffPixel, i, j, diffImage);
+        diffImage.SetRGBAPixel(diffPixel, i, j);
       }
     }
   } else {
     diff = 100.0f;
   }
 
-  stbi_flip_vertically_on_write(false);
-  stbi_write_bmp("diff.bmp",
-                 diffImage.width,
-                 diffImage.height,
-                 diffImage.nChannels,
-                 diffImage.data);
-
-  FreeImageData(diffImage);
+  diffImage.Save("diff.bmp", false /*flipVertically*/);
 
   return diff;
-}
-
-// ----------------------------------------------------------------------------
-
-void
-SamplesUtils::FreeImageData(SamplesUtils::Image& image)
-{
-  stbi_image_free(image.data);
 }
 
 // ----------------------------------------------------------------------------

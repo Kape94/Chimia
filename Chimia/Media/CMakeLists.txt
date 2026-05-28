@@ -2,7 +2,13 @@
 set(TARGET_NAME Chimia_Media)
 
 add_library(${TARGET_NAME}
+    src/Image.cpp
     src/Model3DImport.cpp
+)
+
+target_include_directories(${TARGET_NAME}
+    SYSTEM PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/stb_image
 )
 
 target_include_directories(${TARGET_NAME}
@@ -13,6 +19,8 @@ target_include_directories(${TARGET_NAME}
 )
 
 target_link_libraries(${TARGET_NAME} 
+    PUBLIC
+        Chimia_Core
     PRIVATE 
         assimp::assimp
 )
