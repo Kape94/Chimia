@@ -1,4 +1,5 @@
 #include "Image.h"
+#include <cstring>
 
 // ----------------------------------------------------------------------------
 
@@ -48,12 +49,17 @@ Image::Image(const std::string& imagePath)
 // ----------------------------------------------------------------------------
 
 Image::Image(const int width, const int height, const int nChannels)
-  : Image(width, height, nChannels, [&]() {
-    unsigned char* data = new unsigned char[width * height * nChannels];
-    memset(data, 0, sizeof(unsigned char) * width * height * nChannels);
-    return data;
-  }())
+  : m_width(width)
+  , m_height(height)
+  , m_nChannels(nChannels)
+  , m_rawData(nullptr)
 {
+  const size_t totalImageBytes = width * height * nChannels;
+
+  unsigned char* data = new unsigned char[totalImageBytes];
+  memset(data, 0, sizeof(unsigned char) * totalImageBytes);
+
+  m_rawData = data;
 }
 
 // ----------------------------------------------------------------------------
@@ -65,8 +71,14 @@ Image::Image(const int width,
   : m_width(width)
   , m_height(height)
   , m_nChannels(nChannels)
-  , m_rawData(rawData)
+  , m_rawData(nullptr)
 {
+  const size_t totalImageBytes = width * height * nChannels;
+
+  unsigned char* data = new unsigned char[totalImageBytes];
+  memcpy(data, rawData, sizeof(unsigned char) * totalImageBytes);
+
+  m_rawData = data;
 }
 
 // ----------------------------------------------------------------------------
@@ -80,6 +92,38 @@ Image::~Image()
     m_height = 0;
     m_nChannels = 0;
   }
+}
+
+// ----------------------------------------------------------------------------
+
+Image::Image(Image&& other)
+  : m_width(other.m_width)
+  , m_height(other.m_height)
+  , m_nChannels(other.m_nChannels)
+  , m_rawData(other.m_rawData)
+{
+  other.m_width = 0;
+  other.m_height = 0;
+  other.m_nChannels = 0;
+  other.m_rawData = nullptr;
+}
+
+// ----------------------------------------------------------------------------
+
+Image&
+Image::operator=(Image&& other)
+{
+  m_width = other.m_width;
+  m_height = other.m_height;
+  m_nChannels = other.m_nChannels;
+  m_rawData = other.m_rawData;
+
+  other.m_width = 0;
+  other.m_height = 0;
+  other.m_nChannels = 0;
+  other.m_rawData = nullptr;
+
+  return *this;
 }
 
 // ----------------------------------------------------------------------------
@@ -184,7 +228,7 @@ Image::RawData() const
 // ----------------------------------------------------------------------------
 
 void
-Image::Save(const std::string& path, const bool flipVertically)
+Image::SaveAsBmp(const std::string& path, const bool flipVertically) const
 {
   stbi_flip_vertically_on_write(flipVertically);
   stbi_write_bmp(path.c_str(), m_width, m_height, m_nChannels, m_rawData);

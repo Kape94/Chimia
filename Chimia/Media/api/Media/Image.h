@@ -15,7 +15,7 @@ class Image
 {
 public:
   NON_DEFAULT_CONSTRUCTIBLE(Image)
-  NON_COPYABLE_NON_MOVABLE(Image)
+  NON_COPYABLE(Image)
 
   Image(const std::string& imagePath);
   Image(const int width, const int height, const int nChannels);
@@ -25,6 +25,9 @@ public:
         unsigned char* rawData);
 
   ~Image();
+
+  Image(Image&& other);
+  Image& operator=(Image&& other);
 
   glm::vec3 GetRGBPixel(const int i, const int j) const;
   glm::vec4 GetRGBAPixel(const int i, const int j) const;
@@ -37,7 +40,7 @@ public:
   int NChannels() const;
   const unsigned char* RawData() const;
 
-  void Save(const std::string& path, const bool flipVertically);
+  void SaveAsBmp(const std::string& path, const bool flipVertically) const;
 
 private:
   const unsigned char* GetPixelPointer(const int i, const int j) const;

@@ -1,33 +1,32 @@
-#include "DummyTests.h"
+#include "Utils/SamplesUtils.h"
 
 #include <iostream>
 
-#include <functional>
+#include <cstdlib>
 #include <map>
 #include <string>
 #include <vector>
 
-using TestCase = std::function<int()>;
-
 int
-main()
+main(int argc, char** argv)
 {
-  std::map<std::string, TestCase> testCases{
-    { "Rendering: test #1", &DummyTests::test1 },
-    { "Rendering: test #2", &DummyTests::test2 }
+  const std::string runnerPath = SamplesUtils::GetCurrentAppDir(argv);
+
+  std::map<std::string, std::string> testCases{
+    { "Rendering: #1 basic", "Rendering/Test_Rendering_1_basic" },
   };
 
   const size_t nTests = testCases.size();
-
   std::vector<std::string> failedTests;
 
   for (const auto& test : testCases) {
     const std::string testName = test.first;
-    const TestCase& testFunction = test.second;
+    const std::string testApp = test.second;
 
     std::cout << "Starting test " << testName << "...\n";
 
-    const int returnCode = testFunction();
+    const std::string testCommand = runnerPath + testApp;
+    const int returnCode = std::system(testCommand.c_str());
 
     std::string testStatus = returnCode != 0 ? "[FAIL]" : "[PASS]";
     std::cout << testStatus << "\t" << testName << "\n\n";

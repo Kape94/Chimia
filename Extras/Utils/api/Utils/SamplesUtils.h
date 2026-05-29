@@ -43,7 +43,4 @@ PollSingleDeferredAction();
 void
 SaveScreenshot(const Window& window, const std::string& imagePath);
 
-float
-ImageDifferece(const Chimia::Media::Image& i1, const Chimia::Media::Image& i2);
-
 }

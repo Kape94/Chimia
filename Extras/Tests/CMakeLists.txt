@@ -1,8 +1,8 @@
+add_subdirectory(Rendering)
 
 set(TESTS RunTests)
 
 add_executable(${TESTS} 
-    DummyTests.cpp
     RunTests.cpp
 )
 
