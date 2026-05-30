@@ -22,4 +22,4 @@ target_include_directories(${TARGET_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/api/Utils
 )
 
-target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)
+target_compile_features(${TARGET_NAME} PUBLIC cxx_std_17)

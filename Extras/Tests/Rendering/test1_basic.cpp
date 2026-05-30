@@ -1,14 +1,12 @@
-#include "Media/Image.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
-#include "Utils/ImageUtils.h"
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
-#include <iostream>
+#include "Tester.h"
 
 namespace Inputs {
 
@@ -64,7 +62,8 @@ main(int argc, char** argv)
   Window win(1280, 1080, "Rendering test #1");
 
   const std::string testPath = SamplesUtils::GetCurrentAppDir(argv);
-  const std::string goldenArtifactsDir = testPath + "/goldenArtifacts/";
+
+  const Tester tester(testPath, win);
 
   Chimia::Rendering::Initialize();
 
@@ -83,27 +82,8 @@ main(int argc, char** argv)
 
   win.Swap();
 
-  SamplesUtils::SaveScreenshot(win, testPath + "/output.bmp");
-  Chimia::Media::Image output(testPath + "/output.bmp");
-
-  Chimia::Media::Image goldenImage(goldenArtifactsDir + "test1_basic.bmp");
-
-  const ImageUtils::ImageComparisonResult result =
-    ImageUtils::Compare(output, goldenImage);
-
-  const bool comparedWithoutErrors = result.errorMessage.empty();
-  if (comparedWithoutErrors) {
-    if (result.diff > 0.00001f) {
-      std::cout << "DIFF: " << result.diff << "\n\n";
-      result.diffImage.SaveAsBmp("diff.bmp", false /*flipVertically*/);
-
-      return 1;
-    }
-  } else {
-    std::cout << "Couldn't compare the images:\n"
-              << result.errorMessage << "\n";
-    return 1;
-  }
+  const std::string goldenArtifactsDir = "goldenArtifacts/";
+  tester.TakeScreenshotAndAssert(goldenArtifactsDir + "test1_basic.bmp");
 
   return 0;
 }

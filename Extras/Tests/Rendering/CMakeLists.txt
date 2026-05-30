@@ -5,6 +5,7 @@ target_link_libraries(RenderingTestsDeps
     INTERFACE
         Chimia_Rendering
         Extras_Utils
+        Tester
 )
 
 target_compile_features(RenderingTestsDeps INTERFACE cxx_std_17)
