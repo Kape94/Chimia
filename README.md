@@ -9,7 +9,6 @@
 - [Graphics] Morph target animation;
   - [Rendering] VAO with multi buffer shader bindings;
 - [General] Testing tooling
-  - [Rendering] Saving current viewport to an image;
   - [Core] Printing things to a log;
   - [Utils] Comparing images + Comparing text files; 
 - [Core] Create class for representing a model/mesh;
@@ -18,6 +17,7 @@
 
 ## Tech depts
 
+- [Extras|Tests] Rendering_test2_texture is quite flaky
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
 - [Graphics] Buffers implementation code on Rendering module is quite messy.
