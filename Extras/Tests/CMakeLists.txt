@@ -2,16 +2,17 @@
 # Testing helper
 # -----------------------------------------------------------------------------
 
-add_library(Tester
+add_library(TestsUtils
     Tester.cpp
+    TestsUtils.cpp
 )
 
-target_include_directories(Tester
+target_include_directories(TestsUtils
     PUBLIC
         ./
 )
 
-target_link_libraries(Tester
+target_link_libraries(TestsUtils
     PUBLIC
         Extras_Utils
 )

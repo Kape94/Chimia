@@ -6,7 +6,7 @@
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
-#include "Tester.h"
+#include "TestsUtils.h"
 
 namespace Inputs {
 
@@ -63,7 +63,7 @@ main(int argc, char** argv)
 
   const std::string testPath = SamplesUtils::GetCurrentAppDir(argv);
 
-  const Tester tester(testPath, win);
+  TestsUtils::InitTesting(argv, win);
 
   Chimia::Rendering::Initialize();
 
@@ -82,8 +82,7 @@ main(int argc, char** argv)
 
   win.Swap();
 
-  const std::string goldenArtifactsDir = "goldenArtifacts/";
-  tester.TakeScreenshotAndAssert(goldenArtifactsDir + "test1_basic.bmp");
+  TestsUtils::ExpectImage("test1_basic.bmp");
 
   return 0;
 }
