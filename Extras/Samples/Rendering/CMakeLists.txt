@@ -1,5 +1,5 @@
 
-include(../../CMakeUtils.cmake)
+include(../../Utils/CMakeUtils.cmake)
 
 add_library(Samples_Rendering_DefaultDeps INTERFACE)
 

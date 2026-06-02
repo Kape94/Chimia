@@ -1,5 +1,5 @@
 
-include(../../CMakeUtils.cmake)
+include(../../Utils/CMakeUtils.cmake)
 
 add_library(Samples_Draw3D_Dependencies INTERFACE)
 target_link_libraries(Samples_Draw3D_Dependencies INTERFACE Chimia_Draw3D Extras_Utils)
