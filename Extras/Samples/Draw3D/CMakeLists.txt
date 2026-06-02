@@ -1,3 +1,6 @@
+
+include(../../CMakeUtils.cmake)
+
 add_library(Samples_Draw3D_Dependencies INTERFACE)
 target_link_libraries(Samples_Draw3D_Dependencies INTERFACE Chimia_Draw3D Extras_Utils)
 target_compile_features(Samples_Draw3D_Dependencies INTERFACE cxx_std_17)
@@ -46,120 +49,31 @@ target_link_libraries(Samples_Draw3D_ex14 PRIVATE Samples_Draw3D_Dependencies)
 
 add_executable(Samples_Draw3D_ex15 ex15-texturedTriangle.cpp)
 target_link_libraries(Samples_Draw3D_ex15 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex15
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex15>/assets/blue-light-style.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex15
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex15>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Draw3D_ex15)
 
 add_executable(Samples_Draw3D_ex16 ex16-manyTexturedTriangles.cpp)
 target_link_libraries(Samples_Draw3D_ex16 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex16
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex16>/assets/blue-light-style.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex16
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex16>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Draw3D_ex16)
 
 add_executable(Samples_Draw3D_ex17 ex17-texturedTrianglesMisc.cpp)
 target_link_libraries(Samples_Draw3D_ex17 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex17
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex17>/assets/blue-light-style.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex17
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex17>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Draw3D_ex17)
 
 add_executable(Samples_Draw3D_ex18 ex18-texturedLit.cpp)
 target_link_libraries(Samples_Draw3D_ex18 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex18
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/box.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex18>/assets/box.jpg")
+copy_assets_dir(Samples_Draw3D_ex18)
 
 add_executable(Samples_Draw3D_ex19 ex19-texturedLitMisc.cpp)
 target_link_libraries(Samples_Draw3D_ex19 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex19
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/box.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex19>/assets/box.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex19
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex19>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Draw3D_ex19)
 
 add_executable(Samples_Draw3D_ex20 ex20-coloredTexturedTriangle.cpp)
 target_link_libraries(Samples_Draw3D_ex20 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex20
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/box.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex20>/assets/box.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex20
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex20>/assets/solar-flare.jpg")
+copy_assets_dir(Samples_Draw3D_ex20)
 
 add_executable(Samples_Draw3D_ex21 ex21-coloredTexturedTrianglesMisc.cpp)
 target_link_libraries(Samples_Draw3D_ex21 PRIVATE Samples_Draw3D_Dependencies)
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex21
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex21>/assets/blue-light-style.jpg")
-
-add_custom_command(
-    TARGET Samples_Draw3D_ex21
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Draw3D_ex21>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Draw3D_ex21)
 
 add_executable(Samples_Draw3D_ex22 ex22-transparentTriangles.cpp)
 target_link_libraries(Samples_Draw3D_ex22 PRIVATE Samples_Draw3D_Dependencies)

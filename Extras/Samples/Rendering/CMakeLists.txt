@@ -1,4 +1,6 @@
 
+include(../../CMakeUtils.cmake)
+
 add_library(Samples_Rendering_DefaultDeps INTERFACE)
 
 target_link_libraries(Samples_Rendering_DefaultDeps
@@ -18,35 +20,13 @@ target_link_libraries(Samples_Rendering_ex1 PRIVATE Samples_Rendering_DefaultDep
 
 add_executable(Samples_Rendering_ex2 ex2-texture.cpp)
 target_link_libraries(Samples_Rendering_ex2 PRIVATE Samples_Rendering_DefaultDeps)
-
-add_custom_command(
-    TARGET Samples_Rendering_ex2
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/blue-light-style.jpg"
-    "$<TARGET_FILE_DIR:Samples_Rendering_ex2>/assets/blue-light-style.jpg"
-)
-
-add_custom_command(
-    TARGET Samples_Rendering_ex2
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Rendering_ex2>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Rendering_ex2)
 
 # 3) Framebuffer
 
 add_executable(Samples_Rendering_ex3 ex3-framebuffer.cpp)
 target_link_libraries(Samples_Rendering_ex3 PRIVATE Samples_Rendering_DefaultDeps)
-
-add_custom_command(
-    TARGET Samples_Rendering_ex3
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets/solar-flare.jpg"
-    "$<TARGET_FILE_DIR:Samples_Rendering_ex2>/assets/solar-flare.jpg"
-)
+copy_assets_dir(Samples_Rendering_ex3)
 
 # 4) Shader uniforms 
 
