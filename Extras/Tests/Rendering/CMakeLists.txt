@@ -36,3 +36,10 @@ add_executable(Test_Rendering_2_texture test2_texture.cpp)
 target_link_libraries(Test_Rendering_2_texture PRIVATE RenderingTestsDeps)
 copy_assets_dir(Test_Rendering_2_texture)
 copy_golden_artifacts_dir(Test_Rendering_2_texture)
+
+# 3) Framebuffer
+
+add_executable(Test_Rendering_3_framebuffer test3_framebuffer.cpp)
+target_link_libraries(Test_Rendering_3_framebuffer PRIVATE RenderingTestsDeps)
+copy_assets_dir(Test_Rendering_3_framebuffer)
+copy_golden_artifacts_dir(Test_Rendering_3_framebuffer)

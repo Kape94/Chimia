@@ -2,6 +2,9 @@
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
+
+#include "Media/Image.h"
+
 #include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 

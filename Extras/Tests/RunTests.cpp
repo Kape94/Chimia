@@ -15,6 +15,7 @@ main(int argc, char** argv)
   std::map<std::string, std::string> testCases{
     { "Rendering: #1 basic", "Rendering/Test_Rendering_1_basic" },
     { "Rendering: #2 texture", "Rendering/Test_Rendering_2_texture" },
+    { "Rendering: #3 framebuffer", "Rendering/Test_Rendering_3_framebuffer" },
   };
 
   const size_t nTests = testCases.size();

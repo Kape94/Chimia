@@ -1,5 +1,7 @@
 #include "Rendering/Rendering.h"
 
+#include "Media/Image.h"
+
 #include "Rendering/FrameBuffer.h"
 #include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"

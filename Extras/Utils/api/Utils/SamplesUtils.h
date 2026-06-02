@@ -2,8 +2,6 @@
 
 #include "Window.h"
 
-#include "Media/Image.h"
-
 #include <functional>
 #include <string>
 
