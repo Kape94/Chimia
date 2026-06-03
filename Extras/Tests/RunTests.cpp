@@ -19,7 +19,8 @@ main(int argc, char** argv)
     { "Rendering: #4 shader uniform",
       "Rendering/Test_Rendering_4_shaderUniform" },
     { "Rendering: #5 instanced buffer",
-      "Rendering/Test_Rendering_5_instancedBuffer" }
+      "Rendering/Test_Rendering_5_instancedBuffer" },
+    { "Rendering: #6 buffer", "Rendering/Test_Rendering_6_buffer" },
   };
 
   const size_t nTests = testCases.size();
