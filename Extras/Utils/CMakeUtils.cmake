@@ -8,5 +8,5 @@ function(copy_assets_dir TARGET_NAME)
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${UTILS_DIR}/assets"
     "$<TARGET_FILE_DIR:${TARGET_NAME}>/assets"
-    COMMENT "Copying: \"${UTILS_DIR}/assets\" --> \"$<TARGET_FILE_DIR:${TARGET_NAME}>/assets\" ")
+    COMMENT "Copying...\n-> source: \"${UTILS_DIR}/assets\"\n-> dest: \"$<TARGET_FILE_DIR:${TARGET_NAME}>/assets\" ")
 endfunction()
