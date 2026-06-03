@@ -16,7 +16,10 @@ main(int argc, char** argv)
     { "Rendering: #1 basic", "Rendering/Test_Rendering_1_basic" },
     { "Rendering: #2 texture", "Rendering/Test_Rendering_2_texture" },
     { "Rendering: #3 framebuffer", "Rendering/Test_Rendering_3_framebuffer" },
-    { "Rendering: #4 framebuffer", "Rendering/Test_Rendering_4_shaderUniform" },
+    { "Rendering: #4 shader uniform",
+      "Rendering/Test_Rendering_4_shaderUniform" },
+    { "Rendering: #5 instanced buffer",
+      "Rendering/Test_Rendering_5_instancedBuffer" }
   };
 
   const size_t nTests = testCases.size();

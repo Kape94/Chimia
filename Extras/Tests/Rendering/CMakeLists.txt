@@ -49,3 +49,9 @@ copy_golden_artifacts_dir(Test_Rendering_3_framebuffer)
 add_executable(Test_Rendering_4_ShaderUniform test4_shaderUniform.cpp)
 target_link_libraries(Test_Rendering_4_ShaderUniform PRIVATE RenderingTestsDeps)
 copy_golden_artifacts_dir(Test_Rendering_4_ShaderUniform)
+
+# 5) Instanced buffer
+
+add_executable(Test_Rendering_5_InstancedBuffer test5_instancedBuffer.cpp)
+target_link_libraries(Test_Rendering_5_InstancedBuffer PRIVATE RenderingTestsDeps)
+copy_golden_artifacts_dir(Test_Rendering_5_InstancedBuffer)
