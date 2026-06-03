@@ -43,3 +43,9 @@ add_executable(Test_Rendering_3_framebuffer test3_framebuffer.cpp)
 target_link_libraries(Test_Rendering_3_framebuffer PRIVATE RenderingTestsDeps)
 copy_assets_dir(Test_Rendering_3_framebuffer)
 copy_golden_artifacts_dir(Test_Rendering_3_framebuffer)
+
+# 4) Shader uniform
+
+add_executable(Test_Rendering_4_ShaderUniform test4_shaderUniform.cpp)
+target_link_libraries(Test_Rendering_4_ShaderUniform PRIVATE RenderingTestsDeps)
+copy_golden_artifacts_dir(Test_Rendering_4_ShaderUniform)

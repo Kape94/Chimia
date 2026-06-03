@@ -122,7 +122,7 @@ const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 int
 main(int argc, char** argv)
 {
-  Window win(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT, "Example #3");
+  Window win(Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT, "Test #3 - Rendering");
 
   const auto [scrWidth, scrHeight] = win.GetFramebufferSize();
 
