@@ -67,7 +67,9 @@ const std::vector<unsigned> index{ 0, 1, 2 };
 int
 main(int argc, char** argv)
 {
-  Window win(1280, 1080, "Test #2 - Rendering");
+  constexpr unsigned SCR_WIDTH = 800;
+  constexpr unsigned SCR_HEIGHT = 600;
+  Window win(SCR_WIDTH, SCR_HEIGHT, "Test #2 - Rendering");
 
   Chimia::Rendering::Initialize();
 
