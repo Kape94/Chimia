@@ -62,3 +62,9 @@ copy_golden_artifacts_dir(Test_Rendering_5_InstancedBuffer)
 add_executable(Test_Rendering_6_buffer test6_buffer.cpp)
 target_link_libraries(Test_Rendering_6_buffer PRIVATE RenderingTestsDeps)
 copy_golden_artifacts_dir(Test_Rendering_6_buffer)
+
+# 7) ReusableBuffer
+
+add_executable(Test_Rendering_7_reusableBuffer test7_reusableBuffer.cpp)
+target_link_libraries(Test_Rendering_7_reusableBuffer PRIVATE RenderingTestsDeps)
+copy_golden_artifacts_dir(Test_Rendering_7_reusableBuffer)

@@ -1,3 +1,7 @@
+1 - test1_basic
+2 - test2_texture
+3 - test3_framebuffer
+4 - test4_shaderUniform
 5 - test5_basicIndexed
 6 - test6_basic; test6_subdata
 7 - test5_basic
@@ -5,6 +9,6 @@
 9 - test5_instancingByTransform
 10 - test6_subdata_varying
 11 - test6_subdata_vertex_and_index
-12
-13
+12 - test7_reusableBuffer_basic
+13 - test7_reusableBuffer_instanced
 14
