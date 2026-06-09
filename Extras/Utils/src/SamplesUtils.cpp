@@ -103,6 +103,26 @@ PollSingleFromQueue()
 
 }
 
+namespace SamplesUtilsInternal {
+void
+SaveScreenshot(const Window& window,
+               const std::string& imagePath,
+               const int nChannels)
+{
+  const auto [width, height] = window.GetFramebufferSize();
+
+  std::vector<unsigned char> pixels(width * height * nChannels);
+
+  glReadBuffer(GL_FRONT);
+
+  const int format = nChannels == 4 ? GL_RGBA : GL_RGB;
+  glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, pixels.data());
+
+  Chimia::Media::Image image(width, height, nChannels, pixels.data());
+  image.SaveAsPng(imagePath, true /*flipVertically*/);
+}
+}
+
 // ----------------------------------------------------------------------------
 
 std::string
@@ -243,16 +263,7 @@ void
 SamplesUtils::SaveRGBScreenshot(const Window& window,
                                 const std::string& imagePath)
 {
-  const auto [width, height] = window.GetFramebufferSize();
-  const int nComp = 3;
-
-  std::vector<unsigned char> pixels(width * height * nComp);
-
-  glReadBuffer(GL_FRONT);
-  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
-
-  Chimia::Media::Image image(width, height, nComp, pixels.data());
-  image.SaveAsPng(imagePath, true /*flipVertically*/);
+  SamplesUtilsInternal::SaveScreenshot(window, imagePath, 3 /*nChannels*/);
 }
 
 // ----------------------------------------------------------------------------
@@ -261,21 +272,7 @@ void
 SamplesUtils::SaveRGBAScreenshot(const Window& window,
                                  const std::string& imagePath)
 {
-  const auto [width, height] = window.GetFramebufferSize();
-  const int nComp = 4;
-
-  std::vector<unsigned char> pixels(width * height * nComp);
-
-  glReadBuffer(GL_FRONT);
-  glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
-
-  Chimia::Media::Image image(width, height, nComp, pixels.data());
-
-  const Chimia::Media::ImageFormat format = GetFileNameFormat(imagePath);
-  assert(format == Chimia::Media::ImageFormat::PNG &&
-         "SaveRGBAScreenshot: Output image should be .png");
-
-  image.SaveAsPng(imagePath, true /*flipVertically*/);
+  SamplesUtilsInternal::SaveScreenshot(window, imagePath, 4 /*nChannels*/);
 }
 
 // ----------------------------------------------------------------------------

@@ -14,7 +14,14 @@ public:
   void TakeScreenshotAndAssert(const std::string& goldenImagePath) const;
 
 private:
+  void TakeScreenshot(const std::string& outputPath, const int nChannels) const;
+
   void AssertImageComparisonResult(
+    const ImageUtils::ImageComparisonResult& result) const;
+
+  void ReportDiffAndExit(const ImageUtils::ImageComparisonResult& result) const;
+
+  void ReportComparisonErrorAndExit(
     const ImageUtils::ImageComparisonResult& result) const;
 
   // Optionally configurable members
