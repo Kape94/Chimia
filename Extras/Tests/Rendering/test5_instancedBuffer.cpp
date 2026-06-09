@@ -69,7 +69,7 @@ Basic(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test5_instancedBuffer_basic.bmp");
+  TestsUtils::ExpectImage("test5_instancedBuffer_basic.png");
 }
 
 void
@@ -128,7 +128,7 @@ BasicIndexed(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test5_instancedBuffer_basicIndexed.bmp");
+  TestsUtils::ExpectImage("test5_instancedBuffer_basicIndexed.png");
 }
 
 void
@@ -222,7 +222,7 @@ InstanceSubData(Window& win)
 
     const std::string imageName =
       "test5_instancedBuffer_instancedSubdata_step" +
-      std::to_string(selectedGroup) + ".bmp";
+      std::to_string(selectedGroup) + ".png";
 
     TestsUtils::ExpectImage(imageName);
   }
@@ -295,7 +295,7 @@ InstancingByTransformMatrix(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test5_instancedBuffer_transformMatrix.bmp");
+  TestsUtils::ExpectImage("test5_instancedBuffer_transformMatrix.png");
 }
 
 }

@@ -9,8 +9,6 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/geometric.hpp>
 
-#include <string>
-
 namespace Scenarios {
 
 void
@@ -69,7 +67,7 @@ IndexedBuffer(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test7_reusableBuffer_basic.bmp");
+  TestsUtils::ExpectImage("test7_reusableBuffer_basic.png");
 }
 
 void
@@ -184,7 +182,7 @@ Instancing(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test7_reusableBuffer_instanced.bmp");
+  TestsUtils::ExpectImage("test7_reusableBuffer_instanced.png");
 }
 
 }

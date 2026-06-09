@@ -4,7 +4,6 @@
 #include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 #include "TestsUtils.h"
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -70,7 +69,7 @@ Basic(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test6_buffer_basic.bmp");
+  TestsUtils::ExpectImage("test6_buffer_basic.png");
 }
 
 void
@@ -129,7 +128,7 @@ Indexed(Window& win)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test6_buffer_indexed.bmp");
+  TestsUtils::ExpectImage("test6_buffer_indexed.png");
 }
 
 void
@@ -207,7 +206,7 @@ Subdata(Window& win)
     win.Swap();
 
     const std::string imageName = "test6_buffer_subdata_step" +
-                                  std::to_string(currentScreenshot++) + ".bmp";
+                                  std::to_string(currentScreenshot++) + ".png";
     TestsUtils::ExpectImage(imageName);
   }
 }
@@ -313,7 +312,7 @@ SubDataWithVaryingSize(Window& win)
     win.Swap();
 
     const std::string imageName = "test6_buffer_subdata_varying_step" +
-                                  std::to_string(currentScreenshot++) + ".bmp";
+                                  std::to_string(currentScreenshot++) + ".png";
     TestsUtils::ExpectImage(imageName);
   }
 }
@@ -429,7 +428,7 @@ VertexAndIndexSubData(Window& win)
     win.Swap();
 
     const std::string imageName = "test6_buffer_subdata_vertex_and_index_step" +
-                                  std::to_string(currentScreenshot++) + ".bmp";
+                                  std::to_string(currentScreenshot++) + ".png";
     TestsUtils::ExpectImage(imageName);
   }
 }

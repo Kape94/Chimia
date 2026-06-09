@@ -106,17 +106,17 @@ main(int argc, char** argv)
   };
 
   draw();
-  TestsUtils::ExpectImage("test4_shaderUniform_step1.bmp");
+  TestsUtils::ExpectImage("test4_shaderUniform_step1.png");
 
   angle = 0.25 * PI;
 
   draw();
-  TestsUtils::ExpectImage("test4_shaderUniform_step2.bmp");
+  TestsUtils::ExpectImage("test4_shaderUniform_step2.png");
 
   angle = 0.33 * PI;
 
   draw();
-  TestsUtils::ExpectImage("test4_shaderUniform_step3.bmp");
+  TestsUtils::ExpectImage("test4_shaderUniform_step3.png");
 
   return 0;
 }

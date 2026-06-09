@@ -252,7 +252,7 @@ SamplesUtils::SaveRGBScreenshot(const Window& window,
   glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
 
   Chimia::Media::Image image(width, height, nComp, pixels.data());
-  image.SaveAsBmp(imagePath, true /*flipVertically*/);
+  image.SaveAsPng(imagePath, true /*flipVertically*/);
 }
 
 // ----------------------------------------------------------------------------

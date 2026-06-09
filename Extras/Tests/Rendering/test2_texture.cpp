@@ -115,7 +115,7 @@ main(int argc, char** argv)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test2_texture.bmp");
+  TestsUtils::ExpectImage("test2_texture.png");
 
   return 0;
 }

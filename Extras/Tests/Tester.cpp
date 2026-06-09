@@ -41,14 +41,16 @@ Tester::TakeScreenshotAndAssert(const std::string& goldenImagePath) const
   const std::string tempOutputPath =
     m_workspaceDir + "output." + format.ToString();
 
-  if (format == Chimia::Media::ImageFormat::PNG) {
+  const Chimia::Media::Image goldenImage(m_workspaceDir + goldenImagePath);
+  if (goldenImage.NChannels() == 4) {
     SamplesUtils::SaveRGBAScreenshot(m_window, tempOutputPath);
-  } else {
+  } else if (goldenImage.NChannels() == 3) {
     SamplesUtils::SaveRGBScreenshot(m_window, tempOutputPath);
+  } else {
+    assert(false && "Color format not supported for screenshot");
   }
 
   const Chimia::Media::Image output(tempOutputPath);
-  const Chimia::Media::Image goldenImage(m_workspaceDir + goldenImagePath);
 
   const ImageUtils::ImageComparisonResult result =
     ImageUtils::Compare(output, goldenImage);

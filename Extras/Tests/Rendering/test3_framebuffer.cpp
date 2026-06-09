@@ -184,7 +184,7 @@ main(int argc, char** argv)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test3_framebuffer.bmp");
+  TestsUtils::ExpectImage("test3_framebuffer.png");
 
   return 0;
 }

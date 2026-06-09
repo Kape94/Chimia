@@ -160,7 +160,7 @@ ImageUtils::Compare(const Chimia::Media::Image& i1,
 {
   if (!ImagesDimensionsAreMatching(i1, i2)) {
     return ComparisonError(
-      "Images width, height or number of channles don't match");
+      "Images width, height or number of channels don't match");
   }
 
   if (i1.NChannels() == 3) {

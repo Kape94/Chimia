@@ -3,7 +3,6 @@
 #include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -61,8 +60,6 @@ main(int argc, char** argv)
 {
   Window win(1280, 1080, "Rendering test #1");
 
-  const std::string testPath = SamplesUtils::GetCurrentAppDir(argv);
-
   TestsUtils::InitTesting(argv, win);
 
   Chimia::Rendering::Initialize();
@@ -82,7 +79,7 @@ main(int argc, char** argv)
 
   win.Swap();
 
-  TestsUtils::ExpectImage("test1_basic.bmp");
+  TestsUtils::ExpectImage("test1_basic.png");
 
   return 0;
 }
