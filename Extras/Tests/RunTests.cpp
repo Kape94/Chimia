@@ -25,6 +25,8 @@ main(int argc, char** argv)
       "Rendering/Test_Rendering_7_reusableBuffer" },
     { "Rendering: #8 color blending",
       "Rendering/Test_Rendering_8_colorBlending" },
+
+    { "Graphics: #1 basic", "Graphics/Test_Graphics_1_basic" },
   };
 
   const size_t nTests = testCases.size();

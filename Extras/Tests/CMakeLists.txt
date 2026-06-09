@@ -22,6 +22,7 @@ target_link_libraries(TestsUtils
 # -----------------------------------------------------------------------------
 
 add_subdirectory(Rendering)
+add_subdirectory(Graphics)
 
 # -----------------------------------------------------------------------------
 # Main test runner
