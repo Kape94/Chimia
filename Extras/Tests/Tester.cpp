@@ -1,8 +1,10 @@
 #include "Tester.h"
 
+#include "Media/ImageFormat.h"
 #include "Utils/ImageUtils.h"
 #include "Utils/SamplesUtils.h"
 
+#include <ctime>
 #include <iostream>
 
 // ----------------------------------------------------------------------------
@@ -33,8 +35,17 @@ Tester::Tester(const std::string& workspaceDir, const Window& window)
 void
 Tester::TakeScreenshotAndAssert(const std::string& goldenImagePath) const
 {
-  const std::string tempOutputPath = m_workspaceDir + "output.bmp";
-  SamplesUtils::SaveScreenshot(m_window, tempOutputPath);
+  const Chimia::Media::ImageFormat format =
+    SamplesUtils::GetFileNameFormat(goldenImagePath);
+
+  const std::string tempOutputPath =
+    m_workspaceDir + "output." + format.ToString();
+
+  if (format == Chimia::Media::ImageFormat::PNG) {
+    SamplesUtils::SaveRGBAScreenshot(m_window, tempOutputPath);
+  } else {
+    SamplesUtils::SaveRGBScreenshot(m_window, tempOutputPath);
+  }
 
   const Chimia::Media::Image output(tempOutputPath);
   const Chimia::Media::Image goldenImage(m_workspaceDir + goldenImagePath);
@@ -55,8 +66,14 @@ Tester::AssertImageComparisonResult(
   if (comparedWithoutErrors) {
     if (result.diff > m_imageErrorTolerance) {
       std::cout << "DIFF: " << result.diff << "\n\n";
-      result.diffImage.SaveAsBmp(m_workspaceDir + "diff.bmp",
-                                 false /*flipVertically*/);
+      const bool hasAlpha = result.diffImage.NChannels() == 4;
+      if (hasAlpha) {
+        result.diffImage.SaveAsPng(m_workspaceDir + "diff.png",
+                                   false /*flipVertically*/);
+      } else {
+        result.diffImage.SaveAsBmp(m_workspaceDir + "diff.bmp",
+                                   false /*flipVertically*/);
+      }
 
       TesterUtils::ExitWithError();
     }

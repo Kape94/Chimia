@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Media/ImageFormat.h"
 #include "Window.h"
 
 #include <functional>
@@ -39,6 +40,12 @@ void
 PollSingleDeferredAction();
 
 void
-SaveScreenshot(const Window& window, const std::string& imagePath);
+SaveRGBScreenshot(const Window& window, const std::string& imagePath);
+
+void
+SaveRGBAScreenshot(const Window& window, const std::string& imagePath);
+
+Chimia::Media::ImageFormat
+GetFileNameFormat(const std::string& fileName);
 
 }

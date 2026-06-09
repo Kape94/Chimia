@@ -17,7 +17,10 @@
 
 ## Tech depts
 
-- [Extras|Tests] Rendering_test2_texture is quite flaky
+- [Extras|Tests] Review Tester.cpp and keep only png format
+- [Extras] Handle screenshot code duplication on SamplesUtils
+- [Extras] Rename SamplesUtils to ExtrasUtils
+- [Extras|Rendering] Move GetPixels functionality to Rendering module
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
 - [Graphics] Buffers implementation code on Rendering module is quite messy.

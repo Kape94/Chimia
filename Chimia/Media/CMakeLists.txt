@@ -3,6 +3,7 @@ set(TARGET_NAME Chimia_Media)
 
 add_library(${TARGET_NAME}
     src/Image.cpp
+    src/ImageFormat.cpp
     src/Model3DImport.cpp
 )
 

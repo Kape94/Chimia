@@ -41,6 +41,7 @@ public:
   const unsigned char* RawData() const;
 
   void SaveAsBmp(const std::string& path, const bool flipVertically) const;
+  void SaveAsPng(const std::string& path, const bool flipVertically) const;
 
 private:
   const unsigned char* GetPixelPointer(const int i, const int j) const;

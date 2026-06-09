@@ -236,6 +236,18 @@ Image::SaveAsBmp(const std::string& path, const bool flipVertically) const
 
 // ----------------------------------------------------------------------------
 
+void
+Image::SaveAsPng(const std::string& path, const bool flipVertically) const
+{
+  stbi_flip_vertically_on_write(flipVertically);
+
+  const int stride = m_width * m_nChannels;
+  stbi_write_png(
+    path.c_str(), m_width, m_height, m_nChannels, m_rawData, stride);
+}
+
+// ----------------------------------------------------------------------------
+
 const unsigned char*
 Image::GetPixelPointer(const int i, const int j) const
 {

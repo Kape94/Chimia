@@ -23,6 +23,8 @@ main(int argc, char** argv)
     { "Rendering: #6 buffer", "Rendering/Test_Rendering_6_buffer" },
     { "Rendering: #7 reusableBuffer",
       "Rendering/Test_Rendering_7_reusableBuffer" },
+    { "Rendering: #8 color blending",
+      "Rendering/Test_Rendering_8_colorBlending" },
   };
 
   const size_t nTests = testCases.size();

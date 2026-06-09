@@ -157,7 +157,7 @@ main(int argc, char** argv)
     w.PollEvents();
   }
 
-  SamplesUtils::SaveScreenshot(w, "newTest.bmp");
+  SamplesUtils::SaveRGBScreenshot(w, "newTest.bmp");
 
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);

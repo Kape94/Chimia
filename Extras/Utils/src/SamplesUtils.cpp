@@ -1,6 +1,7 @@
 #include "SamplesUtils.h"
 
 #include "Media/Image.h"
+#include "Media/ImageFormat.h"
 #include "OpenGLHelpers.h"
 #include <cassert>
 
@@ -239,7 +240,8 @@ SamplesUtils::PollSingleDeferredAction()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::SaveScreenshot(const Window& window, const std::string& imagePath)
+SamplesUtils::SaveRGBScreenshot(const Window& window,
+                                const std::string& imagePath)
 {
   const auto [width, height] = window.GetFramebufferSize();
   const int nComp = 3;
@@ -251,6 +253,42 @@ SamplesUtils::SaveScreenshot(const Window& window, const std::string& imagePath)
 
   Chimia::Media::Image image(width, height, nComp, pixels.data());
   image.SaveAsBmp(imagePath, true /*flipVertically*/);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+SamplesUtils::SaveRGBAScreenshot(const Window& window,
+                                 const std::string& imagePath)
+{
+  const auto [width, height] = window.GetFramebufferSize();
+  const int nComp = 4;
+
+  std::vector<unsigned char> pixels(width * height * nComp);
+
+  glReadBuffer(GL_FRONT);
+  glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+
+  Chimia::Media::Image image(width, height, nComp, pixels.data());
+
+  const Chimia::Media::ImageFormat format = GetFileNameFormat(imagePath);
+  assert(format == Chimia::Media::ImageFormat::PNG &&
+         "SaveRGBAScreenshot: Output image should be .png");
+
+  image.SaveAsPng(imagePath, true /*flipVertically*/);
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Media::ImageFormat
+SamplesUtils::GetFileNameFormat(const std::string& fileName)
+{
+  const size_t dotIndex = fileName.rfind('.');
+
+  const std::string fileExtension(fileName.begin() + dotIndex + 1,
+                                  fileName.end());
+
+  return Chimia::Media::ImageFormat::FromString(fileExtension);
 }
 
 // ----------------------------------------------------------------------------

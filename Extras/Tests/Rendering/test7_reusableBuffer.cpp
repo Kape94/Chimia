@@ -4,7 +4,6 @@
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
 #include "TestsUtils.h"
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>

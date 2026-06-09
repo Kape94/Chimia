@@ -68,3 +68,9 @@ copy_golden_artifacts_dir(Test_Rendering_6_buffer)
 add_executable(Test_Rendering_7_reusableBuffer test7_reusableBuffer.cpp)
 target_link_libraries(Test_Rendering_7_reusableBuffer PRIVATE RenderingTestsDeps)
 copy_golden_artifacts_dir(Test_Rendering_7_reusableBuffer)
+
+# 8) Color blending
+
+add_executable(Test_Rendering_8_colorBlending test8_colorBlending.cpp)
+target_link_libraries(Test_Rendering_8_colorBlending PRIVATE RenderingTestsDeps)
+copy_golden_artifacts_dir(Test_Rendering_8_colorBlending)
