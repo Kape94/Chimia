@@ -5,7 +5,7 @@
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -154,7 +154,7 @@ main()
     Chimia::Draw3D::AddRetainedModel(
       cubeModel, Transform({ 0.5f, 0.8f, 0.0f }, 1.0f), redMaterial);
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedModel(staticRedCube); }, 2000);
 
   while (!w.ShouldClose()) {
@@ -177,7 +177,7 @@ main()
       glm::rotate(glm::identity<glm::mat4x4>(), 0.01f, { 0.0f, 1.0f, 0.0f });
     cameraPos = rotMatrix * glm::vec4(cameraPos, 1.0f);
 
-    SamplesUtils::PollDeferredActions();
+    ExtrasUtils::PollDeferredActions();
   }
   return 0;
 }

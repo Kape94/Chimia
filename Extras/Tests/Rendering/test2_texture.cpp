@@ -7,7 +7,7 @@
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -83,7 +83,7 @@ main(int argc, char** argv)
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
-  const std::string testPath = SamplesUtils::GetCurrentAppDir(argv);
+  const std::string testPath = ExtrasUtils::GetCurrentAppDir(argv);
   const std::string assetsDir = testPath + "/assets/";
 
   TestsUtils::InitTesting(argv, win);

@@ -2,7 +2,7 @@
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 // ----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  SamplesUtils::InitRandom();
+  ExtrasUtils::InitRandom();
 
   const Chimia::Draw3D::ResourceGroupID drawResource =
     Chimia::Draw3D::CreateResourceGroup();
@@ -65,7 +65,7 @@ main()
 
     w.Swap();
     w.PollEvents();
-    SamplesUtils::SyncForTargetFPS(30);
+    ExtrasUtils::SyncForTargetFPS(30);
   }
   return 0;
 }

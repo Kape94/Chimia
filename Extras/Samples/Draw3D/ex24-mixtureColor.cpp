@@ -2,7 +2,7 @@
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 // ----------------------------------------------------------------------------
@@ -24,7 +24,7 @@ private:
 
 SampleVertex::SampleVertex(const glm::vec3& pos)
 {
-  using namespace SamplesUtils;
+  using namespace ExtrasUtils;
 
   m_vertex.position = pos;
   m_vertex.color = {
@@ -105,7 +105,7 @@ main()
     if (pseudoTime > 6.0f) {
       pseudoTime = 0.0f;
       Chimia::Draw3D::UpdateMixtureColor(
-        mixtureColor, { 0.0f, 0.0f, SamplesUtils::NormalizedRand() });
+        mixtureColor, { 0.0f, 0.0f, ExtrasUtils::NormalizedRand() });
     }
   }
   return 0;

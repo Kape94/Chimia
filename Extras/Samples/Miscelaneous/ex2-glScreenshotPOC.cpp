@@ -1,6 +1,6 @@
 
+#include "Utils/ExtrasUtils.h"
 #include "Utils/OpenGLHelpers.h"
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include "GL/glew.h"
@@ -157,7 +157,7 @@ main(int argc, char** argv)
     w.PollEvents();
   }
 
-  SamplesUtils::SaveRGBScreenshot(w, "newTest.bmp");
+  ExtrasUtils::SaveRGBScreenshot(w, "newTest.bmp");
 
   glDeleteVertexArrays(1, &VAO);
   glDeleteBuffers(1, &VBO);

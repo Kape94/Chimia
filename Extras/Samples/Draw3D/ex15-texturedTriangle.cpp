@@ -5,7 +5,7 @@
 
 #include "Media/Image.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 // ----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ main(int argc, char** argv)
   Chimia::Draw3D::Initialize();
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   const Chimia::Draw3D::TextureID texture1 =

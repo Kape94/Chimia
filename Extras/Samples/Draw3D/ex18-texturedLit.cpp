@@ -8,7 +8,7 @@
 
 #include "Media/Image.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -137,7 +137,7 @@ main(int argc, char** argv)
     Chimia::Draw3D::eIlluminationModel::PHONG);
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string boxAsset = assetsDir + "box.jpg";
   const Chimia::Draw3D::TextureID texture1 = CreateTextureFromImage(boxAsset);

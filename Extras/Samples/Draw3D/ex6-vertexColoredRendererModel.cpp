@@ -4,7 +4,7 @@
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -87,7 +87,7 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::SyncForTargetFPS(10);
+    ExtrasUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

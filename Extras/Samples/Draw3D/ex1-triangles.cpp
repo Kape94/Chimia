@@ -1,7 +1,7 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <vector>
@@ -39,7 +39,7 @@ private:
 
 Triangle::Triangle()
 {
-  using namespace SamplesUtils;
+  using namespace ExtrasUtils;
 
   m_pos = glm::vec3{ -1.0f + NormalizedRand() * 2.0f,
                      -1.0f + NormalizedRand() * 2.0f,
@@ -119,7 +119,7 @@ main()
 
   Chimia::Draw3D::Initialize();
 
-  SamplesUtils::InitRandom();
+  ExtrasUtils::InitRandom();
 
   auto triangles = CreateTriangles();
   while (!w.ShouldClose()) {
@@ -137,7 +137,7 @@ main()
 
     w.Swap();
     w.PollEvents();
-    SamplesUtils::SyncForTargetFPS(30);
+    ExtrasUtils::SyncForTargetFPS(30);
   }
   return 0;
 }

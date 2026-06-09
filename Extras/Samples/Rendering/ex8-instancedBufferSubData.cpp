@@ -3,7 +3,7 @@
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -129,7 +129,7 @@ main()
 
     selectedGroup =
       (selectedGroup + 1) % Inputs::InstanceData::positionGroups.size();
-    SamplesUtils::SyncForTargetFPS(1);
+    ExtrasUtils::SyncForTargetFPS(1);
   }
 
   return 0;

@@ -5,7 +5,7 @@
 
 #include "Media/Image.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 // ----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ private:
 
 Triangle::Triangle()
 {
-  using namespace SamplesUtils;
+  using namespace ExtrasUtils;
 
   m_pos = glm::vec3{ -1.0f + NormalizedRand() * 2.0f,
                      -1.0f + NormalizedRand() * 2.0f,
@@ -131,7 +131,7 @@ void
 CreateTextures(char** argv)
 {
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   const Chimia::Draw3D::TextureID texture1 =

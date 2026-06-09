@@ -1,4 +1,4 @@
-#include "SamplesUtils.h"
+#include "ExtrasUtils.h"
 
 #include "Media/Image.h"
 #include "Media/ImageFormat.h"
@@ -126,7 +126,7 @@ SaveScreenshot(const Window& window,
 // ----------------------------------------------------------------------------
 
 std::string
-SamplesUtils::GetCurrentAppDir(char** argv)
+ExtrasUtils::GetCurrentAppDir(char** argv)
 {
   const std::filesystem::path p = argv[0];
   const std::filesystem::path current = std::filesystem::current_path();
@@ -140,7 +140,7 @@ SamplesUtils::GetCurrentAppDir(char** argv)
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::InitRandom()
+ExtrasUtils::InitRandom()
 {
   srand(time(NULL));
 }
@@ -148,7 +148,7 @@ SamplesUtils::InitRandom()
 // ----------------------------------------------------------------------------
 
 float
-SamplesUtils::NormalizedRand()
+ExtrasUtils::NormalizedRand()
 {
   return (float)rand() / RAND_MAX;
 }
@@ -156,7 +156,7 @@ SamplesUtils::NormalizedRand()
 // ----------------------------------------------------------------------------
 
 int
-SamplesUtils::Rand()
+ExtrasUtils::Rand()
 {
   return rand();
 }
@@ -164,7 +164,7 @@ SamplesUtils::Rand()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::SyncForTargetFPS(unsigned fps)
+ExtrasUtils::SyncForTargetFPS(unsigned fps)
 {
   const float frameTime = 1.0f / (float)fps;
   const long frameTimeInMilisecs = (long)(frameTime * 1000.0f);
@@ -183,7 +183,7 @@ SamplesUtils::SyncForTargetFPS(unsigned fps)
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::BeginFrameStats()
+ExtrasUtils::BeginFrameStats()
 {
   g_frameInit = CurrentTimePoint();
 }
@@ -191,7 +191,7 @@ SamplesUtils::BeginFrameStats()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::LogFrameStats()
+ExtrasUtils::LogFrameStats()
 {
   auto now = CurrentTimePoint();
   auto diff = now - g_frameInit;
@@ -218,8 +218,8 @@ SamplesUtils::LogFrameStats()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::DoAfter(const std::function<void(void)>& action,
-                      const unsigned milliseconds)
+ExtrasUtils::DoAfter(const std::function<void(void)>& action,
+                     const unsigned milliseconds)
 {
   ThreadPoolLite::PushTask([action, milliseconds]() {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
@@ -231,8 +231,8 @@ SamplesUtils::DoAfter(const std::function<void(void)>& action,
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::DoAfterSync(const std::function<void(void)>& action,
-                          const unsigned milliseconds)
+ExtrasUtils::DoAfterSync(const std::function<void(void)>& action,
+                         const unsigned milliseconds)
 {
   ThreadPoolLite::PushTask([action, milliseconds]() {
     std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
@@ -244,7 +244,7 @@ SamplesUtils::DoAfterSync(const std::function<void(void)>& action,
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::PollDeferredActions()
+ExtrasUtils::PollDeferredActions()
 {
   FunctionQueue::PollQueue();
 }
@@ -252,7 +252,7 @@ SamplesUtils::PollDeferredActions()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::PollSingleDeferredAction()
+ExtrasUtils::PollSingleDeferredAction()
 {
   FunctionQueue::PollSingleFromQueue();
 }
@@ -260,8 +260,8 @@ SamplesUtils::PollSingleDeferredAction()
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::SaveRGBScreenshot(const Window& window,
-                                const std::string& imagePath)
+ExtrasUtils::SaveRGBScreenshot(const Window& window,
+                               const std::string& imagePath)
 {
   SamplesUtilsInternal::SaveScreenshot(window, imagePath, 3 /*nChannels*/);
 }
@@ -269,8 +269,8 @@ SamplesUtils::SaveRGBScreenshot(const Window& window,
 // ----------------------------------------------------------------------------
 
 void
-SamplesUtils::SaveRGBAScreenshot(const Window& window,
-                                 const std::string& imagePath)
+ExtrasUtils::SaveRGBAScreenshot(const Window& window,
+                                const std::string& imagePath)
 {
   SamplesUtilsInternal::SaveScreenshot(window, imagePath, 4 /*nChannels*/);
 }
@@ -278,7 +278,7 @@ SamplesUtils::SaveRGBAScreenshot(const Window& window,
 // ----------------------------------------------------------------------------
 
 Chimia::Media::ImageFormat
-SamplesUtils::GetFileNameFormat(const std::string& fileName)
+ExtrasUtils::GetFileNameFormat(const std::string& fileName)
 {
   const size_t dotIndex = fileName.rfind('.');
 

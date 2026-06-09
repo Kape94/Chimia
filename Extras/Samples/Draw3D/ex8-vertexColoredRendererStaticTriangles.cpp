@@ -1,7 +1,7 @@
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -108,9 +108,9 @@ main()
                          { -1.0f, 1.0f, 0.0f },
                          { 1.0f, 0.0f, 1.0f, 1.0f });
   };
-  SamplesUtils::DoAfterSync(deleteQuad2, 1000);
-  SamplesUtils::DoAfterSync(deleteQuad1, 2000);
-  SamplesUtils::DoAfterSync(addQuad, 3000);
+  ExtrasUtils::DoAfterSync(deleteQuad2, 1000);
+  ExtrasUtils::DoAfterSync(deleteQuad1, 2000);
+  ExtrasUtils::DoAfterSync(addQuad, 3000);
 
   while (!w.ShouldClose()) {
 
@@ -121,8 +121,8 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::PollDeferredActions();
-    SamplesUtils::SyncForTargetFPS(10);
+    ExtrasUtils::PollDeferredActions();
+    ExtrasUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

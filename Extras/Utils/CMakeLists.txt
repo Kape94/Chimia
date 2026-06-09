@@ -3,7 +3,7 @@ set(TARGET_NAME Extras_Utils)
 add_library(${TARGET_NAME}
     src/ImageUtils.cpp
     src/OpenGLHelpers.cpp
-    src/SamplesUtils.cpp
+    src/ExtrasUtils.cpp
     src/Window.cpp
 )
 

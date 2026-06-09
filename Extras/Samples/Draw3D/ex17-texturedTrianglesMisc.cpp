@@ -6,7 +6,7 @@
 
 #include "Media/Image.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/mat4x4.hpp>
@@ -63,7 +63,7 @@ main(int argc, char** argv)
   Chimia::Draw3D::Initialize();
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   const Chimia::Draw3D::TextureID texture1 =
@@ -87,13 +87,13 @@ main(int argc, char** argv)
   const auto modelInstance1 =
     Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture1);
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedModel(modelInstance1); }, 1000);
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedTriangles(triangleStatic); }, 2000);
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() {
       Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture1);
     },
@@ -108,7 +108,7 @@ main(int argc, char** argv)
 
     w.Swap();
     w.PollEvents();
-    SamplesUtils::PollSingleDeferredAction();
+    ExtrasUtils::PollSingleDeferredAction();
   }
   return 0;
 }

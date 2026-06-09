@@ -2,7 +2,7 @@
 #include "Draw3D/ModelRendering.h"
 #include "Draw3D/Resources.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -76,9 +76,9 @@ main()
   auto addInstance1 = [&]() {
     Chimia::Draw3D::AddRetainedModel(modelID, Input::transform1);
   };
-  SamplesUtils::DoAfterSync(deleteInstance1, 1000);
-  SamplesUtils::DoAfterSync(deleteInstance2, 2000);
-  SamplesUtils::DoAfterSync(addInstance1, 3000);
+  ExtrasUtils::DoAfterSync(deleteInstance1, 1000);
+  ExtrasUtils::DoAfterSync(deleteInstance2, 2000);
+  ExtrasUtils::DoAfterSync(addInstance1, 3000);
 
   while (!w.ShouldClose()) {
 
@@ -91,8 +91,8 @@ main()
     w.Swap();
     w.PollEvents();
 
-    SamplesUtils::PollDeferredActions();
-    SamplesUtils::SyncForTargetFPS(10);
+    ExtrasUtils::PollDeferredActions();
+    ExtrasUtils::SyncForTargetFPS(10);
   }
   return 0;
 }

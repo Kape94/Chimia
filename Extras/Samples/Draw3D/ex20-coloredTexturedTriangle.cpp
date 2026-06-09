@@ -9,7 +9,7 @@
 
 #include "Media/Image.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -83,7 +83,7 @@ main(int argc, char** argv)
     Chimia::Draw3D::eIlluminationModel::PHONG);
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string boxAsset = assetsDir + "box.jpg";
   const Chimia::Draw3D::TextureID texture1 = CreateTextureFromImage(boxAsset);
@@ -136,11 +136,11 @@ main(int argc, char** argv)
   const auto instance2 =
     Chimia::Draw3D::AddRetainedModel(model, Input::transform1, texture2);
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedTriangles(t1); }, 1000);
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedModel(instance1); }, 2000);
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() {
       Chimia::Draw3D::AddRetainedModel(model, Input::transform2, texture1);
     },
@@ -155,7 +155,7 @@ main(int argc, char** argv)
 
     w.Swap();
     w.PollEvents();
-    SamplesUtils::PollDeferredActions();
+    ExtrasUtils::PollDeferredActions();
   }
   return 0;
 }

@@ -1,8 +1,8 @@
 #include "Tester.h"
 
 #include "Media/ImageFormat.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/ImageUtils.h"
-#include "Utils/SamplesUtils.h"
 
 #include <ctime>
 #include <iostream>
@@ -36,7 +36,7 @@ void
 Tester::TakeScreenshotAndAssert(const std::string& goldenImagePath) const
 {
   const Chimia::Media::ImageFormat format =
-    SamplesUtils::GetFileNameFormat(goldenImagePath);
+    ExtrasUtils::GetFileNameFormat(goldenImagePath);
 
   const std::string tempOutputPath =
     m_workspaceDir + "output." + format.ToString();
@@ -58,9 +58,9 @@ void
 Tester::TakeScreenshot(const std::string& outputPath, const int nChannels) const
 {
   if (nChannels == 4) {
-    SamplesUtils::SaveRGBAScreenshot(m_window, outputPath);
+    ExtrasUtils::SaveRGBAScreenshot(m_window, outputPath);
   } else if (nChannels == 3) {
-    SamplesUtils::SaveRGBScreenshot(m_window, outputPath);
+    ExtrasUtils::SaveRGBScreenshot(m_window, outputPath);
   } else {
     assert(false && "Color format not supported for screenshot");
   }

@@ -1,7 +1,7 @@
 #include "Draw3D/Draw3D.h"
 
 #include "Draw3D/Triangle.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/vec3.hpp>
@@ -25,7 +25,7 @@ private:
 
 SampleVertex::SampleVertex(const glm::vec3& pos)
 {
-  using namespace SamplesUtils;
+  using namespace ExtrasUtils;
 
   m_vertex.position = pos;
   m_vertex.color = {

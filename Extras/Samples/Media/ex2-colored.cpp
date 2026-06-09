@@ -1,8 +1,8 @@
 #include "Media/MediaTypes.h"
 #include "Media/Model3DImport.h"
 
+#include "Utils/ExtrasUtils.h"
 #include "Utils/OpenGLHelpers.h"
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include "GL/glew.h"
@@ -56,7 +56,7 @@ main(int argc, char** argv)
     createShaderProgram(vertexShaderSource, fragmentShaderSource);
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string modelPath = assetsDir + "ObjectPair.obj";
 

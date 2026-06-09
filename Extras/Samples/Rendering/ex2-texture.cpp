@@ -7,7 +7,7 @@
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -80,7 +80,7 @@ main(int argc, char** argv)
       Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   Chimia::Media::Image texData(blueLightAsset.c_str());

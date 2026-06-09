@@ -1,7 +1,7 @@
 #include "Media/Model3DImport.h"
 
+#include "Utils/ExtrasUtils.h"
 #include "Utils/OpenGLHelpers.h"
-#include "Utils/SamplesUtils.h"
 #include "Utils/Window.h"
 
 #include "GL/glew.h"
@@ -43,7 +43,7 @@ int
 main(int argc, char** argv)
 {
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
 
   const std::string modelPath = assetsDir + "Untitled.obj";
 

@@ -8,7 +8,7 @@
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -142,7 +142,7 @@ main(int argc, char** argv)
       Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
   const std::string assetsDir =
-    SamplesUtils::GetCurrentAppDir(argv) + "/assets/";
+    ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   Chimia::Media::Image texData(solarFlareAsset.c_str());
 

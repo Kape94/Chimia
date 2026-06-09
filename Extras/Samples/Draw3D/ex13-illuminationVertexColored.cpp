@@ -4,7 +4,7 @@
 
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -15,7 +15,7 @@
 glm::vec4
 RandomVec4()
 {
-  using namespace SamplesUtils;
+  using namespace ExtrasUtils;
 
   return glm::vec4{ 0.0f + NormalizedRand() * 1.0f,
                     0.0f + NormalizedRand() * 1.0f,
@@ -115,7 +115,7 @@ main()
 {
   Window w(1280, 960, "Draw3D ex13");
 
-  SamplesUtils::InitRandom();
+  ExtrasUtils::InitRandom();
   Chimia::Draw3D::Initialize();
 
   glm::vec3 cameraPos{ 0.0f, 0.0f, -7.0f };

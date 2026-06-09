@@ -1,4 +1,4 @@
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 
 #include <iostream>
 
@@ -10,7 +10,7 @@
 int
 main(int argc, char** argv)
 {
-  const std::string runnerPath = SamplesUtils::GetCurrentAppDir(argv);
+  const std::string runnerPath = ExtrasUtils::GetCurrentAppDir(argv);
 
   std::map<std::string, std::string> testCases{
     { "Rendering: #1 basic", "Rendering/Test_Rendering_1_basic" },

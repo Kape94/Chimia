@@ -6,7 +6,7 @@
 #include "Draw3D/Resources.h"
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -36,7 +36,7 @@ AppendPointInVertexData(std::vector<float>& vertexData, const glm::vec3& point)
   };
 
   const size_t randomIndex =
-    static_cast<size_t>(SamplesUtils::NormalizedRand() *
+    static_cast<size_t>(ExtrasUtils::NormalizedRand() *
                         static_cast<float>(g_possibleColors.size()));
   const glm::vec4& color = g_possibleColors[randomIndex];
 
@@ -141,7 +141,7 @@ main()
 {
   Window w(1280, 960, "Draw3D ex14");
 
-  SamplesUtils::InitRandom();
+  ExtrasUtils::InitRandom();
 
   Chimia::Draw3D::Config::SetIlluminationModel(
     Chimia::Draw3D::eIlluminationModel::PHONG);
@@ -174,7 +174,7 @@ main()
     Chimia::Draw3D::AddRetainedModel(cubeModel,
                                      Transform({ 0.5f, 0.8f, 0.0f }, 1.0f));
 
-  SamplesUtils::DoAfterSync(
+  ExtrasUtils::DoAfterSync(
     [&]() { Chimia::Draw3D::DeleteRetainedModel(staticRedCube); }, 2000);
 
   while (!w.ShouldClose()) {
@@ -195,7 +195,7 @@ main()
       glm::rotate(glm::identity<glm::mat4x4>(), 0.01f, { 0.0f, 1.0f, 0.0f });
     cameraPos = rotMatrix * glm::vec4(cameraPos, 1.0f);
 
-    SamplesUtils::PollDeferredActions();
+    ExtrasUtils::PollDeferredActions();
   }
   return 0;
 }

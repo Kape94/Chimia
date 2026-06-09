@@ -2,7 +2,7 @@
 
 #include "Tester.h"
 
-#include "Utils/SamplesUtils.h"
+#include "Utils/ExtrasUtils.h"
 
 #include <memory>
 
@@ -19,7 +19,7 @@ void
 TestsUtils::InitTesting(char** argv, const Window& window)
 {
   TestsUtilsInternal::g_tester.reset(
-    new Tester(SamplesUtils::GetCurrentAppDir(argv), window));
+    new Tester(ExtrasUtils::GetCurrentAppDir(argv), window));
 }
 
 // ----------------------------------------------------------------------------
