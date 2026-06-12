@@ -5,7 +5,14 @@ include(../CMakeTestsUtils.cmake)
 # -----------------------------------------------------------------------------
 
 add_library(GraphicsTestsDeps
-    GraphicsTestsData.cpp
+    Common/GraphicsTestsData.cpp
+    Common/TestImmediateModeTriangles.cpp
+)
+
+target_include_directories(
+    GraphicsTestsDeps
+        PUBLIC
+            ./Common
 )
 
 target_link_libraries(GraphicsTestsDeps 
