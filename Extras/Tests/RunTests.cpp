@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <cstdlib>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -12,7 +11,7 @@ main(int argc, char** argv)
 {
   const std::string runnerPath = ExtrasUtils::GetCurrentAppDir(argv);
 
-  std::map<std::string, std::string> testCases{
+  std::vector<std::pair<std::string, std::string>> testCases{
     { "Rendering: #1 basic", "Rendering/Test_Rendering_1_basic" },
     { "Rendering: #2 texture", "Rendering/Test_Rendering_2_texture" },
     { "Rendering: #3 framebuffer", "Rendering/Test_Rendering_3_framebuffer" },
@@ -27,6 +26,8 @@ main(int argc, char** argv)
       "Rendering/Test_Rendering_8_colorBlending" },
 
     { "Graphics: #1 basic", "Graphics/Test_Graphics_1_basic" },
+    { "Graphics: #2 immediate mode triangles",
+      "Graphics/Test_Graphics_2_trianglesImmediate" },
   };
 
   const size_t nTests = testCases.size();

@@ -4,15 +4,17 @@ include(../CMakeTestsUtils.cmake)
 
 # -----------------------------------------------------------------------------
 
-add_library(GraphicsTestsDeps INTERFACE)
+add_library(GraphicsTestsDeps
+    GraphicsTestsData.cpp
+)
 
 target_link_libraries(GraphicsTestsDeps 
-    INTERFACE
+    PUBLIC
         Chimia_Draw3D
         TestsUtils
 )
 
-target_compile_features(GraphicsTestsDeps INTERFACE cxx_std_17)
+target_compile_features(GraphicsTestsDeps PUBLIC cxx_std_17)
 
 # -----------------------------------------------------------------------------
 
@@ -21,3 +23,10 @@ target_compile_features(GraphicsTestsDeps INTERFACE cxx_std_17)
 add_executable(Test_Graphics_1_basic test1_basic.cpp)
 target_link_libraries(Test_Graphics_1_basic PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_1_basic)
+
+# 2) Triangles in immediate mode
+
+add_executable(Test_Graphics_2_trianglesImmediate test2_trianglesImmediate.cpp)
+target_link_libraries(Test_Graphics_2_trianglesImmediate PRIVATE GraphicsTestsDeps)
+copy_golden_artifacts_dir(Test_Graphics_2_trianglesImmediate)
+copy_assets_dir(Test_Graphics_2_trianglesImmediate)

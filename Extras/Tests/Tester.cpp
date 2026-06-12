@@ -106,3 +106,11 @@ Tester::ReportComparisonErrorAndExit(
 }
 
 // ----------------------------------------------------------------------------
+
+std::string
+Tester::GetWorkspaceDir() const
+{
+  return m_workspaceDir;
+}
+
+// ----------------------------------------------------------------------------

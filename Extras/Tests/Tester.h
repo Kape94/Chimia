@@ -13,6 +13,8 @@ public:
 
   void TakeScreenshotAndAssert(const std::string& goldenImagePath) const;
 
+  std::string GetWorkspaceDir() const;
+
 private:
   void TakeScreenshot(const std::string& outputPath, const int nChannels) const;
 

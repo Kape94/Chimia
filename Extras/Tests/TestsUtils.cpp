@@ -24,6 +24,14 @@ TestsUtils::InitTesting(char** argv, const Window& window)
 
 // ----------------------------------------------------------------------------
 
+std::string
+TestsUtils::GetTestingDirectory()
+{
+  return TestsUtilsInternal::g_tester->GetWorkspaceDir();
+}
+
+// ----------------------------------------------------------------------------
+
 void
 TestsUtils::ExpectImage(const std::string& imageFileName)
 {
