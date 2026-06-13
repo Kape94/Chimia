@@ -2,6 +2,7 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingPrivate.h"
 #include "Shaders.h"
 #include "TrianglePrivate.h"
@@ -18,14 +19,14 @@
 
 // ----------------------------------------------------------------------------
 
+USING_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+namespace {
 void
-Chimia::Draw3D::Initialize()
+InitRenderers()
 {
-  Chimia::Rendering::Initialize();
-  Chimia::Rendering::EnableDepthTest(true);
-
-  Shaders::Initialize();
-
   DefaultRenderers::Color4::Init();
   DefaultRenderers::Normal3::Init();
   DefaultRenderers::TexCoord2::Init();
@@ -36,6 +37,34 @@ Chimia::Draw3D::Initialize()
 
   TrianglePrivate::Init();
   ModelRenderingPrivate::Init();
+}
+
+void
+RestartRenderers()
+{
+  DefaultRenderers::Color4::Shutdown();
+  DefaultRenderers::Normal3::Shutdown();
+  DefaultRenderers::TexCoord2::Shutdown();
+  DefaultRenderers::Color4TexCoord2::Shutdown();
+  DefaultRenderers::Color4Normal3::Shutdown();
+  DefaultRenderers::Normal3TexCoord2::Shutdown();
+  DefaultRenderers::Color4Normal3TexCoord2::Shutdown();
+
+  InitRenderers();
+}
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Initialize()
+{
+  Chimia::Rendering::Initialize();
+  Chimia::Rendering::EnableDepthTest(true);
+
+  Shaders::Initialize();
+
+  InitRenderers();
 }
 
 // ----------------------------------------------------------------------------
@@ -68,6 +97,14 @@ void
 Chimia::Draw3D::ClearScreen()
 {
   Chimia::Rendering::Clear(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Chimia::Draw3D::Restart()
+{
+  RestartRenderers();
 }
 
 // ----------------------------------------------------------------------------

@@ -76,6 +76,14 @@ Normal3::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Normal3::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Normal3::GetRenderer()
 {

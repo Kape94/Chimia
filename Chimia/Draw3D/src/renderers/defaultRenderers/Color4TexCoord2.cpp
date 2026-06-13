@@ -89,6 +89,15 @@ Color4TexCoord2::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Color4TexCoord2::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+  Renderers::DeleteRenderer(g_transparentRenderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Color4TexCoord2::GetRenderer()
 {

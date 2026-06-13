@@ -62,6 +62,15 @@ Color4::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Color4::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+  Renderers::DeleteRenderer(g_transparentRenderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Color4::GetRenderer()
 {

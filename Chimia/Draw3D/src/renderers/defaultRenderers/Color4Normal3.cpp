@@ -58,6 +58,14 @@ Color4Normal3::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Color4Normal3::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Color4Normal3::GetRenderer()
 {

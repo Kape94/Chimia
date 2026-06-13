@@ -32,6 +32,7 @@ public:
   void ForEach(const std::function<void(Object&)>& action);
 
   void Delete(unsigned id);
+  void Delete(Object* obj);
 
 private:
   // TODO: put these constants in the config
@@ -150,6 +151,23 @@ ObjectTable<Object>::Delete(unsigned id)
   }
 
   DeleteObject(m_objects[id]);
+}
+
+// ----------------------------------------------------------------------------
+
+template<class Object>
+void
+ObjectTable<Object>::Delete(Object* obj)
+{
+  const Object* memoryStart = m_objects.data()[0];
+  assert(
+    obj >= memoryStart &&
+    "ObjectTable::Delete(obj): probably the objects belongs to another table");
+
+  const size_t id = obj - memoryStart;
+  assert(id < m_objects.size() && "ObjectTable::Delete(obj): id out of bounds");
+
+  Delete(id);
 }
 
 // ----------------------------------------------------------------------------

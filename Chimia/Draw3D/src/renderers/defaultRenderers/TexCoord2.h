@@ -19,6 +19,9 @@ namespace TexCoord2 {
 void
 Init();
 
+void
+Shutdown();
+
 GenericRenderer&
 GetRenderer();
 

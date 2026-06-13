@@ -19,6 +19,9 @@ namespace Color4 {
 void
 Init();
 
+void
+Shutdown();
+
 GenericRenderer&
 GetRenderer();
 

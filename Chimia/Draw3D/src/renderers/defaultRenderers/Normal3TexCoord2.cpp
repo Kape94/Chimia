@@ -86,6 +86,14 @@ Normal3TexCoord2::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Normal3TexCoord2::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Normal3TexCoord2::GetRenderer()
 {

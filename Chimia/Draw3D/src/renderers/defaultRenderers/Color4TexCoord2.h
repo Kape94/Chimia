@@ -19,6 +19,9 @@ namespace Color4TexCoord2 {
 void
 Init();
 
+void
+Shutdown();
+
 GenericRenderer&
 GetRenderer();
 

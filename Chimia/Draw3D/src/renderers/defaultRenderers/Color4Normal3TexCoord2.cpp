@@ -84,6 +84,14 @@ Color4Normal3TexCoord2::Init()
 
 // ----------------------------------------------------------------------------
 
+void
+Color4Normal3TexCoord2::Shutdown()
+{
+  Renderers::DeleteRenderer(g_renderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer&
 Color4Normal3TexCoord2::GetRenderer()
 {

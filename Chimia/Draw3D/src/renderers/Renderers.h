@@ -17,6 +17,9 @@ CreateRenderer(const eVertexLayout& vertexLayout,
                void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
                void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
+void
+DeleteRenderer(GenericRenderer* renderer);
+
 GenericRenderer*
 GetRendererByID(const unsigned id);
 }

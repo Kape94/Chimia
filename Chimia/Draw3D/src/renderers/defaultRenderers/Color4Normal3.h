@@ -19,6 +19,9 @@ namespace Color4Normal3 {
 void
 Init();
 
+void
+Shutdown();
+
 GenericRenderer&
 GetRenderer();
 

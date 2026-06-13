@@ -43,6 +43,14 @@ Renderers::CreateRenderer(
 
 // ----------------------------------------------------------------------------
 
+void
+Renderers::DeleteRenderer(GenericRenderer* renderer)
+{
+  RenderersInternal::RenderersTable().Delete(renderer);
+}
+
+// ----------------------------------------------------------------------------
+
 GenericRenderer*
 Renderers::GetRendererByID(const unsigned id)
 {
