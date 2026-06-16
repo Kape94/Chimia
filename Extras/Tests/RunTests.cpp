@@ -28,6 +28,7 @@ main(int argc, char** argv)
     { "Graphics: #1 basic", "Graphics/Test_Graphics_1_basic" },
     { "Graphics: #2 immediate mode triangles",
       "Graphics/Test_Graphics_2_trianglesImmediate" },
+    { "Graphics: #3 batching", "Graphics/Test_Graphics_3_batching" },
   };
 
   const size_t nTests = testCases.size();

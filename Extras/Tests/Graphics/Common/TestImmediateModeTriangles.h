@@ -4,5 +4,12 @@
 
 #include <string>
 
+struct ImmediateTrianglesTestInfo
+{
+  std::string testName = "";
+  unsigned flushOnEvery = 1000;
+};
+
 void
-TestImmediateModeTriangles(const std::string& testName, Window& window);
+TestImmediateModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
+                           Window& window);

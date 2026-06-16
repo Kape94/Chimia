@@ -17,7 +17,10 @@ main(int argc, char** argv)
 
   Chimia::Draw3D::Initialize();
 
-  TestImmediateModeTriangles("test2", win);
+  ImmediateTrianglesTestInfo testInfo;
+  testInfo.testName = "test2";
+  testInfo.flushOnEvery = 1000;
+  TestImmediateModeTriangles(testInfo, win);
 
   return 0;
 }

@@ -37,3 +37,10 @@ add_executable(Test_Graphics_2_trianglesImmediate test2_trianglesImmediate.cpp)
 target_link_libraries(Test_Graphics_2_trianglesImmediate PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_2_trianglesImmediate)
 copy_assets_dir(Test_Graphics_2_trianglesImmediate)
+
+# 3) Batching
+
+add_executable(Test_Graphics_3_batching test3_batching.cpp)
+target_link_libraries(Test_Graphics_3_batching PRIVATE GraphicsTestsDeps)
+copy_golden_artifacts_dir(Test_Graphics_3_batching)
+copy_assets_dir(Test_Graphics_3_batching)

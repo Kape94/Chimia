@@ -159,15 +159,11 @@ template<class Object>
 void
 ObjectTable<Object>::Delete(Object* obj)
 {
-  const Object* memoryStart = m_objects.data()[0];
-  assert(
-    obj >= memoryStart &&
-    "ObjectTable::Delete(obj): probably the objects belongs to another table");
-
-  const size_t id = obj - memoryStart;
-  assert(id < m_objects.size() && "ObjectTable::Delete(obj): id out of bounds");
-
-  Delete(id);
+  for (unsigned i = 0; i < m_objects.size(); ++i) {
+    if (m_objects[i] == obj) {
+      Delete(i);
+    }
+  }
 }
 
 // ----------------------------------------------------------------------------

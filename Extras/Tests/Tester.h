@@ -11,11 +11,24 @@ public:
   Tester() = delete;
   Tester(const std::string& workspaceDir, const Window& window);
 
-  void TakeScreenshotAndAssert(const std::string& goldenImagePath) const;
+  void ExpectImage(const std::string& goldenImagePath) const;
 
   std::string GetWorkspaceDir() const;
 
+  // Test development feature -------------------------------------------------
+  enum class eImageLoggingMode
+  {
+    OFF,
+    RGB,
+    RGBA
+  };
+
+  void SetImageLoggingMode(const eImageLoggingMode loggingMode);
+  // --------------------------------------------------------------------------
+
 private:
+  void TakeScreenshotAndAssert(const std::string& goldenImagePath) const;
+
   void TakeScreenshot(const std::string& outputPath, const int nChannels) const;
 
   void AssertImageComparisonResult(
@@ -26,8 +39,11 @@ private:
   void ReportComparisonErrorAndExit(
     const ImageUtils::ImageComparisonResult& result) const;
 
+  void LogImage(const std::string& imagePath) const;
+
   // Optionally configurable members
   float m_imageErrorTolerance = 0.0000001f;
+  eImageLoggingMode m_imageLoggingMode = eImageLoggingMode::OFF;
 
   // Required members
   std::string m_workspaceDir;

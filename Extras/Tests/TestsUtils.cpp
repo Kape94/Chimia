@@ -37,7 +37,25 @@ TestsUtils::ExpectImage(const std::string& imageFileName)
 {
   using namespace TestsUtilsInternal;
 
-  g_tester->TakeScreenshotAndAssert(GOLDEN_ARTIFACTS_DIR + imageFileName);
+  g_tester->ExpectImage(GOLDEN_ARTIFACTS_DIR + imageFileName);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TestsUtils::Development::ActivateRGBImageLogging()
+{
+  TestsUtilsInternal::g_tester->SetImageLoggingMode(
+    Tester::eImageLoggingMode::RGB);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TestsUtils::Development::ActivateRGBAImageLogging()
+{
+  TestsUtilsInternal::g_tester->SetImageLoggingMode(
+    Tester::eImageLoggingMode::RGBA);
 }
 
 // ----------------------------------------------------------------------------

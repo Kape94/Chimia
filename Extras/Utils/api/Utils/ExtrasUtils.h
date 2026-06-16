@@ -48,4 +48,7 @@ SaveRGBAScreenshot(const Window& window, const std::string& imagePath);
 Chimia::Media::ImageFormat
 GetFileNameFormat(const std::string& fileName);
 
+std::string
+GetFileName(const std::string& filePath);
+
 }

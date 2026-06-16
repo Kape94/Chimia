@@ -20,12 +20,20 @@ namespace Scenarios {
 
 std::unique_ptr<Chimia::Draw3D::MaterialID> g_referenceMaterial = nullptr;
 std::unique_ptr<Chimia::Draw3D::TextureID> g_referenceTexture = nullptr;
-std::string g_testName = "testCommon";
+ImmediateTrianglesTestInfo g_testInfo;
+
+bool g_isSettedUp = false;
 
 std::string
 FullArtifactName(const std::string& artifactName)
 {
-  return g_testName + "_" + artifactName;
+  return g_testInfo.testName + "_" + artifactName;
+}
+
+unsigned
+FlushOnEvery()
+{
+  return g_testInfo.flushOnEvery;
 }
 
 void
@@ -63,8 +71,13 @@ CreateReferenceResources()
 void
 Setup()
 {
+  if (g_isSettedUp) {
+    return;
+  }
+
   CreateReferenceResources();
   ConfigureDefaultLightSource();
+  g_isSettedUp = true;
 }
 
 void
@@ -73,7 +86,7 @@ VertexColored(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuads<Chimia::Draw3D::VertexPC>(
-    GraphicsTestsData::QuadPC);
+    GraphicsTestsData::QuadPC, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -88,7 +101,7 @@ NormalMaterialColored(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuadsWithResource<Chimia::Draw3D::VertexPN>(
-    GraphicsTestsData::QuadPN, *g_referenceMaterial);
+    GraphicsTestsData::QuadPN, *g_referenceMaterial, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -103,7 +116,7 @@ Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuadsWithResource<Chimia::Draw3D::VertexPT>(
-    GraphicsTestsData::QuadPT, *g_referenceTexture);
+    GraphicsTestsData::QuadPT, *g_referenceTexture, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -118,7 +131,7 @@ VertexColored_Lit(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuads<Chimia::Draw3D::VertexPCN>(
-    GraphicsTestsData::QuadPCN);
+    GraphicsTestsData::QuadPCN, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -133,7 +146,7 @@ VertexColored_Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuadsWithResource<Chimia::Draw3D::VertexPCT>(
-    GraphicsTestsData::QuadPCT, *g_referenceTexture);
+    GraphicsTestsData::QuadPCT, *g_referenceTexture, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -148,7 +161,7 @@ VertexColored_Lit_Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   GraphicsTestsData::DrawAllQuadsWithResource<Chimia::Draw3D::VertexPCNT>(
-    GraphicsTestsData::QuadPCNT, *g_referenceTexture);
+    GraphicsTestsData::QuadPCNT, *g_referenceTexture, FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
@@ -162,10 +175,12 @@ VertexColored_Lit_Textured(Window& win)
 // ----------------------------------------------------------------------------
 
 void
-TestImmediateModeTriangles(const std::string& testName, Window& window)
+TestImmediateModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
+                           Window& window)
 {
-  if (!testName.empty()) {
-    Scenarios::g_testName = testName;
+  Scenarios::g_testInfo = testInfo;
+  if (Scenarios::g_testInfo.testName.empty()) {
+    Scenarios::g_testInfo.testName = "testCommon";
   }
 
   Scenarios::Setup();

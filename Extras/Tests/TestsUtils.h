@@ -12,4 +12,12 @@ GetTestingDirectory();
 
 void
 ExpectImage(const std::string& imageFileName);
+
+namespace Development {
+void
+ActivateRGBImageLogging();
+
+void
+ActivateRGBAImageLogging();
+}
 }

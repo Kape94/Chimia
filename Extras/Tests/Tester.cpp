@@ -33,6 +33,19 @@ Tester::Tester(const std::string& workspaceDir, const Window& window)
 // ----------------------------------------------------------------------------
 
 void
+Tester::ExpectImage(const std::string& goldenImagePath) const
+{
+  const bool shouldLogImages = m_imageLoggingMode == eImageLoggingMode::OFF;
+  if (shouldLogImages) {
+    LogImage(goldenImagePath);
+  } else {
+    TakeScreenshotAndAssert(goldenImagePath);
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void
 Tester::TakeScreenshotAndAssert(const std::string& goldenImagePath) const
 {
   const Chimia::Media::ImageFormat format =
@@ -111,6 +124,33 @@ std::string
 Tester::GetWorkspaceDir() const
 {
   return m_workspaceDir;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Tester::SetImageLoggingMode(const Tester::eImageLoggingMode loggingMode)
+{
+  m_imageLoggingMode = loggingMode;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+Tester::LogImage(const std::string& imagePath) const
+{
+  const std::string fileName = ExtrasUtils::GetFileName(imagePath);
+
+  switch (m_imageLoggingMode) {
+    case eImageLoggingMode::RGB:
+      ExtrasUtils::SaveRGBScreenshot(m_window, fileName);
+      break;
+    case eImageLoggingMode::RGBA:
+      ExtrasUtils::SaveRGBAScreenshot(m_window, fileName);
+      break;
+    default:
+      break;
+  }
 }
 
 // ----------------------------------------------------------------------------

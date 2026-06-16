@@ -289,3 +289,17 @@ ExtrasUtils::GetFileNameFormat(const std::string& fileName)
 }
 
 // ----------------------------------------------------------------------------
+
+std::string
+ExtrasUtils::GetFileName(const std::string& filePath)
+{
+  const size_t lastSlashIndex = filePath.rfind('/');
+  if (lastSlashIndex != std::string::npos) {
+    const size_t afterSlashIndex = lastSlashIndex + 1;
+    return std::string(filePath.begin() + afterSlashIndex, filePath.end());
+  }
+
+  return filePath;
+}
+
+// ----------------------------------------------------------------------------
