@@ -6,6 +6,7 @@ include(../CMakeTestsUtils.cmake)
 
 add_library(GraphicsTestsDeps
     Common/GraphicsTestsData.cpp
+    Common/QuadsDrawingTest.cpp
     Common/TestImmediateModeTriangles.cpp
 )
 
