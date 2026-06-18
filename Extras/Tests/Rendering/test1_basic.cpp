@@ -58,7 +58,7 @@ const unsigned indexDataNItems = 3;
 int
 main(int argc, char** argv)
 {
-  Window win(1280, 1080, "Rendering test #1");
+  Window win(800, 600, "Rendering test #1");
 
   TestsUtils::InitTesting(argv, win);
 
