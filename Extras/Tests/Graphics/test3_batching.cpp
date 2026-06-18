@@ -2,6 +2,7 @@
 #include "Draw3D/Draw3D.h"
 
 #include "Draw3D/Types.h"
+#include "QuadsDrawingFixture.h"
 #include "Utils/Window.h"
 
 #include "TestTrianglesDrawing.h"
@@ -40,15 +41,28 @@ SetBatchSizes(unsigned initialSize, unsigned maximumSize)
 }
 
 TrianglesDrawingTestInfo
-TestWithoutFlush(const std::string& testName)
+TestImmediateWithoutFlush(const std::string& testName)
 {
   return { testName, 1000 };
 }
 
 TrianglesDrawingTestInfo
-TestWithFlush(const std::string& testName, const unsigned flushOnEvery)
+TestImmediateWithFlush(const std::string& testName, const unsigned flushOnEvery)
 {
   return { testName, flushOnEvery };
+}
+
+TrianglesDrawingTestInfo
+TestRetained(const std::string& testName)
+{
+  /*In this case we're interested in testing only the rendering after the
+   * retained quads are added, that's why we request the test to not verify
+   * (take screenshots and assert) the screen after removing the retained
+   * elements, and also specify the flushOnEvery in a way that it just takes a
+   * single screenshot after we add all the quads*/
+  const unsigned flushOnEvery = QuadsDrawingFixture::NQuads();
+  const bool shouldVerifyRetainedRemovals = false;
+  return { testName, flushOnEvery, shouldVerifyRetainedRemovals };
 }
 
 void
@@ -58,7 +72,8 @@ BatchSize1Immediate(Window& win)
 
   Chimia::Draw3D::Restart();
 
-  TestImmediateModeTriangles(TestWithoutFlush("test3_batchSize1"), win);
+  TestImmediateModeTriangles(TestImmediateWithoutFlush("test3_batchSize1"),
+                             win);
 }
 
 void
@@ -68,7 +83,8 @@ BatchSize3Immediate(Window& win)
 
   Chimia::Draw3D::Restart();
 
-  TestImmediateModeTriangles(TestWithoutFlush("test3_batchSize3"), win);
+  TestImmediateModeTriangles(TestImmediateWithoutFlush("test3_batchSize3"),
+                             win);
 }
 
 void
@@ -78,7 +94,38 @@ ElasticBatchImmediate(Window& win)
 
   Chimia::Draw3D::Restart();
 
-  TestImmediateModeTriangles(TestWithFlush("test3_batchSizeElastic", 2), win);
+  TestImmediateModeTriangles(
+    TestImmediateWithFlush("test3_batchSizeElastic", 2), win);
+}
+
+void
+BatchSize1Retained(Window& win)
+{
+  SetBatchSizes(1, 1);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeTriangles(TestRetained("test3_batchSize1"), win);
+}
+
+void
+BatchSize3Retained(Window& win)
+{
+  SetBatchSizes(3, 3);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeTriangles(TestRetained("test3_batchSize3"), win);
+}
+
+void
+ElasticBatchRetained(Window& win)
+{
+  SetBatchSizes(1, 100);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeTriangles(TestRetained("test3_batchSizeElastic"), win);
 }
 
 }
@@ -97,6 +144,9 @@ main(int argc, char** argv)
   Scenarios::BatchSize1Immediate(win);
   Scenarios::BatchSize3Immediate(win);
   Scenarios::ElasticBatchImmediate(win);
+  Scenarios::BatchSize1Retained(win);
+  Scenarios::BatchSize3Retained(win);
+  Scenarios::ElasticBatchRetained(win);
 
   return 0;
 }
