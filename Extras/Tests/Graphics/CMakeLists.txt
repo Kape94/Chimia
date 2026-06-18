@@ -45,3 +45,10 @@ add_executable(Test_Graphics_3_batching test3_batching.cpp)
 target_link_libraries(Test_Graphics_3_batching PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_3_batching)
 copy_assets_dir(Test_Graphics_3_batching)
+
+# 4) Triangles in retained mode
+
+add_executable(Test_Graphics_4_trianglesRetained test4_trianglesRetained.cpp)
+target_link_libraries(Test_Graphics_4_trianglesRetained PRIVATE GraphicsTestsDeps)
+copy_golden_artifacts_dir(Test_Graphics_4_trianglesRetained)
+copy_assets_dir(Test_Graphics_4_trianglesRetained)

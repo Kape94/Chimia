@@ -29,7 +29,12 @@ main(int argc, char** argv)
     { "Graphics: #2 immediate mode triangles",
       "Graphics/Test_Graphics_2_trianglesImmediate" },
     { "Graphics: #3 batching", "Graphics/Test_Graphics_3_batching" },
+    { "Graphics: #4 retained mode triangles",
+      "Graphics/Test_Graphics_4_trianglesRetained" },
   };
+
+  const std::string failText = "[\033[1;31m FAIL \033[0m ]";
+  const std::string passText = "[\033[1;32m PASS \033[0m ]";
 
   const size_t nTests = testCases.size();
   std::vector<std::string> failedTests;
@@ -43,7 +48,7 @@ main(int argc, char** argv)
     const std::string testCommand = runnerPath + testApp;
     const int returnCode = std::system(testCommand.c_str());
 
-    std::string testStatus = returnCode != 0 ? "[FAIL]" : "[PASS]";
+    std::string testStatus = returnCode != 0 ? failText : passText;
     std::cout << testStatus << "\t" << testName << "\n\n";
 
     if (returnCode != 0) {

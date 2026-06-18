@@ -15,20 +15,37 @@
 
 template<typename QuadLayout>
 void
-DrawAllQuads(const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
-             unsigned flushOnEvery = 1000)
+DrawAllQuadsCommon(
+  const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+  unsigned flushOnEvery,
+  const std::function<void(const QuadLayout& v1,
+                           const QuadLayout& v2,
+                           const QuadLayout& v3)>& drawTriangle)
 {
   const size_t nQuads = GraphicsTestsData::NQuads();
   for (size_t i = 0; i < nQuads; ++i) {
     auto quad = getQuad(i);
 
-    Chimia::Draw3D::Triangle(quad[0], quad[1], quad[2]);
-    Chimia::Draw3D::Triangle(quad[2], quad[3], quad[0]);
+    drawTriangle(quad[0], quad[1], quad[2]);
+    drawTriangle(quad[2], quad[3], quad[0]);
 
     if ((i + 1) % flushOnEvery == 0) {
       Chimia::Draw3D::Flush();
     }
   }
+}
+
+template<typename QuadLayout>
+void
+DrawAllQuads(const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+             unsigned flushOnEvery = 1000)
+{
+  DrawAllQuadsCommon<QuadLayout>(
+    getQuad,
+    flushOnEvery,
+    [](const QuadLayout& v1, const QuadLayout& v2, const QuadLayout& v3) {
+      Chimia::Draw3D::Triangle(v1, v2, v3);
+    });
 }
 
 template<typename QuadLayout, typename Resource>
@@ -38,22 +55,18 @@ DrawAllQuadsWithResource(
   const Resource& resource,
   unsigned flushOnEvery = 1000)
 {
-  const size_t nQuads = GraphicsTestsData::NQuads();
-  for (size_t i = 0; i < nQuads; ++i) {
-    auto quad = getQuad(i);
-
-    Chimia::Draw3D::Triangle(quad[0], quad[1], quad[2], resource);
-    Chimia::Draw3D::Triangle(quad[2], quad[3], quad[0], resource);
-
-    if ((i + 1) % flushOnEvery == 0) {
-      Chimia::Draw3D::Flush();
-    }
-  }
+  DrawAllQuadsCommon<QuadLayout>(
+    getQuad,
+    flushOnEvery,
+    [resource](
+      const QuadLayout& v1, const QuadLayout& v2, const QuadLayout& v3) {
+      Chimia::Draw3D::Triangle(v1, v2, v3, resource);
+    });
 }
 
 // ----------------------------------------------------------------------------
 
-namespace Scenarios {
+namespace TriangleImmediateScenarios {
 
 void
 VertexColored(Window& win)
@@ -160,6 +173,161 @@ VertexColored_Lit_Textured(Window& win)
 
 }
 
+std::function<Chimia::Draw3D::TriangleMeshID(
+  const std::vector<Chimia::Draw3D::VertexPC>& v)>
+  f;
+
+template<typename QuadLayout>
+void
+AddAndRemoveAllQuadsCommon(
+  const std::string& mainArtifactName,
+  Window& win,
+  const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+  unsigned flushOnEvery,
+  std::function<Chimia::Draw3D::TriangleMeshID(const std::vector<QuadLayout>&)>
+    addTriangle)
+{
+  std::vector<Chimia::Draw3D::TriangleMeshID> created;
+
+  const size_t nQuads = GraphicsTestsData::NQuads();
+  unsigned stepNumber = 0;
+
+  for (size_t i = 0; i < nQuads; ++i) {
+    Chimia::Draw3D::ClearScreen();
+
+    auto quad = getQuad(i);
+
+    const auto newRetainedQuad =
+      addTriangle({ quad[0], quad[1], quad[2], quad[2], quad[3], quad[0] });
+    created.push_back(newRetainedQuad);
+
+    Chimia::Draw3D::Flush();
+    win.Swap();
+
+    const std::string imageName =
+      mainArtifactName + std::to_string(++stepNumber) + ".png";
+    TestsUtils::ExpectImage(QuadsDrawingTest::FullArtifactName(imageName));
+  }
+
+  for (const auto& retainedQuad : created) {
+    Chimia::Draw3D::ClearScreen();
+    Chimia::Draw3D::DeleteRetainedTriangles(retainedQuad);
+
+    Chimia::Draw3D::Flush();
+    win.Swap();
+
+    const std::string imageName =
+      mainArtifactName + std::to_string(++stepNumber) + ".png";
+    TestsUtils::ExpectImage(QuadsDrawingTest::FullArtifactName(imageName));
+  }
+}
+
+template<typename QuadLayout>
+void
+AddAndRemoveAllQuads(
+  const std::string& mainArtifactName,
+  Window& win,
+  const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+  unsigned flushOnEvery = 1000)
+{
+  AddAndRemoveAllQuadsCommon<QuadLayout>(
+    mainArtifactName,
+    win,
+    getQuad,
+    flushOnEvery,
+    [](const std::vector<QuadLayout>& v) {
+      return Chimia::Draw3D::AddRetainedTriangles(v);
+    });
+}
+
+template<typename QuadLayout, typename Resource>
+void
+AddAndRemoveAllQuadsWithResource(
+  const std::string& mainArtifactName,
+  Window& win,
+  const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+  const Resource& resource,
+  unsigned flushOnEvery = 1000)
+{
+  AddAndRemoveAllQuadsCommon<QuadLayout>(
+    mainArtifactName,
+    win,
+    getQuad,
+    flushOnEvery,
+    [resource](const std::vector<QuadLayout>& v) {
+      return Chimia::Draw3D::AddRetainedTriangles(v, resource);
+    });
+}
+
+namespace TriangleRetainedScenarios {
+void
+VertexColored(Window& win)
+{
+  const std::string mainArtifactName = "Retained_vertexColored_step";
+
+  AddAndRemoveAllQuads<Chimia::Draw3D::VertexPC>(
+    mainArtifactName, win, GraphicsTestsData::QuadPC);
+}
+
+void
+NormalWithMaterial(Window& win)
+{
+  const std::string mainArtifactName = "Retained_normalWithMaterial_step";
+
+  AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPN>(
+    mainArtifactName,
+    win,
+    GraphicsTestsData::QuadPN,
+    QuadsDrawingTest::ReferenceMaterial());
+}
+
+void
+Textured(Window& win)
+{
+  const std::string mainArtifactName = "Retained_textured_step";
+
+  AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPT>(
+    mainArtifactName,
+    win,
+    GraphicsTestsData::QuadPT,
+    QuadsDrawingTest::ReferenceTexture());
+}
+
+void
+VertexColoredAndLit(Window& win)
+{
+  const std::string mainArtifactName = "Retained_vertexColoredAndLit_step";
+
+  AddAndRemoveAllQuads<Chimia::Draw3D::VertexPCN>(
+    mainArtifactName, win, GraphicsTestsData::QuadPCN);
+}
+
+void
+VertexColoredAndTextured(Window& win)
+{
+  const std::string mainArtifactName = "Retained_vertexColoredAndTextured_step";
+
+  AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPCT>(
+    mainArtifactName,
+    win,
+    GraphicsTestsData::QuadPCT,
+    QuadsDrawingTest::ReferenceTexture());
+}
+
+void
+VertexColoredLitAndTextured(Window& win)
+{
+  const std::string mainArtifactName =
+    "Retained_vertexColoredLitAndTextured_step";
+
+  AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPCNT>(
+    mainArtifactName,
+    win,
+    GraphicsTestsData::QuadPCNT,
+    QuadsDrawingTest::ReferenceTexture());
+}
+}
+
 // ----------------------------------------------------------------------------
 
 void
@@ -168,12 +336,28 @@ TestImmediateModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
 {
   QuadsDrawingTest::Init(testInfo);
 
-  Scenarios::VertexColored(window);
-  Scenarios::NormalMaterialColored(window);
-  Scenarios::Textured(window);
-  Scenarios::VertexColored_Lit(window);
-  Scenarios::VertexColored_Textured(window);
-  Scenarios::VertexColored_Lit_Textured(window);
+  TriangleImmediateScenarios::VertexColored(window);
+  TriangleImmediateScenarios::NormalMaterialColored(window);
+  TriangleImmediateScenarios::Textured(window);
+  TriangleImmediateScenarios::VertexColored_Lit(window);
+  TriangleImmediateScenarios::VertexColored_Textured(window);
+  TriangleImmediateScenarios::VertexColored_Lit_Textured(window);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TestRetainedModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
+                          Window& window)
+{
+  QuadsDrawingTest::Init(testInfo);
+
+  TriangleRetainedScenarios::VertexColored(window);
+  TriangleRetainedScenarios::NormalWithMaterial(window);
+  TriangleRetainedScenarios::Textured(window);
+  TriangleRetainedScenarios::VertexColoredAndLit(window);
+  TriangleRetainedScenarios::VertexColoredAndTextured(window);
+  TriangleRetainedScenarios::VertexColoredLitAndTextured(window);
 }
 
 // ----------------------------------------------------------------------------

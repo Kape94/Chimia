@@ -35,7 +35,7 @@ Tester::Tester(const std::string& workspaceDir, const Window& window)
 void
 Tester::ExpectImage(const std::string& goldenImagePath) const
 {
-  const bool shouldLogImages = m_imageLoggingMode == eImageLoggingMode::OFF;
+  const bool shouldLogImages = m_imageLoggingMode != eImageLoggingMode::OFF;
   if (shouldLogImages) {
     LogImage(goldenImagePath);
   } else {
@@ -140,6 +140,7 @@ void
 Tester::LogImage(const std::string& imagePath) const
 {
   const std::string fileName = ExtrasUtils::GetFileName(imagePath);
+  std::cout << "[DEVELOPMENT] Logging image " << fileName << "\n";
 
   switch (m_imageLoggingMode) {
     case eImageLoggingMode::RGB:
