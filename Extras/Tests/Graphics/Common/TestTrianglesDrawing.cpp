@@ -4,6 +4,7 @@
 #include "Draw3D/Triangle.h"
 #include "Draw3D/Types.h"
 
+#include "QuadsDrawingFixture.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -187,20 +188,19 @@ VertexColored_Lit_Textured(Window& win)
 // ----------------------------------------------------------------------------
 
 template<typename QuadLayout>
-void
-AddAndRemoveAllQuadsCommon(
+std::vector<Chimia::Draw3D::TriangleMeshID>
+AddAllQuadsCommon(
   const std::string& mainArtifactName,
   Window& win,
   const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
   unsigned flushOnEvery,
   std::function<Chimia::Draw3D::TriangleMeshID(const std::vector<QuadLayout>&)>
-    addTriangle)
+    addTriangle,
+  unsigned& stepNumber)
 {
   std::vector<Chimia::Draw3D::TriangleMeshID> created;
 
   const size_t nQuads = QuadsDrawingFixture::NQuads();
-  unsigned stepNumber = 0;
-
   for (size_t i = 0; i < nQuads; ++i) {
     Chimia::Draw3D::ClearScreen();
 
@@ -210,25 +210,64 @@ AddAndRemoveAllQuadsCommon(
       addTriangle({ quad[0], quad[1], quad[2], quad[2], quad[3], quad[0] });
     created.push_back(newRetainedQuad);
 
-    Chimia::Draw3D::Flush();
-    win.Swap();
+    if ((i + 1) % flushOnEvery == 0) {
+      Chimia::Draw3D::Flush();
+      win.Swap();
 
-    const std::string imageName =
-      mainArtifactName + std::to_string(++stepNumber) + ".png";
-    TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
+      const std::string imageName =
+        mainArtifactName + std::to_string(++stepNumber) + ".png";
+      TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
+    }
   }
 
-  for (const auto& retainedQuad : created) {
+  return created;
+}
+
+// ----------------------------------------------------------------------------
+
+template<typename QuadLayout>
+void
+RemoveQuadsCommon(
+  const std::string& mainArtifactName,
+  Window& win,
+  const std::vector<Chimia::Draw3D::TriangleMeshID>& createdMeshes,
+  const bool shouldVerifyRetainedRemovals,
+  unsigned& stepNumber)
+{
+  for (const auto& retainedQuad : createdMeshes) {
     Chimia::Draw3D::ClearScreen();
     Chimia::Draw3D::DeleteRetainedTriangles(retainedQuad);
 
-    Chimia::Draw3D::Flush();
-    win.Swap();
+    if (shouldVerifyRetainedRemovals) {
+      Chimia::Draw3D::Flush();
+      win.Swap();
 
-    const std::string imageName =
-      mainArtifactName + std::to_string(++stepNumber) + ".png";
-    TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
+      const std::string imageName =
+        mainArtifactName + std::to_string(++stepNumber) + ".png";
+      TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
+    }
   }
+}
+
+// ----------------------------------------------------------------------------
+
+template<typename QuadLayout>
+void
+AddAndRemoveAllQuadsCommon(
+  const std::string& mainArtifactName,
+  Window& win,
+  const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
+  const unsigned flushOnEvery,
+  const bool shouldVerifyRetainedRemovals,
+  std::function<Chimia::Draw3D::TriangleMeshID(const std::vector<QuadLayout>&)>
+    addTriangle)
+{
+  unsigned stepNumber = 0;
+  const std::vector<Chimia::Draw3D::TriangleMeshID> created = AddAllQuadsCommon(
+    mainArtifactName, win, getQuad, flushOnEvery, addTriangle, stepNumber);
+
+  RemoveQuadsCommon<QuadLayout>(
+    mainArtifactName, win, created, shouldVerifyRetainedRemovals, stepNumber);
 }
 
 // ----------------------------------------------------------------------------
@@ -239,13 +278,15 @@ AddAndRemoveAllQuads(
   const std::string& mainArtifactName,
   Window& win,
   const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
-  unsigned flushOnEvery = 1000)
+  unsigned flushOnEvery,
+  const bool shouldVerifyRetainedRemovals)
 {
   AddAndRemoveAllQuadsCommon<QuadLayout>(
     mainArtifactName,
     win,
     getQuad,
     flushOnEvery,
+    shouldVerifyRetainedRemovals,
     [](const std::vector<QuadLayout>& v) {
       return Chimia::Draw3D::AddRetainedTriangles(v);
     });
@@ -260,13 +301,15 @@ AddAndRemoveAllQuadsWithResource(
   Window& win,
   const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
   const Resource& resource,
-  unsigned flushOnEvery = 1000)
+  unsigned flushOnEvery,
+  const bool shouldVerifyRetainedRemovals)
 {
   AddAndRemoveAllQuadsCommon<QuadLayout>(
     mainArtifactName,
     win,
     getQuad,
     flushOnEvery,
+    shouldVerifyRetainedRemovals,
     [resource](const std::vector<QuadLayout>& v) {
       return Chimia::Draw3D::AddRetainedTriangles(v, resource);
     });
@@ -284,7 +327,11 @@ VertexColored(Window& win)
   const std::string mainArtifactName = "Retained_vertexColored_step";
 
   AddAndRemoveAllQuads<Chimia::Draw3D::VertexPC>(
-    mainArtifactName, win, QuadsDrawingFixture::QuadPC);
+    mainArtifactName,
+    win,
+    QuadsDrawingFixture::QuadPC,
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 
 void
@@ -296,7 +343,9 @@ NormalWithMaterial(Window& win)
     mainArtifactName,
     win,
     QuadsDrawingFixture::QuadPN,
-    QuadsDrawingFixture::ReferenceMaterial());
+    QuadsDrawingFixture::ReferenceMaterial(),
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 
 void
@@ -308,7 +357,9 @@ Textured(Window& win)
     mainArtifactName,
     win,
     QuadsDrawingFixture::QuadPT,
-    QuadsDrawingFixture::ReferenceTexture());
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 
 void
@@ -317,7 +368,11 @@ VertexColoredAndLit(Window& win)
   const std::string mainArtifactName = "Retained_vertexColoredAndLit_step";
 
   AddAndRemoveAllQuads<Chimia::Draw3D::VertexPCN>(
-    mainArtifactName, win, QuadsDrawingFixture::QuadPCN);
+    mainArtifactName,
+    win,
+    QuadsDrawingFixture::QuadPCN,
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 
 void
@@ -329,7 +384,9 @@ VertexColoredAndTextured(Window& win)
     mainArtifactName,
     win,
     QuadsDrawingFixture::QuadPCT,
-    QuadsDrawingFixture::ReferenceTexture());
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 
 void
@@ -342,7 +399,9 @@ VertexColoredLitAndTextured(Window& win)
     mainArtifactName,
     win,
     QuadsDrawingFixture::QuadPCNT,
-    QuadsDrawingFixture::ReferenceTexture());
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery(),
+    QuadsDrawingFixture::ShouldVerifyRetainedRemovals());
 }
 }
 

@@ -19,7 +19,8 @@ main(int argc, char** argv)
 
   TrianglesDrawingTestInfo testInfo;
   testInfo.testName = "test4";
-  testInfo.flushOnEvery = 1000;
+  testInfo.flushOnEvery = 1;
+  testInfo.shouldVerifyRetainedRemovals = true;
   TestRetainedModeTriangles(testInfo, win);
 
   return 0;

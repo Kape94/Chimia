@@ -10,6 +10,7 @@ struct TrianglesDrawingTestInfo
 {
   std::string testName = "";
   unsigned flushOnEvery = 1000;
+  bool shouldVerifyRetainedRemovals = true;
 };
 
 // ----------------------------------------------------------------------------
@@ -23,6 +24,9 @@ FullArtifactName(const std::string& artifactName);
 
 unsigned
 FlushOnEvery();
+
+bool
+ShouldVerifyRetainedRemovals();
 
 const Chimia::Draw3D::MaterialID&
 ReferenceMaterial();

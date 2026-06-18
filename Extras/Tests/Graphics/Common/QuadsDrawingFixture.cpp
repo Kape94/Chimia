@@ -261,6 +261,12 @@ QuadsDrawingFixture::FlushOnEvery()
   return Internal::g_testInfo.flushOnEvery;
 }
 
+bool
+QuadsDrawingFixture::ShouldVerifyRetainedRemovals()
+{
+  return Internal::g_testInfo.shouldVerifyRetainedRemovals;
+}
+
 // ----------------------------------------------------------------------------
 
 const Chimia::Draw3D::MaterialID&
