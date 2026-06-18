@@ -1,4 +1,4 @@
-#include "TestImmediateModeTriangles.h"
+#include "TestTrianglesDrawing.h"
 
 #include "Draw3D/Draw3D.h"
 #include "Draw3D/Triangle.h"
@@ -6,11 +6,11 @@
 
 #include "Utils/Window.h"
 
-#include "GraphicsTestsData.h"
-#include "QuadsDrawingTest.h"
-
 #include "TestsUtils.h"
 
+// ----------------------------------------------------------------------------
+// Immediate mode
+// Helper functions
 // ----------------------------------------------------------------------------
 
 template<typename QuadLayout>
@@ -22,7 +22,7 @@ DrawAllQuadsCommon(
                            const QuadLayout& v2,
                            const QuadLayout& v3)>& drawTriangle)
 {
-  const size_t nQuads = GraphicsTestsData::NQuads();
+  const size_t nQuads = QuadsDrawingFixture::NQuads();
   for (size_t i = 0; i < nQuads; ++i) {
     auto quad = getQuad(i);
 
@@ -34,6 +34,8 @@ DrawAllQuadsCommon(
     }
   }
 }
+
+// ----------------------------------------------------------------------------
 
 template<typename QuadLayout>
 void
@@ -47,6 +49,8 @@ DrawAllQuads(const std::function<std::vector<QuadLayout>(size_t)>& getQuad,
       Chimia::Draw3D::Triangle(v1, v2, v3);
     });
 }
+
+// ----------------------------------------------------------------------------
 
 template<typename QuadLayout, typename Resource>
 void
@@ -65,6 +69,9 @@ DrawAllQuadsWithResource(
 }
 
 // ----------------------------------------------------------------------------
+// Immediate mode
+// Scenarios
+// ----------------------------------------------------------------------------
 
 namespace TriangleImmediateScenarios {
 
@@ -73,15 +80,15 @@ VertexColored(Window& win)
 {
   Chimia::Draw3D::ClearScreen();
 
-  DrawAllQuads<Chimia::Draw3D::VertexPC>(GraphicsTestsData::QuadPC,
-                                         QuadsDrawingTest::FlushOnEvery());
+  DrawAllQuads<Chimia::Draw3D::VertexPC>(QuadsDrawingFixture::QuadPC,
+                                         QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
   TestsUtils::ExpectImage(
-    QuadsDrawingTest::FullArtifactName("vertexColored.png"));
+    QuadsDrawingFixture::FullArtifactName("vertexColored.png"));
 }
 
 void
@@ -90,16 +97,16 @@ NormalMaterialColored(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   DrawAllQuadsWithResource<Chimia::Draw3D::VertexPN>(
-    GraphicsTestsData::QuadPN,
-    QuadsDrawingTest::ReferenceMaterial(),
-    QuadsDrawingTest::FlushOnEvery());
+    QuadsDrawingFixture::QuadPN,
+    QuadsDrawingFixture::ReferenceMaterial(),
+    QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
   TestsUtils::ExpectImage(
-    QuadsDrawingTest::FullArtifactName("materialColoredLit.png"));
+    QuadsDrawingFixture::FullArtifactName("materialColoredLit.png"));
 }
 
 void
@@ -108,15 +115,16 @@ Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   DrawAllQuadsWithResource<Chimia::Draw3D::VertexPT>(
-    GraphicsTestsData::QuadPT,
-    QuadsDrawingTest::ReferenceTexture(),
-    QuadsDrawingTest::FlushOnEvery());
+    QuadsDrawingFixture::QuadPT,
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
-  TestsUtils::ExpectImage(QuadsDrawingTest::FullArtifactName("textured.png"));
+  TestsUtils::ExpectImage(
+    QuadsDrawingFixture::FullArtifactName("textured.png"));
 }
 
 void
@@ -124,15 +132,15 @@ VertexColored_Lit(Window& win)
 {
   Chimia::Draw3D::ClearScreen();
 
-  DrawAllQuads<Chimia::Draw3D::VertexPCN>(GraphicsTestsData::QuadPCN,
-                                          QuadsDrawingTest::FlushOnEvery());
+  DrawAllQuads<Chimia::Draw3D::VertexPCN>(QuadsDrawingFixture::QuadPCN,
+                                          QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
   TestsUtils::ExpectImage(
-    QuadsDrawingTest::FullArtifactName("vertexColoredLit.png"));
+    QuadsDrawingFixture::FullArtifactName("vertexColoredLit.png"));
 }
 
 void
@@ -141,16 +149,16 @@ VertexColored_Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   DrawAllQuadsWithResource<Chimia::Draw3D::VertexPCT>(
-    GraphicsTestsData::QuadPCT,
-    QuadsDrawingTest::ReferenceTexture(),
-    QuadsDrawingTest::FlushOnEvery());
+    QuadsDrawingFixture::QuadPCT,
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
   TestsUtils::ExpectImage(
-    QuadsDrawingTest::FullArtifactName("vertexColoredTextured.png"));
+    QuadsDrawingFixture::FullArtifactName("vertexColoredTextured.png"));
 }
 
 void
@@ -159,23 +167,24 @@ VertexColored_Lit_Textured(Window& win)
   Chimia::Draw3D::ClearScreen();
 
   DrawAllQuadsWithResource<Chimia::Draw3D::VertexPCNT>(
-    GraphicsTestsData::QuadPCNT,
-    QuadsDrawingTest::ReferenceTexture(),
-    QuadsDrawingTest::FlushOnEvery());
+    QuadsDrawingFixture::QuadPCNT,
+    QuadsDrawingFixture::ReferenceTexture(),
+    QuadsDrawingFixture::FlushOnEvery());
 
   Chimia::Draw3D::Flush();
 
   win.Swap();
 
   TestsUtils::ExpectImage(
-    QuadsDrawingTest::FullArtifactName("vertexColoredLitTextured.png"));
+    QuadsDrawingFixture::FullArtifactName("vertexColoredLitTextured.png"));
 }
 
 }
 
-std::function<Chimia::Draw3D::TriangleMeshID(
-  const std::vector<Chimia::Draw3D::VertexPC>& v)>
-  f;
+// ----------------------------------------------------------------------------
+// Retained mode
+// Helper functions
+// ----------------------------------------------------------------------------
 
 template<typename QuadLayout>
 void
@@ -189,7 +198,7 @@ AddAndRemoveAllQuadsCommon(
 {
   std::vector<Chimia::Draw3D::TriangleMeshID> created;
 
-  const size_t nQuads = GraphicsTestsData::NQuads();
+  const size_t nQuads = QuadsDrawingFixture::NQuads();
   unsigned stepNumber = 0;
 
   for (size_t i = 0; i < nQuads; ++i) {
@@ -206,7 +215,7 @@ AddAndRemoveAllQuadsCommon(
 
     const std::string imageName =
       mainArtifactName + std::to_string(++stepNumber) + ".png";
-    TestsUtils::ExpectImage(QuadsDrawingTest::FullArtifactName(imageName));
+    TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
   }
 
   for (const auto& retainedQuad : created) {
@@ -218,9 +227,11 @@ AddAndRemoveAllQuadsCommon(
 
     const std::string imageName =
       mainArtifactName + std::to_string(++stepNumber) + ".png";
-    TestsUtils::ExpectImage(QuadsDrawingTest::FullArtifactName(imageName));
+    TestsUtils::ExpectImage(QuadsDrawingFixture::FullArtifactName(imageName));
   }
 }
+
+// ----------------------------------------------------------------------------
 
 template<typename QuadLayout>
 void
@@ -239,6 +250,8 @@ AddAndRemoveAllQuads(
       return Chimia::Draw3D::AddRetainedTriangles(v);
     });
 }
+
+// ----------------------------------------------------------------------------
 
 template<typename QuadLayout, typename Resource>
 void
@@ -259,6 +272,11 @@ AddAndRemoveAllQuadsWithResource(
     });
 }
 
+// ----------------------------------------------------------------------------
+// Retained mode
+// Scenarios
+// ----------------------------------------------------------------------------
+
 namespace TriangleRetainedScenarios {
 void
 VertexColored(Window& win)
@@ -266,7 +284,7 @@ VertexColored(Window& win)
   const std::string mainArtifactName = "Retained_vertexColored_step";
 
   AddAndRemoveAllQuads<Chimia::Draw3D::VertexPC>(
-    mainArtifactName, win, GraphicsTestsData::QuadPC);
+    mainArtifactName, win, QuadsDrawingFixture::QuadPC);
 }
 
 void
@@ -277,8 +295,8 @@ NormalWithMaterial(Window& win)
   AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPN>(
     mainArtifactName,
     win,
-    GraphicsTestsData::QuadPN,
-    QuadsDrawingTest::ReferenceMaterial());
+    QuadsDrawingFixture::QuadPN,
+    QuadsDrawingFixture::ReferenceMaterial());
 }
 
 void
@@ -289,8 +307,8 @@ Textured(Window& win)
   AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPT>(
     mainArtifactName,
     win,
-    GraphicsTestsData::QuadPT,
-    QuadsDrawingTest::ReferenceTexture());
+    QuadsDrawingFixture::QuadPT,
+    QuadsDrawingFixture::ReferenceTexture());
 }
 
 void
@@ -299,7 +317,7 @@ VertexColoredAndLit(Window& win)
   const std::string mainArtifactName = "Retained_vertexColoredAndLit_step";
 
   AddAndRemoveAllQuads<Chimia::Draw3D::VertexPCN>(
-    mainArtifactName, win, GraphicsTestsData::QuadPCN);
+    mainArtifactName, win, QuadsDrawingFixture::QuadPCN);
 }
 
 void
@@ -310,8 +328,8 @@ VertexColoredAndTextured(Window& win)
   AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPCT>(
     mainArtifactName,
     win,
-    GraphicsTestsData::QuadPCT,
-    QuadsDrawingTest::ReferenceTexture());
+    QuadsDrawingFixture::QuadPCT,
+    QuadsDrawingFixture::ReferenceTexture());
 }
 
 void
@@ -323,18 +341,18 @@ VertexColoredLitAndTextured(Window& win)
   AddAndRemoveAllQuadsWithResource<Chimia::Draw3D::VertexPCNT>(
     mainArtifactName,
     win,
-    GraphicsTestsData::QuadPCNT,
-    QuadsDrawingTest::ReferenceTexture());
+    QuadsDrawingFixture::QuadPCNT,
+    QuadsDrawingFixture::ReferenceTexture());
 }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-TestImmediateModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
+TestImmediateModeTriangles(const TrianglesDrawingTestInfo& testInfo,
                            Window& window)
 {
-  QuadsDrawingTest::Init(testInfo);
+  QuadsDrawingFixture::Init(testInfo);
 
   TriangleImmediateScenarios::VertexColored(window);
   TriangleImmediateScenarios::NormalMaterialColored(window);
@@ -347,10 +365,10 @@ TestImmediateModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
 // ----------------------------------------------------------------------------
 
 void
-TestRetainedModeTriangles(const ImmediateTrianglesTestInfo& testInfo,
+TestRetainedModeTriangles(const TrianglesDrawingTestInfo& testInfo,
                           Window& window)
 {
-  QuadsDrawingTest::Init(testInfo);
+  QuadsDrawingFixture::Init(testInfo);
 
   TriangleRetainedScenarios::VertexColored(window);
   TriangleRetainedScenarios::NormalWithMaterial(window);

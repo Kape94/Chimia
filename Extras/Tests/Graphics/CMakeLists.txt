@@ -5,9 +5,8 @@ include(../CMakeTestsUtils.cmake)
 # -----------------------------------------------------------------------------
 
 add_library(GraphicsTestsDeps
-    Common/GraphicsTestsData.cpp
-    Common/QuadsDrawingTest.cpp
-    Common/TestImmediateModeTriangles.cpp
+    Common/QuadsDrawingFixture.cpp
+    Common/TestTrianglesDrawing.cpp
 )
 
 target_include_directories(

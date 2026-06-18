@@ -4,7 +4,7 @@
 #include "Draw3D/Types.h"
 #include "Utils/Window.h"
 
-#include "TestImmediateModeTriangles.h"
+#include "TestTrianglesDrawing.h"
 
 #include "TestsUtils.h"
 
@@ -39,13 +39,13 @@ SetBatchSizes(unsigned initialSize, unsigned maximumSize)
   }
 }
 
-ImmediateTrianglesTestInfo
+TrianglesDrawingTestInfo
 TestWithoutFlush(const std::string& testName)
 {
   return { testName, 1000 };
 }
 
-ImmediateTrianglesTestInfo
+TrianglesDrawingTestInfo
 TestWithFlush(const std::string& testName, const unsigned flushOnEvery)
 {
   return { testName, flushOnEvery };

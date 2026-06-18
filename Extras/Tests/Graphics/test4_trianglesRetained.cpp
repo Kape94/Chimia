@@ -2,7 +2,7 @@
 
 #include "Utils/Window.h"
 
-#include "TestImmediateModeTriangles.h"
+#include "TestTrianglesDrawing.h"
 
 #include "TestsUtils.h"
 
@@ -17,7 +17,7 @@ main(int argc, char** argv)
 
   Chimia::Draw3D::Initialize();
 
-  ImmediateTrianglesTestInfo testInfo;
+  TrianglesDrawingTestInfo testInfo;
   testInfo.testName = "test4";
   testInfo.flushOnEvery = 1000;
   TestRetainedModeTriangles(testInfo, win);

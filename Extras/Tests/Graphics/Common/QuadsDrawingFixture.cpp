@@ -1,8 +1,18 @@
-#include "GraphicsTestsData.h"
+#include "QuadsDrawingFixture.h"
+
+#include "Draw3D/Illumination.h"
+#include "Draw3D/Resources.h"
+#include "Draw3D/Types.h"
+
+#include "Media/Image.h"
+
+#include "TestsUtils.h"
+
+#include <memory>
 
 // ----------------------------------------------------------------------------
 
-namespace GraphicsTestsDataInternals {
+namespace SampleData {
 std::vector<glm::vec3> quad1Positions{
   { -0.5f, -0.5f, 0.0f },
   { 0.5f, -0.5f, 0.0f },
@@ -62,23 +72,27 @@ std::vector<std::vector<glm::vec4>> quadColors{ quad1Colors,
                                                 quad3Colors };
 }
 
-using namespace GraphicsTestsDataInternals;
+// ----------------------------------------------------------------------------
 
 std::vector<Chimia::Draw3D::VertexPCNT>
-GraphicsTestsData::QuadPCNT(size_t quadNumber)
+QuadsDrawingFixture::QuadPCNT(size_t quadNumber)
 {
   const size_t nQuads = NQuads();
   auto vertex = [quadNumber, nQuads](size_t i) {
-    return Chimia::Draw3D::VertexPCNT{ quadPositions[quadNumber % nQuads][i],
-                                       quadColors[quadNumber % nQuads][i],
-                                       quadNormals[i],
-                                       quadTexCoords[i] };
+    return Chimia::Draw3D::VertexPCNT{
+      SampleData::quadPositions[quadNumber % nQuads][i],
+      SampleData::quadColors[quadNumber % nQuads][i],
+      SampleData::quadNormals[i],
+      SampleData::quadTexCoords[i]
+    };
   };
   return { vertex(0), vertex(1), vertex(2), vertex(3) };
 }
 
+// ----------------------------------------------------------------------------
+
 std::vector<Chimia::Draw3D::VertexPC>
-GraphicsTestsData::QuadPC(size_t quadNumber)
+QuadsDrawingFixture::QuadPC(size_t quadNumber)
 {
   auto quad = QuadPCNT(quadNumber);
   auto vertex = [quad](size_t i) {
@@ -90,8 +104,10 @@ GraphicsTestsData::QuadPC(size_t quadNumber)
   return { vertex(0), vertex(1), vertex(2), vertex(3) };
 }
 
+// ----------------------------------------------------------------------------
+
 std::vector<Chimia::Draw3D::VertexPN>
-GraphicsTestsData::QuadPN(size_t quadNumber)
+QuadsDrawingFixture::QuadPN(size_t quadNumber)
 {
   auto quad = QuadPCNT(quadNumber);
   auto vertex = [quad](size_t i) {
@@ -103,8 +119,10 @@ GraphicsTestsData::QuadPN(size_t quadNumber)
   return { vertex(0), vertex(1), vertex(2), vertex(3) };
 }
 
+// ----------------------------------------------------------------------------
+
 std::vector<Chimia::Draw3D::VertexPT>
-GraphicsTestsData::QuadPT(size_t quadNumber)
+QuadsDrawingFixture::QuadPT(size_t quadNumber)
 {
   auto quad = QuadPCNT(quadNumber);
   auto vertex = [quad](size_t i) {
@@ -116,8 +134,10 @@ GraphicsTestsData::QuadPT(size_t quadNumber)
   return { vertex(0), vertex(1), vertex(2), vertex(3) };
 }
 
+// ----------------------------------------------------------------------------
+
 std::vector<Chimia::Draw3D::VertexPCN>
-GraphicsTestsData::QuadPCN(size_t quadNumber)
+QuadsDrawingFixture::QuadPCN(size_t quadNumber)
 {
   auto quad = QuadPCNT(quadNumber);
   auto vertex = [quad](size_t i) {
@@ -130,8 +150,10 @@ GraphicsTestsData::QuadPCN(size_t quadNumber)
   return { vertex(0), vertex(1), vertex(2), vertex(3) };
 }
 
+// ----------------------------------------------------------------------------
+
 std::vector<Chimia::Draw3D::VertexPCT>
-GraphicsTestsData::QuadPCT(size_t quadNumber)
+QuadsDrawingFixture::QuadPCT(size_t quadNumber)
 {
   auto quad = QuadPCNT(quadNumber);
   auto vertex = [quad](size_t i) {
@@ -147,9 +169,112 @@ GraphicsTestsData::QuadPCT(size_t quadNumber)
 // ----------------------------------------------------------------------------
 
 size_t
-GraphicsTestsData::NQuads()
+QuadsDrawingFixture::NQuads()
 {
-  return std::max(quadPositions.size(), quadColors.size());
+  return std::max(SampleData::quadPositions.size(),
+                  SampleData::quadColors.size());
+}
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+namespace Internal {
+
+std::unique_ptr<Chimia::Draw3D::MaterialID> g_referenceMaterial = nullptr;
+std::unique_ptr<Chimia::Draw3D::TextureID> g_referenceTexture = nullptr;
+TrianglesDrawingTestInfo g_testInfo;
+
+bool g_isSettedUp = false;
+
+void
+ConfigureDefaultLightSource()
+{
+  glm::vec3 lightPos{ 0.0f, 5.0f, -5.0f };
+
+  const glm::vec3 zero{ 0.0f, 0.0f, 0.0f };
+  const glm::vec3 lightDir = zero - lightPos;
+
+  Chimia::Draw3D::DirectionalLight dLight{
+    lightDir,
+    { { 0.2f, 0.2f, 0.2f }, { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f } }
+  };
+
+  Chimia::Draw3D::EnableLights(true);
+  Chimia::Draw3D::SetLight(dLight);
+}
+
+void
+CreateReferenceResources()
+{
+  g_referenceMaterial.reset(
+    new Chimia::Draw3D::MaterialID(Chimia::Draw3D::CreateMaterial(
+      { 0.0f, 0.0f, 0.2f }, { 0.0f, 0.0f, 0.7f }, { 1.0f, 1.0f, 1.0f }, 32)));
+
+  const std::string assetsDir = TestsUtils::GetTestingDirectory() + "/assets/";
+  Chimia::Media::Image texData(assetsDir + "box.jpg");
+
+  g_referenceTexture.reset(
+    new Chimia::Draw3D::TextureID(Chimia::Draw3D::CreateTexture(
+      texData.RawData(), texData.Width(), texData.Height())));
+}
+
+void
+Setup()
+{
+  if (g_isSettedUp) {
+    return;
+  }
+
+  CreateReferenceResources();
+  ConfigureDefaultLightSource();
+  g_isSettedUp = true;
+}
+
+}
+
+// ----------------------------------------------------------------------------
+
+void
+QuadsDrawingFixture::Init(const TrianglesDrawingTestInfo& testInfo)
+{
+  Internal::g_testInfo = testInfo;
+  if (Internal::g_testInfo.testName.empty()) {
+    Internal::g_testInfo.testName = "testCommon";
+  }
+
+  Internal::Setup();
+}
+
+// ----------------------------------------------------------------------------
+
+std::string
+QuadsDrawingFixture::FullArtifactName(const std::string& artifactName)
+{
+  return Internal::g_testInfo.testName + "_" + artifactName;
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+QuadsDrawingFixture::FlushOnEvery()
+{
+  return Internal::g_testInfo.flushOnEvery;
+}
+
+// ----------------------------------------------------------------------------
+
+const Chimia::Draw3D::MaterialID&
+QuadsDrawingFixture::ReferenceMaterial()
+{
+  return *Internal::g_referenceMaterial;
+}
+
+// ----------------------------------------------------------------------------
+
+const Chimia::Draw3D::TextureID&
+QuadsDrawingFixture::ReferenceTexture()
+{
+  return *Internal::g_referenceTexture;
 }
 
 // ----------------------------------------------------------------------------
