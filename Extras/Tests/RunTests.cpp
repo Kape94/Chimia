@@ -31,6 +31,8 @@ main(int argc, char** argv)
     { "Graphics: #3 batching", "Graphics/Test_Graphics_3_batching" },
     { "Graphics: #4 retained mode triangles",
       "Graphics/Test_Graphics_4_trianglesRetained" },
+    { "Graphics: #5 immediate mode models",
+      "Graphics/Test_Graphics_5_modelsImmediate" },
   };
 
   const std::string failText = "[\033[1;31m FAIL \033[0m ]";

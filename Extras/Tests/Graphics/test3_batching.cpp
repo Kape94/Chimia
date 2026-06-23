@@ -40,19 +40,19 @@ SetBatchSizes(unsigned initialSize, unsigned maximumSize)
   }
 }
 
-TrianglesDrawingTestInfo
+CommonTestingConfig
 TestImmediateWithoutFlush(const std::string& testName)
 {
   return { testName, 1000 };
 }
 
-TrianglesDrawingTestInfo
+CommonTestingConfig
 TestImmediateWithFlush(const std::string& testName, const unsigned flushOnEvery)
 {
   return { testName, flushOnEvery };
 }
 
-TrianglesDrawingTestInfo
+CommonTestingConfig
 TestRetained(const std::string& testName)
 {
   /*In this case we're interested in testing only the rendering after the

@@ -17,7 +17,7 @@ main(int argc, char** argv)
 
   Chimia::Draw3D::Initialize();
 
-  TrianglesDrawingTestInfo testInfo;
+  CommonTestingConfig testInfo;
   testInfo.testName = "test4";
   testInfo.flushOnEvery = 1;
   testInfo.shouldVerifyRetainedRemovals = true;

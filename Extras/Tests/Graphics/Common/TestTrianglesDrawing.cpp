@@ -408,8 +408,7 @@ VertexColoredLitAndTextured(Window& win)
 // ----------------------------------------------------------------------------
 
 void
-TestImmediateModeTriangles(const TrianglesDrawingTestInfo& testInfo,
-                           Window& window)
+TestImmediateModeTriangles(const CommonTestingConfig& testInfo, Window& window)
 {
   QuadsDrawingFixture::Init(testInfo);
 
@@ -424,8 +423,7 @@ TestImmediateModeTriangles(const TrianglesDrawingTestInfo& testInfo,
 // ----------------------------------------------------------------------------
 
 void
-TestRetainedModeTriangles(const TrianglesDrawingTestInfo& testInfo,
-                          Window& window)
+TestRetainedModeTriangles(const CommonTestingConfig& testInfo, Window& window)
 {
   QuadsDrawingFixture::Init(testInfo);
 

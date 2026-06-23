@@ -1,13 +1,11 @@
 #pragma once
 
-#include "QuadsDrawingFixture.h"
+#include "CommonTestingFixture.h"
 
 #include "Utils/Window.h"
 
 void
-TestImmediateModeTriangles(const TrianglesDrawingTestInfo& testInfo,
-                           Window& window);
+TestImmediateModeTriangles(const CommonTestingConfig& testInfo, Window& window);
 
 void
-TestRetainedModeTriangles(const TrianglesDrawingTestInfo& testInfo,
-                          Window& window);
+TestRetainedModeTriangles(const CommonTestingConfig& testInfo, Window& window);

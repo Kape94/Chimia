@@ -5,6 +5,8 @@ include(../CMakeTestsUtils.cmake)
 # -----------------------------------------------------------------------------
 
 add_library(GraphicsTestsDeps
+    Common/CommonTestingFixture.cpp
+    Common/ModelsDrawingFixture.cpp
     Common/QuadsDrawingFixture.cpp
     Common/TestTrianglesDrawing.cpp
 )
@@ -51,3 +53,10 @@ add_executable(Test_Graphics_4_trianglesRetained test4_trianglesRetained.cpp)
 target_link_libraries(Test_Graphics_4_trianglesRetained PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_4_trianglesRetained)
 copy_assets_dir(Test_Graphics_4_trianglesRetained)
+
+# 5) Models in immediate mode
+
+add_executable(Test_Graphics_5_modelsImmediate test5_modelsImmediate.cpp)
+target_link_libraries(Test_Graphics_5_modelsImmediate PRIVATE GraphicsTestsDeps)
+copy_golden_artifacts_dir(Test_Graphics_5_modelsImmediate)
+copy_assets_dir(Test_Graphics_5_modelsImmediate)
