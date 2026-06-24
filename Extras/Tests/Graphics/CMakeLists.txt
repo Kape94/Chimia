@@ -8,6 +8,7 @@ add_library(GraphicsTestsDeps
     Common/CommonTestingFixture.cpp
     Common/ModelsDrawingFixture.cpp
     Common/QuadsDrawingFixture.cpp
+    Common/TestModelsDrawing.cpp
     Common/TestTrianglesDrawing.cpp
 )
 
@@ -60,3 +61,10 @@ add_executable(Test_Graphics_5_modelsImmediate test5_modelsImmediate.cpp)
 target_link_libraries(Test_Graphics_5_modelsImmediate PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_5_modelsImmediate)
 copy_assets_dir(Test_Graphics_5_modelsImmediate)
+
+# 6) Models in retained mode
+
+add_executable(Test_Graphics_6_modelsRetained test6_modelsRetained.cpp)
+target_link_libraries(Test_Graphics_6_modelsRetained PRIVATE GraphicsTestsDeps)
+copy_golden_artifacts_dir(Test_Graphics_6_modelsRetained)
+copy_assets_dir(Test_Graphics_6_modelsRetained)

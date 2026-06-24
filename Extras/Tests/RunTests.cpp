@@ -33,6 +33,8 @@ main(int argc, char** argv)
       "Graphics/Test_Graphics_4_trianglesRetained" },
     { "Graphics: #5 immediate mode models",
       "Graphics/Test_Graphics_5_modelsImmediate" },
+    { "Graphics: #6 retained mode models",
+      "Graphics/Test_Graphics_6_modelsRetained" },
   };
 
   const std::string failText = "[\033[1;31m FAIL \033[0m ]";

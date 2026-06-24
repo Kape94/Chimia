@@ -12,16 +12,17 @@ main(int argc, char** argv)
 {
   constexpr unsigned SCR_WIDTH = 800;
   constexpr unsigned SCR_HEIGHT = 600;
-  Window win(SCR_WIDTH, SCR_HEIGHT, "Test #5");
+  Window win(SCR_WIDTH, SCR_HEIGHT, "Test #6");
 
   TestsUtils::InitTesting(argv, win);
 
   Chimia::Draw3D::Initialize();
 
   CommonTestingConfig testInfo;
-  testInfo.testName = "test5";
+  testInfo.testName = "test6";
   testInfo.flushOnEvery = 1000;
-  TestImmediateModeModels(testInfo, win);
+  testInfo.shouldVerifyRetainedRemovals = true;
+  TestRetainedModeModels(testInfo, win);
 
   return 0;
 }
