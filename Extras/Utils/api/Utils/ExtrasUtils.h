@@ -51,4 +51,10 @@ GetFileNameFormat(const std::string& fileName);
 std::string
 GetFileName(const std::string& filePath);
 
+void
+Tic();
+
+float
+Toc();
+
 }

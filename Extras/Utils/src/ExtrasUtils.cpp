@@ -32,6 +32,8 @@ std::chrono::time_point<std::chrono::high_resolution_clock> g_frameInit =
   CurrentTimePoint();
 long g_bestFrameTime = 10000000;
 long g_worstFrameTime = 0;
+
+std::chrono::time_point<std::chrono::high_resolution_clock> g_initialTime;
 }
 
 // ----------------------------------------------------------------------------
@@ -300,6 +302,27 @@ ExtrasUtils::GetFileName(const std::string& filePath)
   }
 
   return filePath;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ExtrasUtils::Tic()
+{
+  g_initialTime = CurrentTimePoint();
+}
+
+// ----------------------------------------------------------------------------
+
+float
+ExtrasUtils::Toc()
+{
+  const auto finalTime = CurrentTimePoint();
+  const auto diff = finalTime - g_initialTime;
+
+  const long long millisecs =
+    std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+  return static_cast<float>(millisecs) / 1000.0f;
 }
 
 // ----------------------------------------------------------------------------

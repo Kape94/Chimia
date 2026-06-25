@@ -68,3 +68,8 @@ add_executable(Test_Graphics_6_modelsRetained test6_modelsRetained.cpp)
 target_link_libraries(Test_Graphics_6_modelsRetained PRIVATE GraphicsTestsDeps)
 copy_golden_artifacts_dir(Test_Graphics_6_modelsRetained)
 copy_assets_dir(Test_Graphics_6_modelsRetained)
+
+# 7) Performance simple
+
+add_executable(Test_Graphics_7_performanceSimple test7_performanceSimple.cpp)
+target_link_libraries(Test_Graphics_7_performanceSimple PRIVATE GraphicsTestsDeps)

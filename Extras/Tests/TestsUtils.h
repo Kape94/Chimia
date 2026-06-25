@@ -13,6 +13,9 @@ GetTestingDirectory();
 void
 ExpectImage(const std::string& imageFileName);
 
+void
+ExpectValue(const float value, const float expected, const float error);
+
 namespace Development {
 void
 ActivateRGBImageLogging();

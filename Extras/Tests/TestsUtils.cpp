@@ -4,6 +4,7 @@
 
 #include "Utils/ExtrasUtils.h"
 
+#include <iostream>
 #include <memory>
 
 // ----------------------------------------------------------------------------
@@ -38,6 +39,22 @@ TestsUtils::ExpectImage(const std::string& imageFileName)
   using namespace TestsUtilsInternal;
 
   g_tester->ExpectImage(GOLDEN_ARTIFACTS_DIR + imageFileName);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TestsUtils::ExpectValue(const float value,
+                        const float expected,
+                        const float error)
+{
+  const float diff = std::abs(value - expected);
+  if (diff > error) {
+    std::cout << "Value obtained is different from expected\n";
+    std::cout << "Expected " << expected << " with tolerance " << error << "\n";
+    std::cout << "Got " << value << std::endl;
+    assert(false);
+  }
 }
 
 // ----------------------------------------------------------------------------

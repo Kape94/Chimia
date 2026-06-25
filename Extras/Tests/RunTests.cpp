@@ -10,36 +10,6 @@
 
 // ----------------------------------------------------------------------------
 
-namespace Timing {
-std::chrono::time_point<std::chrono::high_resolution_clock> g_InitTime;
-
-std::chrono::time_point<std::chrono::high_resolution_clock>
-Now()
-{
-  return std::chrono::high_resolution_clock::now();
-}
-
-void
-Tic()
-{
-  g_InitTime = Now();
-}
-
-float
-Toc()
-{
-  const auto finalTime = Now();
-  const auto diff = finalTime - g_InitTime;
-
-  const long long millisecs =
-    std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
-  return static_cast<float>(millisecs) / 1000.0f;
-}
-
-}
-
-// ----------------------------------------------------------------------------
-
 namespace Grouping {
 enum class Group
 {
@@ -132,6 +102,8 @@ main(int argc, char** argv)
                  "Graphics/Test_Graphics_5_modelsImmediate"),
     GraphicsTest("Graphics: #6 retained mode models",
                  "Graphics/Test_Graphics_6_modelsRetained"),
+    GraphicsTest("Graphics: #7 performance simple",
+                 "Graphics/Test_Graphics_7_performanceSimple"),
   };
 
   const std::string failText = "[\033[1;31m FAIL \033[0m ]";
@@ -154,9 +126,9 @@ main(int argc, char** argv)
 
     const std::string testCommand = runnerPath + testApp;
 
-    Timing::Tic();
+    ExtrasUtils::Tic();
     const int returnCode = std::system(testCommand.c_str());
-    const float testExecutionTime = Timing::Toc();
+    const float testExecutionTime = ExtrasUtils::Toc();
 
     std::string testStatus = returnCode != 0 ? failText : passText;
     std::cout << testStatus << "\t" << testName << "\n";
