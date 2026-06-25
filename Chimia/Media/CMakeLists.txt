@@ -5,6 +5,7 @@ add_library(${TARGET_NAME}
     src/Image.cpp
     src/ImageFormat.cpp
     src/Model3DImport.cpp
+    src/Text.cpp
 )
 
 target_include_directories(${TARGET_NAME}
