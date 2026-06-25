@@ -3,6 +3,7 @@
 
 #include "Draw3D/Types.h"
 #include "QuadsDrawingFixture.h"
+#include "TestModelsDrawing.h"
 #include "Utils/Window.h"
 
 #include "TestTrianglesDrawing.h"
@@ -128,6 +129,69 @@ ElasticBatchRetained(Window& win)
   TestRetainedModeTriangles(TestRetained("test3_batchSizeElastic"), win);
 }
 
+void
+BatchSize1ModelsImmediate(Window& win)
+{
+  SetBatchSizes(1, 1);
+
+  Chimia::Draw3D::Restart();
+
+  TestImmediateModeModels(TestImmediateWithoutFlush("test3_batchSize1_models"),
+                          win);
+}
+
+void
+BatchSize3ModelsImmediate(Window& win)
+{
+  SetBatchSizes(3, 3);
+
+  Chimia::Draw3D::Restart();
+
+  TestImmediateModeModels(TestImmediateWithoutFlush("test3_batchSize3_models"),
+                          win);
+}
+
+void
+ElasticBatchModelsImmediate(Window& win)
+{
+  SetBatchSizes(1, 100);
+
+  Chimia::Draw3D::Restart();
+
+  TestImmediateModeModels(
+    TestImmediateWithFlush("test3_batchSizeElastic_models", 2), win);
+}
+
+void
+BatchSize1ModelsRetained(Window& win)
+{
+  SetBatchSizes(1, 1);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeModels(TestRetained("test3_batchSize1_models"), win);
+}
+
+void
+BatchSize3ModelsRetained(Window& win)
+{
+  SetBatchSizes(3, 3);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeModels(TestRetained("test3_batchSize3_models"), win);
+}
+
+void
+ElasticBatchModelsRetained(Window& win)
+{
+  SetBatchSizes(1, 100);
+
+  Chimia::Draw3D::Restart();
+
+  TestRetainedModeModels(TestRetained("test3_batchSizeElastic_models"), win);
+}
+
 }
 
 int
@@ -147,6 +211,13 @@ main(int argc, char** argv)
   Scenarios::BatchSize1Retained(win);
   Scenarios::BatchSize3Retained(win);
   Scenarios::ElasticBatchRetained(win);
+
+  Scenarios::BatchSize1ModelsImmediate(win);
+  Scenarios::BatchSize3ModelsImmediate(win);
+  Scenarios::ElasticBatchModelsImmediate(win);
+  Scenarios::BatchSize1ModelsRetained(win);
+  Scenarios::BatchSize3ModelsRetained(win);
+  Scenarios::ElasticBatchModelsRetained(win);
 
   return 0;
 }
