@@ -8,6 +8,10 @@
 - [Graphics] Fog;
 - [Graphics] Morph target animation;
   - [Rendering] VAO with multi buffer shader bindings;
+- [Graphics] Transparency rework
+  - No need to have different renderers;
+  - Needs to do a two pass rendering still, as it's done currently;
+  - Adjust the shader for handling both behaviors;
 - [General] Testing tooling
   - [Core] Printing things to a log;
   - [Utils] Comparing images + Comparing text files; 
@@ -33,7 +37,7 @@
 ## Transparency open problems:
 - Flush by demand;
   - Include transparent pipeline setting wrap in shader configuration steps;
-- Transparency is not enabled in models currently;
+- Transparency is not enabled in models currently; (Will get resolved by the rework feature);
 
 ## Build Instructions
 Run `cppm build` to build the project.
