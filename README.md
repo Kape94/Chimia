@@ -12,10 +12,13 @@
   - No need to have different renderers;
   - Needs to do a two pass rendering still, as it's done currently;
   - Adjust the shader for handling both behaviors;
+- [Core] Logging system
+  - Include error level support;
 - [General] Testing tooling
   - [Core] Printing things to a log;
   - [Utils] Comparing images + Comparing text files; 
 - [Core] Create class for representing a model/mesh;
+- [Tests] Support test grouping;
 - [Graphics] Post processing effects: HDR, bloom, anti aliasing;
 - [Graphics] Texture filtering; 
 
@@ -32,6 +35,8 @@
   - Choose a license for the project;
   - Create documentation for the architecture;
 - [Rendering] The rendering module samples seem to be with wrong triangle winding. Try enabling depth test;
+- [Tests] Reduce artifacts for retained triangles test (steps 2 and 3 aren't really needed);
+- [Tests] Reduce artifacts for batching test (doesn't really need to test all vertex layouts);
 
 
 ## Transparency open problems:
