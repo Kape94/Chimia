@@ -1,10 +1,39 @@
 #include "Utils/ExtrasUtils.h"
 
+#include <chrono>
 #include <iostream>
 
 #include <cstdlib>
 #include <string>
 #include <vector>
+
+namespace Timing {
+std::chrono::time_point<std::chrono::high_resolution_clock> g_InitTime;
+
+std::chrono::time_point<std::chrono::high_resolution_clock>
+Now()
+{
+  return std::chrono::high_resolution_clock::now();
+}
+
+void
+Tic()
+{
+  g_InitTime = Now();
+}
+
+float
+Toc()
+{
+  const auto finalTime = Now();
+  const auto diff = finalTime - g_InitTime;
+
+  const long long millisecs =
+    std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();
+  return static_cast<float>(millisecs) / 1000.0f;
+}
+
+}
 
 int
 main(int argc, char** argv)
@@ -42,6 +71,7 @@ main(int argc, char** argv)
 
   const size_t nTests = testCases.size();
   std::vector<std::string> failedTests;
+  float totalTestingTime = 0.0f;
 
   for (const auto& test : testCases) {
     const std::string testName = test.first;
@@ -50,23 +80,27 @@ main(int argc, char** argv)
     std::cout << "Starting test " << testName << "...\n";
 
     const std::string testCommand = runnerPath + testApp;
+
+    Timing::Tic();
     const int returnCode = std::system(testCommand.c_str());
+    const float testExecutionTime = Timing::Toc();
 
     std::string testStatus = returnCode != 0 ? failText : passText;
-    std::cout << testStatus << "\t" << testName << "\n\n";
+    std::cout << testStatus << "\t" << testName << "\n";
+    std::cout << "Executed in " << testExecutionTime << " seconds\n\n";
 
     if (returnCode != 0) {
       failedTests.push_back(testName);
     }
+    totalTestingTime += testExecutionTime;
   }
 
   const size_t nFailedTests = failedTests.size();
 
-  const float failedRate = (float)nFailedTests / nTests;
-
   std::cout << "------------ Test summary ------------\n";
   std::cout << "Tests ran: " << nTests << "\n";
   std::cout << "Tests failed: " << nFailedTests << "\n";
+  std::cout << "Total testing time (seconds): " << totalTestingTime << "\n";
 
   if (nFailedTests > 0) {
     std::cout << "\nThe following tests failed...\n\n";
