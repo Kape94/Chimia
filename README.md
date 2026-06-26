@@ -18,7 +18,6 @@
   - [Core] Printing things to a log;
   - [Utils] Comparing images + Comparing text files; 
 - [Core] Create class for representing a model/mesh;
-- [Tests] Support test grouping;
 - [Graphics] Post processing effects: HDR, bloom, anti aliasing;
 - [Graphics] Texture filtering; 
 
