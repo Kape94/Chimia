@@ -18,6 +18,9 @@ ExpectValue(const float value, const float expected, const float error);
 
 namespace Development {
 void
+ActivateValueLogging();
+
+void
 ActivateRGBImageLogging();
 
 void

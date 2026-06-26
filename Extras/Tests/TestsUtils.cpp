@@ -12,6 +12,10 @@
 namespace TestsUtilsInternal {
 std::unique_ptr<Tester> g_tester = nullptr;
 const std::string GOLDEN_ARTIFACTS_DIR = "goldenArtifacts/";
+
+namespace Dev {
+bool g_shouldLogExpectedValues = false;
+}
 }
 
 // ----------------------------------------------------------------------------
@@ -48,12 +52,20 @@ TestsUtils::ExpectValue(const float value,
                         const float expected,
                         const float error)
 {
+  if (TestsUtilsInternal::Dev::g_shouldLogExpectedValues) {
+    std::cout << "[DEVELOPMENT] Logging expected value...\n";
+    std::cout << "[DEVELOPMENT] Received: " << value << "\n";
+    std::cout << "[DEVELOPMENT] Expected: " << expected << "\n";
+    std::cout << "[DEVELOPMENT] Tolerance: " << error << std::endl;
+    return;
+  }
+
   const float diff = std::abs(value - expected);
   if (diff > error) {
     std::cout << "Value obtained is different from expected\n";
     std::cout << "Expected " << expected << " with tolerance " << error << "\n";
     std::cout << "Got " << value << std::endl;
-    assert(false);
+    exit(1);
   }
 }
 
@@ -73,6 +85,14 @@ TestsUtils::Development::ActivateRGBAImageLogging()
 {
   TestsUtilsInternal::g_tester->SetImageLoggingMode(
     Tester::eImageLoggingMode::RGBA);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+TestsUtils::Development::ActivateValueLogging()
+{
+  TestsUtilsInternal::Dev::g_shouldLogExpectedValues = true;
 }
 
 // ----------------------------------------------------------------------------
