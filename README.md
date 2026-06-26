@@ -38,10 +38,11 @@
 - [Tests] Reduce artifacts for batching test (doesn't really need to test all vertex layouts);
 
 
-## Transparency open problems:
+## Open problems:
 - Flush by demand;
   - Include transparent pipeline setting wrap in shader configuration steps;
 - Transparency is not enabled in models currently; (Will get resolved by the rework feature);
+- Adding many small retained triangle meshes is not showing good performance. A single huge mesh performs far better;
 
 ## Build Instructions
 Run `cppm build` to build the project.
