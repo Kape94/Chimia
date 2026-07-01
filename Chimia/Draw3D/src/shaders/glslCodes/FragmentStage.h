@@ -23,40 +23,40 @@ inline const char* generic = R"(
     
       @include "common::lightsUniforms"
       
-      uniform Material material;
+      uniform Material u_material;
   
-      uniform bool hasVertexColor;
-      uniform bool hasNormal;
-      uniform bool hasTexCoord;
-      uniform bool isInstanced;
-      uniform bool hasMaterial;
-      uniform bool hasTexture;
+      uniform bool u_hasVertexColor;
+      uniform bool u_hasNormal;
+      uniform bool u_hasTexCoord;
+      uniform bool u_isInstanced;
+      uniform bool u_hasMaterial;
+      uniform bool u_hasTexture;
 
-      uniform bool isTransparentRendering;
+      uniform bool u_isTransparentRendering;
 
-      uniform int lightningModel;
-      uniform float opacity;
-      uniform vec3 mixtureColor;
+      uniform int u_lightningModel;
+      uniform float u_opacity;
+      uniform vec3 u_mixtureColor;
 
-      in vec3 fragmentPos;
-      in vec4 fragmentColor;
-      in vec3 fragmentNorm;
-      in vec2 fragmentTexCoord;
+      in vec3 a_fragmentPos;
+      in vec4 a_fragmentColor;
+      in vec3 a_fragmentNorm;
+      in vec2 a_fragmentTexCoord;
 
-      out vec4 outputColor;
+      out vec4 out_color;
 
-      uniform sampler2D tex;
+      uniform sampler2D u_tex;
       @embed(CUSTOM_UNIFORMS)
 
       void main() {
-        vec4 color = fragmentColor;
-        if (hasTexture && hasTexCoord)
+        vec4 color = a_fragmentColor;
+        if (u_hasTexture && u_hasTexCoord)
         {
-          color = texture(tex, fragmentTexCoord) * color;
+          color = texture(u_tex, a_fragmentTexCoord) * color;
         }
 
-        float colorOpacity = opacity * color.a;
-        if (!isTransparentRendering)
+        float colorOpacity = u_opacity * color.a;
+        if (!u_isTransparentRendering)
         {
           if (colorOpacity < 0.9)
           {
@@ -75,45 +75,45 @@ inline const char* generic = R"(
         vec3 directional = vec3(0.0, 0.0, 0.0);
         vec3 point = vec3(0.0, 0.0, 0.0);
 
-        bool shouldCalculateLights = lightningModel == 1/*phong*/ && hasNormal && !isTransparentRendering;
+        bool shouldCalculateLights = u_lightningModel == 1/*phong*/ && u_hasNormal && !u_isTransparentRendering;
         if (shouldCalculateLights)
         {
-            if (hasMaterial)
+            if (u_hasMaterial)
             {
               directional = CalculateDirectionalLight(
-                viewPosition, 
-                fragmentPos, 
-                fragmentNorm, 
-                nDirectionalLights, 
-                directionalLights,
-                material
+                u_viewPosition, 
+                a_fragmentPos, 
+                a_fragmentNorm, 
+                u_nDirectionalLights, 
+                u_directionalLights,
+                u_material
               );
               point = CalculatePointLight(
-                viewPosition, 
-                fragmentPos, 
-                fragmentNorm, 
-                nPointLights, 
-                pointLights,
-                material
+                u_viewPosition, 
+                a_fragmentPos, 
+                a_fragmentNorm, 
+                u_nPointLights, 
+                u_pointLights,
+                u_material
               );
             }
             else
             {
               vec3 neutralColor = vec3(1.0, 1.0, 1.0);
               directional = CalculateDirectionalLight(
-                viewPosition, 
-                fragmentPos, 
-                fragmentNorm, 
-                nDirectionalLights, 
-                directionalLights,
+                u_viewPosition, 
+                a_fragmentPos, 
+                a_fragmentNorm, 
+                u_nDirectionalLights, 
+                u_directionalLights,
                 neutralColor
               );
               point = CalculatePointLight(
-                viewPosition, 
-                fragmentPos, 
-                fragmentNorm, 
-                nPointLights, 
-                pointLights,
+                u_viewPosition, 
+                a_fragmentPos, 
+                a_fragmentNorm, 
+                u_nPointLights, 
+                u_pointLights,
                 neutralColor
               );
             }
@@ -122,14 +122,14 @@ inline const char* generic = R"(
         if (shouldCalculateLights)
         {
           vec4 shadedColor = vec4(directional + point, 1.0);
-          outputColor = hasMaterial ? shadedColor : shadedColor * color;
+          out_color = u_hasMaterial ? shadedColor : shadedColor * color;
         }
         else 
         {
-          outputColor = color * vec4(1.0, 1.0, 1.0, opacity);
+          out_color = color * vec4(1.0, 1.0, 1.0, u_opacity);
         }
         
-        outputColor *= vec4(mixtureColor, 1.0);
+        out_color *= vec4(u_mixtureColor, 1.0);
         @embed(OUTPUT_OVERRIDERS)
       }
     )";

@@ -26,7 +26,16 @@
 - [Extras|Rendering] Move GetPixels functionality to Rendering module
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
-- [Graphics] Rework shader inputs naming: use "a" prefix for attributes and "u" prefix for uniforms.
+- [Graphics] Centralize Uniforms names in a single place. Review:
+  - Camera.cpp
+  - Illumination.cpp
+  - Pipelines.cpp
+  - Color4Normal4TexCoord2.cpp
+  - Color4TexCoord2.cpp
+  - Normal3TexCoord2.cpp
+  - TexCoord2.cpp
+  - RenderersUtils.cpp
+- [Graphics] Texture shader uniform is currently isolated on default renderers config functions. It should be centralized somewhere.
 - [Rendering] Buffers implementation code on Rendering module is quite messy.
 - [Graphics] Model is not a good name for class Model;
 - [Graphics] Remove tag from resources, and also store them in simple varianges, no containers needed;

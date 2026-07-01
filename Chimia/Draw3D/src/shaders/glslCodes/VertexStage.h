@@ -22,81 +22,81 @@ inline const char* generic = R"(
   @include "common::calculateLightsWithoutMaterial"
 
   @include "common::lightsUniforms"
-  uniform mat4 cameraTransform;
+  uniform mat4 u_cameraTransform;
   @embed(CUSTOM_UNIFORMS)
 
-  uniform Material material;
+  uniform Material u_material;
   
-  uniform bool hasVertexColor;
-  uniform bool hasNormal;
-  uniform bool hasTexCoord;
-  uniform bool isInstanced;
-  uniform bool hasMaterial;
-  uniform bool hasTexture;
+  uniform bool u_hasVertexColor;
+  uniform bool u_hasNormal;
+  uniform bool u_hasTexCoord;
+  uniform bool u_isInstanced;
+  uniform bool u_hasMaterial;
+  uniform bool u_hasTexture;
 
-  uniform bool isTransparentRendering;
+  uniform bool u_isTransparentRendering;
 
-  uniform int lightningModel;
+  uniform int u_lightningModel;
 
-  layout (location = 0) in vec3 vertexPos;
-  layout (location = 1) in vec4 vertexColor;
-  layout (location = 2) in vec3 vertexNorm;
-  layout (location = 3) in vec2 vertexTexCoord;
-  layout (location = 4) in mat4 instanceTransform;
+  layout (location = 0) in vec3 a_vertexPos;
+  layout (location = 1) in vec4 a_vertexColor;
+  layout (location = 2) in vec3 a_vertexNorm;
+  layout (location = 3) in vec2 a_vertexTexCoord;
+  layout (location = 4) in mat4 a_instanceTransform;
 
-  out vec3 fragmentPos;
-  out vec4 fragmentColor;
-  out vec3 fragmentNorm;
-  out vec2 fragmentTexCoord;
+  out vec3 a_fragmentPos;
+  out vec4 a_fragmentColor;
+  out vec3 a_fragmentNorm;
+  out vec2 a_fragmentTexCoord;
 
   void main() {
-    vec4 transformedPos = isInstanced ? instanceTransform * vec4(vertexPos, 1.0) : vec4(vertexPos, 1.0);
+    vec4 transformedPos = u_isInstanced ? a_instanceTransform * vec4(a_vertexPos, 1.0) : vec4(a_vertexPos, 1.0);
 
     vec3 pos = vec3(transformedPos);
-    vec3 norm = isInstanced ? mat3(transpose(inverse(instanceTransform))) * vertexNorm : vertexNorm;
+    vec3 norm = u_isInstanced ? mat3(transpose(inverse(a_instanceTransform))) * a_vertexNorm : a_vertexNorm;
 
     vec3 directional = vec3(0.0, 0.0, 0.0);
     vec3 point = vec3(0.0, 0.0, 0.0);
 
-    bool shouldCalculateLights = lightningModel == 0/*gouraud*/ && hasNormal && !isTransparentRendering;
+    bool shouldCalculateLights = u_lightningModel == 0/*gouraud*/ && u_hasNormal && !u_isTransparentRendering;
     if (shouldCalculateLights)
     {
-      if (hasMaterial)
+      if (u_hasMaterial)
       {
         directional = CalculateDirectionalLight(
-          viewPosition, 
+          u_viewPosition, 
           pos, 
           norm, 
-          nDirectionalLights, 
-          directionalLights,
-          material
+          u_nDirectionalLights, 
+          u_directionalLights,
+          u_material
         );
         point = CalculatePointLight(
-          viewPosition, 
+          u_viewPosition, 
           pos, 
           norm, 
-          nPointLights, 
-          pointLights,
-          material
+          u_nPointLights, 
+          u_pointLights,
+          u_material
         );
       }
       else
       {
         vec3 neutralColor = vec3(1.0, 1.0, 1.0);
         directional = CalculateDirectionalLight(
-          viewPosition, 
+          u_viewPosition, 
           pos, 
           norm, 
-          nDirectionalLights, 
-          directionalLights,
+          u_nDirectionalLights, 
+          u_directionalLights,
           neutralColor
         );
         point = CalculatePointLight(
-          viewPosition, 
+          u_viewPosition, 
           pos, 
           norm, 
-          nPointLights, 
-          pointLights,
+          u_nPointLights, 
+          u_pointLights,
           neutralColor
         );
       }
@@ -104,20 +104,20 @@ inline const char* generic = R"(
 
     vec4 result = vec4(directional + point, 1.0f);
 
-    fragmentPos = pos;
-    fragmentNorm = norm;
+    a_fragmentPos = pos;
+    a_fragmentNorm = norm;
 
     if (shouldCalculateLights)
     {
-      fragmentColor = hasMaterial ? result : result * vertexColor;
+      a_fragmentColor = u_hasMaterial ? result : result * a_vertexColor;
     }
     else 
     {
-      fragmentColor = hasVertexColor ? vertexColor : vec4(1.0, 1.0, 1.0, 1.0);
+      a_fragmentColor = u_hasVertexColor ? a_vertexColor : vec4(1.0, 1.0, 1.0, 1.0);
     }
-    fragmentTexCoord = vertexTexCoord;
+    a_fragmentTexCoord = a_vertexTexCoord;
 
-    gl_Position = cameraTransform * transformedPos;
+    gl_Position = u_cameraTransform * transformedPos;
 
     @embed(OUTPUT_OVERRIDERS)
   }

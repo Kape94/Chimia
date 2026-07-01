@@ -21,6 +21,19 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 namespace RenderersUtilsPrivate {
 using namespace Chimia;
 
+namespace Uniforms {
+const std::string OPACITY = "u_opacity";
+const std::string MIXTURE_COLOR = "u_mixtureColor";
+
+const std::string HAS_VERTEX_COLOR = "u_hasVertexColor";
+const std::string HAS_NORMAL = "u_hasNormal";
+const std::string HAS_TEXCOORD = "u_hasTexCoord";
+const std::string IS_INSTANCED = "u_isInstanced";
+const std::string HAS_MATERIAL = "u_hasMaterial";
+const std::string HAS_TEXTURE = "u_hasTexture";
+const std::string LIGHTNING_MODEL = "u_lightningModel";
+}
+
 Rendering::ShaderAttribute
 PositionAttribute()
 {
@@ -93,9 +106,9 @@ ConfigureOpacity(Rendering::Shader& shader,
     const float* opacity =
       ResourcesManager::GetInstance().GetOpacityFactor(opacityID);
 
-    shader.SetUniform("opacity", *opacity);
+    shader.SetUniform(Uniforms::OPACITY, *opacity);
   } else {
-    shader.SetUniform("opacity", 1.0f);
+    shader.SetUniform(Uniforms::OPACITY, 1.0f);
   }
 }
 
@@ -108,10 +121,10 @@ ConfigureMixtureColor(Rendering::Shader& shader,
     const glm::vec3* color =
       ResourcesManager::GetInstance().GetMixtureColor(colorID);
 
-    shader.SetUniform("mixtureColor", *color);
+    shader.SetUniform(Uniforms::MIXTURE_COLOR, *color);
 
   } else {
-    shader.SetUniform("mixtureColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    shader.SetUniform(Uniforms::MIXTURE_COLOR, glm::vec3(1.0f, 1.0f, 1.0f));
   }
 }
 
@@ -121,17 +134,17 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
                             const bool isInstancedRendering,
                             const ResourcesGroup& resources)
 {
-  shader.SetUniform("hasVertexColor", HasColor(layout));
-  shader.SetUniform("hasNormal", HasNormal(layout));
-  shader.SetUniform("hasTexCoord", HasTexCoord(layout));
-  shader.SetUniform("isInstanced", isInstancedRendering);
-  shader.SetUniform("hasMaterial", resources.HasMaterials());
-  shader.SetUniform("hasTexture", resources.HasTextures());
+  shader.SetUniform(Uniforms::HAS_VERTEX_COLOR, HasColor(layout));
+  shader.SetUniform(Uniforms::HAS_NORMAL, HasNormal(layout));
+  shader.SetUniform(Uniforms::HAS_TEXCOORD, HasTexCoord(layout));
+  shader.SetUniform(Uniforms::IS_INSTANCED, isInstancedRendering);
+  shader.SetUniform(Uniforms::HAS_MATERIAL, resources.HasMaterials());
+  shader.SetUniform(Uniforms::HAS_TEXTURE, resources.HasTextures());
 
   Pipelines::CurrentPipeline().ConfigureShader(shader);
 
   const int illuminationModel = static_cast<int>(Config::IlluminationModel());
-  shader.SetUniform("lightningModel", illuminationModel);
+  shader.SetUniform(Uniforms::LIGHTNING_MODEL, illuminationModel);
 
   ConfigureOpacity(shader, layout, resources);
   ConfigureMixtureColor(shader, resources);

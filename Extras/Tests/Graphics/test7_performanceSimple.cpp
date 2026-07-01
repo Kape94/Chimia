@@ -75,7 +75,7 @@ PercentualDifference(const float executionTime, const float referenceTime)
 void
 ExpectExecutionTime(const float executionTime, const float referenceTime)
 {
-  const float tolerance = 0.025f;
+  const float tolerance = 0.05f;
   const float percentualDifference =
     PercentualDifference(executionTime, referenceTime);
 

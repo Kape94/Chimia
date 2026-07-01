@@ -18,6 +18,11 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace CameraUtils {
 
+namespace Uniforms {
+const std::string CAMERA_TRANSFORM = "u_cameraTransform";
+const std::string VIEW_POSITION = "u_viewPosition";
+}
+
 glm::mat4x4
 createIdentity()
 {
@@ -110,7 +115,7 @@ void
 CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
 {
   const glm::mat4x4 transform = CameraState::projection * CameraState::view;
-  shader.SetUniform("cameraTransform", transform);
+  shader.SetUniform(CameraUtils::Uniforms::CAMERA_TRANSFORM, transform);
 }
 
 // ----------------------------------------------------------------------------
@@ -118,7 +123,8 @@ CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
 void
 CameraPrivate::SetPointOfViewOnShader(Rendering::Shader& shader)
 {
-  shader.SetUniform("viewPosition", CameraState::cameraPosition);
+  shader.SetUniform(CameraUtils::Uniforms::VIEW_POSITION,
+                    CameraState::cameraPosition);
 }
 
 // ----------------------------------------------------------------------------
