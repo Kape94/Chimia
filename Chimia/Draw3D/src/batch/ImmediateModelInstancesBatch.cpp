@@ -4,10 +4,21 @@
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
+#include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+namespace {
+bool
+ShouldKeepInput(const eImmediateFlusingPolicy policy)
+{
+  return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
+}
+}
 
 // ----------------------------------------------------------------------------
 
@@ -84,28 +95,33 @@ ImmediateModelInstancesBatch::HandleFlushByDemand(
       m_instancedInputBuffer.GetSize() / m_instancedDataSizeInBytes;
     m_nInstancesFlushedByDemand += nInstancesInBuffer;
 
-    DoFlush();
+    // TODO: Flush by demand should be handled by the pipeline
+    DoFlush(eImmediateFlusingPolicy::RENDER_AND_FLUSH_INPUTS);
   }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ImmediateModelInstancesBatch::Flush()
+ImmediateModelInstancesBatch::Flush(
+  const eImmediateFlusingPolicy flushingPolicy)
 {
   const size_t totalInputSize = m_instancedInputBuffer.GetSize();
   if (totalInputSize == 0) {
     return;
   }
 
-  DoFlush();
-  HandleDynamicResizing();
+  DoFlush(flushingPolicy);
+  if (!ShouldKeepInput(flushingPolicy)) {
+    HandleDynamicResizing();
+  }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ImmediateModelInstancesBatch::DoFlush()
+ImmediateModelInstancesBatch::DoFlush(
+  const eImmediateFlusingPolicy flushingPolicy)
 {
   m_onFlush();
 
@@ -119,7 +135,9 @@ ImmediateModelInstancesBatch::DoFlush()
     buffer.Render();
   }
 
-  m_instancedInputBuffer.Reset();
+  if (!ShouldKeepInput(flushingPolicy)) {
+    m_instancedInputBuffer.Reset();
+  }
 }
 
 // ----------------------------------------------------------------------------

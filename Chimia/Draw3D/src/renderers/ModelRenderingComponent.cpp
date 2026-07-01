@@ -29,10 +29,12 @@ ModelRenderingComponent::Init(
 // ----------------------------------------------------------------------------
 
 void
-ModelRenderingComponent::Flush()
+ModelRenderingComponent::Flush(const eImmediateFlusingPolicy flushingPolicy)
 {
   m_transformedModelsTable.ForEach(
-    [](ImmediateModelInstancesBatch& model) { model.Flush(); });
+    [flushingPolicy](ImmediateModelInstancesBatch& model) {
+      model.Flush(flushingPolicy);
+    });
   m_staticModelsTable.ForEach(
     [](RetainedModelInstancesBatch& model) { model.Render(); });
 }

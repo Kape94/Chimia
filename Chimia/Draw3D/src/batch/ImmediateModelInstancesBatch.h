@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
+#include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
@@ -36,7 +37,7 @@ public:
   void Draw(const RawDataView& instanceData);
   void Draw(const std::initializer_list<RawDataView>& instanceDatas);
 
-  void Flush();
+  void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
   void AddGPUBuffer(
@@ -47,7 +48,7 @@ private:
 
   void HandleFlushByDemand(const size_t incomingSizeInBytes);
 
-  void DoFlush();
+  void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
   void HandleDynamicResizing();
 

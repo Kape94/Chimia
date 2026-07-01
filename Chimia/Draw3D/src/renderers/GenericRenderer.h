@@ -33,7 +33,7 @@ public:
 
   void Init();
 
-  void Flush();
+  void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
   void DrawTriangle(const std::initializer_list<RawDataView>& vertexData,
                     const ResourceGroupID& resourcesID);

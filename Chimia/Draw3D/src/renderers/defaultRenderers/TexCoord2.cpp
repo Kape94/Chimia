@@ -67,7 +67,6 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 }
 
 GenericRenderer* g_renderer = nullptr;
-GenericRenderer* g_transparentRenderer = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -79,11 +78,6 @@ TexCoord2::Init()
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
-
-  g_transparentRenderer =
-    &Renderers::CreateRenderer(VERTEX_LAYOUT,
-                               ConfigureShaderForTriangleDrawing,
-                               ConfigureShaderForTransformedModelDrawing);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,7 +86,6 @@ void
 TexCoord2::Shutdown()
 {
   Renderers::DeleteRenderer(g_renderer);
-  Renderers::DeleteRenderer(g_transparentRenderer);
 }
 
 // ----------------------------------------------------------------------------
@@ -101,14 +94,6 @@ GenericRenderer&
 TexCoord2::GetRenderer()
 {
   return *g_renderer;
-}
-
-// ----------------------------------------------------------------------------
-
-GenericRenderer&
-TexCoord2::GetTransparentRenderer()
-{
-  return *g_transparentRenderer;
 }
 
 // ----------------------------------------------------------------------------

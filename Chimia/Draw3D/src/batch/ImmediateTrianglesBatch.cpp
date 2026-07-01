@@ -3,10 +3,21 @@
 #include "BatchUtils.h"
 #include "Core/Types.h"
 #include "Rendering/ShaderAttribute.h"
+#include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+namespace {
+bool
+ShouldKeepInput(const eImmediateFlusingPolicy policy)
+{
+  return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
+}
+}
 
 // ----------------------------------------------------------------------------
 
@@ -76,29 +87,34 @@ ImmediateTrianglesBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
     const size_t nTrianglesInBuffer =
       m_inputBuffer.GetSize() / m_triangleSizeInBytes;
     m_trianglesFlushedByDemand += nTrianglesInBuffer;
-    DoFlushing();
+
+    // TODO: Flush by demand should be handled by the pipeline as well
+    DoFlushing(eImmediateFlusingPolicy::RENDER_AND_FLUSH_INPUTS);
   }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ImmediateTrianglesBatch::Flush()
+ImmediateTrianglesBatch::Flush(const eImmediateFlusingPolicy flushingPolicy)
 {
   const size_t frameInputSize = m_inputBuffer.GetSize();
   if (frameInputSize == 0) {
     return;
   }
 
-  DoFlushing();
+  DoFlushing(flushingPolicy);
 
-  HandleDynamicResizing();
+  if (!ShouldKeepInput(flushingPolicy)) {
+    HandleDynamicResizing();
+  }
 }
 
 // ----------------------------------------------------------------------------
 
 void
-ImmediateTrianglesBatch::DoFlushing()
+ImmediateTrianglesBatch::DoFlushing(
+  const eImmediateFlusingPolicy flushingPolicy)
 {
   m_onFlush();
 
@@ -106,7 +122,9 @@ ImmediateTrianglesBatch::DoFlushing()
     RawDataView{ m_inputBuffer.GetData(), m_inputBuffer.GetSize() });
   m_gpuBuffer.Render();
 
-  m_inputBuffer.Reset();
+  if (!ShouldKeepInput(flushingPolicy)) {
+    m_inputBuffer.Reset();
+  }
 }
 
 // ----------------------------------------------------------------------------

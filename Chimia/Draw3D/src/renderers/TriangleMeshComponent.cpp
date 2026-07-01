@@ -20,11 +20,11 @@ TriangleMeshComponent::Init(const BatchingSettings& batchingSettings,
 // ----------------------------------------------------------------------------
 
 void
-TriangleMeshComponent::Flush()
+TriangleMeshComponent::Flush(const eImmediateFlusingPolicy flushingPolicy)
 {
   m_onFlush();
 
-  m_triangleBatch.Flush();
+  m_triangleBatch.Flush(flushingPolicy);
   m_staticTriangles.Render();
 }
 

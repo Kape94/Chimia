@@ -28,7 +28,7 @@ public:
             const Rendering::ShaderAttributes& vertexAttributes,
             const std::function<void(void)>& onFlush);
 
-  void Flush();
+  void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
   void DrawTriangle(const std::initializer_list<RawDataView>& vertexData);
   void DrawTriangles(const RawArrayView& vertexDataArray);

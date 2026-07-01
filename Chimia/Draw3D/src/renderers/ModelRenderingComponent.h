@@ -32,7 +32,7 @@ public:
             const Rendering::ShaderAttributes& instanceAttributes,
             const std::function<void(void)>& onFlush);
 
-  void Flush();
+  void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
   void DrawModel(const ModelID& modelID, const RawDataView& instanceData);
   void DrawModel(const ModelID& modelID,

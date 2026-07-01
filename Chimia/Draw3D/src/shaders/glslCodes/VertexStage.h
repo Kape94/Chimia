@@ -34,6 +34,8 @@ inline const char* generic = R"(
   uniform bool hasMaterial;
   uniform bool hasTexture;
 
+  uniform bool isTransparentRendering;
+
   uniform int lightningModel;
 
   layout (location = 0) in vec3 vertexPos;
@@ -56,7 +58,7 @@ inline const char* generic = R"(
     vec3 directional = vec3(0.0, 0.0, 0.0);
     vec3 point = vec3(0.0, 0.0, 0.0);
 
-    bool shouldCalculateLights = lightningModel == 0/*gouraud*/ && hasNormal;
+    bool shouldCalculateLights = lightningModel == 0/*gouraud*/ && hasNormal && !isTransparentRendering;
     if (shouldCalculateLights)
     {
       if (hasMaterial)

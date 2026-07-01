@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingPrivate.h"
+#include "Pipelines.h"
 #include "Shaders.h"
 #include "TrianglePrivate.h"
 
@@ -16,6 +17,7 @@
 #include "defaultRenderers/TexCoord2.h"
 
 #include "Rendering/Rendering.h"
+#include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
 
@@ -52,6 +54,18 @@ RestartRenderers()
 
   InitRenderers();
 }
+
+void
+FlushRenderers(const eImmediateFlusingPolicy flushingPolicy)
+{
+  DefaultRenderers::Color4::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::Normal3::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::TexCoord2::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::Color4Normal3::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::Color4TexCoord2::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::Normal3TexCoord2::GetRenderer().Flush(flushingPolicy);
+  DefaultRenderers::Color4Normal3TexCoord2::GetRenderer().Flush(flushingPolicy);
+}
 }
 
 // ----------------------------------------------------------------------------
@@ -63,6 +77,7 @@ Chimia::Draw3D::Initialize()
   Chimia::Rendering::EnableDepthTest(true);
 
   Shaders::Initialize();
+  Pipelines::Init();
 
   InitRenderers();
 }
@@ -72,23 +87,13 @@ Chimia::Draw3D::Initialize()
 void
 Chimia::Draw3D::Flush()
 {
-  DefaultRenderers::Color4::GetRenderer().Flush();
-  DefaultRenderers::Normal3::GetRenderer().Flush();
-  DefaultRenderers::TexCoord2::GetRenderer().Flush();
-  DefaultRenderers::Color4Normal3::GetRenderer().Flush();
-  DefaultRenderers::Color4TexCoord2::GetRenderer().Flush();
-  DefaultRenderers::Normal3TexCoord2::GetRenderer().Flush();
-  DefaultRenderers::Color4Normal3TexCoord2::GetRenderer().Flush();
+  FlushRenderers(eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS);
 
-  Chimia::Rendering::EnableDepthMask(false);
-  Chimia::Rendering::EnableColorBlend(true);
+  Pipelines::ActivateTransparentRenderingPipeline();
 
-  DefaultRenderers::Color4::GetTransparentRenderer().Flush();
-  DefaultRenderers::TexCoord2::GetTransparentRenderer().Flush();
-  DefaultRenderers::Color4TexCoord2::GetTransparentRenderer().Flush();
+  FlushRenderers(eImmediateFlusingPolicy::RENDER_AND_FLUSH_INPUTS);
 
-  Chimia::Rendering::EnableDepthMask(true);
-  Chimia::Rendering::EnableColorBlend(false);
+  Pipelines::ActivateRegularPipeline();
 }
 
 // ----------------------------------------------------------------------------

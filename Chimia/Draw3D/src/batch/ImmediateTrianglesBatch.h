@@ -2,6 +2,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
+#include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
 #include "Rendering/Buffer.h"
@@ -32,12 +33,12 @@ public:
   void Draw(const std::initializer_list<RawDataView>& vertexDatas);
   void Draw(const RawArrayView& vertexDataArray);
 
-  void Flush();
+  void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
   void HandleFlushByDemand(const size_t incomingSizeInBytes);
 
-  void DoFlushing();
+  void DoFlushing(const eImmediateFlusingPolicy flushingPolicy);
 
   void HandleDynamicResizing();
 

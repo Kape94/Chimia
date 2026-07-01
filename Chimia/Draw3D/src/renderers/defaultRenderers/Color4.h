@@ -25,9 +25,6 @@ Shutdown();
 GenericRenderer&
 GetRenderer();
 
-GenericRenderer&
-GetTransparentRenderer();
-
 };
 
 END_DEFAULT_RENDERERS_NAMESPACE

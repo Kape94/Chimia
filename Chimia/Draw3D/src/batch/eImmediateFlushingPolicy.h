@@ -2,32 +2,21 @@
 
 // ----------------------------------------------------------------------------
 
-#include "DefaultRenderersNamespaceDefs.h"
 #include "Draw3DNamespaceDefs.h"
-#include "GenericRenderer.h"
-
-#include <glm/mat4x4.hpp>
-#include <glm/vec3.hpp>
 
 // ----------------------------------------------------------------------------
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
-BEGIN_DEFAULT_RENDERERS_NAMESPACE
+// ----------------------------------------------------------------------------
 
-namespace TexCoord2 {
-void
-Init();
+enum class eImmediateFlusingPolicy
+{
+  RENDER_AND_FLUSH_INPUTS,
+  RENDER_AND_KEEP_INPUTS
+};
 
-void
-Shutdown();
-
-GenericRenderer&
-GetRenderer();
-
-}
-
-END_DEFAULT_RENDERERS_NAMESPACE
+// ----------------------------------------------------------------------------
 
 END_CHIMIA_DRAW3D_NAMESPACE
 

@@ -175,12 +175,16 @@ GenericRenderer::DeleteRetainedModel(const ModelInstanceID& instanceID)
 // ----------------------------------------------------------------------------
 
 void
-GenericRenderer::Flush()
+GenericRenderer::Flush(const eImmediateFlusingPolicy flushingPolicy)
 {
   m_triangleMeshComponents.ForEach(
-    [](TriangleMeshComponent& triangleRenderer) { triangleRenderer.Flush(); });
+    [flushingPolicy](TriangleMeshComponent& triangleRenderer) {
+      triangleRenderer.Flush(flushingPolicy);
+    });
   m_modelComponents.ForEach(
-    [](ModelRenderingComponent& modelRenderer) { modelRenderer.Flush(); });
+    [flushingPolicy](ModelRenderingComponent& modelRenderer) {
+      modelRenderer.Flush(flushingPolicy);
+    });
 }
 
 // ----------------------------------------------------------------------------

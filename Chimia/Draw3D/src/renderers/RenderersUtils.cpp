@@ -1,6 +1,7 @@
 #include "RenderersUtils.h"
 
 #include "Config.h"
+#include "Pipelines.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Types.h"
@@ -126,6 +127,8 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
   shader.SetUniform("isInstanced", isInstancedRendering);
   shader.SetUniform("hasMaterial", resources.HasMaterials());
   shader.SetUniform("hasTexture", resources.HasTextures());
+
+  Pipelines::CurrentPipeline().ConfigureShader(shader);
 
   const int illuminationModel = static_cast<int>(Config::IlluminationModel());
   shader.SetUniform("lightningModel", illuminationModel);

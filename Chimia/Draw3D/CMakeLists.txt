@@ -9,6 +9,8 @@ add_library(${TARGET_NAME}
     src/Illumination.cpp
     src/Model.cpp
     src/ModelRendering.cpp
+    src/Pipeline.cpp
+    src/Pipelines.cpp
     src/ResourceGroupHelper.cpp
     src/Triangle.cpp
     

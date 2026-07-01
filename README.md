@@ -26,9 +26,17 @@
 - [Extras|Rendering] Move GetPixels functionality to Rendering module
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
-- [Graphics] Buffers implementation code on Rendering module is quite messy.
+- [Graphics] Rework shader inputs naming: use "a" prefix for attributes and "u" prefix for uniforms.
+- [Rendering] Buffers implementation code on Rendering module is quite messy.
 - [Graphics] Model is not a good name for class Model;
 - [Graphics] Remove tag from resources, and also store them in simple varianges, no containers needed;
+- [Graphics] Re-architect the code around the concept of pipeline;
+  - A pipeline should be able to receive a set of renderers, or even a single small component, and draw it;
+  - The thing that is currently called "Pipeline" is not really a pipeline, it should be called "RenderingConfiguration", or something alike;
+  - The pipeline then should be an object that could apply the rendering configs and orchestrate the rendering process;
+    - ex: a full pipeline (supports transparency), could do the flow of setting api states for opaque draw, then flushing the renderers,
+        then setting api state for blended draw, then re-flushing the renderers;
+       
 - [General] Review all codebase and add diagnostics (error reporting, warnings);
 - [General] update readme.
   - Choose a license for the project;
