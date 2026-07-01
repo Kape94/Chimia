@@ -8,10 +8,6 @@
 - [Graphics] Fog;
 - [Graphics] Morph target animation;
   - [Rendering] VAO with multi buffer shader bindings;
-- [Graphics] Transparency rework
-  - No need to have different renderers;
-  - Needs to do a two pass rendering still, as it's done currently;
-  - Adjust the shader for handling both behaviors;
 - [Core] Logging system
   - Include error level support;
 - [General] Testing tooling
@@ -26,16 +22,7 @@
 - [Extras|Rendering] Move GetPixels functionality to Rendering module
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
-- [Graphics] Centralize Uniforms names in a single place. Review:
-  - Camera.cpp
-  - Illumination.cpp
-  - Pipelines.cpp
-  - Color4Normal4TexCoord2.cpp
-  - Color4TexCoord2.cpp
-  - Normal3TexCoord2.cpp
-  - TexCoord2.cpp
-  - RenderersUtils.cpp
-- [Graphics] Texture shader uniform is currently isolated on default renderers config functions. It should be centralized somewhere.
+- [Graphics] Move Camera and Illumination shader configurations code to RendererUtils.
 - [Rendering] Buffers implementation code on Rendering module is quite messy.
 - [Graphics] Model is not a good name for class Model;
 - [Graphics] Remove tag from resources, and also store them in simple varianges, no containers needed;
@@ -58,7 +45,6 @@
 ## Open problems:
 - Flush by demand;
   - Include transparent pipeline setting wrap in shader configuration steps;
-- Transparency is not enabled in models currently; (Will get resolved by the rework feature);
 - Adding many small retained triangle meshes is not showing good performance. A single huge mesh performs far better;
 
 ## Build Instructions
