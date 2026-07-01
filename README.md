@@ -22,7 +22,7 @@
 - [Extras|Rendering] Move GetPixels functionality to Rendering module
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
-- [Graphics] Move Camera and Illumination shader configurations code to RendererUtils.
+- [Graphics] All shader configuration functions from all renderers now are looking quite similar. Should them be dropped?
 - [Rendering] Buffers implementation code on Rendering module is quite messy.
 - [Graphics] Model is not a good name for class Model;
 - [Graphics] Remove tag from resources, and also store them in simple varianges, no containers needed;
