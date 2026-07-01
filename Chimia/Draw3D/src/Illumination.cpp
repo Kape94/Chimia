@@ -141,17 +141,3 @@ IlluminationPrivate::ConfigureLightsOnShader(Rendering::Shader& shader)
 }
 
 // ----------------------------------------------------------------------------
-
-void
-IlluminationPrivate::ConfigureMaterialOnShader(const Material& material,
-                                               Rendering::Shader& shader)
-{
-  const std::string materialUniform = ShaderUniformsNames::MATERIAL;
-
-  shader.SetUniform(materialUniform + ".ambient", material.ambient);
-  shader.SetUniform(materialUniform + ".diffuse", material.diffuse);
-  shader.SetUniform(materialUniform + ".specular", material.specular);
-  shader.SetUniform(materialUniform + ".shininess", material.shininess);
-}
-
-// ----------------------------------------------------------------------------

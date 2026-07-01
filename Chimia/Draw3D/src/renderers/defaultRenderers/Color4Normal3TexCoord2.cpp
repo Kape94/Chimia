@@ -6,12 +6,9 @@
 #include "Renderers.h"
 #include "RenderersUtils.h"
 #include "ResourceGroup.h"
-#include "ResourcesManager.h"
-#include "ShaderUniformsNames.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/TextureUnit.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -29,44 +26,22 @@ constexpr eVertexLayout VERTEX_LAYOUT =
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
 {
-  const TextureID textureID = resources.FirstTexture();
-  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
-  if (texture == nullptr) {
-    return;
-  }
-
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resources);
   IlluminationPrivate::ConfigureLightsOnShader(shader);
-
-  constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
-
-  texture->Use(TEXTURE_UNIT);
-  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
 }
 
 void
 ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
 {
-  const TextureID textureID = resources.FirstTexture();
-  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
-  if (texture == nullptr) {
-    return;
-  }
-
   Chimia::Rendering::Shader& shader = Shaders::Generic();
   shader.Use();
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resources);
   IlluminationPrivate::ConfigureLightsOnShader(shader);
-
-  constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
-
-  texture->Use(TEXTURE_UNIT);
-  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
 }
 
 GenericRenderer* g_renderer = nullptr;

@@ -118,6 +118,70 @@ ConfigureMixtureColor(Rendering::Shader& shader,
 }
 
 void
+ConfigureMaterialOnShader(const ResourcesGroup& resources,
+                          Rendering::Shader& shader)
+{
+  if (!resources.HasMaterials()) {
+    return;
+  }
+
+  const MaterialID materialID = resources.FirstMaterial();
+  auto material = ResourcesManager::GetInstance().GetMaterial(materialID);
+  if (material == nullptr) {
+    return;
+  }
+
+  const std::string materialUniform = ShaderUniformsNames::MATERIAL;
+
+  shader.SetUniform(materialUniform + ".ambient", material->ambient);
+  shader.SetUniform(materialUniform + ".diffuse", material->diffuse);
+  shader.SetUniform(materialUniform + ".specular", material->specular);
+  shader.SetUniform(materialUniform + ".shininess", material->shininess);
+}
+
+void
+ConfigureTextureOnShader(const ResourcesGroup& resources,
+                         Rendering::Shader& shader)
+{
+  if (!resources.HasTextures()) {
+    return;
+  }
+
+  const TextureID textureID = resources.FirstTexture();
+  auto texture = ResourcesManager::GetInstance().GetTexture(textureID);
+  if (texture == nullptr) {
+    return;
+  }
+
+  constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
+  texture->Use(TEXTURE_UNIT);
+
+  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
+}
+
+void
+ConfigureResourceOnShader(const ResourcesGroup& resources,
+                          const eVertexLayout& layout,
+                          Rendering::Shader& shader)
+{
+  const bool hasMaterial = resources.HasMaterials();
+  const bool hasTexture = resources.HasTextures();
+
+  shader.SetUniform(ShaderUniformsNames::HAS_MATERIAL, hasMaterial);
+  shader.SetUniform(ShaderUniformsNames::HAS_TEXTURE, hasTexture);
+
+  if (hasMaterial) {
+    ConfigureMaterialOnShader(resources, shader);
+  }
+  if (hasTexture) {
+    ConfigureTextureOnShader(resources, shader);
+  }
+
+  ConfigureOpacity(shader, layout, resources);
+  ConfigureMixtureColor(shader, resources);
+}
+
+void
 ConfigureShaderForRendering(Rendering::Shader& shader,
                             const eVertexLayout& layout,
                             const bool isInstancedRendering,
@@ -127,17 +191,13 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
   shader.SetUniform(ShaderUniformsNames::HAS_NORMAL, HasNormal(layout));
   shader.SetUniform(ShaderUniformsNames::HAS_TEXCOORD, HasTexCoord(layout));
   shader.SetUniform(ShaderUniformsNames::IS_INSTANCED, isInstancedRendering);
-  shader.SetUniform(ShaderUniformsNames::HAS_MATERIAL,
-                    resources.HasMaterials());
-  shader.SetUniform(ShaderUniformsNames::HAS_TEXTURE, resources.HasTextures());
 
   Pipelines::CurrentPipeline().ConfigureShader(shader);
 
   const int illuminationModel = static_cast<int>(Config::IlluminationModel());
   shader.SetUniform(ShaderUniformsNames::LIGHTNING_MODEL, illuminationModel);
 
-  ConfigureOpacity(shader, layout, resources);
-  ConfigureMixtureColor(shader, resources);
+  ConfigureResourceOnShader(resources, layout, shader);
 }
 }
 
