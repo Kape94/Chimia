@@ -1,6 +1,5 @@
 #include "Color4.h"
 
-#include "CameraPrivate.h"
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Renderers.h"
@@ -29,7 +28,6 @@ ConfigureForTriangleDrawing(const ResourcesGroup& resource)
   shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
-  CameraPrivate::SetCameraOnShader(shader);
 }
 
 void
@@ -40,8 +38,6 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);
-
-  CameraPrivate::SetCameraOnShader(shader);
 }
 
 GenericRenderer* g_renderer = nullptr;

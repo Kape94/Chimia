@@ -2,7 +2,6 @@
 
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
-#include "IlluminationPrivate.h"
 #include "Renderers.h"
 #include "RenderersUtils.h"
 #include "ResourceGroup.h"
@@ -30,7 +29,6 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
   shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
-  IlluminationPrivate::ConfigureLightsOnShader(shader);
 }
 
 // ----------------------------------------------------------------------------
@@ -43,7 +41,6 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);
-  IlluminationPrivate::ConfigureLightsOnShader(shader);
 }
 
 GenericRenderer* g_renderer = nullptr;

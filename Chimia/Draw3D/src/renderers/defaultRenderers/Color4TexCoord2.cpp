@@ -1,6 +1,5 @@
 #include "Color4TexCoord2.h"
 
-#include "CameraPrivate.h"
 #include "DefaultRenderersNamespaceDefs.h"
 #include "GenericRenderer.h"
 #include "Renderers.h"
@@ -29,7 +28,6 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resources)
   shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resources);
-  CameraPrivate::SetCameraOnShader(shader);
 }
 
 void
@@ -40,7 +38,6 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resources)
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resources);
-  CameraPrivate::SetCameraOnShader(shader);
 }
 
 GenericRenderer* g_renderer = nullptr;

@@ -1,8 +1,6 @@
 #include "Camera.h"
 #include "CameraPrivate.h"
 
-#include "ShaderUniformsNames.h"
-
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -108,20 +106,18 @@ Camera::View::LookAt(const glm::vec3& eye, const glm::vec3& target)
 // CameraPrivate
 // ----------------------------------------------------------------------------
 
-void
-CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
+glm::mat4x4
+CameraPrivate::GetCameraTransform()
 {
-  const glm::mat4x4 transform = CameraState::projection * CameraState::view;
-  shader.SetUniform(ShaderUniformsNames::CAMERA_TRANSFORM, transform);
+  return CameraState::projection * CameraState::view;
 }
 
 // ----------------------------------------------------------------------------
 
-void
-CameraPrivate::SetPointOfViewOnShader(Rendering::Shader& shader)
+glm::vec3
+CameraPrivate::GetCameraPosition()
 {
-  shader.SetUniform(ShaderUniformsNames::VIEW_POSITION,
-                    CameraState::cameraPosition);
+  return CameraState::cameraPosition;
 }
 
 // ----------------------------------------------------------------------------

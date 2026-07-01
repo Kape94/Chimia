@@ -1,6 +1,8 @@
 #include "RenderersUtils.h"
 
+#include "CameraPrivate.h"
 #include "Config.h"
+#include "IlluminationPrivate.h"
 #include "Pipelines.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
@@ -182,13 +184,99 @@ ConfigureResourceOnShader(const ResourcesGroup& resources,
 }
 
 void
+ConfigureCameraOnShader(Rendering::Shader& shader)
+{
+  shader.SetUniform(ShaderUniformsNames::CAMERA_TRANSFORM,
+                    CameraPrivate::GetCameraTransform());
+  shader.SetUniform(ShaderUniformsNames::VIEW_POSITION,
+                    CameraPrivate::GetCameraPosition());
+}
+
+void
+SetDirectionalLightOnShader(const DirectionalLight& light,
+                            const int index,
+                            Chimia::Rendering::Shader& shader)
+{
+  const std::string iLight = ShaderUniformsNames::DIRECTIONAL_LIGHTS_ARRAY +
+                             "[" + std::to_string(index) + "].";
+  const LightColor& col = light.color;
+
+  shader.SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
+  shader.SetUniform(std::string(iLight + "diffuse").c_str(), col.diffuse);
+  shader.SetUniform(std::string(iLight + "specular").c_str(), col.specular);
+  shader.SetUniform(std::string(iLight + "direction").c_str(), light.direction);
+}
+
+void
+ConfigureDirectionalLights(Chimia::Rendering::Shader& shader)
+{
+  int nDirectionalLights = 0;
+
+  const std::vector<DirectionalLight>& directionalLights =
+    IlluminationPrivate::GetDirectionalLights();
+  for (const DirectionalLight& light : directionalLights) {
+    SetDirectionalLightOnShader(light, nDirectionalLights, shader);
+
+    ++nDirectionalLights;
+  }
+
+  shader.SetUniform(ShaderUniformsNames::N_DIRECTIONAL_LIGHTS,
+                    nDirectionalLights);
+}
+
+void
+SetPointLightOnShader(const PointLight& light,
+                      const int index,
+                      Chimia::Rendering::Shader& shader)
+{
+  const std::string iLight = ShaderUniformsNames::POINT_LIGHTS_ARRAY + "[" +
+                             std::to_string(index) + "].";
+  const LightColor& col = light.color;
+  const PointLightAttenuation& attenuation = light.attenuation;
+  shader.SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
+  shader.SetUniform(std::string(iLight + "diffuse").c_str(), col.diffuse);
+  shader.SetUniform(std::string(iLight + "specular").c_str(), col.specular);
+  shader.SetUniform(std::string(iLight + "position").c_str(), light.position);
+  shader.SetUniform(std::string(iLight + "quadratic").c_str(),
+                    attenuation.quadratic);
+  shader.SetUniform(std::string(iLight + "linear").c_str(), attenuation.linear);
+  shader.SetUniform(std::string(iLight + "constant").c_str(),
+                    attenuation.constant);
+}
+
+void
+ConfigurePointLights(Chimia::Rendering::Shader& shader)
+{
+  int nPointLights = 0;
+
+  const std::vector<PointLight>& pointLights =
+    IlluminationPrivate::GetPointLights();
+  for (const PointLight& light : pointLights) {
+    SetPointLightOnShader(light, nPointLights, shader);
+
+    ++nPointLights;
+  }
+
+  shader.SetUniform(ShaderUniformsNames::N_POINT_LIGHTS, nPointLights);
+}
+
+void
+ConfigureLightsOnShader(Rendering::Shader& shader)
+{
+  ConfigureDirectionalLights(shader);
+  ConfigurePointLights(shader);
+}
+
+void
 ConfigureShaderForRendering(Rendering::Shader& shader,
                             const eVertexLayout& layout,
                             const bool isInstancedRendering,
                             const ResourcesGroup& resources)
 {
+  const bool vertexHasNormal = HasNormal(layout);
+
   shader.SetUniform(ShaderUniformsNames::HAS_VERTEX_COLOR, HasColor(layout));
-  shader.SetUniform(ShaderUniformsNames::HAS_NORMAL, HasNormal(layout));
+  shader.SetUniform(ShaderUniformsNames::HAS_NORMAL, vertexHasNormal);
   shader.SetUniform(ShaderUniformsNames::HAS_TEXCOORD, HasTexCoord(layout));
   shader.SetUniform(ShaderUniformsNames::IS_INSTANCED, isInstancedRendering);
 
@@ -198,6 +286,10 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
   shader.SetUniform(ShaderUniformsNames::LIGHTNING_MODEL, illuminationModel);
 
   ConfigureResourceOnShader(resources, layout, shader);
+  ConfigureCameraOnShader(shader);
+  if (vertexHasNormal) {
+    ConfigureLightsOnShader(shader);
+  }
 }
 }
 

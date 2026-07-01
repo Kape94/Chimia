@@ -2,13 +2,17 @@
 
 #include "Draw3DNamespaceDefs.h"
 
-#include "Rendering/Shader.h"
+#include "Types.h"
 
 BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 namespace IlluminationPrivate {
-void
-ConfigureLightsOnShader(Rendering::Shader& shader);
+
+const std::vector<DirectionalLight>&
+GetDirectionalLights();
+
+const std::vector<PointLight>&
+GetPointLights();
 
 }
 
