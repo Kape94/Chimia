@@ -6,6 +6,7 @@
 #include "Renderers.h"
 #include "RenderersUtils.h"
 #include "ResourcesManager.h"
+#include "ShaderUniformsNames.h"
 #include "Shaders.h"
 
 #include "Rendering/Shader.h"
@@ -22,10 +23,6 @@ USING_DEFAULT_RENDERERS_NAMESPACE
 namespace {
 
 constexpr eVertexLayout VERTEX_LAYOUT = eVertexLayout::POSITION3_TEXCOORD2;
-
-namespace Uniforms {
-const std::string TEXTURE = "u_tex";
-}
 
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
@@ -45,7 +42,7 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
 
   texture->Use(TEXTURE_UNIT);
-  shader.SetUniform(Uniforms::TEXTURE, TEXTURE_UNIT);
+  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
 }
 
 void
@@ -67,7 +64,7 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
 
   texture->Use(TEXTURE_UNIT);
-  shader.SetUniform(Uniforms::TEXTURE, TEXTURE_UNIT);
+  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
 }
 
 GenericRenderer* g_renderer = nullptr;

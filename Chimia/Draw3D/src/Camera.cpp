@@ -1,6 +1,8 @@
 #include "Camera.h"
 #include "CameraPrivate.h"
 
+#include "ShaderUniformsNames.h"
+
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -17,11 +19,6 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace CameraUtils {
-
-namespace Uniforms {
-const std::string CAMERA_TRANSFORM = "u_cameraTransform";
-const std::string VIEW_POSITION = "u_viewPosition";
-}
 
 glm::mat4x4
 createIdentity()
@@ -115,7 +112,7 @@ void
 CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
 {
   const glm::mat4x4 transform = CameraState::projection * CameraState::view;
-  shader.SetUniform(CameraUtils::Uniforms::CAMERA_TRANSFORM, transform);
+  shader.SetUniform(ShaderUniformsNames::CAMERA_TRANSFORM, transform);
 }
 
 // ----------------------------------------------------------------------------
@@ -123,7 +120,7 @@ CameraPrivate::SetCameraOnShader(Rendering::Shader& shader)
 void
 CameraPrivate::SetPointOfViewOnShader(Rendering::Shader& shader)
 {
-  shader.SetUniform(CameraUtils::Uniforms::VIEW_POSITION,
+  shader.SetUniform(ShaderUniformsNames::VIEW_POSITION,
                     CameraState::cameraPosition);
 }
 

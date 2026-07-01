@@ -1,6 +1,8 @@
 #include "Illumination.h"
 #include "IlluminationPrivate.h"
 
+#include "ShaderUniformsNames.h"
+
 #include "CameraPrivate.h"
 #include "Rendering/Shader.h"
 
@@ -27,24 +29,13 @@ std::vector<PointLight> pointLights;
 
 // ----------------------------------------------------------------------------
 
-namespace Uniforms {
-const std::string DIRECTIONAL_LIGHTS_ARRAY = "u_directionalLights";
-const std::string N_DIRECTIONAL_LIGHTS = "u_nDirectionalLights";
-const std::string POINT_LIGHTS_ARRAY = "u_pointLights";
-const std::string N_POINT_LIGHTS = "u_nPointLights";
-
-const std::string MATERIAL = "u_material";
-}
-
-// ----------------------------------------------------------------------------
-
 void
 SetDirectionalLightOnShader(const DirectionalLight& light,
                             const int index,
                             Chimia::Rendering::Shader& shader)
 {
-  const std::string iLight =
-    Uniforms::DIRECTIONAL_LIGHTS_ARRAY + "[" + std::to_string(index) + "].";
+  const std::string iLight = ShaderUniformsNames::DIRECTIONAL_LIGHTS_ARRAY +
+                             "[" + std::to_string(index) + "].";
   const LightColor& col = light.color;
 
   shader.SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
@@ -65,7 +56,8 @@ ConfigureDirectionalLights(Chimia::Rendering::Shader& shader)
     ++nDirectionalLights;
   }
 
-  shader.SetUniform(Uniforms::N_DIRECTIONAL_LIGHTS, nDirectionalLights);
+  shader.SetUniform(ShaderUniformsNames::N_DIRECTIONAL_LIGHTS,
+                    nDirectionalLights);
 }
 
 // ----------------------------------------------------------------------------
@@ -75,8 +67,8 @@ SetPointLightOnShader(const PointLight& light,
                       const int index,
                       Chimia::Rendering::Shader& shader)
 {
-  const std::string iLight =
-    Uniforms::POINT_LIGHTS_ARRAY + "[" + std::to_string(index) + "].";
+  const std::string iLight = ShaderUniformsNames::POINT_LIGHTS_ARRAY + "[" +
+                             std::to_string(index) + "].";
   const LightColor& col = light.color;
   const PointLightAttenuation& attenuation = light.attenuation;
   shader.SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
@@ -102,7 +94,7 @@ ConfigurePointLights(Chimia::Rendering::Shader& shader)
     ++nPointLights;
   }
 
-  shader.SetUniform(Uniforms::N_POINT_LIGHTS, nPointLights);
+  shader.SetUniform(ShaderUniformsNames::N_POINT_LIGHTS, nPointLights);
 }
 
 }
@@ -154,7 +146,7 @@ void
 IlluminationPrivate::ConfigureMaterialOnShader(const Material& material,
                                                Rendering::Shader& shader)
 {
-  const std::string materialUniform = IlluminationInternal::Uniforms::MATERIAL;
+  const std::string materialUniform = ShaderUniformsNames::MATERIAL;
 
   shader.SetUniform(materialUniform + ".ambient", material.ambient);
   shader.SetUniform(materialUniform + ".diffuse", material.diffuse);

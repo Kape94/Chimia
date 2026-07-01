@@ -1,6 +1,8 @@
 #include "Pipelines.h"
 #include "Pipeline.h"
 
+#include "ShaderUniformsNames.h"
+
 #include "Rendering/Rendering.h"
 #include "Rendering/Shader.h"
 
@@ -16,9 +18,6 @@ std::unique_ptr<Pipeline> g_transparentRenderingPipeline;
 
 Pipeline* g_currentPipeline = nullptr;
 
-namespace Uniforms {
-const std::string IS_TRANSPARENT_RENDERING = "u_isTransparentRendering";
-}
 }
 
 // ----------------------------------------------------------------------------
@@ -34,7 +33,7 @@ Pipelines::Init()
       Chimia::Rendering::EnableColorBlend(false);
     },
     [](Chimia::Rendering::Shader& shader) {
-      shader.SetUniform(Uniforms::IS_TRANSPARENT_RENDERING, false);
+      shader.SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, false);
     }));
 
   g_transparentRenderingPipeline.reset(new Pipeline(
@@ -43,7 +42,7 @@ Pipelines::Init()
       Chimia::Rendering::EnableColorBlend(true);
     },
     [](Chimia::Rendering::Shader& shader) {
-      shader.SetUniform(Uniforms::IS_TRANSPARENT_RENDERING, true);
+      shader.SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, true);
     }));
 
   g_currentPipeline = g_regularPipeline.get();
