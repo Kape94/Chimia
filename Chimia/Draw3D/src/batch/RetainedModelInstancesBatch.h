@@ -60,11 +60,6 @@ private:
 
   void RenderByBatches();
 
-  void HandleRenderingForBatchRange(const size_t rangeStart,
-                                    const size_t rangeSize);
-
-  void LoadBatchAndRender(const void* instancesData, const unsigned nInstances);
-
   void RenderCurrentBuffers();
 
   size_t CurrentGPUBatchSizeInBytes() const;

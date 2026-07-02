@@ -147,30 +147,13 @@ RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 void
 RetainedTrianglesBatch::RenderByBatches()
 {
-  const size_t inputSize = m_inputBuffer.GetSize();
-  if (inputSize == 0) {
+  const size_t inputSizeInBytes = m_inputBuffer.GetSize();
+  if (inputSizeInBytes == 0) {
     return;
   }
 
-  BatchUtils::ForEachBatchRange(
-    inputSize,
-    CurrentGPUBatchSizeInBytes(),
-    [&](const size_t rangeStart, const size_t rangeSize) {
-      HandleRenderingForBatchRange(rangeStart, rangeSize);
-    });
-}
-
-// ----------------------------------------------------------------------------
-
-void
-RetainedTrianglesBatch::HandleRenderingForBatchRange(const size_t rangeStart,
-                                                     const size_t rangeSize)
-{
-  const unsigned char* data = m_inputBuffer.GetData();
-  const unsigned char* batchData = data + rangeStart;
-
-  m_gpuBuffer.Load(RawDataView{ batchData, rangeSize });
-  m_gpuBuffer.Render();
+  BatchUtils::RenderByBatches(
+    inputSizeInBytes, CurrentGPUBatchSizeInBytes(), m_inputBuffer, m_gpuBuffer);
 }
 
 // ----------------------------------------------------------------------------

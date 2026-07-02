@@ -1,5 +1,6 @@
 #include "ImmediateModelInstancesBatch.h"
 
+#include "BatchUtils.h"
 #include "Core/Types.h"
 #include "Rendering/InstancedBuffer.h"
 #include "Rendering/ReusableIndexedVertexBufferObject.h"
@@ -9,16 +10,6 @@
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
-
-// ----------------------------------------------------------------------------
-
-namespace {
-bool
-ShouldKeepInput(const eImmediateFlusingPolicy policy)
-{
-  return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
-}
-}
 
 // ----------------------------------------------------------------------------
 
@@ -43,7 +34,9 @@ ImmediateModelInstancesBatch::Create(
         reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
     });
 
-  m_instancedInputBuffer.Resize(batchSize * m_instancedDataSizeInBytes);
+  const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
+  m_instancedInputBuffer.Resize(batchSizeInBytes);
+  m_currentGPUBatchSizeInBytes = batchSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------
@@ -68,8 +61,6 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
 void
 ImmediateModelInstancesBatch::Draw(const RawDataView& instanceData)
 {
-  HandleFlushByDemand(instanceData.size);
-
   m_instancedInputBuffer.Append(instanceData);
 }
 
@@ -87,22 +78,6 @@ ImmediateModelInstancesBatch::Draw(
 // ----------------------------------------------------------------------------
 
 void
-ImmediateModelInstancesBatch::HandleFlushByDemand(
-  const size_t incomingSizeInBytes)
-{
-  if (m_instancedInputBuffer.GetAvailableSize() < incomingSizeInBytes) {
-    const size_t nInstancesInBuffer =
-      m_instancedInputBuffer.GetSize() / m_instancedDataSizeInBytes;
-    m_nInstancesFlushedByDemand += nInstancesInBuffer;
-
-    // TODO: Flush by demand should be handled by the pipeline
-    DoFlush(eImmediateFlusingPolicy::RENDER_AND_FLUSH_INPUTS);
-  }
-}
-
-// ----------------------------------------------------------------------------
-
-void
 ImmediateModelInstancesBatch::Flush(
   const eImmediateFlusingPolicy flushingPolicy)
 {
@@ -111,10 +86,10 @@ ImmediateModelInstancesBatch::Flush(
     return;
   }
 
-  DoFlush(flushingPolicy);
-  if (!ShouldKeepInput(flushingPolicy)) {
+  if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     HandleDynamicResizing();
   }
+  DoFlush(flushingPolicy);
 }
 
 // ----------------------------------------------------------------------------
@@ -125,17 +100,13 @@ ImmediateModelInstancesBatch::DoFlush(
 {
   m_onFlush();
 
-  const size_t nInstances =
-    m_instancedInputBuffer.GetSize() / m_instancedDataSizeInBytes;
-  for (auto& buffer : m_gpuBuffers) {
-    buffer.LoadInstancedData(RawArrayView{ m_instancedInputBuffer.GetData(),
-                                           nInstances,
-                                           m_instancedDataSizeInBytes });
+  BatchUtils::RenderInstancedByBatches(m_instancedInputBuffer.GetSize(),
+                                       m_currentGPUBatchSizeInBytes,
+                                       m_instancedDataSizeInBytes,
+                                       m_instancedInputBuffer,
+                                       m_gpuBuffers);
 
-    buffer.Render();
-  }
-
-  if (!ShouldKeepInput(flushingPolicy)) {
+  if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_instancedInputBuffer.Reset();
   }
 }
@@ -145,28 +116,26 @@ ImmediateModelInstancesBatch::DoFlush(
 void
 ImmediateModelInstancesBatch::HandleDynamicResizing()
 {
-  if (m_nInstancesFlushedByDemand == 0) {
-    return;
-  }
-
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
-  const size_t batchSize = CurrentBatchSize();
-  if (batchSize < maximumAllowed) {
-    const size_t desiredBatchSize = batchSize + m_nInstancesFlushedByDemand;
+  const size_t gpuBatchSize = CurrentGPUBatchSize();
+
+  const size_t inputSizeInBytes = m_instancedInputBuffer.GetSize();
+  const size_t inputAmmount = inputSizeInBytes / m_instancedDataSizeInBytes;
+
+  if (gpuBatchSize < maximumAllowed && gpuBatchSize < inputAmmount) {
+    const size_t desiredBatchSize = inputAmmount;
     const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);
 
     ResizeBatch(newBatchSize);
   }
-
-  m_nInstancesFlushedByDemand = 0;
 }
 
 // ----------------------------------------------------------------------------
 
 size_t
-ImmediateModelInstancesBatch::CurrentBatchSize() const
+ImmediateModelInstancesBatch::CurrentGPUBatchSize() const
 {
-  return m_instancedInputBuffer.GetMaximumSize() / m_instancedDataSizeInBytes;
+  return m_currentGPUBatchSizeInBytes / m_instancedDataSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------
@@ -175,13 +144,14 @@ void
 ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
-  m_instancedInputBuffer.Resize(batchSizeInBytes);
 
   for (auto& buffer : m_gpuBuffers) {
     buffer.RecreateInstancedBuffer(
       RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes },
       m_instancedAttributes);
   }
+
+  m_currentGPUBatchSizeInBytes = batchSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

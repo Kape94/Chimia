@@ -23,6 +23,7 @@
 - [Graphics] Include functions for adding/removing lights from the scene. See TODOs at Illumination.cpp
 - [Graphics] Review object table structure. The initial size and growth factor should be configurable. See TODO at ObjectTable.h
 - [Graphics] All shader configuration functions from all renderers now are looking quite similar. Should them be dropped?
+- [Graphics] Remove m_onRender functions from inside batching components, this should be coordinated externally.
 - [Rendering] Buffers implementation code on Rendering module is quite messy.
 - [Graphics] Model is not a good name for class Model;
 - [Graphics] Remove tag from resources, and also store them in simple varianges, no containers needed;
@@ -43,8 +44,8 @@
 
 
 ## Open problems:
-- Flush by demand;
-  - Include transparent pipeline setting wrap in shader configuration steps;
+- Containers/buffers expansion rate;
+  - Performance problem arised while drawing many triangles in the first frame (many input buffer resizes);
 - Adding many small retained triangle meshes is not showing good performance. A single huge mesh performs far better;
 
 ## Build Instructions

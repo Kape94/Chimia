@@ -11,16 +11,6 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-namespace {
-bool
-ShouldKeepInput(const eImmediateFlusingPolicy policy)
-{
-  return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
-}
-}
-
-// ----------------------------------------------------------------------------
-
 void
 ImmediateTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
@@ -40,6 +30,7 @@ ImmediateTrianglesBatch::Create(
 
   m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
                      vertexAttributes);
+  m_currentGpuBufferSizeInBytes = batchSizeInBytes;
 
   m_triangleSizeInBytes = triangleSizeInBytes;
   m_onFlush = onFlush;
@@ -51,9 +42,6 @@ void
 ImmediateTrianglesBatch::Draw(
   const std::initializer_list<RawDataView>& vertexDatas)
 {
-  const size_t incomingSizeInBytes = BatchUtils::TotalDataSize(vertexDatas);
-  HandleFlushByDemand(incomingSizeInBytes);
-
   for (const auto& vertexDataView : vertexDatas) {
     m_inputBuffer.Append(vertexDataView);
   }
@@ -64,33 +52,7 @@ ImmediateTrianglesBatch::Draw(
 void
 ImmediateTrianglesBatch::Draw(const RawArrayView& vertexDataArray)
 {
-  const size_t arraySizeInBytes = vertexDataArray.TotalSize();
-
-  BatchUtils::ForEachBatchRange(
-    arraySizeInBytes,
-    m_triangleSizeInBytes,
-    [&](const size_t rangeStart, const size_t rangeSize) {
-      const unsigned char* data =
-        reinterpret_cast<const unsigned char*>(vertexDataArray.array);
-      const unsigned char* offsetData = data + rangeStart;
-
-      Draw({ RawDataView(offsetData, rangeSize) });
-    });
-}
-
-// ----------------------------------------------------------------------------
-
-void
-ImmediateTrianglesBatch::HandleFlushByDemand(const size_t incomingSizeInBytes)
-{
-  if (m_inputBuffer.GetAvailableSize() < incomingSizeInBytes) {
-    const size_t nTrianglesInBuffer =
-      m_inputBuffer.GetSize() / m_triangleSizeInBytes;
-    m_trianglesFlushedByDemand += nTrianglesInBuffer;
-
-    // TODO: Flush by demand should be handled by the pipeline as well
-    DoFlushing(eImmediateFlusingPolicy::RENDER_AND_FLUSH_INPUTS);
-  }
+  m_inputBuffer.Append(vertexDataArray.AsDataView());
 }
 
 // ----------------------------------------------------------------------------
@@ -103,11 +65,11 @@ ImmediateTrianglesBatch::Flush(const eImmediateFlusingPolicy flushingPolicy)
     return;
   }
 
-  DoFlushing(flushingPolicy);
-
-  if (!ShouldKeepInput(flushingPolicy)) {
+  if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     HandleDynamicResizing();
   }
+
+  DoFlushing(flushingPolicy);
 }
 
 // ----------------------------------------------------------------------------
@@ -118,11 +80,13 @@ ImmediateTrianglesBatch::DoFlushing(
 {
   m_onFlush();
 
-  m_gpuBuffer.Load(
-    RawDataView{ m_inputBuffer.GetData(), m_inputBuffer.GetSize() });
-  m_gpuBuffer.Render();
+  const size_t inputSizeInBytes = m_inputBuffer.GetSize();
+  BatchUtils::RenderByBatches(inputSizeInBytes,
+                              m_currentGpuBufferSizeInBytes,
+                              m_inputBuffer,
+                              m_gpuBuffer);
 
-  if (!ShouldKeepInput(flushingPolicy)) {
+  if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_inputBuffer.Reset();
   }
 }
@@ -132,22 +96,17 @@ ImmediateTrianglesBatch::DoFlushing(
 void
 ImmediateTrianglesBatch::HandleDynamicResizing()
 {
-  if (m_trianglesFlushedByDemand == 0) {
-    return;
-  }
-
   const size_t maximumAllowed = m_batchingSettings.maximumBatchSize;
-  const size_t currentBatchSize = CurrentBatchSize();
+  const size_t currentGPUBatchSize = CurrentGPUBatchSize();
 
-  if (currentBatchSize < maximumAllowed) {
-    const size_t desiredBatchSize =
-      currentBatchSize + m_trianglesFlushedByDemand;
-    const size_t newBatchSize = std::min(desiredBatchSize, maximumAllowed);
+  const size_t inputSizeInBytes = m_inputBuffer.GetSize();
+  const size_t inputAmmount = inputSizeInBytes / m_triangleSizeInBytes;
 
+  if (currentGPUBatchSize < maximumAllowed &&
+      currentGPUBatchSize < inputAmmount) {
+    const size_t newBatchSize = std::min(inputAmmount, maximumAllowed);
     Resize(newBatchSize);
   }
-
-  m_trianglesFlushedByDemand = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -156,18 +115,19 @@ void
 ImmediateTrianglesBatch::Resize(size_t batchSize)
 {
   const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
-  m_inputBuffer.Resize(newBatchSizeInBytes);
 
   m_gpuBuffer.Clear();
   m_gpuBuffer.Create({ nullptr, newBatchSizeInBytes }, m_vertexAttributes);
+
+  m_currentGpuBufferSizeInBytes = newBatchSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------
 
 size_t
-ImmediateTrianglesBatch::CurrentBatchSize() const
+ImmediateTrianglesBatch::CurrentGPUBatchSize() const
 {
-  return m_inputBuffer.GetMaximumSize() / m_triangleSizeInBytes;
+  return m_currentGpuBufferSizeInBytes / m_triangleSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

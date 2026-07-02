@@ -199,39 +199,11 @@ RetainedModelInstancesBatch::RenderByBatches()
 
   m_onRender();
 
-  BatchUtils::ForEachBatchRange(
-    m_instanceDataBuffer.GetSize(),
-    CurrentGPUBatchSizeInBytes(),
-    [&](const size_t rangeStart, const size_t rangeSize) {
-      HandleRenderingForBatchRange(rangeStart, rangeSize);
-    });
-}
-
-// ----------------------------------------------------------------------------
-
-void
-RetainedModelInstancesBatch::HandleRenderingForBatchRange(
-  const size_t rangeStart,
-  const size_t rangeSize)
-{
-  const unsigned char* data = m_instanceDataBuffer.GetData();
-  const unsigned char* offsetData = data + rangeStart;
-
-  const unsigned nInstances = rangeSize / m_instanceDataSizeInBytes;
-  LoadBatchAndRender(offsetData, nInstances);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-RetainedModelInstancesBatch::LoadBatchAndRender(const void* instancesData,
-                                                const unsigned nInstances)
-{
-  for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
-    gpuBuffer.LoadInstancedData(
-      RawArrayView{ instancesData, nInstances, m_instanceDataSizeInBytes });
-    gpuBuffer.Render();
-  }
+  BatchUtils::RenderInstancedByBatches(m_instanceDataBuffer.GetSize(),
+                                       CurrentGPUBatchSizeInBytes(),
+                                       m_instanceDataSizeInBytes,
+                                       m_instanceDataBuffer,
+                                       m_gpuBuffers);
 }
 
 // ----------------------------------------------------------------------------

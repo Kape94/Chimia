@@ -44,9 +44,6 @@ private:
 
   void RenderByBatches();
 
-  void HandleRenderingForBatchRange(const size_t rangeStart,
-                                    const size_t rangeSize);
-
   size_t CurrentGPUBatchSizeInBytes() const;
 
   // Cache attribute to indicate whenever a new mesh gets added

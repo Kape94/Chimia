@@ -2,8 +2,13 @@
 
 // ----------------------------------------------------------------------------
 
+#include "eImmediateFlushingPolicy.h"
+
+#include "Core/DataBuffer.h"
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
+#include "Rendering/Buffer.h"
+#include "Rendering/InstancedBuffer.h"
 
 #include <cstddef>
 #include <functional>
@@ -25,8 +30,24 @@ ForEachBatchRange(const size_t totalSize,
                   const size_t batchSize,
                   const std::function<void(size_t, size_t)>& action);
 
+void
+RenderByBatches(const size_t totalSize,
+                const size_t batchSize,
+                const DataBuffer& cpuBuffer,
+                Rendering::Buffer& gpuBuffer);
+
+void
+RenderInstancedByBatches(const size_t totalSize,
+                         const size_t batchSize,
+                         const size_t instanceSize,
+                         const DataBuffer& cpuBuffer,
+                         std::vector<Rendering::InstancedBuffer>& gpuBuffers);
+
 size_t
 TotalDataSize(const std::initializer_list<RawDataView>& dataViews);
+
+bool
+ShouldKeepInput(const eImmediateFlusingPolicy policy);
 }
 
 // ----------------------------------------------------------------------------

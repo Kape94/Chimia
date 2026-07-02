@@ -44,6 +44,52 @@ BatchUtils::ForEachBatchRange(const size_t totalSize,
 
 // ----------------------------------------------------------------------------
 
+void
+BatchUtils::RenderByBatches(const size_t totalSize,
+                            const size_t batchSize,
+                            const DataBuffer& cpuBuffer,
+                            Rendering::Buffer& gpuBuffer)
+{
+  auto renderBatch = [&cpuBuffer, &gpuBuffer](const size_t start,
+                                              const size_t size) {
+    const unsigned char* data = cpuBuffer.GetData();
+    const unsigned char* batchData = data + start;
+
+    gpuBuffer.Load(RawDataView{ batchData, size });
+    gpuBuffer.Render();
+  };
+
+  ForEachBatchRange(totalSize, batchSize, renderBatch);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+BatchUtils::RenderInstancedByBatches(
+  const size_t totalSize,
+  const size_t batchSize,
+  const size_t instanceSize,
+  const DataBuffer& cpuBuffer,
+  std::vector<Rendering::InstancedBuffer>& gpuBuffers)
+{
+  auto renderBatch = [instanceSize, &cpuBuffer, &gpuBuffers](
+                       const size_t start, const size_t rangeSize) {
+    const unsigned char* data = cpuBuffer.GetData();
+    const unsigned char* batchData = data + start;
+
+    const unsigned nInstances = rangeSize / instanceSize;
+    for (Rendering::InstancedBuffer& gpuBuffer : gpuBuffers) {
+      gpuBuffer.LoadInstancedData(
+        RawArrayView{ batchData, nInstances, instanceSize });
+      gpuBuffer.Render();
+    }
+  };
+
+  ForEachBatchRange(totalSize, batchSize, renderBatch);
+}
+
+// ----------------------------------------------------------------------------
+
 size_t
 BatchUtils::TotalDataSize(const std::initializer_list<RawDataView>& dataViews)
 {
@@ -54,6 +100,14 @@ BatchUtils::TotalDataSize(const std::initializer_list<RawDataView>& dataViews)
 
   return std::accumulate(
     dataViews.begin(), dataViews.end(), 0, accumulateDataSizeFn);
+}
+
+// ----------------------------------------------------------------------------
+
+bool
+BatchUtils::ShouldKeepInput(const eImmediateFlusingPolicy policy)
+{
+  return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
 }
 
 // ----------------------------------------------------------------------------

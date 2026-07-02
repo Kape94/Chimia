@@ -36,15 +36,13 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void HandleFlushByDemand(const size_t incomingSizeInBytes);
-
   void DoFlushing(const eImmediateFlusingPolicy flushingPolicy);
 
   void HandleDynamicResizing();
 
   void Resize(size_t batchSize);
 
-  size_t CurrentBatchSize() const;
+  size_t CurrentGPUBatchSize() const;
 
   // Fixed attributes, defined only on creation
   std::function<void(void)> m_onFlush;
@@ -52,8 +50,8 @@ private:
   Rendering::ShaderAttributes m_vertexAttributes;
   size_t m_triangleSizeInBytes = 0;
 
-  // This attribute only gets changed when a flush by demand happens
-  size_t m_trianglesFlushedByDemand = 0;
+  // This attribute only gets changed when a buffer resize happens
+  size_t m_currentGpuBufferSizeInBytes = 0;
 
   // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;

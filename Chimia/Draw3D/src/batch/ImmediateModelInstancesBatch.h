@@ -46,15 +46,13 @@ private:
     const Rendering::ShaderAttributes& vertexAttributes,
     const Rendering::ShaderAttributes& instanceAttributes);
 
-  void HandleFlushByDemand(const size_t incomingSizeInBytes);
-
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
   void HandleDynamicResizing();
 
   void ResizeBatch(const size_t batchSize);
 
-  size_t CurrentBatchSize() const;
+  size_t CurrentGPUBatchSize() const;
 
   // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
@@ -62,8 +60,8 @@ private:
   Rendering::ShaderAttributes m_instancedAttributes;
   size_t m_instancedDataSizeInBytes = 0;
 
-  // This attribute only gets changed when a flush by demand happens
-  size_t m_nInstancesFlushedByDemand = 0;
+  // This attribute only gets changed when a buffer resize happens
+  size_t m_currentGPUBatchSizeInBytes = 0;
 
   // These attributes change often, during frame flow
   DataBuffer m_instancedInputBuffer;
