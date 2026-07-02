@@ -38,6 +38,8 @@ public:
   void Delete();
 
 private:
+  size_t CalculateNewSize(const size_t incomingSize) const;
+
   void IncreaseSize(const size_t size);
 
   unsigned char* Allocate(const size_t size) const;

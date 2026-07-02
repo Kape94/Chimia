@@ -1,5 +1,7 @@
 #include "DataBuffer.h"
 
+#include "CoreConstants.h"
+
 #include <cstdlib>
 #include <cstring>
 
@@ -74,12 +76,28 @@ DataBuffer::Append(const void* newData, const size_t newDataSize)
 {
   const size_t remainingSize = RemainingSize();
   if (newDataSize > remainingSize) {
-    const size_t sizeToIncrease = newDataSize - remainingSize;
+    const size_t sizeToIncrease = CalculateNewSize(newDataSize);
     IncreaseSize(sizeToIncrease);
     AppendData(newData, newDataSize);
   } else {
     AppendData(newData, newDataSize);
   }
+}
+
+//-----------------------------------------------------------------------------
+
+size_t
+DataBuffer::CalculateNewSize(const size_t incomingSize) const
+{
+  const size_t remainingSize = RemainingSize();
+  const size_t neededSize = incomingSize - remainingSize;
+
+  const float suggestedSizeFloat =
+    CoreConstants::BUFFER_GROWTH_FACTOR * static_cast<float>(maximumSize);
+
+  const size_t suggestedSize = static_cast<size_t>(suggestedSizeFloat);
+
+  return std::max(neededSize, suggestedSize);
 }
 
 //-----------------------------------------------------------------------------

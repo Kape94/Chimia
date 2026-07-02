@@ -95,7 +95,7 @@ ImmediateTrianglesDraw()
   DrawTriangles(N_TRIANGLES, N_FRAMES);
   const float execTime = ExtrasUtils::Toc();
 
-  constexpr float EXPECTED_EXECUTION_TIME = 5.9;
+  constexpr float EXPECTED_EXECUTION_TIME = 4.678;
   ExpectExecutionTime(execTime, EXPECTED_EXECUTION_TIME);
 }
 
@@ -109,7 +109,7 @@ RetainedTrianglesDraw()
   AddAndRemoveTriangles(N_TRIANGLES, N_FRAMES);
   const float execTime = ExtrasUtils::Toc();
 
-  constexpr float EXPECTED_EXECUTION_TIME = 12.232;
+  constexpr float EXPECTED_EXECUTION_TIME = 11.88;
   ExpectExecutionTime(execTime, EXPECTED_EXECUTION_TIME);
 }
 }
