@@ -4,7 +4,7 @@
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "IndexedBuffer.h"
+#include "IndexedRenderAction.h"
 #include "ReusableIndexedVertexBufferObject.h"
 #include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"

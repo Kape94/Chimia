@@ -1,7 +1,7 @@
 #include "Rendering/Rendering.h"
 
-#include "Rendering/Buffer.h"
-#include "Rendering/IndexedBuffer.h"
+#include "Rendering/IndexedRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Shader.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"

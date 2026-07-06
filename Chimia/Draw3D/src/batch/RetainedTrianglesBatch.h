@@ -7,7 +7,7 @@
 #include "Types.h"
 
 #include "ObjectTable.h"
-#include "Rendering/Buffer.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------

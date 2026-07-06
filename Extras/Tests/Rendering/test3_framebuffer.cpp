@@ -3,7 +3,7 @@
 #include "Media/Image.h"
 
 #include "Rendering/FrameBuffer.h"
-#include "Rendering/IndexedBuffer.h"
+#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"

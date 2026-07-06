@@ -1,9 +1,9 @@
-#include "InstancedBuffer.h"
+#include "InstancedRenderAction.h"
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
 #include "Core/Types.h"
-#include "IndexedBuffer.h"
+#include "IndexedRenderAction.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
 #include <variant>

@@ -5,7 +5,7 @@
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
-#include "Rendering/Buffer.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 

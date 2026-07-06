@@ -3,7 +3,7 @@
 #include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "Buffer.h"
+#include "RenderAction.h"
 #include "ReusableIndexedVertexBufferObject.h"
 #include "ShaderAttribute.h"
 

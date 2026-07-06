@@ -1,6 +1,6 @@
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
+#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
