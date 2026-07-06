@@ -60,8 +60,8 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction action;
+  action.Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -69,13 +69,13 @@ main()
 
   while (!win.ShouldClose()) {
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   shader.Clear();
 
   return 0;

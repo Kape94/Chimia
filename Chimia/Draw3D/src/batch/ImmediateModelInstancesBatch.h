@@ -65,7 +65,7 @@ private:
 
   // These attributes change often, during frame flow
   DataBuffer m_instancedInputBuffer;
-  std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
+  std::vector<Rendering::InstancedRenderAction> m_gpuActions;
 };
 
 // ----------------------------------------------------------------------------

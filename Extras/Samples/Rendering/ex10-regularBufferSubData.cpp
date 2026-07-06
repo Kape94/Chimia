@@ -103,8 +103,8 @@ main()
                     [](size_t current, const std::vector<float>& incoming) {
                       return std::max(current, incoming.size());
                     });
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
+  Chimia::Rendering::RenderAction action;
+  action.Create(
     { nullptr, maximumSize * sizeof(float) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
@@ -114,7 +114,7 @@ main()
   int selected = 0;
 
   const std::vector<float>& data = states[selected];
-  buffer.Load(data);
+  action.Load(data);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -126,17 +126,17 @@ main()
       selected = (selected + 1) % states.size();
       const std::vector<float>& data = states[selected];
 
-      buffer.Load(data);
+      action.Load(data);
     }
 
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   shader.Clear();
 
   return 0;

@@ -97,21 +97,21 @@ BlendingSimple(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::IndexedBuffer opaqueTriangle;
+  Chimia::Rendering::IndexedRenderAction opaqueTriangle;
   opaqueTriangle.Create(
     { vertex, vertexDataSize },
     { indexData, indexDataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
 
-  Chimia::Rendering::IndexedBuffer transparentTriangle1;
+  Chimia::Rendering::IndexedRenderAction transparentTriangle1;
   transparentTriangle1.Create(
     { vertex2, vertex2DataSize },
     { index2Data, index2DataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
 
-  Chimia::Rendering::IndexedBuffer transparentTriangle2;
+  Chimia::Rendering::IndexedRenderAction transparentTriangle2;
   transparentTriangle2.Create(
     { vertex3, vertex3DataSize },
     { index3Data, index3DataNItems },

@@ -48,15 +48,15 @@ void
 BatchUtils::RenderByBatches(const size_t totalSize,
                             const size_t batchSize,
                             const DataBuffer& cpuBuffer,
-                            Rendering::Buffer& gpuBuffer)
+                            Rendering::RenderAction& gpuAction)
 {
-  auto renderBatch = [&cpuBuffer, &gpuBuffer](const size_t start,
+  auto renderBatch = [&cpuBuffer, &gpuAction](const size_t start,
                                               const size_t size) {
     const unsigned char* data = cpuBuffer.GetData();
     const unsigned char* batchData = data + start;
 
-    gpuBuffer.Load(RawDataView{ batchData, size });
-    gpuBuffer.Render();
+    gpuAction.Load(RawDataView{ batchData, size });
+    gpuAction.Render();
   };
 
   ForEachBatchRange(totalSize, batchSize, renderBatch);
@@ -70,18 +70,18 @@ BatchUtils::RenderInstancedByBatches(
   const size_t batchSize,
   const size_t instanceSize,
   const DataBuffer& cpuBuffer,
-  std::vector<Rendering::InstancedBuffer>& gpuBuffers)
+  std::vector<Rendering::InstancedRenderAction>& gpuActions)
 {
-  auto renderBatch = [instanceSize, &cpuBuffer, &gpuBuffers](
+  auto renderBatch = [instanceSize, &cpuBuffer, &gpuActions](
                        const size_t start, const size_t rangeSize) {
     const unsigned char* data = cpuBuffer.GetData();
     const unsigned char* batchData = data + start;
 
     const unsigned nInstances = rangeSize / instanceSize;
-    for (Rendering::InstancedBuffer& gpuBuffer : gpuBuffers) {
-      gpuBuffer.LoadInstancedData(
+    for (Rendering::InstancedRenderAction& gpuAction : gpuActions) {
+      gpuAction.LoadInstancedData(
         RawArrayView{ batchData, nInstances, instanceSize });
-      gpuBuffer.Render();
+      gpuAction.Render();
     }
   };
 

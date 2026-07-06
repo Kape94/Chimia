@@ -56,14 +56,14 @@ IndexedBuffer(Window& win)
   Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
   reusableVertexBuffer.Create(vertex, nVertices, indexData);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction renderReusable;
+  renderReusable.Create(
     reusableVertexBuffer,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   shader.Use();
-  buffer.Render();
+  renderReusable.Render();
 
   win.Swap();
 
@@ -156,15 +156,16 @@ Instancing(Window& win)
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) }
   };
-  Chimia::Rendering::InstancedBuffer buffer1;
-  buffer1.CreateInstanced(reusableVertexBuffer,
-                          vertexAttributes,
-                          positions,
-                          { Chimia::Rendering::ShaderAttribute::Float(
-                            1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::InstancedRenderAction renderReusableWithOffsets;
+  renderReusableWithOffsets.CreateInstanced(
+    reusableVertexBuffer,
+    vertexAttributes,
+    positions,
+    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/,
+                                                2 /*nEntries*/) });
 
-  Chimia::Rendering::InstancedBuffer buffer2;
-  buffer2.CreateInstanced(
+  Chimia::Rendering::InstancedRenderAction renderReusableTransformed;
+  renderReusableTransformed.CreateInstanced(
     reusableVertexBuffer,
     vertexAttributes,
     transforms,
@@ -175,10 +176,10 @@ Instancing(Window& win)
                                                 4 /*nEntries*/) });
 
   shader1.Use();
-  buffer1.Render();
+  renderReusableWithOffsets.Render();
 
   shader2.Use();
-  buffer2.Render();
+  renderReusableTransformed.Render();
 
   win.Swap();
 

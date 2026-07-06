@@ -72,8 +72,8 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction action;
+  action.Create(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -106,13 +106,13 @@ main(int argc, char** argv)
     shader.Use();
     shader.SetUniform("tex", texUnit);
     shader.SetUniform("tex2", tex2Unit);
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   texture.Clear();
   texture2.Clear();
   shader.Clear();

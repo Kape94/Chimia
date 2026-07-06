@@ -17,16 +17,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-class InstancedBuffer
+class InstancedRenderAction
 {
 public:
-  DEFAULT_CONSTUCTIBLE(InstancedBuffer)
-  NON_COPYABLE(InstancedBuffer)
+  DEFAULT_CONSTUCTIBLE(InstancedRenderAction)
+  NON_COPYABLE(InstancedRenderAction)
 
-  InstancedBuffer(InstancedBuffer&& other) noexcept;
-  InstancedBuffer& operator=(InstancedBuffer&& other) noexcept;
+  InstancedRenderAction(InstancedRenderAction&& other) noexcept;
+  InstancedRenderAction& operator=(InstancedRenderAction&& other) noexcept;
 
-  ~InstancedBuffer();
+  ~InstancedRenderAction();
 
   void CreateInstanced(const ReusableVertexBufferObject& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
@@ -76,12 +76,13 @@ private:
 
   unsigned GetBaseVAO();
 
-  void RenderWithRegularBaseBuffer(const Buffer& buffer) const;
-  void RenderWithIndexedBaseBuffer(const IndexedBuffer& indexedBuffer) const;
+  void RenderWithRegularBaseBuffer(const RenderAction& buffer) const;
+  void RenderWithIndexedBaseBuffer(
+    const IndexedRenderAction& indexedBuffer) const;
 
   friend class BufferPrivate;
 
-  std::variant<Buffer, IndexedBuffer> m_baseBuffer;
+  std::variant<RenderAction, IndexedRenderAction> m_baseBuffer;
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;
 };

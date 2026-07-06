@@ -14,7 +14,8 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-InstancedBuffer::InstancedBuffer(InstancedBuffer&& other) noexcept
+InstancedRenderAction::InstancedRenderAction(
+  InstancedRenderAction&& other) noexcept
   : m_baseBuffer(std::move(other.m_baseBuffer))
   , m_instancedVBO(other.m_instancedVBO)
   , m_nInstances(other.m_nInstances)
@@ -25,8 +26,8 @@ InstancedBuffer::InstancedBuffer(InstancedBuffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-InstancedBuffer&
-InstancedBuffer::operator=(InstancedBuffer&& other) noexcept
+InstancedRenderAction&
+InstancedRenderAction::operator=(InstancedRenderAction&& other) noexcept
 {
   if (&other != this) {
     m_instancedVBO = other.m_instancedVBO;
@@ -42,7 +43,7 @@ InstancedBuffer::operator=(InstancedBuffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-InstancedBuffer::~InstancedBuffer()
+InstancedRenderAction::~InstancedRenderAction()
 {
   Clear();
 }
@@ -50,14 +51,14 @@ InstancedBuffer::~InstancedBuffer()
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::CreateInstanced(
+InstancedRenderAction::CreateInstanced(
   const ReusableVertexBufferObject& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_baseBuffer = Buffer();
-  Buffer& base = std::get<Buffer>(m_baseBuffer);
+  m_baseBuffer = RenderAction();
+  RenderAction& base = std::get<RenderAction>(m_baseBuffer);
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
@@ -67,14 +68,14 @@ InstancedBuffer::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::CreateInstanced(
+InstancedRenderAction::CreateInstanced(
   const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_baseBuffer = IndexedBuffer();
-  IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
+  m_baseBuffer = IndexedRenderAction();
+  IndexedRenderAction& base = std::get<IndexedRenderAction>(m_baseBuffer);
 
   base.Create(reusableVertexBuffer, vertexShaderAttributes);
 
@@ -84,15 +85,15 @@ InstancedBuffer::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::CreateInstanced(
+InstancedRenderAction::CreateInstanced(
   const RawDataView& vertexData,
   const RawArrayView& indexData,
   const ShaderAttributes& shaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_baseBuffer = IndexedBuffer();
-  IndexedBuffer& base = std::get<IndexedBuffer>(m_baseBuffer);
+  m_baseBuffer = IndexedRenderAction();
+  IndexedRenderAction& base = std::get<IndexedRenderAction>(m_baseBuffer);
 
   base.Create(vertexData, indexData, shaderAttributes);
 
@@ -102,14 +103,14 @@ InstancedBuffer::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::CreateInstanced(
+InstancedRenderAction::CreateInstanced(
   const RawDataView& vertexData,
   const ShaderAttributes& shaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_baseBuffer = Buffer();
-  Buffer& base = std::get<Buffer>(m_baseBuffer);
+  m_baseBuffer = RenderAction();
+  RenderAction& base = std::get<RenderAction>(m_baseBuffer);
 
   base.Create(vertexData, shaderAttributes);
 
@@ -119,7 +120,7 @@ InstancedBuffer::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::LoadInstancedData(const RawArrayView& instancesData)
+InstancedRenderAction::LoadInstancedData(const RawArrayView& instancesData)
 {
   const unsigned totalSize = instancesData.TotalSize();
   BufferUtils::LoadDataOnBuffer(
@@ -131,7 +132,7 @@ InstancedBuffer::LoadInstancedData(const RawArrayView& instancesData)
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::RecreateInstancedBuffer(
+InstancedRenderAction::RecreateInstancedBuffer(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
@@ -157,7 +158,7 @@ InstancedBuffer::RecreateInstancedBuffer(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::CreateInstancedBuffer(
+InstancedRenderAction::CreateInstancedBuffer(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
@@ -171,9 +172,9 @@ InstancedBuffer::CreateInstancedBuffer(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
-                                        const unsigned instanceDataSize,
-                                        const unsigned nInstances)
+InstancedRenderAction::LoadInstancedDataInGPU(const void* instancedData,
+                                              const unsigned instanceDataSize,
+                                              const unsigned nInstances)
 {
   m_instancedVBO = BufferUtils::CreateBufferAndLoadData(
     GL_ARRAY_BUFFER, instancedData, instanceDataSize * nInstances);
@@ -182,11 +183,12 @@ InstancedBuffer::LoadInstancedDataInGPU(const void* instancedData,
 //---------------------------------------------------------------------------------------
 
 unsigned
-InstancedBuffer::GetBaseVAO()
+InstancedRenderAction::GetBaseVAO()
 {
-  if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+  if (auto buffer = std::get_if<RenderAction>(&m_baseBuffer)) {
     return BufferPrivate::GetVAO(*buffer);
-  } else if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+  } else if (auto indexedBuffer =
+               std::get_if<IndexedRenderAction>(&m_baseBuffer)) {
     return BufferPrivate::GetVAO(*indexedBuffer);
   }
   return 0;
@@ -195,7 +197,7 @@ InstancedBuffer::GetBaseVAO()
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::Clear()
+InstancedRenderAction::Clear()
 {
   ClearBaseBuffer();
   ClearInstancesBuffer(m_instancedVBO);
@@ -204,11 +206,12 @@ InstancedBuffer::Clear()
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::ClearBaseBuffer()
+InstancedRenderAction::ClearBaseBuffer()
 {
-  if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+  if (auto buffer = std::get_if<RenderAction>(&m_baseBuffer)) {
     buffer->Clear();
-  } else if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+  } else if (auto indexedBuffer =
+               std::get_if<IndexedRenderAction>(&m_baseBuffer)) {
     indexedBuffer->Clear();
   }
 }
@@ -216,7 +219,7 @@ InstancedBuffer::ClearBaseBuffer()
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::ClearInstancesBuffer(unsigned& instanceVBO)
+InstancedRenderAction::ClearInstancesBuffer(unsigned& instanceVBO)
 {
   if (instanceVBO != 0) {
     glDeleteBuffers(1, &instanceVBO);
@@ -227,11 +230,11 @@ InstancedBuffer::ClearInstancesBuffer(unsigned& instanceVBO)
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::Render() const
+InstancedRenderAction::Render() const
 {
-  if (auto indexedBuffer = std::get_if<IndexedBuffer>(&m_baseBuffer)) {
+  if (auto indexedBuffer = std::get_if<IndexedRenderAction>(&m_baseBuffer)) {
     RenderWithIndexedBaseBuffer(*indexedBuffer);
-  } else if (auto buffer = std::get_if<Buffer>(&m_baseBuffer)) {
+  } else if (auto buffer = std::get_if<RenderAction>(&m_baseBuffer)) {
     RenderWithRegularBaseBuffer(*buffer);
   }
 }
@@ -239,7 +242,8 @@ InstancedBuffer::Render() const
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::RenderWithRegularBaseBuffer(const Buffer& buffer) const
+InstancedRenderAction::RenderWithRegularBaseBuffer(
+  const RenderAction& buffer) const
 {
   const unsigned VAO = BufferPrivate::GetVAO(buffer);
   const unsigned nVertices = BufferPrivate::GetNVertices(buffer);
@@ -251,8 +255,8 @@ InstancedBuffer::RenderWithRegularBaseBuffer(const Buffer& buffer) const
 //---------------------------------------------------------------------------------------
 
 void
-InstancedBuffer::RenderWithIndexedBaseBuffer(
-  const IndexedBuffer& indexedBuffer) const
+InstancedRenderAction::RenderWithIndexedBaseBuffer(
+  const IndexedRenderAction& indexedBuffer) const
 {
   const unsigned VAO = BufferPrivate::GetVAO(indexedBuffer);
   const unsigned nElements = BufferPrivate::GetNElements(indexedBuffer);

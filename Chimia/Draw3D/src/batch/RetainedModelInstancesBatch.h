@@ -77,7 +77,7 @@ private:
   // The attributes get modified often during rendering
   DataBuffer m_instanceDataBuffer;
   ObjectTable<DataBuffer> m_instanceTable;
-  std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
+  std::vector<Rendering::InstancedRenderAction> m_gpuActions;
 };
 
 // ----------------------------------------------------------------------------

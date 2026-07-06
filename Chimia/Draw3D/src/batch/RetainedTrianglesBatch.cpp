@@ -25,7 +25,7 @@ RetainedTrianglesBatch::Create(
 
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
+  m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
                      shaderAttributes);
   m_inputBuffer.Resize(batchSizeInBytes);
 
@@ -64,7 +64,7 @@ RetainedTrianglesBatch::Render()
 {
   if (CanRenderWithCurrentBuffer()) {
     if (HasSomethingToRender()) {
-      m_gpuBuffer.Render();
+      m_gpuAction.Render();
     }
     return;
   }
@@ -135,8 +135,8 @@ void
 RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_triangleSizeInBytes;
-  m_gpuBuffer.Clear();
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
+  m_gpuAction.Clear();
+  m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
                      m_vertexAttributes);
 
   m_currentGPUBatchSize = batchSize;
@@ -153,7 +153,7 @@ RetainedTrianglesBatch::RenderByBatches()
   }
 
   BatchUtils::RenderByBatches(
-    inputSizeInBytes, CurrentGPUBatchSizeInBytes(), m_inputBuffer, m_gpuBuffer);
+    inputSizeInBytes, CurrentGPUBatchSizeInBytes(), m_inputBuffer, m_gpuAction);
 }
 
 // ----------------------------------------------------------------------------

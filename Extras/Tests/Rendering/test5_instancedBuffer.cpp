@@ -54,18 +54,18 @@ Basic(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         instancesPositions,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::InstancedRenderAction renderWithOffsets;
+  renderWithOffsets.CreateInstanced(vertex,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      0 /*location*/, 3 /*nEntries*/) },
+                                    instancesPositions,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      1 /*location*/, 2 /*nEntries*/) });
 
   Chimia::Rendering::Clear();
 
   shader.Use();
-  buffer.Render();
+  renderWithOffsets.Render();
 
   win.Swap();
 
@@ -112,19 +112,19 @@ BasicIndexed(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         index,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         instancesPositions,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::InstancedRenderAction renderWithOffsets;
+  renderWithOffsets.CreateInstanced(vertex,
+                                    index,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      0 /*location*/, 3 /*nEntries*/) },
+                                    instancesPositions,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      1 /*location*/, 2 /*nEntries*/) });
 
   Chimia::Rendering::Clear();
 
   shader.Use();
-  buffer.Render();
+  renderWithOffsets.Render();
 
   win.Swap();
 
@@ -197,15 +197,15 @@ InstanceSubData(Window& win)
 
   Chimia::Rendering::Shader shader(vShader, fShader);
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         { nullptr, positions.size(), dataSize },
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::InstancedRenderAction renderWithOffsets;
+  renderWithOffsets.CreateInstanced(vertex,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      0 /*location*/, 3 /*nEntries*/) },
+                                    { nullptr, positions.size(), dataSize },
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      1 /*location*/, 2 /*nEntries*/) });
 
-  buffer.LoadInstancedData(positions);
+  renderWithOffsets.LoadInstancedData(positions);
 
   int selectedGroup = 0;
   for (int selectedGroup = 0; selectedGroup < positionGroups.size();
@@ -213,10 +213,10 @@ InstanceSubData(Window& win)
     Chimia::Rendering::Clear();
 
     const std::vector<glm::vec2>& positions = positionGroups[selectedGroup];
-    buffer.LoadInstancedData(positions);
+    renderWithOffsets.LoadInstancedData(positions);
 
     shader.Use();
-    buffer.Render();
+    renderWithOffsets.Render();
 
     win.Swap();
 
@@ -276,8 +276,8 @@ InstancingByTransformMatrix(Window& win)
 
   Chimia::Rendering::Shader shader(vShader, fShader);
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(
+  Chimia::Rendering::InstancedRenderAction renderTransformed;
+  renderTransformed.CreateInstanced(
     vertex,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) },
@@ -291,7 +291,7 @@ InstancingByTransformMatrix(Window& win)
   Chimia::Rendering::Clear();
 
   shader.Use();
-  buffer.Render();
+  renderTransformed.Render();
 
   win.Swap();
 

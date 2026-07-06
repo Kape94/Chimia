@@ -58,14 +58,14 @@ Basic(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(
     { vertex, vertexDataSize },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   shader.Use();
-  buffer.Render();
+  renderTriangle.Render();
 
   win.Swap();
 
@@ -116,15 +116,15 @@ Indexed(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction renderTriangle;
+  renderTriangle.Create(
     { vertex, vertexDataSize },
     { indexData, indexDataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   shader.Use();
-  buffer.Render();
+  renderTriangle.Render();
 
   win.Swap();
 
@@ -185,8 +185,8 @@ Subdata(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(
     { nullptr, vertex.size() * sizeof(float) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
@@ -198,10 +198,10 @@ Subdata(Window& win)
 
     const int current = i % vertexDatas.size();
     const std::vector<float>& data = vertexDatas[current];
-    buffer.Load(data);
+    renderTriangle.Load(data);
 
     shader.Use();
-    buffer.Render();
+    renderTriangle.Render();
 
     win.Swap();
 
@@ -290,8 +290,8 @@ SubDataWithVaryingSize(Window& win)
                       return std::max(current, incoming.size());
                     });
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
+  Chimia::Rendering::RenderAction renderTriangles;
+  renderTriangles.Create(
     { nullptr, maximumSize * sizeof(float) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
@@ -304,10 +304,10 @@ SubDataWithVaryingSize(Window& win)
     const int current = i % states.size();
     const std::vector<float>& data = states[current];
 
-    buffer.Load(data);
+    renderTriangles.Load(data);
 
     shader.Use();
-    buffer.Render();
+    renderTriangles.Render();
 
     win.Swap();
 
@@ -403,8 +403,8 @@ VertexAndIndexSubData(Window& win)
       return std::max(current, incoming.iData.size());
     });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction renderTriangles;
+  renderTriangles.Create(
     { nullptr, maximumVertexSize * sizeof(float) },
     { nullptr, maximumIndexSize, sizeof(unsigned) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -419,11 +419,11 @@ VertexAndIndexSubData(Window& win)
     const int current = i % states.size();
     const auto& state = states[current];
 
-    buffer.LoadVertexData(state.vData);
-    buffer.LoadIndexData(state.iData);
+    renderTriangles.LoadVertexData(state.vData);
+    renderTriangles.LoadIndexData(state.iData);
 
     shader.Use();
-    buffer.Render();
+    renderTriangles.Render();
 
     win.Swap();
 

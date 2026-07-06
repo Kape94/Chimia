@@ -83,8 +83,8 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(
+  Chimia::Rendering::InstancedRenderAction action;
+  action.CreateInstanced(
     Inputs::BufferData::vertex,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) },
@@ -99,7 +99,7 @@ main()
     Chimia::Rendering::Clear();
 
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();

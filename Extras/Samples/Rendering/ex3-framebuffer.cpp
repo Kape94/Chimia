@@ -129,7 +129,7 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer(
+  Chimia::Rendering::IndexedRenderAction action(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -152,7 +152,7 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
                                              Inputs::ShaderCodes::fShaderPost);
 
-  Chimia::Rendering::IndexedBuffer quadBuffer(
+  Chimia::Rendering::IndexedRenderAction renderScreenQuadAction(
     Inputs::BufferData::quad,
     Inputs::BufferData::quadIndex,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
@@ -168,7 +168,7 @@ main(int argc, char** argv)
 
     shader.Use();
     shader.SetUniform("tex", texUnit);
-    buffer.Render();
+    action.Render();
 
     Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
 
@@ -176,7 +176,7 @@ main(int argc, char** argv)
 
     secondPassShader.Use();
     secondPassShader.SetUniform("tex", texUnitPost);
-    quadBuffer.Render();
+    renderScreenQuadAction.Render();
 
     win.Swap();
     win.PollEvents();

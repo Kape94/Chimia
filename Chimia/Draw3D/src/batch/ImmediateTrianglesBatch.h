@@ -55,7 +55,7 @@ private:
 
   // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;
-  Rendering::Buffer m_gpuBuffer;
+  Rendering::RenderAction m_gpuAction;
 };
 
 // ----------------------------------------------------------------------------

@@ -34,14 +34,15 @@ void
 RenderByBatches(const size_t totalSize,
                 const size_t batchSize,
                 const DataBuffer& cpuBuffer,
-                Rendering::Buffer& gpuBuffer);
+                Rendering::RenderAction& gpuAction);
 
 void
-RenderInstancedByBatches(const size_t totalSize,
-                         const size_t batchSize,
-                         const size_t instanceSize,
-                         const DataBuffer& cpuBuffer,
-                         std::vector<Rendering::InstancedBuffer>& gpuBuffers);
+RenderInstancedByBatches(
+  const size_t totalSize,
+  const size_t batchSize,
+  const size_t instanceSize,
+  const DataBuffer& cpuBuffer,
+  std::vector<Rendering::InstancedRenderAction>& gpuActions);
 
 size_t
 TotalDataSize(const std::initializer_list<RawDataView>& dataViews);

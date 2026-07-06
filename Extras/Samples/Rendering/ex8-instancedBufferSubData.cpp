@@ -101,8 +101,8 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(Inputs::BufferData::vertex,
+  Chimia::Rendering::InstancedRenderAction action;
+  action.CreateInstanced(Inputs::BufferData::vertex,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
                          { nullptr,
@@ -111,7 +111,7 @@ main()
                          { Chimia::Rendering::ShaderAttribute::Float(
                            1 /*location*/, 2 /*nEntries*/) });
 
-  buffer.LoadInstancedData(Inputs::InstanceData::positions);
+  action.LoadInstancedData(Inputs::InstanceData::positions);
 
   int selectedGroup = 0;
   while (!win.ShouldClose()) {
@@ -119,10 +119,10 @@ main()
 
     const std::vector<glm::vec2>& positions =
       Inputs::InstanceData::positionGroups[selectedGroup];
-    buffer.LoadInstancedData(positions);
+    action.LoadInstancedData(positions);
 
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();

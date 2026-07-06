@@ -28,7 +28,7 @@ ImmediateTrianglesBatch::Create(
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
   m_inputBuffer.Resize(batchSizeInBytes);
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
+  m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
                      vertexAttributes);
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;
 
@@ -84,7 +84,7 @@ ImmediateTrianglesBatch::DoFlushing(
   BatchUtils::RenderByBatches(inputSizeInBytes,
                               m_currentGpuBufferSizeInBytes,
                               m_inputBuffer,
-                              m_gpuBuffer);
+                              m_gpuAction);
 
   if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_inputBuffer.Reset();
@@ -116,8 +116,8 @@ ImmediateTrianglesBatch::Resize(size_t batchSize)
 {
   const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
 
-  m_gpuBuffer.Clear();
-  m_gpuBuffer.Create({ nullptr, newBatchSizeInBytes }, m_vertexAttributes);
+  m_gpuAction.Clear();
+  m_gpuAction.Create({ nullptr, newBatchSizeInBytes }, m_vertexAttributes);
 
   m_currentGpuBufferSizeInBytes = newBatchSizeInBytes;
 }

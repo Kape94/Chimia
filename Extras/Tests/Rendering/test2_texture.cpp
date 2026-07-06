@@ -76,8 +76,8 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction renderTriangleAction;
+  renderTriangleAction.Create(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -111,7 +111,7 @@ main(int argc, char** argv)
   shader.Use();
   shader.SetUniform("tex", texUnit);
   shader.SetUniform("tex2", tex2Unit);
-  buffer.Render();
+  renderTriangleAction.Render();
 
   win.Swap();
 

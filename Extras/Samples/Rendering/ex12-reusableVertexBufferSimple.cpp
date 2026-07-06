@@ -71,21 +71,21 @@ main()
       Inputs::BufferData::indexDataItems,
       sizeof(unsigned) });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction action;
+  action.Create(
     reusableVertexBuffer,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   while (!win.ShouldClose()) {
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   shader.Clear();
 
   return 0;

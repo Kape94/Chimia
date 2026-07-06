@@ -19,12 +19,12 @@ public:
   STATIC_CLASS(BufferPrivate)
 
   // Buffer
-  static unsigned GetVAO(const Buffer& buffer);
-  static unsigned GetNVertices(const Buffer& buffer);
+  static unsigned GetVAO(const RenderAction& buffer);
+  static unsigned GetNVertices(const RenderAction& buffer);
 
   // IndexedBuffer
-  static unsigned GetVAO(const IndexedBuffer& buffer);
-  static unsigned GetNElements(const IndexedBuffer& buffer);
+  static unsigned GetVAO(const IndexedRenderAction& buffer);
+  static unsigned GetNElements(const IndexedRenderAction& buffer);
 
   // ReusableVertexBufferObject
   static void Bind(const ReusableVertexBufferObject& reusableVertexBuffer);

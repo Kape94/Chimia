@@ -54,9 +54,9 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
 {
   model.ForEachBuffer(
     [&](const Rendering::ReusableIndexedVertexBufferObject& buffer) {
-      Rendering::InstancedBuffer& gpuBuffer = m_gpuBuffers.emplace_back();
+      Rendering::InstancedRenderAction& gpuAction = m_gpuActions.emplace_back();
 
-      gpuBuffer.CreateInstanced(
+      gpuAction.CreateInstanced(
         buffer,
         vertexAttributes,
         RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
@@ -180,8 +180,8 @@ RetainedModelInstancesBatch::HandleDynamicResizing()
 void
 RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
-  for (auto& buffer : m_gpuBuffers) {
-    buffer.RecreateInstancedBuffer(
+  for (auto& action : m_gpuActions) {
+    action.RecreateInstancedBuffer(
       RawArrayView{ nullptr, batchSize, m_instanceDataSizeInBytes },
       m_instancedAttributes);
   }
@@ -203,7 +203,7 @@ RetainedModelInstancesBatch::RenderByBatches()
                                        CurrentGPUBatchSizeInBytes(),
                                        m_instanceDataSizeInBytes,
                                        m_instanceDataBuffer,
-                                       m_gpuBuffers);
+                                       m_gpuActions);
 }
 
 // ----------------------------------------------------------------------------
@@ -211,8 +211,8 @@ RetainedModelInstancesBatch::RenderByBatches()
 void
 RetainedModelInstancesBatch::RenderCurrentBuffers()
 {
-  for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
-    gpuBuffer.Render();
+  for (Rendering::InstancedRenderAction& action : m_gpuActions) {
+    action.Render();
   }
 }
 

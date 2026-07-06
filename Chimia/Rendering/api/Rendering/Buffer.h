@@ -14,19 +14,19 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-class Buffer
+class RenderAction
 {
 public:
-  DEFAULT_CONSTUCTIBLE(Buffer)
-  NON_COPYABLE(Buffer)
+  DEFAULT_CONSTUCTIBLE(RenderAction)
+  NON_COPYABLE(RenderAction)
 
-  Buffer(Buffer&& other) noexcept;
-  Buffer& operator=(Buffer&& other) noexcept;
+  RenderAction(RenderAction&& other) noexcept;
+  RenderAction& operator=(RenderAction&& other) noexcept;
 
-  Buffer(const RawDataView& vertexData,
-         const ShaderAttributes& shaderAttributes);
+  RenderAction(const RawDataView& vertexData,
+               const ShaderAttributes& shaderAttributes);
 
-  ~Buffer();
+  ~RenderAction();
 
   void Create(const ReusableVertexBufferObject& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);

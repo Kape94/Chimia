@@ -15,21 +15,21 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-class IndexedBuffer
+class IndexedRenderAction
 {
 public:
-  DEFAULT_CONSTUCTIBLE(IndexedBuffer)
+  DEFAULT_CONSTUCTIBLE(IndexedRenderAction)
 
-  NON_COPYABLE(IndexedBuffer)
+  NON_COPYABLE(IndexedRenderAction)
 
-  IndexedBuffer(IndexedBuffer&& other) noexcept;
-  IndexedBuffer& operator=(IndexedBuffer&& other) noexcept;
+  IndexedRenderAction(IndexedRenderAction&& other) noexcept;
+  IndexedRenderAction& operator=(IndexedRenderAction&& other) noexcept;
 
-  IndexedBuffer(const RawDataView& vertexData,
-                const RawArrayView& indexData,
-                const ShaderAttributes& shaderAttributes);
+  IndexedRenderAction(const RawDataView& vertexData,
+                      const RawArrayView& indexData,
+                      const ShaderAttributes& shaderAttributes);
 
-  ~IndexedBuffer();
+  ~IndexedRenderAction();
 
   void Create(const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
@@ -55,7 +55,7 @@ private:
 
   friend class BufferPrivate;
 
-  Buffer m_baseBuffer;
+  RenderAction m_baseBuffer;
   unsigned m_EBO = 0;
 
   unsigned m_nElements = 0;

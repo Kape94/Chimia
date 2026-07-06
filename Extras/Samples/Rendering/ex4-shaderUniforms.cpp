@@ -67,7 +67,7 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer(
+  Chimia::Rendering::IndexedRenderAction action(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/,
@@ -86,7 +86,7 @@ main()
 
     shader.SetUniform("transform", t);
 
-    buffer.Render();
+    action.Render();
 
     angle += 0.0005f;
     if (angle > 6.28f)

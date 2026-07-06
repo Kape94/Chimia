@@ -83,7 +83,7 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer(
+  Chimia::Rendering::IndexedRenderAction renderTriangle(
     Inputs::BufferData::vertex,
     Inputs::BufferData::index,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/,
@@ -100,7 +100,7 @@ main(int argc, char** argv)
     const glm::mat4x4 t = RotationMatrix(angle);
 
     shader.SetUniform("transform", t);
-    buffer.Render();
+    renderTriangle.Render();
 
     win.Swap();
   };

@@ -123,15 +123,15 @@ main()
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) }
   };
-  Chimia::Rendering::InstancedBuffer buffer1;
-  buffer1.CreateInstanced(reusableVertexBuffer,
-                          vertexAttributes,
-                          Inputs::InstanceData::positions,
-                          { Chimia::Rendering::ShaderAttribute::Float(
-                            1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::InstancedRenderAction renderWithOffsets;
+  renderWithOffsets.CreateInstanced(reusableVertexBuffer,
+                                    vertexAttributes,
+                                    Inputs::InstanceData::positions,
+                                    { Chimia::Rendering::ShaderAttribute::Float(
+                                      1 /*location*/, 2 /*nEntries*/) });
 
-  Chimia::Rendering::InstancedBuffer buffer2;
-  buffer2.CreateInstanced(
+  Chimia::Rendering::InstancedRenderAction renderTransformed;
+  renderTransformed.CreateInstanced(
     reusableVertexBuffer,
     vertexAttributes,
     Inputs::InstanceData::transforms,
@@ -145,10 +145,10 @@ main()
     Chimia::Rendering::Clear();
 
     shader1.Use();
-    buffer1.Render();
+    renderWithOffsets.Render();
 
     shader2.Use();
-    buffer2.Render();
+    renderTransformed.Render();
 
     win.Swap();
     win.PollEvents();

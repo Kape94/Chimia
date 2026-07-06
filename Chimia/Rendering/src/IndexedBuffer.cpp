@@ -11,7 +11,7 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer::IndexedBuffer(IndexedBuffer&& other) noexcept
+IndexedRenderAction::IndexedRenderAction(IndexedRenderAction&& other) noexcept
   : m_EBO(other.m_EBO)
   , m_nElements(other.m_nElements)
   , m_baseBuffer(std::move(other.m_baseBuffer))
@@ -22,8 +22,8 @@ IndexedBuffer::IndexedBuffer(IndexedBuffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer&
-IndexedBuffer::operator=(IndexedBuffer&& other) noexcept
+IndexedRenderAction&
+IndexedRenderAction::operator=(IndexedRenderAction&& other) noexcept
 {
   if (&other != this) {
     m_EBO = other.m_EBO;
@@ -39,16 +39,17 @@ IndexedBuffer::operator=(IndexedBuffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer::IndexedBuffer(const RawDataView& vertexData,
-                             const RawArrayView& indexData,
-                             const ShaderAttributes& shaderAttributes)
+IndexedRenderAction::IndexedRenderAction(
+  const RawDataView& vertexData,
+  const RawArrayView& indexData,
+  const ShaderAttributes& shaderAttributes)
 {
   Create(vertexData, indexData, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
 
-IndexedBuffer::~IndexedBuffer()
+IndexedRenderAction::~IndexedRenderAction()
 {
   Clear();
 }
@@ -56,7 +57,7 @@ IndexedBuffer::~IndexedBuffer()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Create(
+IndexedRenderAction::Create(
   const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
   const ShaderAttributes& shaderAttributes)
 {
@@ -72,9 +73,9 @@ IndexedBuffer::Create(
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Create(const RawDataView& vertexData,
-                      const RawArrayView& indexData,
-                      const ShaderAttributes& shaderAttributes)
+IndexedRenderAction::Create(const RawDataView& vertexData,
+                            const RawArrayView& indexData,
+                            const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
@@ -89,8 +90,8 @@ IndexedBuffer::Create(const RawDataView& vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::LoadIndexDataInGPU(const unsigned* indexData,
-                                  const unsigned nIndexDataItems)
+IndexedRenderAction::LoadIndexDataInGPU(const unsigned* indexData,
+                                        const unsigned nIndexDataItems)
 {
   const unsigned indexDataSize = nIndexDataItems * sizeof(unsigned);
   m_EBO = BufferUtils::CreateBufferAndLoadData(
@@ -100,7 +101,7 @@ IndexedBuffer::LoadIndexDataInGPU(const unsigned* indexData,
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::LoadVertexData(const RawDataView& vertexData)
+IndexedRenderAction::LoadVertexData(const RawDataView& vertexData)
 {
   m_baseBuffer.Load(vertexData);
 }
@@ -108,7 +109,7 @@ IndexedBuffer::LoadVertexData(const RawDataView& vertexData)
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::LoadIndexData(const RawArrayView& indexData)
+IndexedRenderAction::LoadIndexData(const RawArrayView& indexData)
 {
   if (GetVAO() == 0 || m_EBO == 0) {
     return;
@@ -124,7 +125,7 @@ IndexedBuffer::LoadIndexData(const RawArrayView& indexData)
 //---------------------------------------------------------------------------------------
 
 unsigned
-IndexedBuffer::GetVAO() const
+IndexedRenderAction::GetVAO() const
 {
   return BufferPrivate::GetVAO(m_baseBuffer);
 }
@@ -132,7 +133,7 @@ IndexedBuffer::GetVAO() const
 //---------------------------------------------------------------------------------------
 
 unsigned
-IndexedBuffer::GetNElements() const
+IndexedRenderAction::GetNElements() const
 {
   return m_nElements;
 }
@@ -140,7 +141,7 @@ IndexedBuffer::GetNElements() const
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Clear()
+IndexedRenderAction::Clear()
 {
   m_baseBuffer.Clear();
   if (m_EBO != 0) {
@@ -152,7 +153,7 @@ IndexedBuffer::Clear()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedBuffer::Render() const
+IndexedRenderAction::Render() const
 {
   glBindVertexArray(BufferPrivate::GetVAO(m_baseBuffer));
   glDrawElements(GL_TRIANGLES, m_nElements, GL_UNSIGNED_INT, 0);

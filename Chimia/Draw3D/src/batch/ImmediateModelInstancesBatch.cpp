@@ -48,7 +48,7 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  Rendering::InstancedBuffer& inserted = m_gpuBuffers.emplace_back();
+  Rendering::InstancedRenderAction& inserted = m_gpuActions.emplace_back();
   inserted.CreateInstanced(
     bufferData,
     vertexAttributes,
@@ -104,7 +104,7 @@ ImmediateModelInstancesBatch::DoFlush(
                                        m_currentGPUBatchSizeInBytes,
                                        m_instancedDataSizeInBytes,
                                        m_instancedInputBuffer,
-                                       m_gpuBuffers);
+                                       m_gpuActions);
 
   if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_instancedInputBuffer.Reset();
@@ -145,7 +145,7 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
 
-  for (auto& buffer : m_gpuBuffers) {
+  for (auto& buffer : m_gpuActions) {
     buffer.RecreateInstancedBuffer(
       RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes },
       m_instancedAttributes);

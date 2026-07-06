@@ -112,8 +112,8 @@ main()
       return std::max(current, incoming.iData.size());
     });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction action;
+  action.Create(
     { nullptr, maximumVertexSize * sizeof(float) },
     { nullptr, maximumIndexSize, sizeof(unsigned) },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
@@ -125,8 +125,8 @@ main()
 
   const auto& state = states[selected];
 
-  buffer.LoadVertexData(state.vData);
-  buffer.LoadIndexData(state.iData);
+  action.LoadVertexData(state.vData);
+  action.LoadIndexData(state.iData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -139,18 +139,18 @@ main()
 
       const auto& state = states[selected];
 
-      buffer.LoadVertexData(state.vData);
-      buffer.LoadIndexData(state.iData);
+      action.LoadVertexData(state.vData);
+      action.LoadIndexData(state.iData);
     }
 
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   shader.Clear();
 
   return 0;

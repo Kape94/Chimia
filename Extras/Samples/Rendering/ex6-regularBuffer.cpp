@@ -75,8 +75,8 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
+  Chimia::Rendering::RenderAction action;
+  action.Create(
     Inputs::BufferData::vertex,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
@@ -96,17 +96,17 @@ main()
       const std::vector<float>& data = selected == 0
                                          ? Inputs::BufferData::vertex
                                          : Inputs::BufferData::vertex2;
-      buffer.Load(data);
+      action.Load(data);
     }
 
     shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
 
-  buffer.Clear();
+  action.Clear();
   shader.Clear();
 
   return 0;

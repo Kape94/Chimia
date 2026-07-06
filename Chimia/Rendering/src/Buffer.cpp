@@ -10,7 +10,7 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-Buffer::Buffer(Buffer&& other) noexcept
+RenderAction::RenderAction(RenderAction&& other) noexcept
   : m_VAO(other.m_VAO)
   , m_VBO(other.m_VBO)
   , m_nVertices(other.m_nVertices)
@@ -24,8 +24,8 @@ Buffer::Buffer(Buffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-Buffer&
-Buffer::operator=(Buffer&& other) noexcept
+RenderAction&
+RenderAction::operator=(RenderAction&& other) noexcept
 {
   if (&other != this) {
     m_VAO = other.m_VAO;
@@ -44,15 +44,15 @@ Buffer::operator=(Buffer&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-Buffer::Buffer(const RawDataView& bufferData,
-               const ShaderAttributes& shaderAttributes)
+RenderAction::RenderAction(const RawDataView& bufferData,
+                           const ShaderAttributes& shaderAttributes)
 {
   Create(bufferData, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
 
-Buffer::~Buffer()
+RenderAction::~RenderAction()
 {
   Clear();
 }
@@ -60,8 +60,8 @@ Buffer::~Buffer()
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
-               const ShaderAttributes& shaderAttributes)
+RenderAction::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
+                     const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
@@ -81,8 +81,8 @@ Buffer::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Create(const RawDataView& vertexData,
-               const ShaderAttributes& shaderAttributes)
+RenderAction::Create(const RawDataView& vertexData,
+                     const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
@@ -97,7 +97,8 @@ Buffer::Create(const RawDataView& vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::LoadDataInGPU(const void* vertexData, const unsigned vertexDataSize)
+RenderAction::LoadDataInGPU(const void* vertexData,
+                            const unsigned vertexDataSize)
 {
   glGenVertexArrays(1, &m_VAO);
   glBindVertexArray(m_VAO);
@@ -108,8 +109,8 @@ Buffer::LoadDataInGPU(const void* vertexData, const unsigned vertexDataSize)
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::LoadVertexDataInGPU(const void* vertexData,
-                            const unsigned vertexDataSize)
+RenderAction::LoadVertexDataInGPU(const void* vertexData,
+                                  const unsigned vertexDataSize)
 {
   m_VBO = BufferUtils::CreateBufferAndLoadData(
     GL_ARRAY_BUFFER, vertexData, vertexDataSize);
@@ -118,7 +119,7 @@ Buffer::LoadVertexDataInGPU(const void* vertexData,
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Load(const RawDataView& vertexData)
+RenderAction::Load(const RawDataView& vertexData)
 {
   if (m_VAO == 0 || m_VBO == 0) {
     return;
@@ -133,7 +134,7 @@ Buffer::Load(const RawDataView& vertexData)
 //---------------------------------------------------------------------------------------
 
 unsigned
-Buffer::GetVAO() const
+RenderAction::GetVAO() const
 {
   return m_VAO;
 }
@@ -141,7 +142,7 @@ Buffer::GetVAO() const
 //---------------------------------------------------------------------------------------
 
 unsigned
-Buffer::GetNVertices() const
+RenderAction::GetNVertices() const
 {
   return m_nVertices;
 }
@@ -149,7 +150,7 @@ Buffer::GetNVertices() const
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Clear()
+RenderAction::Clear()
 {
   if (m_VAO != 0) {
     glDeleteVertexArrays(1, &m_VAO);
@@ -164,7 +165,7 @@ Buffer::Clear()
 //---------------------------------------------------------------------------------------
 
 void
-Buffer::Render() const
+RenderAction::Render() const
 {
   glBindVertexArray(m_VAO);
   glDrawArrays(GL_TRIANGLES, 0, m_nVertices);

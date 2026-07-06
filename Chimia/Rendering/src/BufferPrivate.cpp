@@ -7,7 +7,7 @@ USING_RENDERLIB_NAMESPACE
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetVAO(const Buffer& buffer)
+BufferPrivate::GetVAO(const RenderAction& buffer)
 {
   return buffer.GetVAO();
 }
@@ -15,7 +15,7 @@ BufferPrivate::GetVAO(const Buffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNVertices(const Buffer& buffer)
+BufferPrivate::GetNVertices(const RenderAction& buffer)
 {
   return buffer.GetNVertices();
 }
@@ -23,7 +23,7 @@ BufferPrivate::GetNVertices(const Buffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetVAO(const IndexedBuffer& buffer)
+BufferPrivate::GetVAO(const IndexedRenderAction& buffer)
 {
   return buffer.GetVAO();
 }
@@ -31,7 +31,7 @@ BufferPrivate::GetVAO(const IndexedBuffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNElements(const IndexedBuffer& buffer)
+BufferPrivate::GetNElements(const IndexedRenderAction& buffer)
 {
   return buffer.GetNElements();
 }

@@ -67,15 +67,15 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  Chimia::Rendering::IndexedRenderAction action;
+  action.Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
   shader.Use();
-  buffer.Render();
+  action.Render();
 
   win.Swap();
 
