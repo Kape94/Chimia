@@ -1,4 +1,4 @@
-#include "ReusableIndexedVertexBufferObject.h"
+#include "IndexedVertexBuffer.h"
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"

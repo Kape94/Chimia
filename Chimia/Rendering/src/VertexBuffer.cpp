@@ -1,4 +1,4 @@
-#include "ReusableVertexBufferObject.h"
+#include "VertexBuffer.h"
 
 #include "BufferUtils.h"
 #include "Core/Types.h"

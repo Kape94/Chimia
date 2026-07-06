@@ -5,9 +5,9 @@
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedRenderAction.h"
-#include "ReusableIndexedVertexBufferObject.h"
-#include "ReusableVertexBufferObject.h"
+#include "IndexedVertexBuffer.h"
 #include "ShaderAttribute.h"
+#include "VertexBuffer.h"
 
 #include <variant>
 

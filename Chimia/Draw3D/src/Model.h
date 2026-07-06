@@ -6,7 +6,7 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Types.h"
 
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
+#include "Rendering/IndexedVertexBuffer.h"
 
 #include <functional>
 #include <vector>

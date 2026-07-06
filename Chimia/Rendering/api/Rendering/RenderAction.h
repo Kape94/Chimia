@@ -3,8 +3,8 @@
 #include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "ReusableVertexBufferObject.h"
 #include "ShaderAttribute.h"
+#include "VertexBuffer.h"
 
 #include "Core/Types.h"
 

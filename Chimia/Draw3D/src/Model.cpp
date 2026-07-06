@@ -1,7 +1,7 @@
 #include "Model.h"
 
 #include "Core/Types.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
+#include "Rendering/IndexedVertexBuffer.h"
 
 // ----------------------------------------------------------------------------
 

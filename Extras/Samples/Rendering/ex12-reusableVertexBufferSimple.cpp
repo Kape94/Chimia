@@ -1,7 +1,7 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedRenderAction.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
+#include "Rendering/IndexedVertexBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderAttribute.h"

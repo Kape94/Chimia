@@ -5,7 +5,7 @@
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
-#include "ReusableVertexBufferObject.h"
+#include "VertexBuffer.h"
 
 // ----------------------------------------------------------------------------
 

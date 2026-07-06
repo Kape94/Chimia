@@ -2,8 +2,8 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
+#include "Rendering/IndexedVertexBuffer.h"
 #include "Rendering/InstancedRenderAction.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/ShaderAttribute.h"
 #include "eImmediateFlushingPolicy.h"
 
