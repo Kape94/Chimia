@@ -63,7 +63,7 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
   reusableVertexBuffer.Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     Inputs::BufferData::nVertices,

@@ -53,7 +53,7 @@ IndexedBuffer(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
   reusableVertexBuffer.Create(vertex, nVertices, indexData);
 
   Chimia::Rendering::IndexedRenderAction renderReusable;
@@ -149,7 +149,7 @@ Instancing(Window& win)
   Chimia::Rendering::Shader shader1(vShaderDisplaced, fShaderDisplaced);
   Chimia::Rendering::Shader shader2(vShaderTransformed, fShaderTransformed);
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
   reusableVertexBuffer.Create(vertex, nVertices, index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{

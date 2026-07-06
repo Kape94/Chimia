@@ -27,18 +27,15 @@ public:
   static unsigned GetNElements(const IndexedRenderAction& buffer);
 
   // ReusableVertexBufferObject
-  static void Bind(const ReusableVertexBufferObject& reusableVertexBuffer);
-  static unsigned GetNVertices(
-    const ReusableVertexBufferObject& reusableVertexBuffer);
-  static unsigned GetNElements(
-    const ReusableVertexBufferObject& reusableVertexBuffer);
+  static void Bind(const VertexBuffer& reusableVertexBuffer);
+  static unsigned GetNVertices(const VertexBuffer& reusableVertexBuffer);
+  static unsigned GetNElements(const VertexBuffer& reusableVertexBuffer);
 
   // ReusableIndexedVertexBufferObject
-  static void Bind(const ReusableIndexedVertexBufferObject& reusableBuffer);
-  static unsigned GetNElements(
-    const ReusableIndexedVertexBufferObject& reusableBuffer);
-  static const ReusableVertexBufferObject& GetBaseVertexBuffer(
-    const ReusableIndexedVertexBufferObject& reusableBuffer);
+  static void Bind(const IndexedVertexBuffer& reusableBuffer);
+  static unsigned GetNElements(const IndexedVertexBuffer& reusableBuffer);
+  static const VertexBuffer& GetBaseVertexBuffer(
+    const IndexedVertexBuffer& reusableBuffer);
 };
 
 // --------------------------------------------------------------------------------------

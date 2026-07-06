@@ -57,9 +57,8 @@ IndexedRenderAction::~IndexedRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedRenderAction::Create(
-  const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
-  const ShaderAttributes& shaderAttributes)
+IndexedRenderAction::Create(const IndexedVertexBuffer& reusableVertexBuffer,
+                            const ShaderAttributes& shaderAttributes)
 {
   Clear();
 

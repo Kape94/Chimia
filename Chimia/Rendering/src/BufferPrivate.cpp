@@ -39,7 +39,7 @@ BufferPrivate::GetNElements(const IndexedRenderAction& buffer)
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const ReusableVertexBufferObject& reusableVertexBuffer)
+BufferPrivate::Bind(const VertexBuffer& reusableVertexBuffer)
 {
   reusableVertexBuffer.Bind();
 }
@@ -47,8 +47,7 @@ BufferPrivate::Bind(const ReusableVertexBufferObject& reusableVertexBuffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNVertices(
-  const ReusableVertexBufferObject& reusableVertexBuffer)
+BufferPrivate::GetNVertices(const VertexBuffer& reusableVertexBuffer)
 {
   return reusableVertexBuffer.GetNVertices();
 }
@@ -56,7 +55,7 @@ BufferPrivate::GetNVertices(
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const ReusableIndexedVertexBufferObject& reusableBuffer)
+BufferPrivate::Bind(const IndexedVertexBuffer& reusableBuffer)
 {
   reusableBuffer.Bind();
 }
@@ -64,17 +63,15 @@ BufferPrivate::Bind(const ReusableIndexedVertexBufferObject& reusableBuffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNElements(
-  const ReusableIndexedVertexBufferObject& reusableBuffer)
+BufferPrivate::GetNElements(const IndexedVertexBuffer& reusableBuffer)
 {
   return reusableBuffer.GetNIndices();
 }
 
 // --------------------------------------------------------------------------------------
 
-const ReusableVertexBufferObject&
-BufferPrivate::GetBaseVertexBuffer(
-  const ReusableIndexedVertexBufferObject& reusableBuffer)
+const VertexBuffer&
+BufferPrivate::GetBaseVertexBuffer(const IndexedVertexBuffer& reusableBuffer)
 {
   return reusableBuffer.GetBaseBuffer();
 }

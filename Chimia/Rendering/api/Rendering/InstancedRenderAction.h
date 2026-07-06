@@ -28,16 +28,15 @@ public:
 
   ~InstancedRenderAction();
 
-  void CreateInstanced(const ReusableVertexBufferObject& reusableVertexBuffer,
+  void CreateInstanced(const VertexBuffer& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(
-    const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
-    const ShaderAttributes& shaderAttributes,
-    const RawArrayView& instancesData,
-    const ShaderAttributes& instanceShaderAttributes);
+  void CreateInstanced(const IndexedVertexBuffer& reusableVertexBuffer,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
 
   void CreateInstanced(const RawDataView& vertexData,
                        const RawArrayView& indexData,

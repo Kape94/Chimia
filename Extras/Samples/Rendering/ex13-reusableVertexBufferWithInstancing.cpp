@@ -114,7 +114,7 @@ main()
   Chimia::Rendering::Shader shader2(Inputs::ShaderCodes::vShaderTransformed,
                                     Inputs::ShaderCodes::fShaderTransformed);
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
+  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
   reusableVertexBuffer.Create(Inputs::BufferData::vertex,
                               Inputs::BufferData::nVertices,
                               Inputs::BufferData::index);

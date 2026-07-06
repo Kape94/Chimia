@@ -52,7 +52,7 @@ InstancedRenderAction::~InstancedRenderAction()
 
 void
 InstancedRenderAction::CreateInstanced(
-  const ReusableVertexBufferObject& reusableVertexBuffer,
+  const VertexBuffer& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
@@ -69,7 +69,7 @@ InstancedRenderAction::CreateInstanced(
 
 void
 InstancedRenderAction::CreateInstanced(
-  const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+  const IndexedVertexBuffer& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)

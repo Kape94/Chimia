@@ -60,7 +60,7 @@ RenderAction::~RenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const ReusableVertexBufferObject& reusableVertexBuffer,
+RenderAction::Create(const VertexBuffer& reusableVertexBuffer,
                      const ShaderAttributes& shaderAttributes)
 {
   Clear();

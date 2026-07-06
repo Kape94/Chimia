@@ -52,16 +52,15 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  model.ForEachBuffer(
-    [&](const Rendering::ReusableIndexedVertexBufferObject& buffer) {
-      Rendering::InstancedRenderAction& gpuAction = m_gpuActions.emplace_back();
+  model.ForEachBuffer([&](const Rendering::IndexedVertexBuffer& buffer) {
+    Rendering::InstancedRenderAction& gpuAction = m_gpuActions.emplace_back();
 
-      gpuAction.CreateInstanced(
-        buffer,
-        vertexAttributes,
-        RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
-        instanceAttributes);
-    });
+    gpuAction.CreateInstanced(
+      buffer,
+      vertexAttributes,
+      RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
+      instanceAttributes);
+  });
 }
 
 // ----------------------------------------------------------------------------

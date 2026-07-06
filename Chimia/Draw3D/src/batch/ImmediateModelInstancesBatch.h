@@ -40,11 +40,10 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void AddGPUBuffer(
-    const Rendering::ReusableIndexedVertexBufferObject& bufferData,
-    const size_t instanceBatchSize,
-    const Rendering::ShaderAttributes& vertexAttributes,
-    const Rendering::ShaderAttributes& instanceAttributes);
+  void AddGPUBuffer(const Rendering::IndexedVertexBuffer& bufferData,
+                    const size_t instanceBatchSize,
+                    const Rendering::ShaderAttributes& vertexAttributes,
+                    const Rendering::ShaderAttributes& instanceAttributes);
 
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 

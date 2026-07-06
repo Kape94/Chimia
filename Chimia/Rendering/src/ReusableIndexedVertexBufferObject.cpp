@@ -12,8 +12,7 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-ReusableIndexedVertexBufferObject::ReusableIndexedVertexBufferObject(
-  ReusableIndexedVertexBufferObject&& other)
+IndexedVertexBuffer::IndexedVertexBuffer(IndexedVertexBuffer&& other)
   : m_vertexBufferObject(std::move(other.m_vertexBufferObject))
   , m_EBO(other.m_EBO)
   , m_nIndices(other.m_nIndices)
@@ -24,9 +23,8 @@ ReusableIndexedVertexBufferObject::ReusableIndexedVertexBufferObject(
 
 // ----------------------------------------------------------------------------
 
-ReusableIndexedVertexBufferObject&
-ReusableIndexedVertexBufferObject::operator=(
-  ReusableIndexedVertexBufferObject&& other)
+IndexedVertexBuffer&
+IndexedVertexBuffer::operator=(IndexedVertexBuffer&& other)
 {
   m_vertexBufferObject = std::move(other.m_vertexBufferObject);
   m_EBO = other.m_EBO;
@@ -40,7 +38,7 @@ ReusableIndexedVertexBufferObject::operator=(
 
 // ----------------------------------------------------------------------------
 
-ReusableIndexedVertexBufferObject::~ReusableIndexedVertexBufferObject()
+IndexedVertexBuffer::~IndexedVertexBuffer()
 {
   Clear();
 }
@@ -48,9 +46,9 @@ ReusableIndexedVertexBufferObject::~ReusableIndexedVertexBufferObject()
 // ----------------------------------------------------------------------------
 
 void
-ReusableIndexedVertexBufferObject::Create(const RawDataView& vertexData,
-                                          const unsigned nVertices,
-                                          const RawArrayView& indexData)
+IndexedVertexBuffer::Create(const RawDataView& vertexData,
+                            const unsigned nVertices,
+                            const RawArrayView& indexData)
 {
   m_vertexBufferObject.Create(vertexData, nVertices);
 
@@ -64,7 +62,7 @@ ReusableIndexedVertexBufferObject::Create(const RawDataView& vertexData,
 // ----------------------------------------------------------------------------
 
 void
-ReusableIndexedVertexBufferObject::Clear()
+IndexedVertexBuffer::Clear()
 {
   m_vertexBufferObject.Clear();
   if (m_EBO != 0) {
@@ -77,7 +75,7 @@ ReusableIndexedVertexBufferObject::Clear()
 // ----------------------------------------------------------------------------
 
 void
-ReusableIndexedVertexBufferObject::Bind() const
+IndexedVertexBuffer::Bind() const
 {
   BufferPrivate::Bind(m_vertexBufferObject);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
@@ -86,15 +84,15 @@ ReusableIndexedVertexBufferObject::Bind() const
 // ----------------------------------------------------------------------------
 
 unsigned
-ReusableIndexedVertexBufferObject::GetNIndices() const
+IndexedVertexBuffer::GetNIndices() const
 {
   return m_nIndices;
 }
 
 // ----------------------------------------------------------------------------
 
-const ReusableVertexBufferObject&
-ReusableIndexedVertexBufferObject::GetBaseBuffer() const
+const VertexBuffer&
+IndexedVertexBuffer::GetBaseBuffer() const
 {
   return m_vertexBufferObject;
 }

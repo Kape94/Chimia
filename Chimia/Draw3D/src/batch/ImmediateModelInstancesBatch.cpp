@@ -29,7 +29,7 @@ ImmediateModelInstancesBatch::Create(
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   model.ForEachBuffer(
-    [&](const Rendering::ReusableIndexedVertexBufferObject& reusableBuffer) {
+    [&](const Rendering::IndexedVertexBuffer& reusableBuffer) {
       AddGPUBuffer(
         reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
     });
@@ -43,7 +43,7 @@ ImmediateModelInstancesBatch::Create(
 
 void
 ImmediateModelInstancesBatch::AddGPUBuffer(
-  const Rendering::ReusableIndexedVertexBufferObject& bufferData,
+  const Rendering::IndexedVertexBuffer& bufferData,
   const size_t instanceBatchSize,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)

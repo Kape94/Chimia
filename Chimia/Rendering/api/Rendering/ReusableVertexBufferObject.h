@@ -12,16 +12,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class ReusableVertexBufferObject
+class VertexBuffer
 {
 public:
-  DEFAULT_CONSTUCTIBLE(ReusableVertexBufferObject)
-  NON_COPYABLE(ReusableVertexBufferObject)
+  DEFAULT_CONSTUCTIBLE(VertexBuffer)
+  NON_COPYABLE(VertexBuffer)
 
-  ReusableVertexBufferObject(ReusableVertexBufferObject&& other);
-  ReusableVertexBufferObject& operator=(ReusableVertexBufferObject&& other);
+  VertexBuffer(VertexBuffer&& other);
+  VertexBuffer& operator=(VertexBuffer&& other);
 
-  ~ReusableVertexBufferObject();
+  ~VertexBuffer();
 
   void Create(const RawDataView& vertexData, const unsigned nVertices);
 

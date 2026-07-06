@@ -29,7 +29,7 @@ public:
               const eVertexLayout vertexLayout);
 
   using BufferHandlerFn =
-    std::function<void(const Rendering::ReusableIndexedVertexBufferObject&)>;
+    std::function<void(const Rendering::IndexedVertexBuffer&)>;
   void ForEachBuffer(const BufferHandlerFn& handleBuffer) const;
 
   eVertexLayout GetVertexLayout() const;
@@ -38,7 +38,7 @@ private:
   void AllocateBufferDataOnGPU(const MeshDataView& bufferData);
 
   eVertexLayout m_vertexLayout;
-  std::vector<Rendering::ReusableIndexedVertexBufferObject> m_gpuBufferDatas;
+  std::vector<Rendering::IndexedVertexBuffer> m_gpuBufferDatas;
 };
 
 // ----------------------------------------------------------------------------

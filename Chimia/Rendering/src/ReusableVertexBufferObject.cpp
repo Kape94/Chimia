@@ -10,8 +10,7 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-ReusableVertexBufferObject::ReusableVertexBufferObject(
-  ReusableVertexBufferObject&& other)
+VertexBuffer::VertexBuffer(VertexBuffer&& other)
   : m_VBO(other.m_VBO)
   , m_sizePerVertex(other.m_sizePerVertex)
   , m_nVertices(other.m_nVertices)
@@ -23,8 +22,8 @@ ReusableVertexBufferObject::ReusableVertexBufferObject(
 
 // ----------------------------------------------------------------------------
 
-ReusableVertexBufferObject&
-ReusableVertexBufferObject::operator=(ReusableVertexBufferObject&& other)
+VertexBuffer&
+VertexBuffer::operator=(VertexBuffer&& other)
 {
   m_VBO = other.m_VBO;
   m_sizePerVertex = other.m_sizePerVertex;
@@ -39,7 +38,7 @@ ReusableVertexBufferObject::operator=(ReusableVertexBufferObject&& other)
 
 // ----------------------------------------------------------------------------
 
-ReusableVertexBufferObject::~ReusableVertexBufferObject()
+VertexBuffer::~VertexBuffer()
 {
   Clear();
 }
@@ -47,8 +46,7 @@ ReusableVertexBufferObject::~ReusableVertexBufferObject()
 // ----------------------------------------------------------------------------
 
 void
-ReusableVertexBufferObject::Create(const RawDataView& vertexData,
-                                   const unsigned nVertices)
+VertexBuffer::Create(const RawDataView& vertexData, const unsigned nVertices)
 {
   const size_t vertexDataSize = vertexData.size;
   m_VBO = BufferUtils::CreateBufferAndLoadData(
@@ -61,7 +59,7 @@ ReusableVertexBufferObject::Create(const RawDataView& vertexData,
 // ----------------------------------------------------------------------------
 
 void
-ReusableVertexBufferObject::Clear()
+VertexBuffer::Clear()
 {
   if (m_VBO != 0) {
     glDeleteBuffers(1, &m_VBO);
@@ -74,7 +72,7 @@ ReusableVertexBufferObject::Clear()
 // ----------------------------------------------------------------------------
 
 void
-ReusableVertexBufferObject::Bind() const
+VertexBuffer::Bind() const
 {
   glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 }
@@ -82,7 +80,7 @@ ReusableVertexBufferObject::Bind() const
 // ----------------------------------------------------------------------------
 
 unsigned
-ReusableVertexBufferObject::GetNVertices() const
+VertexBuffer::GetNVertices() const
 {
   return m_nVertices;
 }

@@ -31,7 +31,7 @@ public:
 
   ~IndexedRenderAction();
 
-  void Create(const ReusableIndexedVertexBufferObject& reusableVertexBuffer,
+  void Create(const IndexedVertexBuffer& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,

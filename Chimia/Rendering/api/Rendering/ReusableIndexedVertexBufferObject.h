@@ -13,17 +13,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class ReusableIndexedVertexBufferObject
+class IndexedVertexBuffer
 {
 public:
-  DEFAULT_CONSTUCTIBLE(ReusableIndexedVertexBufferObject)
-  NON_COPYABLE(ReusableIndexedVertexBufferObject)
+  DEFAULT_CONSTUCTIBLE(IndexedVertexBuffer)
+  NON_COPYABLE(IndexedVertexBuffer)
 
-  ReusableIndexedVertexBufferObject(ReusableIndexedVertexBufferObject&& other);
-  ReusableIndexedVertexBufferObject& operator=(
-    ReusableIndexedVertexBufferObject&& other);
+  IndexedVertexBuffer(IndexedVertexBuffer&& other);
+  IndexedVertexBuffer& operator=(IndexedVertexBuffer&& other);
 
-  ~ReusableIndexedVertexBufferObject();
+  ~IndexedVertexBuffer();
 
   void Create(const RawDataView& vertexData,
               const unsigned nVertices,
@@ -35,11 +34,11 @@ private:
   void Bind() const;
   unsigned GetNVertices() const;
   unsigned GetNIndices() const;
-  const ReusableVertexBufferObject& GetBaseBuffer() const;
+  const VertexBuffer& GetBaseBuffer() const;
 
   friend class BufferPrivate;
 
-  ReusableVertexBufferObject m_vertexBufferObject;
+  VertexBuffer m_vertexBufferObject;
   unsigned m_EBO = 0;
   unsigned m_nIndices = 0;
 };

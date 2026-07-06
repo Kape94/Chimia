@@ -120,3 +120,16 @@ Names:
   - Primitive
   - RenderAction
 
+
+
+Implementation steps:
+  - Rename classes: Buffer -> RenderAction [DONE]
+  - Rename source files: Buffer -> RenderAction [DONE]
+  - Rename ReusableVertexBufferObject -> VertexBuffer
+  - Rename ReusableIndexedVertexBufferObject -> IndexedVertexBuffer
+  - Use VertexBuffer inside RenderAction;
+  - Use IndexedVertexBuffer inside IndexedRenderAction;
+  - Create class VertexBuffer 
+  - Create class IndexBuffer?
+  - Create class InstancedDataBuffer
+  - Create shader binding structures;
