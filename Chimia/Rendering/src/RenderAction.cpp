@@ -5,6 +5,7 @@
 #include "Core/Types.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
+#include "VertexBuffer.h"
 
 USING_RENDERLIB_NAMESPACE
 
@@ -12,14 +13,11 @@ USING_RENDERLIB_NAMESPACE
 
 RenderAction::RenderAction(RenderAction&& other) noexcept
   : m_VAO(other.m_VAO)
-  , m_VBO(other.m_VBO)
-  , m_nVertices(other.m_nVertices)
-  , m_sizePerVertex(other.m_sizePerVertex)
+  , m_ownBuffer(std::move(other.m_ownBuffer))
+  , m_referenceBuffer(other.m_referenceBuffer)
 {
   other.m_VAO = 0;
-  other.m_VBO = 0;
-  other.m_nVertices = 0;
-  other.m_sizePerVertex = 0;
+  other.m_referenceBuffer = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -29,14 +27,11 @@ RenderAction::operator=(RenderAction&& other) noexcept
 {
   if (&other != this) {
     m_VAO = other.m_VAO;
-    m_VBO = other.m_VBO;
-    m_nVertices = other.m_nVertices;
-    m_sizePerVertex = other.m_sizePerVertex;
+    m_ownBuffer = std::move(other.m_ownBuffer);
+    m_referenceBuffer = other.m_referenceBuffer;
 
     other.m_VAO = 0;
-    other.m_VBO = 0;
-    other.m_nVertices = 0;
-    other.m_sizePerVertex = 0;
+    other.m_referenceBuffer = nullptr;
   }
 
   return *this;
@@ -68,14 +63,10 @@ RenderAction::Create(const VertexBuffer& reusableVertexBuffer,
   glGenVertexArrays(1, &m_VAO);
   glBindVertexArray(m_VAO);
 
+  m_referenceBuffer = &reusableVertexBuffer;
+
   BufferPrivate::Bind(reusableVertexBuffer);
   BufferUtils::LinkShaderAttributes(shaderAttributes);
-
-  m_nVertices = BufferPrivate::GetNVertices(reusableVertexBuffer);
-
-  // The size per vertex info is used for subdata operations, which are not
-  // applicable when we use a reusable vertex buffer.
-  m_sizePerVertex = 0;
 }
 
 //---------------------------------------------------------------------------------------
@@ -87,33 +78,18 @@ RenderAction::Create(const RawDataView& vertexData,
   Clear();
 
   const size_t vertexDataSize = vertexData.size;
-  LoadDataInGPU(vertexData.data, vertexDataSize);
-  BufferUtils::LinkShaderAttributes(shaderAttributes);
+  const size_t sizePerVertex =
+    BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
+  const size_t nVertices = vertexDataSize / sizePerVertex;
 
-  m_sizePerVertex = BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
-  m_nVertices = vertexDataSize / m_sizePerVertex;
-}
+  m_ownBuffer.reset(new VertexBuffer);
+  m_ownBuffer->Create(vertexData, nVertices);
 
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::LoadDataInGPU(const void* vertexData,
-                            const unsigned vertexDataSize)
-{
   glGenVertexArrays(1, &m_VAO);
   glBindVertexArray(m_VAO);
 
-  LoadVertexDataInGPU(vertexData, vertexDataSize);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::LoadVertexDataInGPU(const void* vertexData,
-                                  const unsigned vertexDataSize)
-{
-  m_VBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ARRAY_BUFFER, vertexData, vertexDataSize);
+  BufferPrivate::Bind(*m_ownBuffer);
+  BufferUtils::LinkShaderAttributes(shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -121,14 +97,11 @@ RenderAction::LoadVertexDataInGPU(const void* vertexData,
 void
 RenderAction::Load(const RawDataView& vertexData)
 {
-  if (m_VAO == 0 || m_VBO == 0) {
+  if (m_VAO == 0 || m_ownBuffer == nullptr) {
     return;
   }
 
-  const size_t vertexDataSize = vertexData.size;
-  BufferUtils::LoadDataOnBuffer(
-    m_VBO, GL_ARRAY_BUFFER, vertexData.data, vertexDataSize);
-  m_nVertices = vertexDataSize / m_sizePerVertex;
+  m_ownBuffer->Load(vertexData);
 }
 
 //---------------------------------------------------------------------------------------
@@ -144,7 +117,10 @@ RenderAction::GetVAO() const
 unsigned
 RenderAction::GetNVertices() const
 {
-  return m_nVertices;
+  const VertexBuffer& buffer =
+    m_referenceBuffer != nullptr ? *m_referenceBuffer : *m_ownBuffer;
+
+  return BufferPrivate::GetNVertices(buffer);
 }
 
 //---------------------------------------------------------------------------------------
@@ -156,10 +132,9 @@ RenderAction::Clear()
     glDeleteVertexArrays(1, &m_VAO);
     m_VAO = 0;
   }
-  if (m_VBO != 0) {
-    glDeleteBuffers(1, &m_VBO);
-    m_VBO = 0;
-  }
+
+  m_ownBuffer.reset(nullptr);
+  m_referenceBuffer = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -167,8 +142,10 @@ RenderAction::Clear()
 void
 RenderAction::Render() const
 {
+  const int nVertices = GetNVertices();
+
   glBindVertexArray(m_VAO);
-  glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
+  glDrawArrays(GL_TRIANGLES, 0, nVertices);
 }
 
 //---------------------------------------------------------------------------------------

@@ -125,8 +125,8 @@ Names:
 Implementation steps:
   - Rename classes: Buffer -> RenderAction [DONE]
   - Rename source files: Buffer -> RenderAction [DONE]
-  - Rename ReusableVertexBufferObject -> VertexBuffer
-  - Rename ReusableIndexedVertexBufferObject -> IndexedVertexBuffer
+  - Rename ReusableVertexBufferObject -> VertexBuffer [DONE]
+  - Rename ReusableIndexedVertexBufferObject -> IndexedVertexBuffer [DONE]
   - Use VertexBuffer inside RenderAction;
   - Use IndexedVertexBuffer inside IndexedRenderAction;
   - Create class VertexBuffer 

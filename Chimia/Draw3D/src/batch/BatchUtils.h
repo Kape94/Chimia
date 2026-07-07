@@ -49,6 +49,9 @@ TotalDataSize(const std::initializer_list<RawDataView>& dataViews);
 
 bool
 ShouldKeepInput(const eImmediateFlusingPolicy policy);
+
+size_t
+EffectiveBatchSize(const size_t requestedBatchSize);
 }
 
 // ----------------------------------------------------------------------------

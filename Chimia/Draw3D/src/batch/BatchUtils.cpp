@@ -111,3 +111,11 @@ BatchUtils::ShouldKeepInput(const eImmediateFlusingPolicy policy)
 }
 
 // ----------------------------------------------------------------------------
+
+size_t
+BatchUtils::EffectiveBatchSize(const size_t requestedBatchSize)
+{
+  return requestedBatchSize > 0 ? requestedBatchSize : 1;
+}
+
+// ----------------------------------------------------------------------------

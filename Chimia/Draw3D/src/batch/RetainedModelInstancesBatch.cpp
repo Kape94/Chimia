@@ -179,12 +179,14 @@ RetainedModelInstancesBatch::HandleDynamicResizing()
 void
 RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
+  const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
+
   for (auto& action : m_gpuActions) {
     action.RecreateInstancedBuffer(
-      RawArrayView{ nullptr, batchSize, m_instanceDataSizeInBytes },
+      RawArrayView{ nullptr, effectiveBatchSize, m_instanceDataSizeInBytes },
       m_instancedAttributes);
   }
-  m_currentGPUBatchSize = batchSize;
+  m_currentGPUBatchSize = effectiveBatchSize;
 }
 
 // ----------------------------------------------------------------------------

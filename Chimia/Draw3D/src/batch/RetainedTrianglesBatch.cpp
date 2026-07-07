@@ -134,12 +134,14 @@ RetainedTrianglesBatch::HandleDynamicResizing()
 void
 RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 {
-  const size_t batchSizeInBytes = batchSize * m_triangleSizeInBytes;
+  const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
+
+  const size_t batchSizeInBytes = effectiveBatchSize * m_triangleSizeInBytes;
   m_gpuAction.Clear();
   m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
                      m_vertexAttributes);
 
-  m_currentGPUBatchSize = batchSize;
+  m_currentGPUBatchSize = effectiveBatchSize;
 }
 
 // ----------------------------------------------------------------------------

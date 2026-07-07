@@ -52,10 +52,9 @@ private:
   friend class BufferPrivate;
 
   unsigned m_VAO = 0;
-  unsigned m_VBO = 0;
 
-  unsigned m_sizePerVertex = 0;
-  unsigned m_nVertices = 0;
+  std::unique_ptr<VertexBuffer> m_ownBuffer = nullptr;
+  const VertexBuffer* m_referenceBuffer = nullptr;
 };
 
 //---------------------------------------------------------------------------------------
