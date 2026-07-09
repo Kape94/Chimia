@@ -77,3 +77,37 @@ BufferPrivate::GetBaseVertexBuffer(const IndexedVertexBuffer& reusableBuffer)
 }
 
 // --------------------------------------------------------------------------------------
+// GenericVertexBuffer
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const GenericVertexBuffer& reusableVertexBuffer)
+{
+  reusableVertexBuffer.Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNVertices(const GenericVertexBuffer& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.GetNVertices();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNElements(const GenericVertexBuffer& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.GetNIndices();
+}
+
+// --------------------------------------------------------------------------------------
+
+bool
+BufferPrivate::HasIndices(const GenericVertexBuffer& reusableVertexBuffer)
+{
+  return reusableVertexBuffer.HasIndices();
+}
+
+// --------------------------------------------------------------------------------------

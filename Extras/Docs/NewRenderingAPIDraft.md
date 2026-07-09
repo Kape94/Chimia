@@ -127,8 +127,11 @@ Implementation steps:
   - Rename source files: Buffer -> RenderAction [DONE]
   - Rename ReusableVertexBufferObject -> VertexBuffer [DONE]
   - Rename ReusableIndexedVertexBufferObject -> IndexedVertexBuffer [DONE]
-  - Use VertexBuffer inside RenderAction;
-  - Use IndexedVertexBuffer inside IndexedRenderAction;
+  - Use VertexBuffer inside RenderAction; [DONE]
+  - Use IndexedVertexBuffer inside IndexedRenderAction; [DONE]
+  - Create Generic vertexbuffer and renderAction; [DONE]
+  - Integrate generic impls on simple and indexed actions/buffers;
+  - Create class for holding instanced data;
   - Create class VertexBuffer 
   - Create class IndexBuffer?
   - Create class InstancedDataBuffer
