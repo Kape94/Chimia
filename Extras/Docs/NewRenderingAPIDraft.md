@@ -130,9 +130,15 @@ Implementation steps:
   - Use VertexBuffer inside RenderAction; [DONE]
   - Use IndexedVertexBuffer inside IndexedRenderAction; [DONE]
   - Create Generic vertexbuffer and renderAction; [DONE]
-  - Integrate generic impls on simple and indexed actions/buffers;
-  - Create class for holding instanced data;
-  - Create class VertexBuffer 
-  - Create class IndexBuffer?
-  - Create class InstancedDataBuffer
+  - Integrate generic impls on simple and indexed actions/buffers; [DONE]
+  - Create class for holding instanced data; [DONE]
+  - Create class VertexBuffer [DONE]
+  - Create class IndexBuffer? No point!
+  - Create class InstancedDataBuffer [DONE]
+  - Refactor GenericRenderAction implementation (lots of duplication);
+  - Rework state binding inside GenericeRenderAction implementation;
+    * The buffers linked to the shader attributes and getting linked implicitly;
+    * I want this binding to be very clear; 
+  - Create support for reference InstancedDataBuffer;
+  - Create state binding manager;
   - Create shader binding structures;
