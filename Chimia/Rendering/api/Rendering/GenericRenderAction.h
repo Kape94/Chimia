@@ -69,12 +69,24 @@ public:
   void Render() const;
 
 private:
+  void SetupOwnVertexBuffer(const RawDataView& vertexData,
+                            const RawArrayView* optionalIndexData,
+                            const ShaderAttributes& shaderAttributes);
+
+  void SetupOwnInstancedBuffer(
+    const RawArrayView& instancesData,
+    const ShaderAttributes& instanceShaderAttributes);
+
   size_t CalculateNumberOfVertices(
     const RawDataView& vertexData,
     const ShaderAttributes& shaderAttributes) const;
 
   void Configure(const GenericVertexBuffer& buffer,
                  const ShaderAttributes& shaderAttributes);
+
+  void RenderInstanced(const GenericVertexBuffer& buffer) const;
+
+  void RenderSingle(const GenericVertexBuffer& buffer) const;
 
   friend class BufferPrivate;
 
