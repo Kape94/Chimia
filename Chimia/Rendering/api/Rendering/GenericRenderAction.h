@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "InstancedDataBuffer.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "GenericVertexBuffer.h"
 #include "ShaderAttribute.h"
 
 #include "Core/Types.h"
+#include <memory>
 
 //---------------------------------------------------------------------------------------
 
@@ -38,8 +40,29 @@ public:
               const RawArrayView& indexData,
               const ShaderAttributes& shaderAttributes);
 
+  void CreateInstanced(const GenericVertexBuffer& reusableVertexBuffer,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
+
+  void CreateInstanced(const RawDataView& vertexData,
+                       const RawArrayView& indexData,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
+
+  void CreateInstanced(const RawDataView& vertexData,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
+
   void LoadVertexData(const RawDataView& vertexData);
   void LoadIndexData(const RawArrayView& indexData);
+  void LoadInstancedData(const RawArrayView& instancesData);
+
+  void RecreateInstancedBuffer(
+    const RawArrayView& instancesData,
+    const ShaderAttributes& instanceShaderAttributes);
 
   void Clear();
 
@@ -59,6 +82,8 @@ private:
 
   std::unique_ptr<GenericVertexBuffer> m_ownBuffer = nullptr;
   const GenericVertexBuffer* m_referenceBuffer = nullptr;
+
+  std::unique_ptr<InstancedDataBuffer> m_instancedBuffer = nullptr;
 };
 
 //---------------------------------------------------------------------------------------

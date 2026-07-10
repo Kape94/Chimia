@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "GenericRenderAction.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "ShaderAttribute.h"
@@ -41,20 +42,7 @@ public:
   void Render() const;
 
 private:
-  void LoadDataInGPU(const void* vertexData, const unsigned vertexDataSize);
-
-  void LoadVertexDataInGPU(const void* vertexData,
-                           const unsigned vertexDataSize);
-
-  unsigned GetVAO() const;
-  unsigned GetNVertices() const;
-
-  friend class BufferPrivate;
-
-  unsigned m_VAO = 0;
-
-  std::unique_ptr<VertexBuffer> m_ownBuffer = nullptr;
-  const VertexBuffer* m_referenceBuffer = nullptr;
+  GenericRenderAction m_action;
 };
 
 //---------------------------------------------------------------------------------------

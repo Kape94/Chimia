@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "GenericRenderAction.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "IndexedVertexBuffer.h"
-#include "RenderAction.h"
 #include "ShaderAttribute.h"
 
 #include "Core/Types.h"
@@ -46,19 +46,7 @@ public:
   void Render() const;
 
 private:
-  void LoadIndexDataInGPU(const unsigned* indexData,
-                          const unsigned nIndexDataItems);
-
-  unsigned GetVAO() const;
-
-  unsigned GetNElements() const;
-
-  friend class BufferPrivate;
-
-  RenderAction m_baseBuffer;
-  unsigned m_EBO = 0;
-
-  unsigned m_nElements = 0;
+  GenericRenderAction m_action;
 };
 
 //---------------------------------------------------------------------------------------

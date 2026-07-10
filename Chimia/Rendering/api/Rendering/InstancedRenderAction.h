@@ -2,14 +2,12 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "GenericRenderAction.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "IndexedRenderAction.h"
 #include "IndexedVertexBuffer.h"
 #include "ShaderAttribute.h"
 #include "VertexBuffer.h"
-
-#include <variant>
 
 //---------------------------------------------------------------------------------------
 
@@ -60,30 +58,7 @@ public:
   void Render() const;
 
 private:
-  void LoadIndexDataInGPU(const unsigned* indexData,
-                          const unsigned nIndexDataItems);
-
-  void CreateInstancedBuffer(const RawArrayView& instancesData,
-                             const ShaderAttributes& instanceShaderAttributes);
-
-  void LoadInstancedDataInGPU(const void* instancedData,
-                              const unsigned instanceDataSize,
-                              const unsigned nInstances);
-
-  void ClearBaseBuffer();
-  void ClearInstancesBuffer(unsigned& instanceVBO);
-
-  unsigned GetBaseVAO();
-
-  void RenderWithRegularBaseBuffer(const RenderAction& buffer) const;
-  void RenderWithIndexedBaseBuffer(
-    const IndexedRenderAction& indexedBuffer) const;
-
-  friend class BufferPrivate;
-
-  std::variant<RenderAction, IndexedRenderAction> m_baseBuffer;
-  unsigned m_instancedVBO = 0;
-  unsigned m_nInstances = 0;
+  GenericRenderAction m_action;
 };
 
 //---------------------------------------------------------------------------------------

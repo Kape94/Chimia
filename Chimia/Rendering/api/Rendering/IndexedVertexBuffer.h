@@ -4,8 +4,8 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "GenericVertexBuffer.h"
 #include "RenderingNamespaceDefs.h"
-#include "VertexBuffer.h"
 
 // ----------------------------------------------------------------------------
 
@@ -28,19 +28,17 @@ public:
               const unsigned nVertices,
               const RawArrayView& indexData);
 
+  void LoadVertexData(const RawDataView& data);
+  void LoadIndexData(const RawArrayView& indexData);
+
 private:
   void Clear();
 
-  void Bind() const;
-  unsigned GetNVertices() const;
-  unsigned GetNIndices() const;
-  const VertexBuffer& GetBaseBuffer() const;
+  const GenericVertexBuffer& GetBaseBuffer() const;
 
   friend class BufferPrivate;
 
-  VertexBuffer m_vertexBufferObject;
-  unsigned m_EBO = 0;
-  unsigned m_nIndices = 0;
+  GenericVertexBuffer m_buffer;
 };
 
 // ----------------------------------------------------------------------------
