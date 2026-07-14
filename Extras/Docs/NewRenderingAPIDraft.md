@@ -133,12 +133,13 @@ Implementation steps:
   - Integrate generic impls on simple and indexed actions/buffers; [DONE]
   - Create class for holding instanced data; [DONE]
   - Create class VertexBuffer [DONE]
-  - Create class IndexBuffer? No point!
   - Create class InstancedDataBuffer [DONE]
-  - Refactor GenericRenderAction implementation (lots of duplication);
+  - Refactor GenericRenderAction implementation (lots of duplication); [DONE]
+  - Create state binding manager; [NO]
   - Rework state binding inside GenericeRenderAction implementation;
     * The buffers linked to the shader attributes and getting linked implicitly;
     * I want this binding to be very clear; 
+  - Create class IndexBuffer? Yes!
   - Create support for reference InstancedDataBuffer;
-  - Create state binding manager;
   - Create shader binding structures;
+  - Create support for essential primitive types: triangles, lines and points.

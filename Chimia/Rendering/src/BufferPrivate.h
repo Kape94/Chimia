@@ -33,6 +33,7 @@ public:
   static bool HasIndices(const GenericVertexBuffer& reusableVertexBuffer);
 
   // InstancedDataBuffer
+  static void Bind(const InstancedDataBuffer& buffer);
   static unsigned GetNInstances(const InstancedDataBuffer& buffer);
 };
 

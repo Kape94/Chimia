@@ -81,6 +81,8 @@ private:
     const RawDataView& vertexData,
     const ShaderAttributes& shaderAttributes) const;
 
+  void SetupVAO();
+
   void Configure(const GenericVertexBuffer& buffer,
                  const ShaderAttributes& shaderAttributes);
 

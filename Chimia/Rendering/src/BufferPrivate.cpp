@@ -56,6 +56,14 @@ BufferPrivate::HasIndices(const GenericVertexBuffer& reusableVertexBuffer)
 
 // --------------------------------------------------------------------------------------
 
+void
+BufferPrivate::Bind(const InstancedDataBuffer& buffer)
+{
+  buffer.Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
 unsigned
 BufferPrivate::GetNInstances(const InstancedDataBuffer& buffer)
 {

@@ -67,6 +67,8 @@ GenericRenderAction::Create(const GenericVertexBuffer& reusableVertexBuffer,
   Clear();
 
   m_referenceBuffer = &reusableVertexBuffer;
+
+  SetupVAO();
   Configure(reusableVertexBuffer, shaderAttributes);
 }
 
@@ -78,6 +80,7 @@ GenericRenderAction::Create(const RawDataView& vertexData,
 {
   Clear();
 
+  SetupVAO();
   SetupOwnVertexBuffer(
     vertexData, nullptr /*optionalIndexData*/, shaderAttributes);
 }
@@ -91,6 +94,7 @@ GenericRenderAction::Create(const RawDataView& vertexData,
 {
   Clear();
 
+  SetupVAO();
   SetupOwnVertexBuffer(vertexData, &indexData, shaderAttributes);
 }
 
@@ -106,6 +110,8 @@ GenericRenderAction::CreateInstanced(
   Clear();
 
   m_referenceBuffer = &reusableVertexBuffer;
+
+  SetupVAO();
   Configure(reusableVertexBuffer, shaderAttributes);
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
 }
@@ -122,6 +128,7 @@ GenericRenderAction::CreateInstanced(
 {
   Clear();
 
+  SetupVAO();
   SetupOwnVertexBuffer(vertexData, &indexData, shaderAttributes);
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
 }
@@ -137,8 +144,18 @@ GenericRenderAction::CreateInstanced(
 {
   Clear();
 
+  SetupVAO();
   SetupOwnVertexBuffer(vertexData, nullptr /*indexData*/, shaderAttributes);
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+GenericRenderAction::SetupVAO()
+{
+  glGenVertexArrays(1, &m_VAO);
+  glBindVertexArray(m_VAO);
 }
 
 //---------------------------------------------------------------------------------------
@@ -172,6 +189,7 @@ GenericRenderAction::SetupOwnInstancedBuffer(
   m_instancedBuffer.reset(new InstancedDataBuffer);
   m_instancedBuffer->Create(instancesData);
 
+  BufferPrivate::Bind(*m_instancedBuffer);
   BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
 }
 
@@ -194,9 +212,6 @@ void
 GenericRenderAction::Configure(const GenericVertexBuffer& buffer,
                                const ShaderAttributes& shaderAttributes)
 {
-  glGenVertexArrays(1, &m_VAO);
-  glBindVertexArray(m_VAO);
-
   BufferPrivate::Bind(buffer);
   BufferUtils::LinkShaderAttributes(shaderAttributes);
 }
