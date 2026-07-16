@@ -55,7 +55,7 @@ VertexBuffer::Clear()
 
 // ----------------------------------------------------------------------------
 
-const GenericVertexBuffer&
+const VertexRenderData&
 VertexBuffer::BaseBuffer() const
 {
   return m_buffer;

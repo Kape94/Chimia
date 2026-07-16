@@ -110,15 +110,186 @@ renderable.Create(
 
 ```
 
+Case 7: RenderData draft
 
-Names:
-  - Renderable
-  - Drawable
-  - Mesh
-  - Geometry
-  - RenderObject
-  - Primitive
-  - RenderAction
+```cpp
+std::vector<float> vertexData {...};
+std::vector<unsigned> indexData {...};
+
+std::vector<Vec3> instancedData1 {...};
+std::vector<Mat4> instancedData2 {...};
+
+RenderData data1;
+data1.Create(vertexData, indexData, instancedData1);
+
+RenderAction render1;
+render1.Create(data1, shader, eRenderPrimitive::TRIANGLES);
+
+
+```
+
+```cpp
+std::vector<float> vertexData {...};
+std::vector<unsigned> indexData {...};
+
+std::vector<Vec3> instancedData1 {...};
+std::vector<Mat4> instancedData2 {...};
+
+RenderAction render1;
+render1.Create(vertexData, indexData, instancedData1, shader, eRenderPrimitive::TRIANGLES);
+
+
+```
+
+```cpp
+std::vector<float> vertexData {...};
+std::vector<unsigned> trianglesIndexData {...};
+std::vector<unsigned> linesIndexData {...};
+
+VertexBuffer vertexBuffer;
+vertexBuffer.Create(vertexData, vertexLayout);
+
+IndexBuffer triangleIndexBuffer;
+triangleIndexBuffer.Create(trianglesIndexData);
+
+IndexBuffer linesIndexBuffer;
+linesIndexBuffer.Create(linexIndexData);
+
+RenderData triangleData(vertexBuffer, triangleIndexBuffer);
+RenderData linesData(vertexBuffer, linesIndexBuffer);
+
+RenderAction renderTriangle;
+renderTriangle.Create(triangleData, shader, eRenderPrimitive::TRIANGLES);
+
+RenderAction renderLine;
+renderLine.Create(linesData, shader, eRenderPrimitive::LINES);
+
+
+```
+
+
+
+Render data API:
+
+```cpp
+
+void Create(const VertexBuffer& buffer,
+            const int primitiveType);
+
+void Create(const RawDataView& vertexData, 
+            const size_t layoutSize,
+            const int primitiveType);
+
+void Create(const VertexBuffer& buffer,
+            const IndexBuffer& indexBuffer);
+
+void Create(const RawDataView& vertexData,
+            const size_t layoutSize
+            const RawArrayView& indexData,
+            const int primitiveType);
+
+void CreateInstanced(const VertexBuffer& buffer,
+                     const int primitiveType,
+                     const RawArrayView& instancesData,
+                     const size_t instanceSize);
+
+void CreateInstanced(const RawDataView& vertexData,
+                      const size_t layoutSize,
+                      const RawArrayView& instancesData,
+                      const size_t instanceSize);
+
+void CreateInstanced(const VertexBuffer& buffer,
+                     const IndexBuffer& indexBuffer,
+                     const RawArrayView& instancesData,
+                     const size_t instanceSize);
+
+void CreateInstanced(const RawDataView& vertexData,
+                     const size_t layoutSize,
+                     const RawArrayView& indexData,
+                     const int primitiveType,
+                     const RawArrayView& instancesData,
+                     const size_t instanceSize);
+
+void CreateInstanced(const VertexBuffer& buffer,
+                     const int primitiveType,
+                     const InstancedDataBuffer& instanceBuffer);
+
+void CreateInstanced(const RawDataView& vertexData,
+                     const size_t layoutSize,
+                     const InstancedDataBuffer& instanceBuffer);
+
+void CreateInstanced(const VertexBuffer& buffer,
+                     const IndexBuffer& indexBuffer,
+                     const InstancedDataBuffer& instanceBuffer);
+
+void CreateInstanced(const RawDataView& vertexData,
+                     const size_t layoutSize,
+                     const RawArrayView& indexData,
+                     const int primitiveType,
+                     const InstancedDataBuffer& instanceBuffer);
+
+void LoadVertexData(const RawDataView& vertexData);
+void LoadIndexData(const RawArrayView& indexData);
+void LoadInstancedData(const RawArrayView& instancesData);
+
+// Need to relink attributes after recreation
+void RecreateInstancedBuffer(
+  const RawArrayView& instancesData
+);
+
+void Clear();
+
+```
+
+
+
+Render action API:
+
+```cpp
+
+void Create(
+  const ePrimitiveType primitive,
+  const Shader& shader
+);
+
+void AddVertexData(
+  const VertexBuffer& buffer,
+  const ShaderAttributes& shaderAttrs
+);
+
+void AddVertexData(
+  const RawDataView& vertexData,
+  const ShaderAttributes& shaderAttrs
+);
+
+void AddVertexData(
+  const VertexBuffer& buffer,
+  const RawArrayView& indexData,
+  const ShaderAttributes& shaderAttrs
+);
+
+void AddVertexData(
+  const RawDataView& vertexData,
+  const RawArrayView& indexData,
+  const ShaderAttributes& shaderAttrs
+);
+
+void AddInstancedData(
+  const InstancedDataBuffer& instancedData,
+  const ShaderAttributes& shaderAttrs
+);
+
+void AddInstancedData(
+  const RawArrayView& instancedData,
+  const ShaderAttributes& shaderAttrs
+);
+
+void Clear();
+
+void Render() const;
+
+```
+
 
 
 
@@ -136,10 +307,10 @@ Implementation steps:
   - Create class InstancedDataBuffer [DONE]
   - Refactor GenericRenderAction implementation (lots of duplication); [DONE]
   - Create state binding manager; [NO]
-  - Rework state binding inside GenericeRenderAction implementation;
-    * The buffers linked to the shader attributes and getting linked implicitly;
-    * I want this binding to be very clear; 
+  - Rework state binding inside GenericeRenderAction implementation; [DONE]
+  - Create class RenderData. GenericVertexBuffer -> RenderData;
   - Create class IndexBuffer? Yes!
+  - Create class VertexBuffer;
   - Create support for reference InstancedDataBuffer;
   - Create shader binding structures;
   - Create support for essential primitive types: triangles, lines and points.

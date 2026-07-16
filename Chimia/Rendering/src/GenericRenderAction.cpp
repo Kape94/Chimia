@@ -3,10 +3,10 @@
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
 #include "Core/Types.h"
-#include "GenericVertexBuffer.h"
 #include "InstancedDataBuffer.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
+#include "VertexRenderData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ GenericRenderAction::~GenericRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const GenericVertexBuffer& reusableVertexBuffer,
+GenericRenderAction::Create(const VertexRenderData& reusableVertexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
   Clear();
@@ -102,7 +102,7 @@ GenericRenderAction::Create(const RawDataView& vertexData,
 
 void
 GenericRenderAction::CreateInstanced(
-  const GenericVertexBuffer& reusableVertexBuffer,
+  const VertexRenderData& reusableVertexBuffer,
   const ShaderAttributes& shaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
@@ -169,7 +169,7 @@ GenericRenderAction::SetupOwnVertexBuffer(
   const size_t nVertices =
     CalculateNumberOfVertices(vertexData, shaderAttributes);
 
-  m_ownBuffer.reset(new GenericVertexBuffer);
+  m_ownBuffer.reset(new VertexRenderData);
   if (optionalIndexData != nullptr) {
     m_ownBuffer->Create(vertexData, nVertices, *optionalIndexData);
   } else {
@@ -209,7 +209,7 @@ GenericRenderAction::CalculateNumberOfVertices(
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Configure(const GenericVertexBuffer& buffer,
+GenericRenderAction::Configure(const VertexRenderData& buffer,
                                const ShaderAttributes& shaderAttributes)
 {
   BufferPrivate::Bind(buffer);
@@ -305,7 +305,7 @@ GenericRenderAction::Render() const
     return;
   }
 
-  const GenericVertexBuffer& buffer =
+  const VertexRenderData& buffer =
     m_ownBuffer ? *m_ownBuffer : *m_referenceBuffer;
 
   glBindVertexArray(m_VAO);
@@ -321,7 +321,7 @@ GenericRenderAction::Render() const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderInstanced(const GenericVertexBuffer& buffer) const
+GenericRenderAction::RenderInstanced(const VertexRenderData& buffer) const
 {
   const bool isIndexed = BufferPrivate::HasIndices(buffer);
   const unsigned nInstances = BufferPrivate::GetNInstances(*m_instancedBuffer);
@@ -338,7 +338,7 @@ GenericRenderAction::RenderInstanced(const GenericVertexBuffer& buffer) const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderSingle(const GenericVertexBuffer& buffer) const
+GenericRenderAction::RenderSingle(const VertexRenderData& buffer) const
 {
   const bool isIndexed = BufferPrivate::HasIndices(buffer);
   if (isIndexed) {

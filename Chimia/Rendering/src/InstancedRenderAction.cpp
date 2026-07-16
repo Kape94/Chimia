@@ -2,9 +2,9 @@
 
 #include "BufferPrivate.h"
 #include "Core/Types.h"
-#include "GenericVertexBuffer.h"
 #include "InstancedDataBuffer.h"
 #include "ShaderAttribute.h"
+#include "VertexRenderData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ InstancedRenderAction::CreateInstanced(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  const GenericVertexBuffer& baseBuffer =
+  const VertexRenderData& baseBuffer =
     BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
   m_action.CreateInstanced(baseBuffer,
                            vertexShaderAttributes,
@@ -63,7 +63,7 @@ InstancedRenderAction::CreateInstanced(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  const GenericVertexBuffer& baseBuffer =
+  const VertexRenderData& baseBuffer =
     BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
   m_action.CreateInstanced(baseBuffer,
                            vertexShaderAttributes,

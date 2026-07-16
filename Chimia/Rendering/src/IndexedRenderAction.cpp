@@ -3,7 +3,7 @@
 #include "BufferPrivate.h"
 #include "Core/Types.h"
 #include "GenericRenderAction.h"
-#include "GenericVertexBuffer.h"
+#include "VertexRenderData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ void
 IndexedRenderAction::Create(const IndexedVertexBuffer& reusableVertexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
-  const GenericVertexBuffer& baseBuffer =
+  const VertexRenderData& baseBuffer =
     BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
   m_action.Create(baseBuffer, shaderAttributes);
 }

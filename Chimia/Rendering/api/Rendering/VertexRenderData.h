@@ -4,7 +4,9 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "IndexData.h"
 #include "RenderingNamespaceDefs.h"
+#include "VertexData.h"
 
 // ----------------------------------------------------------------------------
 
@@ -12,16 +14,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class GenericVertexBuffer
+class VertexRenderData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(GenericVertexBuffer)
-  NON_COPYABLE(GenericVertexBuffer)
+  DEFAULT_CONSTUCTIBLE(VertexRenderData)
+  NON_COPYABLE(VertexRenderData)
 
-  GenericVertexBuffer(GenericVertexBuffer&& other);
-  GenericVertexBuffer& operator=(GenericVertexBuffer&& other);
+  VertexRenderData(VertexRenderData&& other);
+  VertexRenderData& operator=(VertexRenderData&& other);
 
-  ~GenericVertexBuffer();
+  ~VertexRenderData();
 
   void Create(const RawDataView& vertexData, const unsigned nVertices);
   void Create(const RawDataView& vertexData,
@@ -46,17 +48,8 @@ private:
 
   friend class BufferPrivate;
 
-  unsigned m_VBO = 0;
-  unsigned m_EBO = 0;
-
-  unsigned m_sizePerVertex = 0;
-  unsigned m_nVertices = 0;
-  unsigned m_nIndices = 0;
-
-  size_t m_currentVertexSize = 0;
-  size_t m_maximumVertexSize = 0;
-  size_t m_currentIndexSize = 0;
-  size_t m_maximumIndexSize = 0;
+  VertexData m_vertexData;
+  std::unique_ptr<IndexData> m_indexData;
 };
 
 // ----------------------------------------------------------------------------

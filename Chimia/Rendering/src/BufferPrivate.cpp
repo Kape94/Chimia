@@ -6,7 +6,7 @@ USING_RENDERLIB_NAMESPACE
 
 // --------------------------------------------------------------------------------------
 
-const GenericVertexBuffer&
+const VertexRenderData&
 BufferPrivate::GetBaseBuffer(const VertexBuffer& buffer)
 {
   return buffer.m_buffer;
@@ -14,7 +14,7 @@ BufferPrivate::GetBaseBuffer(const VertexBuffer& buffer)
 
 // --------------------------------------------------------------------------------------
 
-const GenericVertexBuffer&
+const VertexRenderData&
 BufferPrivate::GetBaseBuffer(const IndexedVertexBuffer& buffer)
 {
   return buffer.m_buffer;
@@ -25,7 +25,7 @@ BufferPrivate::GetBaseBuffer(const IndexedVertexBuffer& buffer)
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const GenericVertexBuffer& reusableVertexBuffer)
+BufferPrivate::Bind(const VertexRenderData& reusableVertexBuffer)
 {
   reusableVertexBuffer.Bind();
 }
@@ -33,7 +33,7 @@ BufferPrivate::Bind(const GenericVertexBuffer& reusableVertexBuffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNVertices(const GenericVertexBuffer& reusableVertexBuffer)
+BufferPrivate::GetNVertices(const VertexRenderData& reusableVertexBuffer)
 {
   return reusableVertexBuffer.GetNVertices();
 }
@@ -41,7 +41,7 @@ BufferPrivate::GetNVertices(const GenericVertexBuffer& reusableVertexBuffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNElements(const GenericVertexBuffer& reusableVertexBuffer)
+BufferPrivate::GetNElements(const VertexRenderData& reusableVertexBuffer)
 {
   return reusableVertexBuffer.GetNIndices();
 }
@@ -49,9 +49,41 @@ BufferPrivate::GetNElements(const GenericVertexBuffer& reusableVertexBuffer)
 // --------------------------------------------------------------------------------------
 
 bool
-BufferPrivate::HasIndices(const GenericVertexBuffer& reusableVertexBuffer)
+BufferPrivate::HasIndices(const VertexRenderData& reusableVertexBuffer)
 {
   return reusableVertexBuffer.HasIndices();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const VertexData& data)
+{
+  data.Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNVertices(const VertexData& data)
+{
+  return data.GetNVertices();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const IndexData& data)
+{
+  data.Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNIndices(const IndexData& data)
+{
+  return data.GetNIndices();
 }
 
 // --------------------------------------------------------------------------------------

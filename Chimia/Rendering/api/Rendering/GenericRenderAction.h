@@ -4,8 +4,8 @@
 #include "InstancedDataBuffer.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "GenericVertexBuffer.h"
 #include "ShaderAttribute.h"
+#include "VertexRenderData.h"
 
 #include "Core/Types.h"
 #include <memory>
@@ -30,7 +30,7 @@ public:
 
   ~GenericRenderAction();
 
-  void Create(const GenericVertexBuffer& reusableVertexBuffer,
+  void Create(const VertexRenderData& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,
@@ -40,7 +40,7 @@ public:
               const RawArrayView& indexData,
               const ShaderAttributes& shaderAttributes);
 
-  void CreateInstanced(const GenericVertexBuffer& reusableVertexBuffer,
+  void CreateInstanced(const VertexRenderData& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
@@ -83,19 +83,19 @@ private:
 
   void SetupVAO();
 
-  void Configure(const GenericVertexBuffer& buffer,
+  void Configure(const VertexRenderData& buffer,
                  const ShaderAttributes& shaderAttributes);
 
-  void RenderInstanced(const GenericVertexBuffer& buffer) const;
+  void RenderInstanced(const VertexRenderData& buffer) const;
 
-  void RenderSingle(const GenericVertexBuffer& buffer) const;
+  void RenderSingle(const VertexRenderData& buffer) const;
 
   friend class BufferPrivate;
 
   unsigned m_VAO = 0;
 
-  std::unique_ptr<GenericVertexBuffer> m_ownBuffer = nullptr;
-  const GenericVertexBuffer* m_referenceBuffer = nullptr;
+  std::unique_ptr<VertexRenderData> m_ownBuffer = nullptr;
+  const VertexRenderData* m_referenceBuffer = nullptr;
 
   std::unique_ptr<InstancedDataBuffer> m_instancedBuffer = nullptr;
 };

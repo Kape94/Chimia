@@ -1,7 +1,7 @@
 #include "IndexedVertexBuffer.h"
 
 #include "Core/Types.h"
-#include "GenericVertexBuffer.h"
+#include "VertexRenderData.h"
 
 // ----------------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ IndexedVertexBuffer::Clear()
 
 // ----------------------------------------------------------------------------
 
-const GenericVertexBuffer&
+const VertexRenderData&
 IndexedVertexBuffer::GetBaseBuffer() const
 {
   return m_buffer;

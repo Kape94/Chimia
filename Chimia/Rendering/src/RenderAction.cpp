@@ -2,9 +2,9 @@
 
 #include "BufferPrivate.h"
 #include "Core/Types.h"
-#include "GenericVertexBuffer.h"
 #include "ShaderAttribute.h"
 #include "VertexBuffer.h"
+#include "VertexRenderData.h"
 
 USING_RENDERLIB_NAMESPACE
 
@@ -48,7 +48,7 @@ void
 RenderAction::Create(const VertexBuffer& reusableVertexBuffer,
                      const ShaderAttributes& shaderAttributes)
 {
-  const GenericVertexBuffer& baseBuffer =
+  const VertexRenderData& baseBuffer =
     BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
   m_action.Create(baseBuffer, shaderAttributes);
 }

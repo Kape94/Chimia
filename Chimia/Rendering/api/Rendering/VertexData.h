@@ -5,7 +5,6 @@
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
-#include "VertexRenderData.h"
 
 // ----------------------------------------------------------------------------
 
@@ -13,16 +12,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class VertexBuffer
+class VertexData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(VertexBuffer)
-  NON_COPYABLE(VertexBuffer)
+  DEFAULT_CONSTUCTIBLE(VertexData)
+  NON_COPYABLE(VertexData)
 
-  VertexBuffer(VertexBuffer&& other);
-  VertexBuffer& operator=(VertexBuffer&& other);
+  VertexData(VertexData&& other);
+  VertexData& operator=(VertexData&& other);
 
-  ~VertexBuffer();
+  ~VertexData();
 
   void Create(const RawDataView& vertexData, const unsigned nVertices);
   void Load(const RawDataView& data);
@@ -32,9 +31,19 @@ public:
 private:
   friend class BufferPrivate;
 
-  const VertexRenderData& BaseBuffer() const;
+  unsigned GetNVertices() const;
+  void Bind() const;
 
-  VertexRenderData m_buffer;
+  void AllocateVertexData(const RawDataView& vertexData,
+                          const unsigned nVertices);
+
+  unsigned m_VBO = 0;
+
+  unsigned m_sizePerVertex = 0;
+  unsigned m_nVertices = 0;
+
+  size_t m_currentVertexSize = 0;
+  size_t m_maximumVertexSize = 0;
 };
 
 // ----------------------------------------------------------------------------
