@@ -13,15 +13,15 @@ BEGIN_RENDERLIB_NAMESPACE
 namespace BufferUtils {
 
 unsigned
-CreateBufferAndLoadData(const unsigned bufferType,
-                        const void* data,
-                        const unsigned dataSize);
+CreateBufferAndLoadData(const void* data,
+                        const unsigned dataSize,
+                        const bool isIndexBuffer);
 
 void
 LoadDataOnBuffer(const unsigned bufferID,
-                 const unsigned bufferType,
                  const void* data,
-                 const unsigned dataSize);
+                 const unsigned dataSize,
+                 const bool isIndexBuffer);
 
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes);

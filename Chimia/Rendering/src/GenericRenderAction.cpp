@@ -3,6 +3,7 @@
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "GLState.h"
 #include "InstancedDataBuffer.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
@@ -155,7 +156,7 @@ void
 GenericRenderAction::SetupVAO()
 {
   glGenVertexArrays(1, &m_VAO);
-  glBindVertexArray(m_VAO);
+  GLState::BindVertexArray(m_VAO);
 }
 
 //---------------------------------------------------------------------------------------
@@ -270,14 +271,14 @@ GenericRenderAction::RecreateInstancedBuffer(
      m_instancedVBO forcefully acquires a different ID, and I think for some
      reason this makes the process work in the graphics driver.
   */
-  glBindVertexArray(m_VAO);
+  GLState::BindVertexArray(m_VAO);
   std::unique_ptr<InstancedDataBuffer> oldBuffer = std::move(m_instancedBuffer);
 
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
 
   oldBuffer->Clear();
 
-  glBindVertexArray(0);
+  GLState::BindVertexArray(0);
 }
 
 //---------------------------------------------------------------------------------------
@@ -308,7 +309,7 @@ GenericRenderAction::Render() const
   const VertexRenderData& buffer =
     m_ownBuffer ? *m_ownBuffer : *m_referenceBuffer;
 
-  glBindVertexArray(m_VAO);
+  GLState::BindVertexArray(m_VAO);
 
   const bool isInstanced = m_instancedBuffer != nullptr;
   if (isInstanced) {

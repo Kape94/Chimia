@@ -2,6 +2,7 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "GLState.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -64,7 +65,7 @@ IndexData::AllocateIndexData(const RawArrayView& indexData)
 {
   const unsigned indexDataSize = indexData.TotalSize();
   m_EBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ELEMENT_ARRAY_BUFFER, indexData.array, indexDataSize);
+    indexData.array, indexDataSize, true /*isIndexBuffer*/);
 
   m_nIndices = indexData.nItems;
 
@@ -84,7 +85,7 @@ IndexData::LoadIndexData(const RawArrayView& indexData)
 
   const unsigned nIndexValues = indexData.nItems;
   BufferUtils::LoadDataOnBuffer(
-    m_EBO, GL_ELEMENT_ARRAY_BUFFER, indexData.array, indexData.TotalSize());
+    m_EBO, indexData.array, indexData.TotalSize(), true /*isIndexBuffer*/);
 
   m_nIndices = nIndexValues;
   m_currentIndexSize = incomingSize;
@@ -111,7 +112,7 @@ void
 IndexData::Bind() const
 {
   if (m_EBO != 0) {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    GLState::BindElementBuffer(m_EBO);
   }
 }
 

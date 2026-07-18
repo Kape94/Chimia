@@ -2,6 +2,7 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "GLState.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -59,7 +60,7 @@ InstancedDataBuffer::Create(const RawArrayView& instancedData)
   const unsigned nInstances = instancedData.nItems;
 
   m_instancedVBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ARRAY_BUFFER, instancedRawData, instanceDataSize * nInstances);
+    instancedRawData, instanceDataSize * nInstances, false /*isIndexBuffer*/);
 
   m_nInstances = nInstances;
 
@@ -79,7 +80,7 @@ InstancedDataBuffer::Load(const RawArrayView& instancedData)
   }
 
   BufferUtils::LoadDataOnBuffer(
-    m_instancedVBO, GL_ARRAY_BUFFER, instancedData.array, incomingSize);
+    m_instancedVBO, instancedData.array, incomingSize, false /*isIndexBuffer*/);
 
   m_nInstances = instancedData.nItems;
   m_currentSize = incomingSize;
@@ -104,7 +105,7 @@ void
 InstancedDataBuffer::Bind() const
 {
   if (m_instancedVBO != 0) {
-    glBindBuffer(GL_ARRAY_BUFFER, m_instancedVBO);
+    GLState::BindArrayBuffer(m_instancedVBO);
   }
 }
 

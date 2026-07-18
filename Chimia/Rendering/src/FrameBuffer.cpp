@@ -1,5 +1,6 @@
 #include "FrameBuffer.h"
 
+#include "GLState.h"
 #include "OpenGLDefs.h"
 
 //---------------------------------------------------------------------------------------
@@ -29,7 +30,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
 
   glGenFramebuffers(1, &id);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, id);
+  GLState::BindFramebuffer(id);
 
   frameTexture.Create(nullptr /*data*/, width, height);
 
@@ -40,7 +41,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
                          0);
 
   glGenRenderbuffers(1, &renderBufferId);
-  glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+  GLState::BindRenderbuffer(renderBufferId);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             GL_DEPTH_STENCIL_ATTACHMENT,
@@ -50,7 +51,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
   // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
   // return 1;
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GLState::BindFramebuffer(0);
 }
 
 //---------------------------------------------------------------------------------------
@@ -58,7 +59,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
 void
 FrameBuffer::Use()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, id);
+  GLState::BindFramebuffer(id);
 }
 
 //---------------------------------------------------------------------------------------
@@ -90,7 +91,7 @@ FrameBuffer::Clear()
 void
 FrameBuffer::UseDefaultFrameBuffer()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GLState::BindFramebuffer(0);
 }
 
 //---------------------------------------------------------------------------------------

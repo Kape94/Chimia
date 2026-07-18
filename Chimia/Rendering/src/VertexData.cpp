@@ -2,6 +2,7 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "GLState.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -69,7 +70,7 @@ VertexData::AllocateVertexData(const RawDataView& vertexData,
 {
   const size_t vertexDataSize = vertexData.size;
   m_VBO = BufferUtils::CreateBufferAndLoadData(
-    GL_ARRAY_BUFFER, vertexData.data, vertexDataSize);
+    vertexData.data, vertexDataSize, false /*isIndexBuffer*/);
 
   m_nVertices = nVertices;
   m_sizePerVertex = vertexDataSize / nVertices;
@@ -89,7 +90,7 @@ VertexData::Load(const RawDataView& data)
   }
 
   BufferUtils::LoadDataOnBuffer(
-    m_VBO, GL_ARRAY_BUFFER, data.data, vertexDataSize);
+    m_VBO, data.data, vertexDataSize, false /*isIndexBuffer*/);
   m_nVertices = vertexDataSize / m_sizePerVertex;
 
   m_currentVertexSize = vertexDataSize;
@@ -117,7 +118,7 @@ void
 VertexData::Bind() const
 {
   if (m_VBO != 0) {
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    GLState::BindArrayBuffer(m_VBO);
   }
 }
 

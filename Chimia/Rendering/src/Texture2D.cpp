@@ -1,5 +1,6 @@
 #include "Texture2D.h"
 
+#include "GLState.h"
 #include "OpenGLDefs.h"
 
 //---------------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ Texture2D::Create(const unsigned char* data,
 
   glGenTextures(1, &id);
 
-  glBindTexture(GL_TEXTURE_2D, id);
+  GLState::BindTexture2D(id);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -53,7 +54,7 @@ Texture2D::Use(const TextureUnit& textureUnit)
 {
   const unsigned textureUnitID = static_cast<unsigned>(textureUnit);
   glActiveTexture(GL_TEXTURE0 + textureUnitID);
-  glBindTexture(GL_TEXTURE_2D, id);
+  GLState::BindTexture2D(id);
 }
 
 //---------------------------------------------------------------------------------------
