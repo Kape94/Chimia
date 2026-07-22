@@ -32,6 +32,7 @@ private:
   friend class BufferPrivate;
 
   unsigned GetNVertices() const;
+  unsigned GetLayoutSize() const;
   void Bind() const;
 
   void AllocateVertexData(const RawDataView& vertexData,

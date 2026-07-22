@@ -4,7 +4,6 @@
 #include "GenericRenderAction.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "IndexedVertexBuffer.h"
 #include "ShaderAttribute.h"
 
 #include "Core/Types.h"
@@ -31,7 +30,8 @@ public:
 
   ~IndexedRenderAction();
 
-  void Create(const IndexedVertexBuffer& reusableVertexBuffer,
+  void Create(const VertexData& reusableVertexBuffer,
+              const IndexData& reusableIndexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,

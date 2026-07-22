@@ -2,9 +2,10 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
-#include "Rendering/IndexedVertexBuffer.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
+#include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
@@ -28,11 +29,11 @@ ImmediateModelInstancesBatch::Create(
     instanceAttributes.ComputeTotalSizeOfAttributes();
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  model.ForEachBuffer(
-    [&](const Rendering::IndexedVertexBuffer& reusableBuffer) {
-      AddGPUBuffer(
-        reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
-    });
+  model.ForEachBuffer([&](const Rendering::VertexData& vertexData,
+                          const Rendering::IndexData& indexData) {
+    AddGPUBuffer(
+      vertexData, indexData, batchSize, vertexAttributes, instanceAttributes);
+  });
 
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
   m_instancedInputBuffer.Resize(batchSizeInBytes);
@@ -43,14 +44,16 @@ ImmediateModelInstancesBatch::Create(
 
 void
 ImmediateModelInstancesBatch::AddGPUBuffer(
-  const Rendering::IndexedVertexBuffer& bufferData,
+  const Rendering::VertexData& vertexData,
+  const Rendering::IndexData& indexData,
   const size_t instanceBatchSize,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
   Rendering::InstancedRenderAction& inserted = m_gpuActions.emplace_back();
   inserted.CreateInstanced(
-    bufferData,
+    vertexData,
+    indexData,
     vertexAttributes,
     RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes },
     instanceAttributes);

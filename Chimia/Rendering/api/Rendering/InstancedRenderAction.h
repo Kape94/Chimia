@@ -3,11 +3,10 @@
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "GenericRenderAction.h"
+#include "IndexData.h"
 #include "RenderingNamespaceDefs.h"
-
-#include "IndexedVertexBuffer.h"
 #include "ShaderAttribute.h"
-#include "VertexBuffer.h"
+#include "VertexData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -26,12 +25,13 @@ public:
 
   ~InstancedRenderAction();
 
-  void CreateInstanced(const VertexBuffer& reusableVertexBuffer,
+  void CreateInstanced(const VertexData& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const IndexedVertexBuffer& reusableVertexBuffer,
+  void CreateInstanced(const VertexData& reusableVertexBuffer,
+                       const IndexData& reusableIndexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);

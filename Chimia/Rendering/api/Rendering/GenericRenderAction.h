@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "IndexData.h"
 #include "InstancedDataBuffer.h"
 #include "RenderingNamespaceDefs.h"
-
 #include "ShaderAttribute.h"
-#include "VertexRenderData.h"
+#include "ShaderBinding.h"
+#include "VertexData.h"
 
 #include "Core/Types.h"
 #include <memory>
@@ -30,7 +31,13 @@ public:
 
   ~GenericRenderAction();
 
-  void Create(const VertexRenderData& reusableVertexBuffer,
+  void Create(const std::vector<ShaderBinding>& bindings);
+
+  void Create(const VertexData& reusableVertexBuffer,
+              const ShaderAttributes& shaderAttributes);
+
+  void Create(const VertexData& reusableVertexBuffer,
+              const IndexData& reusableIndexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,
@@ -40,18 +47,24 @@ public:
               const RawArrayView& indexData,
               const ShaderAttributes& shaderAttributes);
 
-  void CreateInstanced(const VertexRenderData& reusableVertexBuffer,
+  void CreateInstanced(const VertexData& reusableVertexBuffer,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
+
+  void CreateInstanced(const VertexData& reusableVertexBuffer,
+                       const IndexData& reusableIndexBuffer,
+                       const ShaderAttributes& shaderAttributes,
+                       const RawArrayView& instancesData,
+                       const ShaderAttributes& instanceShaderAttributes);
+
+  void CreateInstanced(const RawDataView& vertexData,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
   void CreateInstanced(const RawDataView& vertexData,
                        const RawArrayView& indexData,
-                       const ShaderAttributes& shaderAttributes,
-                       const RawArrayView& instancesData,
-                       const ShaderAttributes& instanceShaderAttributes);
-
-  void CreateInstanced(const RawDataView& vertexData,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
@@ -83,19 +96,24 @@ private:
 
   void SetupVAO();
 
-  void Configure(const VertexRenderData& buffer,
+  void Configure(const VertexData& buffer,
+                 const IndexData* indexData,
                  const ShaderAttributes& shaderAttributes);
 
-  void RenderInstanced(const VertexRenderData& buffer) const;
+  void RenderInstanced(const VertexData& buffer,
+                       const IndexData* indexData) const;
 
-  void RenderSingle(const VertexRenderData& buffer) const;
+  void RenderSingle(const VertexData& buffer, const IndexData* indexData) const;
 
   friend class BufferPrivate;
 
   unsigned m_VAO = 0;
 
-  std::unique_ptr<VertexRenderData> m_ownBuffer = nullptr;
-  const VertexRenderData* m_referenceBuffer = nullptr;
+  std::unique_ptr<VertexData> m_ownBuffer = nullptr;
+  const VertexData* m_referenceBuffer = nullptr;
+
+  std::unique_ptr<IndexData> m_ownIndexBuffer = nullptr;
+  const IndexData* m_referenceIndexBuffer = nullptr;
 
   std::unique_ptr<InstancedDataBuffer> m_instancedBuffer = nullptr;
 };

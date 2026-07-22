@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
-#include "GenericRenderAction.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "ShaderAttribute.h"
-#include "VertexBuffer.h"
-
 #include "Core/Types.h"
+#include "GenericRenderAction.h"
+#include "ShaderAttribute.h"
+#include "VertexData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -29,7 +28,7 @@ public:
 
   ~RenderAction();
 
-  void Create(const VertexBuffer& reusableVertexBuffer,
+  void Create(const VertexData& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,

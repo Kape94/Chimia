@@ -1,9 +1,8 @@
 #include "IndexedRenderAction.h"
 
-#include "BufferPrivate.h"
 #include "Core/Types.h"
 #include "GenericRenderAction.h"
-#include "VertexRenderData.h"
+#include "IndexData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -48,12 +47,11 @@ IndexedRenderAction::~IndexedRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedRenderAction::Create(const IndexedVertexBuffer& reusableVertexBuffer,
+IndexedRenderAction::Create(const VertexData& reusableVertexBuffer,
+                            const IndexData& reusableIndexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
-  const VertexRenderData& baseBuffer =
-    BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
-  m_action.Create(baseBuffer, shaderAttributes);
+  m_action.Create(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------

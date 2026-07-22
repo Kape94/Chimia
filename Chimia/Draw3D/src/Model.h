@@ -6,7 +6,8 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Types.h"
 
-#include "Rendering/IndexedVertexBuffer.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/VertexData.h"
 
 #include <functional>
 #include <vector>
@@ -28,8 +29,8 @@ public:
   void Create(const std::vector<MeshDataView>& meshDatas,
               const eVertexLayout vertexLayout);
 
-  using BufferHandlerFn =
-    std::function<void(const Rendering::IndexedVertexBuffer&)>;
+  using BufferHandlerFn = std::function<void(const Rendering::VertexData&,
+                                             const Rendering::IndexData&)>;
   void ForEachBuffer(const BufferHandlerFn& handleBuffer) const;
 
   eVertexLayout GetVertexLayout() const;
@@ -38,7 +39,8 @@ private:
   void AllocateBufferDataOnGPU(const MeshDataView& bufferData);
 
   eVertexLayout m_vertexLayout;
-  std::vector<Rendering::IndexedVertexBuffer> m_gpuBufferDatas;
+  std::vector<Rendering::VertexData> m_gpuVertexDatas;
+  std::vector<Rendering::IndexData> m_gpuIndexDatas;
 };
 
 // ----------------------------------------------------------------------------

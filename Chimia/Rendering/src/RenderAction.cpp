@@ -1,10 +1,9 @@
 #include "RenderAction.h"
 
-#include "BufferPrivate.h"
 #include "Core/Types.h"
 #include "ShaderAttribute.h"
-#include "VertexBuffer.h"
-#include "VertexRenderData.h"
+
+//---------------------------------------------------------------------------------------
 
 USING_RENDERLIB_NAMESPACE
 
@@ -45,12 +44,10 @@ RenderAction::~RenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const VertexBuffer& reusableVertexBuffer,
+RenderAction::Create(const VertexData& reusableVertexBuffer,
                      const ShaderAttributes& shaderAttributes)
 {
-  const VertexRenderData& baseBuffer =
-    BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
-  m_action.Create(baseBuffer, shaderAttributes);
+  m_action.Create(reusableVertexBuffer, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------

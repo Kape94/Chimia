@@ -1,8 +1,11 @@
 #include "BufferUtils.h"
 
+#include "BufferPrivate.h"
 #include "GLState.h"
+#include "InstancedDataBuffer.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
+#include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -132,6 +135,46 @@ BufferUtils::LinkInstancedShaderAttributes(const ShaderAttributes& attrs)
   LinkShaderAttributes(attrs);
   for (const ShaderAttribute& attr : attrs) {
     glVertexAttribDivisor(attr.Location(), 1);
+  }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+BufferUtils::LinkShaderBinding(const ShaderBinding& binding)
+{
+  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
+  const InstancedDataBuffer* instancedData =
+    BufferPrivate::GetInstancedData(binding);
+
+  const bool isInstanced = instancedData != nullptr;
+
+  if (vertexData != nullptr) {
+    BufferPrivate::Bind(*vertexData);
+  } else {
+    BufferPrivate::Bind(*instancedData);
+  }
+
+  const unsigned location = BufferPrivate::GetLocation(binding);
+  const unsigned nEntries = BufferPrivate::GetNEntries(binding);
+  const unsigned dataType = BufferPrivate::GetDataType(binding);
+  const unsigned offset = BufferPrivate::GetOffset(binding);
+
+  const unsigned stride = vertexData != nullptr
+                            ? BufferPrivate::GetLayoutSize(*vertexData)
+                            : BufferPrivate::GetInstanceSize(*instancedData);
+
+  glVertexAttribPointer(location,
+                        nEntries,
+                        dataType,
+                        GL_FALSE,
+                        stride,
+                        reinterpret_cast<void*>(offset));
+
+  glEnableVertexAttribArray(location);
+
+  if (isInstanced) {
+    glVertexAttribDivisor(location, 1);
   }
 }
 

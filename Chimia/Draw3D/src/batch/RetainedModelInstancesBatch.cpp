@@ -3,9 +3,10 @@
 #include "BatchUtils.h"
 #include "Core/DataBuffer.h"
 #include "Core/Types.h"
-#include "Rendering/IndexedVertexBuffer.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
+#include "Rendering/VertexData.h"
 
 // ----------------------------------------------------------------------------
 
@@ -52,11 +53,13 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  model.ForEachBuffer([&](const Rendering::IndexedVertexBuffer& buffer) {
+  model.ForEachBuffer([&](const Rendering::VertexData& vertexData,
+                          const Rendering::IndexData& indexData) {
     Rendering::InstancedRenderAction& gpuAction = m_gpuActions.emplace_back();
 
     gpuAction.CreateInstanced(
-      buffer,
+      vertexData,
+      indexData,
       vertexAttributes,
       RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
       instanceAttributes);

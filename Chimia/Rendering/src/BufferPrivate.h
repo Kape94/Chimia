@@ -1,13 +1,11 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "IndexData.h"
 #include "InstancedDataBuffer.h"
 #include "RenderingNamespaceDefs.h"
-
-#include "IndexedVertexBuffer.h"
-#include "VertexBuffer.h"
+#include "ShaderBinding.h"
 #include "VertexData.h"
-#include "VertexRenderData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -20,22 +18,10 @@ class BufferPrivate
 public:
   STATIC_CLASS(BufferPrivate)
 
-  // VertexBuffer
-  static const VertexRenderData& GetBaseBuffer(const VertexBuffer& buffer);
-
-  // IndexedVertexBuffer
-  static const VertexRenderData& GetBaseBuffer(
-    const IndexedVertexBuffer& buffer);
-
-  // GenericVertexBuffer
-  static void Bind(const VertexRenderData& reusableVertexBuffer);
-  static unsigned GetNVertices(const VertexRenderData& reusableVertexBuffer);
-  static unsigned GetNElements(const VertexRenderData& reusableVertexBuffer);
-  static bool HasIndices(const VertexRenderData& reusableVertexBuffer);
-
   // VertexData
   static void Bind(const VertexData& data);
   static unsigned GetNVertices(const VertexData& data);
+  static unsigned GetLayoutSize(const VertexData& data);
 
   // IndexData
   static void Bind(const IndexData& data);
@@ -44,6 +30,16 @@ public:
   // InstancedDataBuffer
   static void Bind(const InstancedDataBuffer& buffer);
   static unsigned GetNInstances(const InstancedDataBuffer& buffer);
+  static unsigned GetInstanceSize(const InstancedDataBuffer& buffer);
+
+  // ShaderBinding
+  static const VertexData* GetVertexData(const ShaderBinding& binding);
+  static const InstancedDataBuffer* GetInstancedData(
+    const ShaderBinding& binding);
+  static unsigned GetLocation(const ShaderBinding& binding);
+  static unsigned GetNEntries(const ShaderBinding& binding);
+  static unsigned GetDataType(const ShaderBinding& binding);
+  static unsigned GetOffset(const ShaderBinding& binding);
 };
 
 // --------------------------------------------------------------------------------------

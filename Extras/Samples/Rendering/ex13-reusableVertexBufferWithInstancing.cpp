@@ -1,10 +1,11 @@
+#include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedVertexBuffer.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderAttribute.h"
+#include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -114,17 +115,20 @@ main()
   Chimia::Rendering::Shader shader2(Inputs::ShaderCodes::vShaderTransformed,
                                     Inputs::ShaderCodes::fShaderTransformed);
 
-  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
-  reusableVertexBuffer.Create(Inputs::BufferData::vertex,
-                              Inputs::BufferData::nVertices,
-                              Inputs::BufferData::index);
+  Chimia::Rendering::VertexData reusableVertexData;
+  reusableVertexData.Create(Inputs::BufferData::vertex,
+                            Inputs::BufferData::nVertices);
+
+  Chimia::Rendering::IndexData reusableIndexData;
+  reusableIndexData.Create(Inputs::BufferData::index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) }
   };
   Chimia::Rendering::InstancedRenderAction renderWithOffsets;
-  renderWithOffsets.CreateInstanced(reusableVertexBuffer,
+  renderWithOffsets.CreateInstanced(reusableVertexData,
+                                    reusableIndexData,
                                     vertexAttributes,
                                     Inputs::InstanceData::positions,
                                     { Chimia::Rendering::ShaderAttribute::Float(
@@ -132,7 +136,8 @@ main()
 
   Chimia::Rendering::InstancedRenderAction renderTransformed;
   renderTransformed.CreateInstanced(
-    reusableVertexBuffer,
+    reusableVertexData,
+    reusableIndexData,
     vertexAttributes,
     Inputs::InstanceData::transforms,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),

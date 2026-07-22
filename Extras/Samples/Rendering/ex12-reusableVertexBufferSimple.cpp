@@ -1,7 +1,7 @@
+#include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedRenderAction.h"
-#include "Rendering/IndexedVertexBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderAttribute.h"
@@ -63,17 +63,20 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
-  reusableVertexBuffer.Create(
+  Chimia::Rendering::VertexData reusableVertexData;
+  reusableVertexData.Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    Inputs::BufferData::nVertices,
-    { Inputs::BufferData::indexData,
-      Inputs::BufferData::indexDataItems,
-      sizeof(unsigned) });
+    Inputs::BufferData::nVertices);
+
+  Chimia::Rendering::IndexData reusableIndexData;
+  reusableIndexData.Create({ Inputs::BufferData::indexData,
+                             Inputs::BufferData::indexDataItems,
+                             sizeof(unsigned) });
 
   Chimia::Rendering::IndexedRenderAction action;
   action.Create(
-    reusableVertexBuffer,
+    reusableVertexData,
+    reusableIndexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 

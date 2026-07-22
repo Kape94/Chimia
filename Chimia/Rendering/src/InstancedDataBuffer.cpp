@@ -118,3 +118,11 @@ InstancedDataBuffer::GetNInstances() const
 }
 
 // ----------------------------------------------------------------------------
+
+unsigned
+InstancedDataBuffer::GetInstanceSize() const
+{
+  return static_cast<unsigned>(m_currentSize) / m_nInstances;
+}
+
+// ----------------------------------------------------------------------------

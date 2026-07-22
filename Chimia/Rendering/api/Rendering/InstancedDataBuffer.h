@@ -33,6 +33,7 @@ private:
 
   void Bind() const;
   unsigned GetNInstances() const;
+  unsigned GetInstanceSize() const;
 
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;

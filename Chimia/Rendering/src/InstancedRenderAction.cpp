@@ -1,10 +1,9 @@
 #include "InstancedRenderAction.h"
 
-#include "BufferPrivate.h"
 #include "Core/Types.h"
-#include "InstancedDataBuffer.h"
+#include "IndexData.h"
 #include "ShaderAttribute.h"
-#include "VertexRenderData.h"
+#include "VertexData.h"
 
 //---------------------------------------------------------------------------------------
 
@@ -41,14 +40,12 @@ InstancedRenderAction::~InstancedRenderAction()
 
 void
 InstancedRenderAction::CreateInstanced(
-  const VertexBuffer& reusableVertexBuffer,
+  const VertexData& reusableVertexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  const VertexRenderData& baseBuffer =
-    BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
-  m_action.CreateInstanced(baseBuffer,
+  m_action.CreateInstanced(reusableVertexBuffer,
                            vertexShaderAttributes,
                            instancesData,
                            instanceShaderAttributes);
@@ -58,14 +55,14 @@ InstancedRenderAction::CreateInstanced(
 
 void
 InstancedRenderAction::CreateInstanced(
-  const IndexedVertexBuffer& reusableVertexBuffer,
+  const VertexData& reusableVertexBuffer,
+  const IndexData& reusableIndexBuffer,
   const ShaderAttributes& vertexShaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  const VertexRenderData& baseBuffer =
-    BufferPrivate::GetBaseBuffer(reusableVertexBuffer);
-  m_action.CreateInstanced(baseBuffer,
+  m_action.CreateInstanced(reusableVertexBuffer,
+                           reusableIndexBuffer,
                            vertexShaderAttributes,
                            instancesData,
                            instanceShaderAttributes);

@@ -3,6 +3,7 @@
 #include "RenderingNamespaceDefs.h"
 
 #include "ShaderAttribute.h"
+#include "ShaderBinding.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -30,6 +31,9 @@ void
 LinkShaderAttribute(const ShaderAttribute& attr,
                     const unsigned offset,
                     const unsigned totalAttributeSize);
+
+void
+LinkShaderBinding(const ShaderBinding& binding);
 
 unsigned
 ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs);

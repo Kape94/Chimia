@@ -1,8 +1,10 @@
+#include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedRenderAction.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
+#include "Rendering/VertexData.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
 
@@ -53,12 +55,16 @@ IndexedBuffer(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
-  reusableVertexBuffer.Create(vertex, nVertices, indexData);
+  Chimia::Rendering::VertexData reusableVertexData;
+  reusableVertexData.Create(vertex, nVertices);
+
+  Chimia::Rendering::IndexData reusableIndexData;
+  reusableIndexData.Create(indexData);
 
   Chimia::Rendering::IndexedRenderAction renderReusable;
   renderReusable.Create(
-    reusableVertexBuffer,
+    reusableVertexData,
+    reusableIndexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -149,8 +155,11 @@ Instancing(Window& win)
   Chimia::Rendering::Shader shader1(vShaderDisplaced, fShaderDisplaced);
   Chimia::Rendering::Shader shader2(vShaderTransformed, fShaderTransformed);
 
-  Chimia::Rendering::IndexedVertexBuffer reusableVertexBuffer;
-  reusableVertexBuffer.Create(vertex, nVertices, index);
+  Chimia::Rendering::VertexData reusableVertexData;
+  reusableVertexData.Create(vertex, nVertices);
+
+  Chimia::Rendering::IndexData reusableIndexData;
+  reusableIndexData.Create(index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
@@ -158,7 +167,8 @@ Instancing(Window& win)
   };
   Chimia::Rendering::InstancedRenderAction renderReusableWithOffsets;
   renderReusableWithOffsets.CreateInstanced(
-    reusableVertexBuffer,
+    reusableVertexData,
+    reusableIndexData,
     vertexAttributes,
     positions,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/,
@@ -166,7 +176,8 @@ Instancing(Window& win)
 
   Chimia::Rendering::InstancedRenderAction renderReusableTransformed;
   renderReusableTransformed.CreateInstanced(
-    reusableVertexBuffer,
+    reusableVertexData,
+    reusableIndexData,
     vertexAttributes,
     transforms,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),

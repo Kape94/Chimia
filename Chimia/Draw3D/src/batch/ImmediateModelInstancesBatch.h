@@ -4,11 +4,12 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
-#include "Rendering/IndexedVertexBuffer.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
@@ -40,7 +41,8 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void AddGPUBuffer(const Rendering::IndexedVertexBuffer& bufferData,
+  void AddGPUBuffer(const Rendering::VertexData& vertexData,
+                    const Rendering::IndexData& indexData,
                     const size_t instanceBatchSize,
                     const Rendering::ShaderAttributes& vertexAttributes,
                     const Rendering::ShaderAttributes& instanceAttributes);
