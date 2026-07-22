@@ -110,36 +110,41 @@ BufferUtils::LoadDataOnBuffer(const unsigned bufferID,
 //---------------------------------------------------------------------------------------
 
 void
-BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes)
+BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
+                                  const VertexData& vertexData)
 {
-  const unsigned totalVertexSize =
-    ComputeTotalSizeOfAttributes(shaderAttributes);
+  std::vector<ShaderBinding> bindings;
 
   unsigned offset = 0;
   for (const ShaderAttribute& attribute : shaderAttributes) {
-    LinkShaderAttribute(attribute, offset, totalVertexSize);
-
+    bindings.emplace_back(ShaderBinding::Float(
+      vertexData, attribute.Location(), attribute.NEntries(), offset));
     offset += attribute.DataSizeInBytes();
+  }
+
+  for (const ShaderBinding& binding : bindings) {
+    LinkShaderBinding(binding);
   }
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-BufferUtils::LinkShaderAttribute(const ShaderAttribute& attr,
-                                 const unsigned offset,
-                                 const unsigned totalAttributeSize)
+BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
+                                  const InstancedDataBuffer& instancedData)
 {
-  const unsigned location = attr.Location();
+  std::vector<ShaderBinding> bindings;
 
-  glVertexAttribPointer(location,
-                        attr.NEntries(),
-                        attr.DataType(),
-                        GL_FALSE,
-                        totalAttributeSize,
-                        reinterpret_cast<void*>(offset));
+  unsigned offset = 0;
+  for (const ShaderAttribute& attribute : shaderAttributes) {
+    bindings.emplace_back(ShaderBinding::Float(
+      instancedData, attribute.Location(), attribute.NEntries(), offset));
+    offset += attribute.DataSizeInBytes();
+  }
 
-  glEnableVertexAttribArray(location);
+  for (const ShaderBinding& binding : bindings) {
+    LinkShaderBinding(binding);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -152,29 +157,6 @@ BufferUtils::ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs)
     totalSize += attr.DataSizeInBytes();
   }
   return totalSize;
-}
-
-//---------------------------------------------------------------------------------------
-
-unsigned
-BufferUtils::ComputeTotalEntriesOfAttributes(const ShaderAttributes& attrs)
-{
-  unsigned totalEntries = 0;
-  for (const ShaderAttribute& attr : attrs) {
-    totalEntries += attr.NEntries();
-  }
-  return totalEntries;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-BufferUtils::LinkInstancedShaderAttributes(const ShaderAttributes& attrs)
-{
-  LinkShaderAttributes(attrs);
-  for (const ShaderAttribute& attr : attrs) {
-    glVertexAttribDivisor(attr.Location(), 1);
-  }
 }
 
 //---------------------------------------------------------------------------------------

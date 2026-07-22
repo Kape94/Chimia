@@ -246,8 +246,8 @@ GenericRenderAction::SetupOwnInstancedBuffer(
   m_instancedBuffer.reset(new InstancedDataBuffer);
   m_instancedBuffer->Create(instancesData);
 
-  BufferPrivate::Bind(*m_instancedBuffer);
-  BufferUtils::LinkInstancedShaderAttributes(instanceShaderAttributes);
+  BufferUtils::LinkShaderAttributes(instanceShaderAttributes,
+                                    *m_instancedBuffer);
 }
 
 //---------------------------------------------------------------------------------------
@@ -270,8 +270,7 @@ GenericRenderAction::Configure(const VertexData& buffer,
                                const IndexData* indexData,
                                const ShaderAttributes& shaderAttributes)
 {
-  BufferPrivate::Bind(buffer);
-  BufferUtils::LinkShaderAttributes(shaderAttributes);
+  BufferUtils::LinkShaderAttributes(shaderAttributes, buffer);
 
   if (indexData != nullptr) {
     BufferPrivate::Bind(*indexData);
