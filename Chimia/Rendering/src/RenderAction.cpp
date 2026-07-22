@@ -56,8 +56,6 @@ void
 RenderAction::Create(const RawDataView& vertexData,
                      const ShaderAttributes& shaderAttributes)
 {
-  Clear();
-
   m_action.Create(vertexData, shaderAttributes);
 }
 

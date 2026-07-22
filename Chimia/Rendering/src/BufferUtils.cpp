@@ -5,6 +5,7 @@
 #include "InstancedDataBuffer.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
+#include "ShaderBinding.h"
 #include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
@@ -31,6 +32,44 @@ int
 GetGLBufferType(const bool isIndexBuffer)
 {
   return isIndexBuffer ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
+}
+
+void
+BindDataFromShaderBinding(const ShaderBinding& binding)
+{
+  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
+  const InstancedDataBuffer* instancedData =
+    BufferPrivate::GetInstancedData(binding);
+
+  if (vertexData != nullptr) {
+    BufferPrivate::Bind(*vertexData);
+  } else {
+    BufferPrivate::Bind(*instancedData);
+  }
+}
+
+unsigned
+CalculateShaderBindingStride(const ShaderBinding& binding)
+{
+  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
+  const InstancedDataBuffer* instancedData =
+    BufferPrivate::GetInstancedData(binding);
+
+  return vertexData != nullptr ? BufferPrivate::GetLayoutSize(*vertexData)
+                               : BufferPrivate::GetInstanceSize(*instancedData);
+}
+
+void
+SetAttributeRateFromBinding(const ShaderBinding& binding)
+{
+  const InstancedDataBuffer* instancedData =
+    BufferPrivate::GetInstancedData(binding);
+  const unsigned location = BufferPrivate::GetLocation(binding);
+
+  const bool isInstanced = instancedData != nullptr;
+  if (isInstanced) {
+    glVertexAttribDivisor(location, 1);
+  }
 }
 
 }
@@ -143,26 +182,13 @@ BufferUtils::LinkInstancedShaderAttributes(const ShaderAttributes& attrs)
 void
 BufferUtils::LinkShaderBinding(const ShaderBinding& binding)
 {
-  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
-  const InstancedDataBuffer* instancedData =
-    BufferPrivate::GetInstancedData(binding);
-
-  const bool isInstanced = instancedData != nullptr;
-
-  if (vertexData != nullptr) {
-    BufferPrivate::Bind(*vertexData);
-  } else {
-    BufferPrivate::Bind(*instancedData);
-  }
+  BindDataFromShaderBinding(binding);
 
   const unsigned location = BufferPrivate::GetLocation(binding);
   const unsigned nEntries = BufferPrivate::GetNEntries(binding);
   const unsigned dataType = BufferPrivate::GetDataType(binding);
   const unsigned offset = BufferPrivate::GetOffset(binding);
-
-  const unsigned stride = vertexData != nullptr
-                            ? BufferPrivate::GetLayoutSize(*vertexData)
-                            : BufferPrivate::GetInstanceSize(*instancedData);
+  const unsigned stride = CalculateShaderBindingStride(binding);
 
   glVertexAttribPointer(location,
                         nEntries,
@@ -173,9 +199,7 @@ BufferUtils::LinkShaderBinding(const ShaderBinding& binding)
 
   glEnableVertexAttribArray(location);
 
-  if (isInstanced) {
-    glVertexAttribDivisor(location, 1);
-  }
+  SetAttributeRateFromBinding(binding);
 }
 
 //---------------------------------------------------------------------------------------
