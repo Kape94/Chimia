@@ -72,6 +72,37 @@ SetAttributeRateFromBinding(const ShaderBinding& binding)
   }
 }
 
+template<class InputData>
+ShaderBinding
+CreateShaderBinding(const ShaderAttribute& attribute,
+                    const unsigned offset,
+                    const InputData& data)
+{
+  const unsigned type = attribute.DataType();
+  const unsigned location = attribute.Location();
+  const unsigned nEntries = attribute.NEntries();
+
+  switch (type) {
+    case GL_DOUBLE:
+      return ShaderBinding::Double(data, location, nEntries, offset);
+    case GL_INT:
+      return ShaderBinding::Int(data, location, nEntries, offset);
+    case GL_UNSIGNED_INT:
+      return ShaderBinding::UnsignedInt(data, location, nEntries, offset);
+    case GL_SHORT:
+      return ShaderBinding::Short(data, location, nEntries, offset);
+    case GL_UNSIGNED_SHORT:
+      return ShaderBinding::UnsignedShort(data, location, nEntries, offset);
+    case GL_BYTE:
+      return ShaderBinding::Byte(data, location, nEntries, offset);
+    case GL_UNSIGNED_BYTE:
+      return ShaderBinding::UnsignedByte(data, location, nEntries, offset);
+    case GL_FLOAT:
+    default:
+      return ShaderBinding::Float(data, location, nEntries, offset);
+  }
+}
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -117,8 +148,7 @@ BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
 
   unsigned offset = 0;
   for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.emplace_back(ShaderBinding::Float(
-      vertexData, attribute.Location(), attribute.NEntries(), offset));
+    bindings.emplace_back(CreateShaderBinding(attribute, offset, vertexData));
     offset += attribute.DataSizeInBytes();
   }
 
@@ -137,8 +167,8 @@ BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
 
   unsigned offset = 0;
   for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.emplace_back(ShaderBinding::Float(
-      instancedData, attribute.Location(), attribute.NEntries(), offset));
+    bindings.emplace_back(
+      CreateShaderBinding(attribute, offset, instancedData));
     offset += attribute.DataSizeInBytes();
   }
 
