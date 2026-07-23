@@ -92,3 +92,8 @@ target_link_libraries(Samples_Rendering_ex15 PRIVATE Samples_Rendering_DefaultDe
 
 add_executable(Samples_Rendering_ex16 ex16-multipleShaderBindingSimple.cpp)
 target_link_libraries(Samples_Rendering_ex16 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 17) Multiple shader binding with instancing
+
+add_executable(Samples_Rendering_ex17 ex17-multipleShaderBindingInstanced.cpp)
+target_link_libraries(Samples_Rendering_ex17 PRIVATE Samples_Rendering_DefaultDeps)

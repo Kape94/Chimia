@@ -99,8 +99,7 @@ private:
 
   void SetupVAO();
 
-  void CollectVertexDatasFromBindings(
-    const std::vector<ShaderBinding>& bindings);
+  void CollectDatasFromBindings(const std::vector<ShaderBinding>& bindings);
 
   void Configure(const VertexData& buffer,
                  const IndexData* indexData,
@@ -111,6 +110,7 @@ private:
   void RenderSingle(const IndexData* indexData) const;
 
   unsigned PickReferenceVertexCount() const;
+  unsigned PickReferenceInstanceCount() const;
 
   friend class BufferPrivate;
 
@@ -123,6 +123,7 @@ private:
   const IndexData* m_referenceIndexBuffer = nullptr;
 
   std::unique_ptr<InstancedDataBuffer> m_instancedBuffer = nullptr;
+  std::vector<const InstancedDataBuffer*> m_referenceInstancedDatas;
 };
 
 //---------------------------------------------------------------------------------------
