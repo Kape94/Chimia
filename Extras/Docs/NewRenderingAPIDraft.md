@@ -306,11 +306,19 @@ Implementation steps:
   - Create class VertexBuffer [DONE]
   - Create class InstancedDataBuffer [DONE]
   - Refactor GenericRenderAction implementation (lots of duplication); [DONE]
-  - Create state binding manager; [NO]
+  - Create state binding manager; [DONE]
   - Rework state binding inside GenericeRenderAction implementation; [DONE]
-  - Create class RenderData. GenericVertexBuffer -> RenderData;
-  - Create class IndexBuffer? Yes!
-  - Create class VertexBuffer;
-  - Create support for reference InstancedDataBuffer;
-  - Create shader binding structures;
-  - Create support for essential primitive types: triangles, lines and points.
+  - Create class RenderData. GenericVertexBuffer -> RenderData; [DONE]
+  - Create class IndexBuffer? Yes! [DONE]
+  - Create class VertexBuffer; [NO]
+  - Create shader binding structures; [DONE]
+  - Test shader bindings with non-indexed draw and instanced draw (these 2 are very likely broken currently);
+  - Create support for reference InstancedDataBuffer; 
+  - Use shared_ptr for VertexData, IndexData and InstancedDataBuffer (and Shader?);
+  - Rename InstancedDataBuffer -> InstancedData;
+  - Inside GenericRenderAction, store a container of reference datas;
+    * for non-indexed draw, the number of vertices should correspond to the smaller number across all buffers;
+    * for instanced draw, the number of instances should be the smaller across all instanced buffers;
+  - Remove self owned datas from render actions. Datas should be explicitly created and managed;
+  - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;
+  - The renderAction could hold the reference to the shader it uses for rendering;

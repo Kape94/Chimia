@@ -83,3 +83,12 @@ target_link_libraries(Samples_Rendering_ex13 PRIVATE Samples_Rendering_DefaultDe
 add_executable(Samples_Rendering_ex14 ex14-colorBlending.cpp)
 target_link_libraries(Samples_Rendering_ex14 PRIVATE Samples_Rendering_DefaultDeps)
 
+# 15) Multiple shader binding
+
+add_executable(Samples_Rendering_ex15 ex15-multipleShaderBinding.cpp)
+target_link_libraries(Samples_Rendering_ex15 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 16) Multiple shader binding without index
+
+add_executable(Samples_Rendering_ex16 ex16-multipleShaderBindingSimple.cpp)
+target_link_libraries(Samples_Rendering_ex16 PRIVATE Samples_Rendering_DefaultDeps)
