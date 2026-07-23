@@ -37,8 +37,8 @@ USING_RENDERLIB_NAMESPACE
 
 //-----------------------------------------------------------------------------
 
-ShaderBinding::ShaderBinding(const VertexData* vertexData,
-                             const InstancedData* instancedData,
+ShaderBinding::ShaderBinding(const VertexDataInstance& vertexData,
+                             const InstancedDataInstance& instancedData,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned dataType,
@@ -85,48 +85,48 @@ ShaderBinding::operator=(const ShaderBinding& other)
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Float(const VertexData& data,
+ShaderBinding::Float(const VertexDataInstance& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
 {
   return ShaderBinding(
-    &data, nullptr /*instancedData*/, location, nEntries, GL_FLOAT, offset);
+    data, nullptr /*instancedData*/, location, nEntries, GL_FLOAT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Double(const VertexData& data,
+ShaderBinding::Double(const VertexDataInstance& data,
                       const unsigned location,
                       const unsigned nEntries,
                       const unsigned offset)
 {
   return ShaderBinding(
-    &data, nullptr /*instancedData*/, location, nEntries, GL_DOUBLE, offset);
+    data, nullptr /*instancedData*/, location, nEntries, GL_DOUBLE, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Int(const VertexData& data,
+ShaderBinding::Int(const VertexDataInstance& data,
                    const unsigned location,
                    const unsigned nEntries,
                    const unsigned offset)
 {
   return ShaderBinding(
-    &data, nullptr /*instancedData*/, location, nEntries, GL_INT, offset);
+    data, nullptr /*instancedData*/, location, nEntries, GL_INT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedInt(const VertexData& data,
+ShaderBinding::UnsignedInt(const VertexDataInstance& data,
                            const unsigned location,
                            const unsigned nEntries,
                            const unsigned offset)
 {
-  return ShaderBinding(&data,
+  return ShaderBinding(data,
                        nullptr /*instancedData*/,
                        location,
                        nEntries,
@@ -137,24 +137,24 @@ ShaderBinding::UnsignedInt(const VertexData& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Short(const VertexData& data,
+ShaderBinding::Short(const VertexDataInstance& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
 {
   return ShaderBinding(
-    &data, nullptr /*instancedData*/, location, nEntries, GL_SHORT, offset);
+    data, nullptr /*instancedData*/, location, nEntries, GL_SHORT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedShort(const VertexData& data,
+ShaderBinding::UnsignedShort(const VertexDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset)
 {
-  return ShaderBinding(&data,
+  return ShaderBinding(data,
                        nullptr /*instancedData*/,
                        location,
                        nEntries,
@@ -165,24 +165,24 @@ ShaderBinding::UnsignedShort(const VertexData& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Byte(const VertexData& data,
+ShaderBinding::Byte(const VertexDataInstance& data,
                     const unsigned location,
                     const unsigned nEntries,
                     const unsigned offset)
 {
   return ShaderBinding(
-    &data, nullptr /*instancedData*/, location, nEntries, GL_BYTE, offset);
+    data, nullptr /*instancedData*/, location, nEntries, GL_BYTE, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedByte(const VertexData& data,
+ShaderBinding::UnsignedByte(const VertexDataInstance& data,
                             const unsigned location,
                             const unsigned nEntries,
                             const unsigned offset)
 {
-  return ShaderBinding(&data,
+  return ShaderBinding(data,
                        nullptr /*instancedData*/,
                        location,
                        nEntries,
@@ -193,73 +193,73 @@ ShaderBinding::UnsignedByte(const VertexData& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Float(const InstancedData& data,
+ShaderBinding::Float(const InstancedDataInstance& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_FLOAT, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_FLOAT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Double(const InstancedData& data,
+ShaderBinding::Double(const InstancedDataInstance& data,
                       const unsigned location,
                       const unsigned nEntries,
                       const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_DOUBLE, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_DOUBLE, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Int(const InstancedData& data,
+ShaderBinding::Int(const InstancedDataInstance& data,
                    const unsigned location,
                    const unsigned nEntries,
                    const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_INT, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_INT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedInt(const InstancedData& data,
+ShaderBinding::UnsignedInt(const InstancedDataInstance& data,
                            const unsigned location,
                            const unsigned nEntries,
                            const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_UNSIGNED_INT, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_UNSIGNED_INT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Short(const InstancedData& data,
+ShaderBinding::Short(const InstancedDataInstance& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_SHORT, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_SHORT, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedShort(const InstancedData& data,
+ShaderBinding::UnsignedShort(const InstancedDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset)
 {
   return ShaderBinding(nullptr /*vertexData*/,
-                       &data,
+                       data,
                        location,
                        nEntries,
                        GL_UNSIGNED_SHORT,
@@ -269,34 +269,30 @@ ShaderBinding::UnsignedShort(const InstancedData& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Byte(const InstancedData& data,
+ShaderBinding::Byte(const InstancedDataInstance& data,
                     const unsigned location,
                     const unsigned nEntries,
                     const unsigned offset)
 {
   return ShaderBinding(
-    nullptr /*vertexData*/, &data, location, nEntries, GL_BYTE, offset);
+    nullptr /*vertexData*/, data, location, nEntries, GL_BYTE, offset);
 }
 
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedByte(const InstancedData& data,
+ShaderBinding::UnsignedByte(const InstancedDataInstance& data,
                             const unsigned location,
                             const unsigned nEntries,
                             const unsigned offset)
 {
-  return ShaderBinding(nullptr /*vertexData*/,
-                       &data,
-                       location,
-                       nEntries,
-                       GL_UNSIGNED_BYTE,
-                       offset);
+  return ShaderBinding(
+    nullptr /*vertexData*/, data, location, nEntries, GL_UNSIGNED_BYTE, offset);
 }
 
 //-----------------------------------------------------------------------------
 
-const VertexData*
+const VertexDataInstance&
 ShaderBinding::GetVertexData() const
 {
   return m_referenceVertexData;
@@ -304,7 +300,7 @@ ShaderBinding::GetVertexData() const
 
 //-----------------------------------------------------------------------------
 
-const InstancedData*
+const InstancedDataInstance&
 ShaderBinding::GetInstancedData() const
 {
   return m_referenceInstancedData;

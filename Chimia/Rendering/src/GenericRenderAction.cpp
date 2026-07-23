@@ -23,12 +23,11 @@ GenericRenderAction::GenericRenderAction(GenericRenderAction&& other) noexcept
   , m_ownBuffer(std::move(other.m_ownBuffer))
   , m_referenceVertexDatas(std::move(other.m_referenceVertexDatas))
   , m_ownIndexBuffer(std::move(other.m_ownIndexBuffer))
-  , m_referenceIndexBuffer(other.m_referenceIndexBuffer)
+  , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
   , m_instancedBuffer(std::move(other.m_instancedBuffer))
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
 {
   other.m_VAO = 0;
-  other.m_referenceIndexBuffer = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -41,12 +40,11 @@ GenericRenderAction::operator=(GenericRenderAction&& other) noexcept
     m_ownBuffer = std::move(other.m_ownBuffer);
     m_referenceVertexDatas = std::move(other.m_referenceVertexDatas);
     m_ownIndexBuffer = std::move(other.m_ownIndexBuffer);
-    m_referenceIndexBuffer = other.m_referenceIndexBuffer;
+    m_referenceIndexBuffer = std::move(other.m_referenceIndexBuffer);
     m_instancedBuffer = std::move(m_instancedBuffer);
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
 
     other.m_VAO = 0;
-    other.m_referenceIndexBuffer = nullptr;
   }
 
   return *this;
@@ -87,7 +85,7 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings)
 
 void
 GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings,
-                            const IndexData& indexData)
+                            const IndexDataInstance& indexData)
 {
   Clear();
 
@@ -98,19 +96,19 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings,
     BufferUtils::LinkShaderBinding(binding);
   }
 
-  m_referenceIndexBuffer = &indexData;
+  m_referenceIndexBuffer = indexData;
   BufferPrivate::Bind(indexData);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const VertexData& reusableVertexBuffer,
+GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(&reusableVertexBuffer);
+  m_referenceVertexDatas.push_back(reusableVertexBuffer);
 
   SetupVAO();
   Configure(reusableVertexBuffer, nullptr /*indexData*/, shaderAttributes);
@@ -119,17 +117,17 @@ GenericRenderAction::Create(const VertexData& reusableVertexBuffer,
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const VertexData& reusableVertexBuffer,
-                            const IndexData& reusableIndexBuffer,
+GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
+                            const IndexDataInstance& reusableIndexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(&reusableVertexBuffer);
-  m_referenceIndexBuffer = &reusableIndexBuffer;
+  m_referenceVertexDatas.push_back(reusableVertexBuffer);
+  m_referenceIndexBuffer = reusableIndexBuffer;
 
   SetupVAO();
-  Configure(reusableVertexBuffer, &reusableIndexBuffer, shaderAttributes);
+  Configure(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -162,14 +160,14 @@ GenericRenderAction::Create(const RawDataView& vertexData,
 
 void
 GenericRenderAction::CreateInstanced(
-  const VertexData& reusableVertexBuffer,
+  const VertexDataInstance& reusableVertexBuffer,
   const ShaderAttributes& shaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(&reusableVertexBuffer);
+  m_referenceVertexDatas.push_back(reusableVertexBuffer);
 
   SetupVAO();
   Configure(reusableVertexBuffer, nullptr /*indexData*/, shaderAttributes);
@@ -180,19 +178,19 @@ GenericRenderAction::CreateInstanced(
 
 void
 GenericRenderAction::CreateInstanced(
-  const VertexData& reusableVertexBuffer,
-  const IndexData& reusableIndexBuffer,
+  const VertexDataInstance& reusableVertexBuffer,
+  const IndexDataInstance& reusableIndexBuffer,
   const ShaderAttributes& shaderAttributes,
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(&reusableVertexBuffer);
-  m_referenceIndexBuffer = &reusableIndexBuffer;
+  m_referenceVertexDatas.push_back(reusableVertexBuffer);
+  m_referenceIndexBuffer = reusableIndexBuffer;
 
   SetupVAO();
-  Configure(reusableVertexBuffer, &reusableIndexBuffer, shaderAttributes);
+  Configure(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
 }
 
@@ -244,23 +242,23 @@ void
 GenericRenderAction::CollectDatasFromBindings(
   const std::vector<ShaderBinding>& bindings)
 {
-  std::set<const VertexData*> vertexSet;
-  std::set<const InstancedData*> instancedSet;
+  std::set<VertexDataInstance> vertexSet;
+  std::set<InstancedDataInstance> instancedSet;
 
   for (const ShaderBinding& binding : bindings) {
-    if (const VertexData* data = BufferPrivate::GetVertexData(binding)) {
+    if (const VertexDataInstance data = BufferPrivate::GetVertexData(binding)) {
       vertexSet.insert(data);
     }
-    if (const InstancedData* instancedData =
+    if (const InstancedDataInstance instancedData =
           BufferPrivate::GetInstancedData(binding)) {
       instancedSet.insert(instancedData);
     }
   }
 
-  for (const VertexData* vertexData : vertexSet) {
+  for (const VertexDataInstance& vertexData : vertexSet) {
     m_referenceVertexDatas.push_back(vertexData);
   }
-  for (const InstancedData* instancedData : instancedSet) {
+  for (const InstancedDataInstance& instancedData : instancedSet) {
     m_referenceInstancedDatas.push_back(instancedData);
   }
 }
@@ -276,16 +274,16 @@ GenericRenderAction::SetupOwnVertexBuffer(
   const size_t nVertices =
     CalculateNumberOfVertices(vertexData, shaderAttributes);
 
-  m_ownBuffer.reset(new VertexData);
+  m_ownBuffer = VertexData::New();
   m_ownBuffer->Create(vertexData, nVertices);
-  m_referenceVertexDatas.push_back(m_ownBuffer.get());
+  m_referenceVertexDatas.push_back(m_ownBuffer);
 
   if (optionalIndexData != nullptr) {
-    m_ownIndexBuffer.reset(new IndexData);
+    m_ownIndexBuffer = IndexData::New();
     m_ownIndexBuffer->Create(*optionalIndexData);
   }
 
-  Configure(*m_ownBuffer, m_ownIndexBuffer.get(), shaderAttributes);
+  Configure(m_ownBuffer, m_ownIndexBuffer, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -295,12 +293,12 @@ GenericRenderAction::SetupOwnInstancedBuffer(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_instancedBuffer.reset(new InstancedData);
+  m_instancedBuffer = InstancedData::New();
   m_instancedBuffer->Create(instancesData);
-  m_referenceInstancedDatas.push_back(m_instancedBuffer.get());
+  m_referenceInstancedDatas.push_back(m_instancedBuffer);
 
   BufferUtils::LinkShaderAttributes(instanceShaderAttributes,
-                                    *m_instancedBuffer);
+                                    m_instancedBuffer);
 }
 
 //---------------------------------------------------------------------------------------
@@ -319,14 +317,14 @@ GenericRenderAction::CalculateNumberOfVertices(
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Configure(const VertexData& buffer,
-                               const IndexData* indexData,
+GenericRenderAction::Configure(const VertexDataInstance& buffer,
+                               const IndexDataInstance& indexData,
                                const ShaderAttributes& shaderAttributes)
 {
   BufferUtils::LinkShaderAttributes(shaderAttributes, buffer);
 
   if (indexData != nullptr) {
-    BufferPrivate::Bind(*indexData);
+    BufferPrivate::Bind(indexData);
   }
 }
 
@@ -385,10 +383,10 @@ GenericRenderAction::RecreateInstancedBuffer(
      reason this makes the process work in the graphics driver.
   */
   GLState::BindVertexArray(m_VAO);
-  std::unique_ptr<InstancedData> oldBuffer = std::move(m_instancedBuffer);
+  InstancedDataInstance oldBuffer = std::move(m_instancedBuffer);
   m_referenceInstancedDatas.erase(std::remove(m_referenceInstancedDatas.begin(),
                                               m_referenceInstancedDatas.end(),
-                                              oldBuffer.get()),
+                                              oldBuffer),
                                   m_referenceInstancedDatas.end());
 
   SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
@@ -408,13 +406,13 @@ GenericRenderAction::Clear()
     m_VAO = 0;
   }
 
-  m_ownBuffer.reset(nullptr);
+  m_ownBuffer = nullptr;
   m_referenceVertexDatas.clear();
 
-  m_ownIndexBuffer.reset(nullptr);
+  m_ownIndexBuffer = nullptr;
   m_referenceIndexBuffer = nullptr;
 
-  m_instancedBuffer.reset(nullptr);
+  m_instancedBuffer = nullptr;
   m_referenceInstancedDatas.clear();
 }
 
@@ -427,9 +425,9 @@ GenericRenderAction::Render() const
     return;
   }
 
-  const IndexData* indexData = m_referenceIndexBuffer != nullptr
-                                 ? m_referenceIndexBuffer
-                                 : m_ownIndexBuffer.get();
+  const IndexDataInstance indexData = m_referenceIndexBuffer != nullptr
+                                        ? m_referenceIndexBuffer
+                                        : m_ownIndexBuffer;
 
   GLState::BindVertexArray(m_VAO);
 
@@ -444,12 +442,12 @@ GenericRenderAction::Render() const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderInstanced(const IndexData* indexData) const
+GenericRenderAction::RenderInstanced(const IndexDataInstance& indexData) const
 {
   const bool isIndexed = indexData != nullptr;
   const unsigned nInstances = PickReferenceInstanceCount();
   if (isIndexed) {
-    const unsigned nElements = BufferPrivate::GetNIndices(*indexData);
+    const unsigned nElements = BufferPrivate::GetNIndices(indexData);
     glDrawElementsInstanced(
       GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0, nInstances);
   } else {
@@ -461,11 +459,11 @@ GenericRenderAction::RenderInstanced(const IndexData* indexData) const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderSingle(const IndexData* indexData) const
+GenericRenderAction::RenderSingle(const IndexDataInstance& indexData) const
 {
   const bool isIndexed = indexData != nullptr;
   if (isIndexed) {
-    const unsigned nElements = BufferPrivate::GetNIndices(*indexData);
+    const unsigned nElements = BufferPrivate::GetNIndices(indexData);
     glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
   } else {
     const unsigned nVertices = PickReferenceVertexCount();
@@ -479,12 +477,12 @@ unsigned
 GenericRenderAction::PickReferenceVertexCount() const
 {
   unsigned nVertices =
-    BufferPrivate::GetNVertices(*m_referenceVertexDatas.front());
+    BufferPrivate::GetNVertices(m_referenceVertexDatas.front());
 
   const size_t nDatas = m_referenceVertexDatas.size();
   for (size_t i = 1; i < nDatas; ++i) {
     const unsigned current =
-      BufferPrivate::GetNVertices(*m_referenceVertexDatas[i]);
+      BufferPrivate::GetNVertices(m_referenceVertexDatas[i]);
     if (current < nVertices) {
       nVertices = current;
     }
@@ -499,12 +497,12 @@ unsigned
 GenericRenderAction::PickReferenceInstanceCount() const
 {
   unsigned nInstances =
-    BufferPrivate::GetNInstances(*m_referenceInstancedDatas.front());
+    BufferPrivate::GetNInstances(m_referenceInstancedDatas.front());
 
   const size_t nDatas = m_referenceInstancedDatas.size();
   for (size_t i = 1; i < nDatas; ++i) {
     const unsigned current =
-      BufferPrivate::GetNInstances(*m_referenceInstancedDatas[i]);
+      BufferPrivate::GetNInstances(m_referenceInstancedDatas[i]);
     if (current < nInstances) {
       nInstances = current;
     }

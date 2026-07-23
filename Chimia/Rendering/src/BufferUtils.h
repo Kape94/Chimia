@@ -28,11 +28,11 @@ LoadDataOnBuffer(const unsigned bufferID,
 
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                     const VertexData& vertexData);
+                     const VertexDataInstance& vertexData);
 
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                     const InstancedData& instancedData);
+                     const InstancedDataInstance& instancedData);
 
 unsigned
 ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs);

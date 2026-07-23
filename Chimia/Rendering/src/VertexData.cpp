@@ -11,6 +11,14 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
+std::shared_ptr<VertexData>
+VertexData::New()
+{
+  return std::shared_ptr<VertexData>(new VertexData);
+}
+
+// ----------------------------------------------------------------------------
+
 VertexData::VertexData(VertexData&& other)
   : m_VBO(other.m_VBO)
   , m_sizePerVertex(other.m_sizePerVertex)

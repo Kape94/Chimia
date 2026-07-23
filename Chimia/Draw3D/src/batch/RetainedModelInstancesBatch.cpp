@@ -53,8 +53,8 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  model.ForEachBuffer([&](const Rendering::VertexData& vertexData,
-                          const Rendering::IndexData& indexData) {
+  model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
+                          const Rendering::IndexDataInstance& indexData) {
     Rendering::InstancedRenderAction& gpuAction = m_gpuActions.emplace_back();
 
     gpuAction.CreateInstanced(

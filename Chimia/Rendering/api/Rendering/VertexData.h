@@ -6,6 +6,8 @@
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
+#include <memory>
+
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
@@ -15,8 +17,9 @@ BEGIN_RENDERLIB_NAMESPACE
 class VertexData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(VertexData)
   NON_COPYABLE(VertexData)
+
+  static std::shared_ptr<VertexData> New();
 
   VertexData(VertexData&& other);
   VertexData& operator=(VertexData&& other);
@@ -29,6 +32,8 @@ public:
   void Clear();
 
 private:
+  VertexData() = default;
+
   friend class BufferPrivate;
 
   unsigned GetNVertices() const;
@@ -46,6 +51,10 @@ private:
   size_t m_currentVertexSize = 0;
   size_t m_maximumVertexSize = 0;
 };
+
+// ----------------------------------------------------------------------------
+
+using VertexDataInstance = std::shared_ptr<VertexData>;
 
 // ----------------------------------------------------------------------------
 

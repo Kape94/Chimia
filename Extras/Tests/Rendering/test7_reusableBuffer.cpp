@@ -55,11 +55,11 @@ IndexedBuffer(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
-  Chimia::Rendering::VertexData reusableVertexData;
-  reusableVertexData.Create(vertex, nVertices);
+  auto reusableVertexData = Chimia::Rendering::VertexData::New();
+  reusableVertexData->Create(vertex, nVertices);
 
-  Chimia::Rendering::IndexData reusableIndexData;
-  reusableIndexData.Create(indexData);
+  auto reusableIndexData = Chimia::Rendering::IndexData::New();
+  reusableIndexData->Create(indexData);
 
   Chimia::Rendering::IndexedRenderAction renderReusable;
   renderReusable.Create(
@@ -155,11 +155,11 @@ Instancing(Window& win)
   Chimia::Rendering::Shader shader1(vShaderDisplaced, fShaderDisplaced);
   Chimia::Rendering::Shader shader2(vShaderTransformed, fShaderTransformed);
 
-  Chimia::Rendering::VertexData reusableVertexData;
-  reusableVertexData.Create(vertex, nVertices);
+  auto reusableVertexData = Chimia::Rendering::VertexData::New();
+  reusableVertexData->Create(vertex, nVertices);
 
-  Chimia::Rendering::IndexData reusableIndexData;
-  reusableIndexData.Create(index);
+  auto reusableIndexData = Chimia::Rendering::IndexData::New();
+  reusableIndexData->Create(index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,

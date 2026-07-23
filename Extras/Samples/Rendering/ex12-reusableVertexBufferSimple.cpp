@@ -63,15 +63,15 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::VertexData reusableVertexData;
-  reusableVertexData.Create(
+  auto reusableVertexData = Chimia::Rendering::VertexData::New();
+  reusableVertexData->Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     Inputs::BufferData::nVertices);
 
-  Chimia::Rendering::IndexData reusableIndexData;
-  reusableIndexData.Create({ Inputs::BufferData::indexData,
-                             Inputs::BufferData::indexDataItems,
-                             sizeof(unsigned) });
+  auto reusableIndexData = Chimia::Rendering::IndexData::New();
+  reusableIndexData->Create({ Inputs::BufferData::indexData,
+                              Inputs::BufferData::indexDataItems,
+                              sizeof(unsigned) });
 
   Chimia::Rendering::IndexedRenderAction action;
   action.Create(

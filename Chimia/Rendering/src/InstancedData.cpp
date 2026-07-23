@@ -11,6 +11,14 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
+std::shared_ptr<InstancedData>
+InstancedData::New()
+{
+  return std::shared_ptr<InstancedData>(new InstancedData);
+}
+
+// ----------------------------------------------------------------------------
+
 InstancedData::InstancedData(InstancedData&& other)
   : m_instancedVBO(other.m_instancedVBO)
   , m_nInstances(other.m_nInstances)

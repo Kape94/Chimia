@@ -37,34 +37,37 @@ GetGLBufferType(const bool isIndexBuffer)
 void
 BindDataFromShaderBinding(const ShaderBinding& binding)
 {
-  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
-  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
+  const VertexDataInstance& vertexData = BufferPrivate::GetVertexData(binding);
+  const InstancedDataInstance& instancedData =
+    BufferPrivate::GetInstancedData(binding);
 
   if (vertexData != nullptr) {
-    BufferPrivate::Bind(*vertexData);
+    BufferPrivate::Bind(vertexData);
   } else {
-    BufferPrivate::Bind(*instancedData);
+    BufferPrivate::Bind(instancedData);
   }
 }
 
 unsigned
 CalculateShaderBindingStride(const ShaderBinding& binding)
 {
-  const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
-  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
+  const VertexDataInstance& vertexData = BufferPrivate::GetVertexData(binding);
+  const InstancedDataInstance& instancedData =
+    BufferPrivate::GetInstancedData(binding);
 
-  return vertexData != nullptr ? BufferPrivate::GetLayoutSize(*vertexData)
-                               : BufferPrivate::GetInstanceSize(*instancedData);
+  return vertexData != nullptr ? BufferPrivate::GetLayoutSize(vertexData)
+                               : BufferPrivate::GetInstanceSize(instancedData);
 }
 
 void
 SetAttributeRateFromBinding(const ShaderBinding& binding)
 {
-  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
-  const unsigned location = BufferPrivate::GetLocation(binding);
+  const InstancedDataInstance& instancedData =
+    BufferPrivate::GetInstancedData(binding);
 
   const bool isInstanced = instancedData != nullptr;
   if (isInstanced) {
+    const unsigned location = BufferPrivate::GetLocation(binding);
     glVertexAttribDivisor(location, 1);
   }
 }
@@ -139,7 +142,7 @@ BufferUtils::LoadDataOnBuffer(const unsigned bufferID,
 
 void
 BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                                  const VertexData& vertexData)
+                                  const VertexDataInstance& vertexData)
 {
   std::vector<ShaderBinding> bindings;
 
@@ -158,7 +161,7 @@ BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
 
 void
 BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                                  const InstancedData& instancedData)
+                                  const InstancedDataInstance& instancedData)
 {
   std::vector<ShaderBinding> bindings;
 

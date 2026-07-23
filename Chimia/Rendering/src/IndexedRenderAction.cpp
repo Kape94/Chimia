@@ -47,8 +47,8 @@ IndexedRenderAction::~IndexedRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-IndexedRenderAction::Create(const VertexData& reusableVertexBuffer,
-                            const IndexData& reusableIndexBuffer,
+IndexedRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
+                            const IndexDataInstance& reusableIndexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
   m_action.Create(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);

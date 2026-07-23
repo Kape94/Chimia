@@ -30,8 +30,8 @@ public:
 
   ~IndexedRenderAction();
 
-  void Create(const VertexData& reusableVertexBuffer,
-              const IndexData& reusableIndexBuffer,
+  void Create(const VertexDataInstance& reusableVertexBuffer,
+              const IndexDataInstance& reusableIndexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,

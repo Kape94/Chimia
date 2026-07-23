@@ -41,8 +41,8 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void AddGPUBuffer(const Rendering::VertexData& vertexData,
-                    const Rendering::IndexData& indexData,
+  void AddGPUBuffer(const Rendering::VertexDataInstance& vertexData,
+                    const Rendering::IndexDataInstance& indexData,
                     const size_t instanceBatchSize,
                     const Rendering::ShaderAttributes& vertexAttributes,
                     const Rendering::ShaderAttributes& instanceAttributes);

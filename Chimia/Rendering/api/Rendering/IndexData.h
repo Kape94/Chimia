@@ -6,6 +6,8 @@
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
+#include <memory>
+
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
@@ -15,8 +17,9 @@ BEGIN_RENDERLIB_NAMESPACE
 class IndexData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(IndexData)
   NON_COPYABLE(IndexData)
+
+  static std::shared_ptr<IndexData> New();
 
   IndexData(IndexData&& other);
   IndexData& operator=(IndexData&& other);
@@ -30,6 +33,8 @@ public:
   void Clear();
 
 private:
+  IndexData() = default;
+
   void Bind() const;
   unsigned GetNIndices() const;
 
@@ -43,6 +48,10 @@ private:
   size_t m_currentIndexSize = 0;
   size_t m_maximumIndexSize = 0;
 };
+
+// ----------------------------------------------------------------------------
+
+using IndexDataInstance = std::shared_ptr<IndexData>;
 
 // ----------------------------------------------------------------------------
 

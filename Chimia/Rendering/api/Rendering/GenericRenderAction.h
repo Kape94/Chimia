@@ -9,7 +9,6 @@
 #include "VertexData.h"
 
 #include "Core/Types.h"
-#include <memory>
 
 //---------------------------------------------------------------------------------------
 
@@ -34,13 +33,13 @@ public:
   void Create(const std::vector<ShaderBinding>& bindings);
 
   void Create(const std::vector<ShaderBinding>& bindings,
-              const IndexData& indexData);
+              const IndexDataInstance& indexData);
 
-  void Create(const VertexData& reusableVertexBuffer,
+  void Create(const VertexDataInstance& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
-  void Create(const VertexData& reusableVertexBuffer,
-              const IndexData& reusableIndexBuffer,
+  void Create(const VertexDataInstance& reusableVertexBuffer,
+              const IndexDataInstance& reusableIndexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,
@@ -50,13 +49,13 @@ public:
               const RawArrayView& indexData,
               const ShaderAttributes& shaderAttributes);
 
-  void CreateInstanced(const VertexData& reusableVertexBuffer,
+  void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const VertexData& reusableVertexBuffer,
-                       const IndexData& reusableIndexBuffer,
+  void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
+                       const IndexDataInstance& reusableIndexBuffer,
                        const ShaderAttributes& shaderAttributes,
                        const RawArrayView& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
@@ -101,13 +100,13 @@ private:
 
   void CollectDatasFromBindings(const std::vector<ShaderBinding>& bindings);
 
-  void Configure(const VertexData& buffer,
-                 const IndexData* indexData,
+  void Configure(const VertexDataInstance& buffer,
+                 const IndexDataInstance& indexData,
                  const ShaderAttributes& shaderAttributes);
 
-  void RenderInstanced(const IndexData* indexData) const;
+  void RenderInstanced(const IndexDataInstance& indexData) const;
 
-  void RenderSingle(const IndexData* indexData) const;
+  void RenderSingle(const IndexDataInstance& indexData) const;
 
   unsigned PickReferenceVertexCount() const;
   unsigned PickReferenceInstanceCount() const;
@@ -116,14 +115,14 @@ private:
 
   unsigned m_VAO = 0;
 
-  std::unique_ptr<VertexData> m_ownBuffer = nullptr;
-  std::vector<const VertexData*> m_referenceVertexDatas;
+  VertexDataInstance m_ownBuffer = nullptr;
+  std::vector<VertexDataInstance> m_referenceVertexDatas;
 
-  std::unique_ptr<IndexData> m_ownIndexBuffer = nullptr;
-  const IndexData* m_referenceIndexBuffer = nullptr;
+  IndexDataInstance m_ownIndexBuffer = nullptr;
+  IndexDataInstance m_referenceIndexBuffer = nullptr;
 
-  std::unique_ptr<InstancedData> m_instancedBuffer = nullptr;
-  std::vector<const InstancedData*> m_referenceInstancedDatas;
+  InstancedDataInstance m_instancedBuffer = nullptr;
+  std::vector<InstancedDataInstance> m_referenceInstancedDatas;
 };
 
 //---------------------------------------------------------------------------------------

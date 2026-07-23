@@ -1,6 +1,7 @@
 #include "Model.h"
 
 #include "Core/Types.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/VertexData.h"
 
 // ----------------------------------------------------------------------------
@@ -36,11 +37,13 @@ Model::AllocateBufferDataOnGPU(const MeshDataView& meshData)
   const RawDataView& vertex = meshData.VertexData();
   const RawArrayView& index = meshData.Indices();
 
-  auto& insertedVertexData = m_gpuVertexDatas.emplace_back();
-  insertedVertexData.Create(vertex, meshData.NVertices());
+  auto& insertedVertexData =
+    m_gpuVertexDatas.emplace_back(Rendering::VertexData::New());
+  insertedVertexData->Create(vertex, meshData.NVertices());
 
-  auto& insertedIndexData = m_gpuIndexDatas.emplace_back();
-  insertedIndexData.Create(index);
+  auto& insertedIndexData =
+    m_gpuIndexDatas.emplace_back(Rendering::IndexData::New());
+  insertedIndexData->Create(index);
 }
 
 // ----------------------------------------------------------------------------
@@ -50,8 +53,8 @@ Model::ForEachBuffer(const BufferHandlerFn& handleBuffer) const
 {
   const size_t nDatas = m_gpuVertexDatas.size();
   for (size_t i = 0; i < nDatas; ++i) {
-    const Rendering::VertexData& vData = m_gpuVertexDatas[i];
-    const Rendering::IndexData& iData = m_gpuIndexDatas[i];
+    const Rendering::VertexDataInstance& vData = m_gpuVertexDatas[i];
+    const Rendering::IndexDataInstance& iData = m_gpuIndexDatas[i];
 
     handleBuffer(vData, iData);
   }

@@ -21,82 +21,82 @@ public:
   ShaderBinding(const ShaderBinding& other);
   ShaderBinding& operator=(const ShaderBinding& other);
 
-  static ShaderBinding Float(const VertexData& data,
+  static ShaderBinding Float(const VertexDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset);
 
-  static ShaderBinding Double(const VertexData& data,
+  static ShaderBinding Double(const VertexDataInstance& data,
                               const unsigned location,
                               const unsigned nEntries,
                               const unsigned offset);
 
-  static ShaderBinding Int(const VertexData& data,
+  static ShaderBinding Int(const VertexDataInstance& data,
                            const unsigned location,
                            const unsigned nEntries,
                            const unsigned offset);
 
-  static ShaderBinding UnsignedInt(const VertexData& data,
+  static ShaderBinding UnsignedInt(const VertexDataInstance& data,
                                    const unsigned location,
                                    const unsigned nEntries,
                                    const unsigned offset);
 
-  static ShaderBinding Short(const VertexData& data,
+  static ShaderBinding Short(const VertexDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset);
 
-  static ShaderBinding UnsignedShort(const VertexData& data,
+  static ShaderBinding UnsignedShort(const VertexDataInstance& data,
                                      const unsigned location,
                                      const unsigned nEntries,
                                      const unsigned offset);
 
-  static ShaderBinding Byte(const VertexData& data,
+  static ShaderBinding Byte(const VertexDataInstance& data,
                             const unsigned location,
                             const unsigned nEntries,
                             const unsigned offset);
 
-  static ShaderBinding UnsignedByte(const VertexData& data,
+  static ShaderBinding UnsignedByte(const VertexDataInstance& data,
                                     const unsigned location,
                                     const unsigned nEntries,
                                     const unsigned offset);
 
-  static ShaderBinding Float(const InstancedData& data,
+  static ShaderBinding Float(const InstancedDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset);
 
-  static ShaderBinding Double(const InstancedData& data,
+  static ShaderBinding Double(const InstancedDataInstance& data,
                               const unsigned location,
                               const unsigned nEntries,
                               const unsigned offset);
 
-  static ShaderBinding Int(const InstancedData& data,
+  static ShaderBinding Int(const InstancedDataInstance& data,
                            const unsigned location,
                            const unsigned nEntries,
                            const unsigned offset);
 
-  static ShaderBinding UnsignedInt(const InstancedData& data,
+  static ShaderBinding UnsignedInt(const InstancedDataInstance& data,
                                    const unsigned location,
                                    const unsigned nEntries,
                                    const unsigned offset);
 
-  static ShaderBinding Short(const InstancedData& data,
+  static ShaderBinding Short(const InstancedDataInstance& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset);
 
-  static ShaderBinding UnsignedShort(const InstancedData& data,
+  static ShaderBinding UnsignedShort(const InstancedDataInstance& data,
                                      const unsigned location,
                                      const unsigned nEntries,
                                      const unsigned offset);
 
-  static ShaderBinding Byte(const InstancedData& data,
+  static ShaderBinding Byte(const InstancedDataInstance& data,
                             const unsigned location,
                             const unsigned nEntries,
                             const unsigned offset);
 
-  static ShaderBinding UnsignedByte(const InstancedData& data,
+  static ShaderBinding UnsignedByte(const InstancedDataInstance& data,
                                     const unsigned location,
                                     const unsigned nEntries,
                                     const unsigned offset);
@@ -104,22 +104,22 @@ public:
 private:
   friend class BufferPrivate;
 
-  ShaderBinding(const VertexData* vertexData,
-                const InstancedData* instancedData,
+  ShaderBinding(const VertexDataInstance& vertexData,
+                const InstancedDataInstance& instancedData,
                 const unsigned location,
                 const unsigned nEntries,
                 const unsigned dataType,
                 const unsigned offset);
 
-  const VertexData* GetVertexData() const;
-  const InstancedData* GetInstancedData() const;
+  const VertexDataInstance& GetVertexData() const;
+  const InstancedDataInstance& GetInstancedData() const;
   unsigned GetLocation() const;
   unsigned GetNEntries() const;
   unsigned GetDataType() const;
   unsigned GetOffset() const;
 
-  const VertexData* m_referenceVertexData = nullptr;
-  const InstancedData* m_referenceInstancedData = nullptr;
+  VertexDataInstance m_referenceVertexData = nullptr;
+  InstancedDataInstance m_referenceInstancedData = nullptr;
 
   unsigned m_location = 0;
   unsigned m_nEntries = 0;

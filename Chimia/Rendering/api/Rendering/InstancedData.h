@@ -6,6 +6,8 @@
 #include "Core/Types.h"
 #include "RenderingNamespaceDefs.h"
 
+#include <memory>
+
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
@@ -15,8 +17,9 @@ BEGIN_RENDERLIB_NAMESPACE
 class InstancedData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(InstancedData)
   NON_COPYABLE(InstancedData)
+
+  static std::shared_ptr<InstancedData> New();
 
   InstancedData(InstancedData&& other);
   InstancedData& operator=(InstancedData&& other);
@@ -29,6 +32,8 @@ public:
   void Clear();
 
 private:
+  InstancedData() = default;
+
   friend class BufferPrivate;
 
   void Bind() const;
@@ -41,6 +46,10 @@ private:
   size_t m_currentSize = 0;
   size_t m_maximumSize = 0;
 };
+
+// ----------------------------------------------------------------------------
+
+using InstancedDataInstance = std::shared_ptr<InstancedData>;
 
 // ----------------------------------------------------------------------------
 

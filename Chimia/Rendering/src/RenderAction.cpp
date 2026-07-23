@@ -44,7 +44,7 @@ RenderAction::~RenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const VertexData& reusableVertexBuffer,
+RenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
                      const ShaderAttributes& shaderAttributes)
 {
   m_action.Create(reusableVertexBuffer, shaderAttributes);

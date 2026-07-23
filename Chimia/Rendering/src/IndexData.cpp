@@ -11,6 +11,14 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
+std::shared_ptr<IndexData>
+IndexData::New()
+{
+  return std::shared_ptr<IndexData>(new IndexData);
+}
+
+// ----------------------------------------------------------------------------
+
 IndexData::IndexData(IndexData&& other)
   : m_EBO(other.m_EBO)
   , m_nIndices(other.m_nIndices)

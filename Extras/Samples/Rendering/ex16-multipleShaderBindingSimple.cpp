@@ -65,13 +65,13 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::VertexData positionData;
-  positionData.Create(Inputs::BufferData::vertexPositions,
-                      Inputs::BufferData::nVertices);
+  auto positionData = Chimia::Rendering::VertexData::New();
+  positionData->Create(Inputs::BufferData::vertexPositions,
+                       Inputs::BufferData::nVertices);
 
-  Chimia::Rendering::VertexData colorData;
-  colorData.Create(Inputs::BufferData::vertexColors,
-                   Inputs::BufferData::nVertices);
+  auto colorData = Chimia::Rendering::VertexData::New();
+  colorData->Create(Inputs::BufferData::vertexColors,
+                    Inputs::BufferData::nVertices);
 
   Chimia::Rendering::GenericRenderAction action;
   action.Create({

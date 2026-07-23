@@ -115,12 +115,12 @@ main()
   Chimia::Rendering::Shader shader2(Inputs::ShaderCodes::vShaderTransformed,
                                     Inputs::ShaderCodes::fShaderTransformed);
 
-  Chimia::Rendering::VertexData reusableVertexData;
-  reusableVertexData.Create(Inputs::BufferData::vertex,
-                            Inputs::BufferData::nVertices);
+  auto reusableVertexData = Chimia::Rendering::VertexData::New();
+  reusableVertexData->Create(Inputs::BufferData::vertex,
+                             Inputs::BufferData::nVertices);
 
-  Chimia::Rendering::IndexData reusableIndexData;
-  reusableIndexData.Create(Inputs::BufferData::index);
+  auto reusableIndexData = Chimia::Rendering::IndexData::New();
+  reusableIndexData->Create(Inputs::BufferData::index);
 
   const Chimia::Rendering::ShaderAttributes vertexAttributes{
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,

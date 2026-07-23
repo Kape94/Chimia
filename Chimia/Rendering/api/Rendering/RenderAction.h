@@ -28,7 +28,7 @@ public:
 
   ~RenderAction();
 
-  void Create(const VertexData& reusableVertexBuffer,
+  void Create(const VertexDataInstance& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
 
   void Create(const RawDataView& vertexData,
