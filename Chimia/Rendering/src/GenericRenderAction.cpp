@@ -5,7 +5,7 @@
 #include "Core/Types.h"
 #include "GLState.h"
 #include "IndexData.h"
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
 #include "ShaderBinding.h"
@@ -245,13 +245,13 @@ GenericRenderAction::CollectDatasFromBindings(
   const std::vector<ShaderBinding>& bindings)
 {
   std::set<const VertexData*> vertexSet;
-  std::set<const InstancedDataBuffer*> instancedSet;
+  std::set<const InstancedData*> instancedSet;
 
   for (const ShaderBinding& binding : bindings) {
     if (const VertexData* data = BufferPrivate::GetVertexData(binding)) {
       vertexSet.insert(data);
     }
-    if (const InstancedDataBuffer* instancedData =
+    if (const InstancedData* instancedData =
           BufferPrivate::GetInstancedData(binding)) {
       instancedSet.insert(instancedData);
     }
@@ -260,7 +260,7 @@ GenericRenderAction::CollectDatasFromBindings(
   for (const VertexData* vertexData : vertexSet) {
     m_referenceVertexDatas.push_back(vertexData);
   }
-  for (const InstancedDataBuffer* instancedData : instancedSet) {
+  for (const InstancedData* instancedData : instancedSet) {
     m_referenceInstancedDatas.push_back(instancedData);
   }
 }
@@ -295,7 +295,7 @@ GenericRenderAction::SetupOwnInstancedBuffer(
   const RawArrayView& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
-  m_instancedBuffer.reset(new InstancedDataBuffer);
+  m_instancedBuffer.reset(new InstancedData);
   m_instancedBuffer->Create(instancesData);
   m_referenceInstancedDatas.push_back(m_instancedBuffer.get());
 
@@ -385,7 +385,7 @@ GenericRenderAction::RecreateInstancedBuffer(
      reason this makes the process work in the graphics driver.
   */
   GLState::BindVertexArray(m_VAO);
-  std::unique_ptr<InstancedDataBuffer> oldBuffer = std::move(m_instancedBuffer);
+  std::unique_ptr<InstancedData> oldBuffer = std::move(m_instancedBuffer);
   m_referenceInstancedDatas.erase(std::remove(m_referenceInstancedDatas.begin(),
                                               m_referenceInstancedDatas.end(),
                                               oldBuffer.get()),

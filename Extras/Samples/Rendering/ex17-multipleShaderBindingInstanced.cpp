@@ -1,5 +1,5 @@
 #include "Rendering/GenericRenderAction.h"
-#include "Rendering/InstancedDataBuffer.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -79,7 +79,7 @@ main()
   colorData.Create(Inputs::BufferData::vertexColors,
                    Inputs::BufferData::nVertices);
 
-  Chimia::Rendering::InstancedDataBuffer offsetData;
+  Chimia::Rendering::InstancedData offsetData;
   offsetData.Create(Inputs::BufferData::offsets);
 
   Chimia::Rendering::GenericRenderAction action;

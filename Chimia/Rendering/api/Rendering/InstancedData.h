@@ -12,16 +12,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-class InstancedDataBuffer
+class InstancedData
 {
 public:
-  DEFAULT_CONSTUCTIBLE(InstancedDataBuffer)
-  NON_COPYABLE(InstancedDataBuffer)
+  DEFAULT_CONSTUCTIBLE(InstancedData)
+  NON_COPYABLE(InstancedData)
 
-  InstancedDataBuffer(InstancedDataBuffer&& other);
-  InstancedDataBuffer& operator=(InstancedDataBuffer&& other);
+  InstancedData(InstancedData&& other);
+  InstancedData& operator=(InstancedData&& other);
 
-  ~InstancedDataBuffer();
+  ~InstancedData();
 
   void Create(const RawArrayView& instancedData);
   void Load(const RawArrayView& data);

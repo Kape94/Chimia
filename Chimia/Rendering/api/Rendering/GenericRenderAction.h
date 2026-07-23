@@ -2,7 +2,7 @@
 
 #include "Core/ClassDefs.h"
 #include "IndexData.h"
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 #include "ShaderAttribute.h"
 #include "ShaderBinding.h"
@@ -122,8 +122,8 @@ private:
   std::unique_ptr<IndexData> m_ownIndexBuffer = nullptr;
   const IndexData* m_referenceIndexBuffer = nullptr;
 
-  std::unique_ptr<InstancedDataBuffer> m_instancedBuffer = nullptr;
-  std::vector<const InstancedDataBuffer*> m_referenceInstancedDatas;
+  std::unique_ptr<InstancedData> m_instancedBuffer = nullptr;
+  std::vector<const InstancedData*> m_referenceInstancedDatas;
 };
 
 //---------------------------------------------------------------------------------------

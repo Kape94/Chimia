@@ -48,7 +48,7 @@ BufferPrivate::GetNIndices(const IndexData& data)
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const InstancedDataBuffer& buffer)
+BufferPrivate::Bind(const InstancedData& buffer)
 {
   buffer.Bind();
 }
@@ -56,7 +56,7 @@ BufferPrivate::Bind(const InstancedDataBuffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNInstances(const InstancedDataBuffer& buffer)
+BufferPrivate::GetNInstances(const InstancedData& buffer)
 {
   return buffer.GetNInstances();
 }
@@ -64,7 +64,7 @@ BufferPrivate::GetNInstances(const InstancedDataBuffer& buffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetInstanceSize(const InstancedDataBuffer& buffer)
+BufferPrivate::GetInstanceSize(const InstancedData& buffer)
 {
   return buffer.GetInstanceSize();
 }
@@ -79,7 +79,7 @@ BufferPrivate::GetVertexData(const ShaderBinding& binding)
 
 // --------------------------------------------------------------------------------------
 
-const InstancedDataBuffer*
+const InstancedData*
 BufferPrivate::GetInstancedData(const ShaderBinding& binding)
 {
   return binding.GetInstancedData();

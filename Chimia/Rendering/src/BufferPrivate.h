@@ -2,7 +2,7 @@
 
 #include "Core/ClassDefs.h"
 #include "IndexData.h"
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
@@ -28,14 +28,13 @@ public:
   static unsigned GetNIndices(const IndexData& data);
 
   // InstancedDataBuffer
-  static void Bind(const InstancedDataBuffer& buffer);
-  static unsigned GetNInstances(const InstancedDataBuffer& buffer);
-  static unsigned GetInstanceSize(const InstancedDataBuffer& buffer);
+  static void Bind(const InstancedData& buffer);
+  static unsigned GetNInstances(const InstancedData& buffer);
+  static unsigned GetInstanceSize(const InstancedData& buffer);
 
   // ShaderBinding
   static const VertexData* GetVertexData(const ShaderBinding& binding);
-  static const InstancedDataBuffer* GetInstancedData(
-    const ShaderBinding& binding);
+  static const InstancedData* GetInstancedData(const ShaderBinding& binding);
   static unsigned GetLocation(const ShaderBinding& binding);
   static unsigned GetNEntries(const ShaderBinding& binding);
   static unsigned GetDataType(const ShaderBinding& binding);

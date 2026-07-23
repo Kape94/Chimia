@@ -312,13 +312,13 @@ Implementation steps:
   - Create class IndexBuffer? Yes! [DONE]
   - Create class VertexBuffer; [NO]
   - Create shader binding structures; [DONE]
-  - Test shader bindings with non-indexed draw and instanced draw (these 2 are very likely broken currently);
-  - Create support for reference InstancedDataBuffer; 
-  - Use shared_ptr for VertexData, IndexData and InstancedDataBuffer (and Shader?);
+  - Test shader bindings with non-indexed draw and instanced draw (these 2 are very likely broken currently); [DONE]
+  - Inside GenericRenderAction, store a container of reference datas; [DONE]
+    * for non-indexed draw, the number of vertices should correspond to the smaller number across all buffers; [DONE]
+    * for instanced draw, the number of instances should be the smaller across all instanced buffers; [DONE]
   - Rename InstancedDataBuffer -> InstancedData;
-  - Inside GenericRenderAction, store a container of reference datas;
-    * for non-indexed draw, the number of vertices should correspond to the smaller number across all buffers;
-    * for instanced draw, the number of instances should be the smaller across all instanced buffers;
+  - Use shared_ptr for VertexData, IndexData and InstancedDataBuffer (and Shader?);
   - Remove self owned datas from render actions. Datas should be explicitly created and managed;
+  - Create support for reference InstancedDataBuffer; 
   - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;
   - The renderAction could hold the reference to the shader it uses for rendering;

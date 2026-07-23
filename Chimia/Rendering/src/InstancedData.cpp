@@ -1,4 +1,4 @@
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
@@ -11,7 +11,7 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-InstancedDataBuffer::InstancedDataBuffer(InstancedDataBuffer&& other)
+InstancedData::InstancedData(InstancedData&& other)
   : m_instancedVBO(other.m_instancedVBO)
   , m_nInstances(other.m_nInstances)
   , m_currentSize(other.m_currentSize)
@@ -25,8 +25,8 @@ InstancedDataBuffer::InstancedDataBuffer(InstancedDataBuffer&& other)
 
 // ----------------------------------------------------------------------------
 
-InstancedDataBuffer&
-InstancedDataBuffer::operator=(InstancedDataBuffer&& other)
+InstancedData&
+InstancedData::operator=(InstancedData&& other)
 {
   m_instancedVBO = other.m_instancedVBO;
   m_nInstances = other.m_nInstances;
@@ -43,7 +43,7 @@ InstancedDataBuffer::operator=(InstancedDataBuffer&& other)
 
 // ----------------------------------------------------------------------------
 
-InstancedDataBuffer::~InstancedDataBuffer()
+InstancedData::~InstancedData()
 {
   Clear();
 }
@@ -51,7 +51,7 @@ InstancedDataBuffer::~InstancedDataBuffer()
 // ----------------------------------------------------------------------------
 
 void
-InstancedDataBuffer::Create(const RawArrayView& instancedData)
+InstancedData::Create(const RawArrayView& instancedData)
 {
   Clear();
 
@@ -72,7 +72,7 @@ InstancedDataBuffer::Create(const RawArrayView& instancedData)
 // ----------------------------------------------------------------------------
 
 void
-InstancedDataBuffer::Load(const RawArrayView& instancedData)
+InstancedData::Load(const RawArrayView& instancedData)
 {
   const size_t incomingSize = instancedData.TotalSize();
   if (m_instancedVBO == 0 || incomingSize > m_maximumSize) {
@@ -89,7 +89,7 @@ InstancedDataBuffer::Load(const RawArrayView& instancedData)
 // ----------------------------------------------------------------------------
 
 void
-InstancedDataBuffer::Clear()
+InstancedData::Clear()
 {
   if (m_instancedVBO != 0) {
     glDeleteBuffers(1, &m_instancedVBO);
@@ -102,7 +102,7 @@ InstancedDataBuffer::Clear()
 // ----------------------------------------------------------------------------
 
 void
-InstancedDataBuffer::Bind() const
+InstancedData::Bind() const
 {
   if (m_instancedVBO != 0) {
     GLState::BindArrayBuffer(m_instancedVBO);
@@ -112,7 +112,7 @@ InstancedDataBuffer::Bind() const
 // ----------------------------------------------------------------------------
 
 unsigned
-InstancedDataBuffer::GetNInstances() const
+InstancedData::GetNInstances() const
 {
   return m_nInstances;
 }
@@ -120,7 +120,7 @@ InstancedDataBuffer::GetNInstances() const
 // ----------------------------------------------------------------------------
 
 unsigned
-InstancedDataBuffer::GetInstanceSize() const
+InstancedData::GetInstanceSize() const
 {
   return static_cast<unsigned>(m_currentSize) / m_nInstances;
 }

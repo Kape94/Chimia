@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 
 #include "ShaderAttribute.h"
@@ -32,7 +32,7 @@ LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
 
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                     const InstancedDataBuffer& instancedData);
+                     const InstancedData& instancedData);
 
 unsigned
 ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs);

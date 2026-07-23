@@ -38,7 +38,7 @@ USING_RENDERLIB_NAMESPACE
 //-----------------------------------------------------------------------------
 
 ShaderBinding::ShaderBinding(const VertexData* vertexData,
-                             const InstancedDataBuffer* instancedData,
+                             const InstancedData* instancedData,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned dataType,
@@ -193,7 +193,7 @@ ShaderBinding::UnsignedByte(const VertexData& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Float(const InstancedDataBuffer& data,
+ShaderBinding::Float(const InstancedData& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
@@ -205,7 +205,7 @@ ShaderBinding::Float(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Double(const InstancedDataBuffer& data,
+ShaderBinding::Double(const InstancedData& data,
                       const unsigned location,
                       const unsigned nEntries,
                       const unsigned offset)
@@ -217,7 +217,7 @@ ShaderBinding::Double(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Int(const InstancedDataBuffer& data,
+ShaderBinding::Int(const InstancedData& data,
                    const unsigned location,
                    const unsigned nEntries,
                    const unsigned offset)
@@ -229,7 +229,7 @@ ShaderBinding::Int(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedInt(const InstancedDataBuffer& data,
+ShaderBinding::UnsignedInt(const InstancedData& data,
                            const unsigned location,
                            const unsigned nEntries,
                            const unsigned offset)
@@ -241,7 +241,7 @@ ShaderBinding::UnsignedInt(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Short(const InstancedDataBuffer& data,
+ShaderBinding::Short(const InstancedData& data,
                      const unsigned location,
                      const unsigned nEntries,
                      const unsigned offset)
@@ -253,7 +253,7 @@ ShaderBinding::Short(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedShort(const InstancedDataBuffer& data,
+ShaderBinding::UnsignedShort(const InstancedData& data,
                              const unsigned location,
                              const unsigned nEntries,
                              const unsigned offset)
@@ -269,7 +269,7 @@ ShaderBinding::UnsignedShort(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::Byte(const InstancedDataBuffer& data,
+ShaderBinding::Byte(const InstancedData& data,
                     const unsigned location,
                     const unsigned nEntries,
                     const unsigned offset)
@@ -281,7 +281,7 @@ ShaderBinding::Byte(const InstancedDataBuffer& data,
 //-----------------------------------------------------------------------------
 
 ShaderBinding
-ShaderBinding::UnsignedByte(const InstancedDataBuffer& data,
+ShaderBinding::UnsignedByte(const InstancedData& data,
                             const unsigned location,
                             const unsigned nEntries,
                             const unsigned offset)
@@ -304,7 +304,7 @@ ShaderBinding::GetVertexData() const
 
 //-----------------------------------------------------------------------------
 
-const InstancedDataBuffer*
+const InstancedData*
 ShaderBinding::GetInstancedData() const
 {
   return m_referenceInstancedData;

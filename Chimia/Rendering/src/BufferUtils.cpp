@@ -2,7 +2,7 @@
 
 #include "BufferPrivate.h"
 #include "GLState.h"
-#include "InstancedDataBuffer.h"
+#include "InstancedData.h"
 #include "OpenGLDefs.h"
 #include "ShaderAttribute.h"
 #include "ShaderBinding.h"
@@ -38,8 +38,7 @@ void
 BindDataFromShaderBinding(const ShaderBinding& binding)
 {
   const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
-  const InstancedDataBuffer* instancedData =
-    BufferPrivate::GetInstancedData(binding);
+  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
 
   if (vertexData != nullptr) {
     BufferPrivate::Bind(*vertexData);
@@ -52,8 +51,7 @@ unsigned
 CalculateShaderBindingStride(const ShaderBinding& binding)
 {
   const VertexData* vertexData = BufferPrivate::GetVertexData(binding);
-  const InstancedDataBuffer* instancedData =
-    BufferPrivate::GetInstancedData(binding);
+  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
 
   return vertexData != nullptr ? BufferPrivate::GetLayoutSize(*vertexData)
                                : BufferPrivate::GetInstanceSize(*instancedData);
@@ -62,8 +60,7 @@ CalculateShaderBindingStride(const ShaderBinding& binding)
 void
 SetAttributeRateFromBinding(const ShaderBinding& binding)
 {
-  const InstancedDataBuffer* instancedData =
-    BufferPrivate::GetInstancedData(binding);
+  const InstancedData* instancedData = BufferPrivate::GetInstancedData(binding);
   const unsigned location = BufferPrivate::GetLocation(binding);
 
   const bool isInstanced = instancedData != nullptr;
@@ -161,7 +158,7 @@ BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
 
 void
 BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                                  const InstancedDataBuffer& instancedData)
+                                  const InstancedData& instancedData)
 {
   std::vector<ShaderBinding> bindings;
 
