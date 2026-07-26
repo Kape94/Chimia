@@ -63,7 +63,7 @@ const std::vector<float> vertex2 = {
                            1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                            0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 // clang-format on
-const unsigned nVertices = 3;
+const unsigned nVertices = 6;
 }
 }
 
