@@ -52,6 +52,7 @@ const std::vector<float> vertex{// x     y    z
                                  0.0f, 1.0f, 0.0f
 };
 // clang-format on
+const unsigned nVertices = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -83,11 +84,17 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedRenderAction renderTriangle(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/,
-                                                3 /*nFloats*/) });
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(Inputs::BufferData::index);
+
+  Chimia::Rendering::IndexedRenderAction renderTriangle;
+  renderTriangle.Create(vertexData,
+                        indexData,
+                        { Chimia::Rendering::ShaderAttribute::Float(
+                          0 /*position*/, 3 /*nFloats*/) });
 
   constexpr float PI = 3.141592;
   float angle = 0.0f;

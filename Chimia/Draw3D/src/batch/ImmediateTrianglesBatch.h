@@ -1,11 +1,11 @@
 #pragma once
 
+#include "BatchUtils.h"
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
-#include "Rendering/RenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
@@ -55,7 +55,7 @@ private:
 
   // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;
-  Rendering::RenderAction m_gpuAction;
+  BatchUtils::SimpleGPUComponent m_gpuAction;
 };
 
 // ----------------------------------------------------------------------------

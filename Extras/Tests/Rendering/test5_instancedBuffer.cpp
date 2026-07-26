@@ -1,3 +1,4 @@
+#include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/InstancedRenderAction.h"
@@ -49,16 +50,23 @@ Basic(Window& win)
                                   0.0f, -0.1f, 0.0f
   };
   // clang-format on
+  const unsigned nVertices = 6;
 
   const std::vector<glm::vec2> instancesPositions{
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(vertex, nVertices);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create(instancesPositions);
+
   Chimia::Rendering::InstancedRenderAction renderWithOffsets;
-  renderWithOffsets.CreateInstanced(vertex,
+  renderWithOffsets.CreateInstanced(vertexData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       0 /*location*/, 3 /*nEntries*/) },
-                                    instancesPositions,
+                                    instancedData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       1 /*location*/, 2 /*nEntries*/) });
 
@@ -105,6 +113,7 @@ BasicIndexed(Window& win)
                                   0.0f, 0.1f, 0.0f
   };
   // clang-format on
+  const unsigned nVertices = 3;
 
   const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -112,12 +121,21 @@ BasicIndexed(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(vertex, nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(index);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create(instancesPositions);
+
   Chimia::Rendering::InstancedRenderAction renderWithOffsets;
-  renderWithOffsets.CreateInstanced(vertex,
-                                    index,
+  renderWithOffsets.CreateInstanced(vertexData,
+                                    indexData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       0 /*location*/, 3 /*nEntries*/) },
-                                    instancesPositions,
+                                    instancedData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       1 /*location*/, 2 /*nEntries*/) });
 
@@ -165,6 +183,7 @@ InstanceSubData(Window& win)
                                   0.0f, -0.1f, 0.0f
   };
   // clang-format on
+  const unsigned nVertices = 6;
 
   const unsigned dataSize = sizeof(glm::vec2);
 
@@ -197,15 +216,21 @@ InstanceSubData(Window& win)
 
   Chimia::Rendering::Shader shader(vShader, fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(vertex, nVertices);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create({ nullptr, positions.size(), dataSize });
+
   Chimia::Rendering::InstancedRenderAction renderWithOffsets;
-  renderWithOffsets.CreateInstanced(vertex,
+  renderWithOffsets.CreateInstanced(vertexData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       0 /*location*/, 3 /*nEntries*/) },
-                                    { nullptr, positions.size(), dataSize },
+                                    instancedData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       1 /*location*/, 2 /*nEntries*/) });
 
-  renderWithOffsets.LoadInstancedData(positions);
+  instancedData->Load(positions);
 
   int selectedGroup = 0;
   for (int selectedGroup = 0; selectedGroup < positionGroups.size();
@@ -213,7 +238,7 @@ InstanceSubData(Window& win)
     Chimia::Rendering::Clear();
 
     const std::vector<glm::vec2>& positions = positionGroups[selectedGroup];
-    renderWithOffsets.LoadInstancedData(positions);
+    instancedData->Load(positions);
 
     shader.Use();
     renderWithOffsets.Render();
@@ -262,6 +287,7 @@ InstancingByTransformMatrix(Window& win)
                                   0.0f, -0.1f, 0.0f
   };
   // clang-format on
+  const unsigned nVertices = 6;
 
   const glm::mat4x4 m1({ 1.0f, 0.0f, 0.0f, 0.0f },
                        { 0.0f, 1.0f, 0.0f, 0.0f },
@@ -276,12 +302,18 @@ InstancingByTransformMatrix(Window& win)
 
   Chimia::Rendering::Shader shader(vShader, fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(vertex, nVertices);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create(transforms);
+
   Chimia::Rendering::InstancedRenderAction renderTransformed;
   renderTransformed.CreateInstanced(
-    vertex,
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) },
-    transforms,
+    instancedData,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

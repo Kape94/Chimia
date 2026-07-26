@@ -1,3 +1,4 @@
+#include "Rendering/InstancedData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/InstancedRenderAction.h"
@@ -46,6 +47,7 @@ const std::vector<float> vertex{ // x    y    z
                                  0.0f, 0.1f, 0.0f
 };
 // clang-format on
+const unsigned nVertices = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 }
@@ -73,12 +75,21 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(Inputs::BufferData::index);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create(Inputs::InstanceData::positions);
+
   Chimia::Rendering::InstancedRenderAction action;
-  action.CreateInstanced(Inputs::BufferData::vertex,
-                         Inputs::BufferData::index,
+  action.CreateInstanced(vertexData,
+                         indexData,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
-                         Inputs::InstanceData::positions,
+                         instancedData,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            1 /*location*/, 2 /*nEntries*/) });
 

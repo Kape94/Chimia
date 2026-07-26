@@ -63,6 +63,7 @@ const std::vector<float> vertex2 = {
                            1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                            0.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f};
 // clang-format on
+const unsigned nVertices = 3;
 }
 }
 
@@ -75,9 +76,12 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    Inputs::BufferData::vertex,
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -96,7 +100,7 @@ main()
       const std::vector<float>& data = selected == 0
                                          ? Inputs::BufferData::vertex
                                          : Inputs::BufferData::vertex2;
-      action.Load(data);
+      vertexData->Load(data);
     }
 
     shader.Use();

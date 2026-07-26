@@ -103,9 +103,15 @@ main()
                     [](size_t current, const std::vector<float>& incoming) {
                       return std::max(current, incoming.size());
                     });
+  const unsigned nComponentsPerVertex = 6;
+  const unsigned nVertices = maximumSize / nComponentsPerVertex;
+
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, nVertices);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    { nullptr, maximumSize * sizeof(float) },
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -114,7 +120,7 @@ main()
   int selected = 0;
 
   const std::vector<float>& data = states[selected];
-  action.Load(data);
+  vertexData->Load(data);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -126,7 +132,7 @@ main()
       selected = (selected + 1) % states.size();
       const std::vector<float>& data = states[selected];
 
-      action.Load(data);
+      vertexData->Load(data);
     }
 
     shader.Use();

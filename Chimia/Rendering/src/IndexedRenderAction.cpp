@@ -1,6 +1,5 @@
 #include "IndexedRenderAction.h"
 
-#include "Core/Types.h"
 #include "GenericRenderAction.h"
 #include "IndexData.h"
 
@@ -29,16 +28,6 @@ IndexedRenderAction::operator=(IndexedRenderAction&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-IndexedRenderAction::IndexedRenderAction(
-  const RawDataView& vertexData,
-  const RawArrayView& indexData,
-  const ShaderAttributes& shaderAttributes)
-{
-  Create(vertexData, indexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
 IndexedRenderAction::~IndexedRenderAction()
 {
   Clear();
@@ -52,32 +41,6 @@ IndexedRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
                             const ShaderAttributes& shaderAttributes)
 {
   m_action.Create(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-IndexedRenderAction::Create(const RawDataView& vertexData,
-                            const RawArrayView& indexData,
-                            const ShaderAttributes& shaderAttributes)
-{
-  m_action.Create(vertexData, indexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-IndexedRenderAction::LoadVertexData(const RawDataView& vertexData)
-{
-  m_action.LoadVertexData(vertexData);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-IndexedRenderAction::LoadIndexData(const RawArrayView& indexData)
-{
-  m_action.LoadIndexData(indexData);
 }
 
 //---------------------------------------------------------------------------------------

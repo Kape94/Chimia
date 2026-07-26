@@ -4,6 +4,7 @@
 #include "Core/Types.h"
 #include "GenericRenderAction.h"
 #include "IndexData.h"
+#include "Rendering/InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 #include "ShaderAttribute.h"
 #include "VertexData.h"
@@ -27,31 +28,17 @@ public:
 
   void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
                        const ShaderAttributes& shaderAttributes,
-                       const RawArrayView& instancesData,
+                       const InstancedDataInstance& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
   void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
                        const IndexDataInstance& reusableIndexBuffer,
                        const ShaderAttributes& shaderAttributes,
-                       const RawArrayView& instancesData,
+                       const InstancedDataInstance& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
 
-  void CreateInstanced(const RawDataView& vertexData,
-                       const RawArrayView& indexData,
-                       const ShaderAttributes& shaderAttributes,
-                       const RawArrayView& instancesData,
-                       const ShaderAttributes& instanceShaderAttributes);
-
-  void CreateInstanced(const RawDataView& vertexData,
-                       const ShaderAttributes& shaderAttributes,
-                       const RawArrayView& instancesData,
-                       const ShaderAttributes& instanceShaderAttributes);
-
-  void LoadInstancedData(const RawArrayView& instancesData);
-
-  void RecreateInstancedBuffer(
-    const RawArrayView& instancesData,
-    const ShaderAttributes& instanceShaderAttributes);
+  void RelinkInstancedData(const InstancedDataInstance& instancesData,
+                           const ShaderAttributes& instanceShaderAttributes);
 
   void Clear();
 

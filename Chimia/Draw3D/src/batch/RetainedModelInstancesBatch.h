@@ -2,13 +2,13 @@
 
 // ----------------------------------------------------------------------------
 
+#include "BatchUtils.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 #include "ObjectTable.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
@@ -77,7 +77,7 @@ private:
   // The attributes get modified often during rendering
   DataBuffer m_instanceDataBuffer;
   ObjectTable<DataBuffer> m_instanceTable;
-  std::vector<Rendering::InstancedRenderAction> m_gpuActions;
+  std::vector<BatchUtils::InstancedGPUComponent> m_gpuActions;
 };
 
 // ----------------------------------------------------------------------------

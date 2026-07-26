@@ -24,22 +24,11 @@ public:
   IndexedRenderAction(IndexedRenderAction&& other) noexcept;
   IndexedRenderAction& operator=(IndexedRenderAction&& other) noexcept;
 
-  IndexedRenderAction(const RawDataView& vertexData,
-                      const RawArrayView& indexData,
-                      const ShaderAttributes& shaderAttributes);
-
   ~IndexedRenderAction();
 
   void Create(const VertexDataInstance& reusableVertexBuffer,
               const IndexDataInstance& reusableIndexBuffer,
               const ShaderAttributes& shaderAttributes);
-
-  void Create(const RawDataView& vertexData,
-              const RawArrayView& indexData,
-              const ShaderAttributes& shaderAttributes);
-
-  void LoadVertexData(const RawDataView& newVertexData);
-  void LoadIndexData(const RawArrayView& newIndexData);
 
   void Clear();
 

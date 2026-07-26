@@ -3,6 +3,7 @@
 #include "BatchUtils.h"
 #include "Core/Types.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Rendering/VertexData.h"
@@ -50,13 +51,14 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  Rendering::InstancedRenderAction& inserted = m_gpuActions.emplace_back();
-  inserted.CreateInstanced(
-    vertexData,
-    indexData,
-    vertexAttributes,
-    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes },
-    instanceAttributes);
+  BatchUtils::InstancedGPUComponent& inserted = m_gpuActions.emplace_back();
+
+  inserted.data = Rendering::InstancedData::New();
+  inserted.data->Create(
+    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes });
+
+  inserted.action.CreateInstanced(
+    vertexData, indexData, vertexAttributes, inserted.data, instanceAttributes);
 }
 
 // ----------------------------------------------------------------------------
@@ -148,10 +150,17 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
 
-  for (auto& buffer : m_gpuActions) {
-    buffer.RecreateInstancedBuffer(
-      RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes },
-      m_instancedAttributes);
+  for (auto& gpuComponent : m_gpuActions) {
+
+    Rendering::InstancedDataInstance oldBuffer = std::move(gpuComponent.data);
+
+    gpuComponent.data = Rendering::InstancedData::New();
+    gpuComponent.data->Create(
+      RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes });
+    gpuComponent.action.RelinkInstancedData(gpuComponent.data,
+                                            m_instancedAttributes);
+
+    oldBuffer->Clear();
   }
 
   m_currentGPUBatchSizeInBytes = batchSizeInBytes;

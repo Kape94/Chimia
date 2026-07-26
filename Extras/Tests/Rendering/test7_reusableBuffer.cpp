@@ -1,4 +1,5 @@
 #include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/IndexedRenderAction.h"
@@ -165,21 +166,28 @@ Instancing(Window& win)
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) }
   };
+
+  auto instancedPositions = Chimia::Rendering::InstancedData::New();
+  instancedPositions->Create(positions);
+
   Chimia::Rendering::InstancedRenderAction renderReusableWithOffsets;
   renderReusableWithOffsets.CreateInstanced(
     reusableVertexData,
     reusableIndexData,
     vertexAttributes,
-    positions,
+    instancedPositions,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/,
                                                 2 /*nEntries*/) });
+
+  auto instancedTransforms = Chimia::Rendering::InstancedData::New();
+  instancedTransforms->Create(transforms);
 
   Chimia::Rendering::InstancedRenderAction renderReusableTransformed;
   renderReusableTransformed.CreateInstanced(
     reusableVertexData,
     reusableIndexData,
     vertexAttributes,
-    transforms,
+    instancedTransforms,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

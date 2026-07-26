@@ -23,18 +23,10 @@ public:
   RenderAction(RenderAction&& other) noexcept;
   RenderAction& operator=(RenderAction&& other) noexcept;
 
-  RenderAction(const RawDataView& vertexData,
-               const ShaderAttributes& shaderAttributes);
-
   ~RenderAction();
 
   void Create(const VertexDataInstance& reusableVertexBuffer,
               const ShaderAttributes& shaderAttributes);
-
-  void Create(const RawDataView& vertexData,
-              const ShaderAttributes& shaderAttributes);
-
-  void Load(const RawDataView& vertexData);
 
   void Clear();
 

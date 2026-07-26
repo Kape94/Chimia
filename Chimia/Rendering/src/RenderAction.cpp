@@ -28,14 +28,6 @@ RenderAction::operator=(RenderAction&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-RenderAction::RenderAction(const RawDataView& bufferData,
-                           const ShaderAttributes& shaderAttributes)
-{
-  Create(bufferData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
 RenderAction::~RenderAction()
 {
   Clear();
@@ -48,23 +40,6 @@ RenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
                      const ShaderAttributes& shaderAttributes)
 {
   m_action.Create(reusableVertexBuffer, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::Create(const RawDataView& vertexData,
-                     const ShaderAttributes& shaderAttributes)
-{
-  m_action.Create(vertexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::Load(const RawDataView& vertexData)
-{
-  m_action.LoadVertexData(vertexData);
 }
 
 //---------------------------------------------------------------------------------------

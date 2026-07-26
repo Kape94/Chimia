@@ -3,6 +3,7 @@
 #include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -46,6 +47,7 @@ const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                          0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 // clang-format on
+const unsigned nVertices = 3;
 
 const unsigned vertexDataSize = 18 * sizeof(float);
 
@@ -67,10 +69,19 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(
+    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
+    Inputs::BufferData::nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
+
   Chimia::Rendering::IndexedRenderAction action;
   action.Create(
-    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
+    vertexData,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 

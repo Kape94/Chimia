@@ -101,6 +101,7 @@ const std::vector<float> vertex{
   0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
 // clang-format on
+const unsigned nVerticesTriangle = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -112,6 +113,7 @@ const std::vector<float> quad{ // x    y     z     u     v
                                -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 // clang-format on
+const unsigned nVerticesQuad = 4;
 
 const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 
@@ -135,9 +137,17 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
-  Chimia::Rendering::IndexedRenderAction renderTriangle(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex,
+                     Inputs::BufferData::nVerticesTriangle);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(Inputs::BufferData::index);
+
+  Chimia::Rendering::IndexedRenderAction renderTriangle;
+  renderTriangle.Create(
+    vertexData,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
 
@@ -157,9 +167,17 @@ main(int argc, char** argv)
   Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
                                              Inputs::ShaderCodes::fShaderPost);
 
-  Chimia::Rendering::IndexedRenderAction renderScreenQuad(
-    Inputs::BufferData::quad,
-    Inputs::BufferData::quadIndex,
+  auto vertexDataQuad = Chimia::Rendering::VertexData::New();
+  vertexDataQuad->Create(Inputs::BufferData::quad,
+                         Inputs::BufferData::nVerticesQuad);
+
+  auto indexDataQuad = Chimia::Rendering::IndexData::New();
+  indexDataQuad->Create(Inputs::BufferData::quadIndex);
+
+  Chimia::Rendering::IndexedRenderAction renderScreenQuad;
+  renderScreenQuad.Create(
+    vertexDataQuad,
+    indexDataQuad,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
 

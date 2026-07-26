@@ -52,6 +52,7 @@ const std::vector<float> vertex{ // x ,    y,    z
                                  0.0f, -0.1f, 0.0f
 };
 // clang-format on
+const unsigned nVertices = 6;
 
 }
 
@@ -101,17 +102,23 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create({ nullptr,
+                          Inputs::InstanceData::positions.size(),
+                          Inputs::InstanceData::dataSize });
+
   Chimia::Rendering::InstancedRenderAction action;
-  action.CreateInstanced(Inputs::BufferData::vertex,
+  action.CreateInstanced(vertexData,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            0 /*location*/, 3 /*nEntries*/) },
-                         { nullptr,
-                           Inputs::InstanceData::positions.size(),
-                           Inputs::InstanceData::dataSize },
+                         instancedData,
                          { Chimia::Rendering::ShaderAttribute::Float(
                            1 /*location*/, 2 /*nEntries*/) });
 
-  action.LoadInstancedData(Inputs::InstanceData::positions);
+  instancedData->Load(Inputs::InstanceData::positions);
 
   int selectedGroup = 0;
   while (!win.ShouldClose()) {
@@ -119,7 +126,7 @@ main()
 
     const std::vector<glm::vec2>& positions =
       Inputs::InstanceData::positionGroups[selectedGroup];
-    action.LoadInstancedData(positions);
+    instancedData->Load(positions);
 
     shader.Use();
     action.Render();

@@ -126,20 +126,27 @@ main()
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) }
   };
+
+  auto positionsData = Chimia::Rendering::InstancedData::New();
+  positionsData->Create(Inputs::InstanceData::positions);
+
   Chimia::Rendering::InstancedRenderAction renderWithOffsets;
   renderWithOffsets.CreateInstanced(reusableVertexData,
                                     reusableIndexData,
                                     vertexAttributes,
-                                    Inputs::InstanceData::positions,
+                                    positionsData,
                                     { Chimia::Rendering::ShaderAttribute::Float(
                                       1 /*location*/, 2 /*nEntries*/) });
+
+  auto transformData = Chimia::Rendering::InstancedData::New();
+  transformData->Create(Inputs::InstanceData::transforms);
 
   Chimia::Rendering::InstancedRenderAction renderTransformed;
   renderTransformed.CreateInstanced(
     reusableVertexData,
     reusableIndexData,
     vertexAttributes,
-    Inputs::InstanceData::transforms,
+    transformData,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

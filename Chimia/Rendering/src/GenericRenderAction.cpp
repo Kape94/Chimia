@@ -2,7 +2,6 @@
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
-#include "Core/Types.h"
 #include "GLState.h"
 #include "IndexData.h"
 #include "InstancedData.h"
@@ -20,11 +19,8 @@ USING_RENDERLIB_NAMESPACE
 
 GenericRenderAction::GenericRenderAction(GenericRenderAction&& other) noexcept
   : m_VAO(other.m_VAO)
-  , m_ownBuffer(std::move(other.m_ownBuffer))
   , m_referenceVertexDatas(std::move(other.m_referenceVertexDatas))
-  , m_ownIndexBuffer(std::move(other.m_ownIndexBuffer))
   , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
-  , m_instancedBuffer(std::move(other.m_instancedBuffer))
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
 {
   other.m_VAO = 0;
@@ -37,26 +33,14 @@ GenericRenderAction::operator=(GenericRenderAction&& other) noexcept
 {
   if (&other != this) {
     m_VAO = other.m_VAO;
-    m_ownBuffer = std::move(other.m_ownBuffer);
     m_referenceVertexDatas = std::move(other.m_referenceVertexDatas);
-    m_ownIndexBuffer = std::move(other.m_ownIndexBuffer);
     m_referenceIndexBuffer = std::move(other.m_referenceIndexBuffer);
-    m_instancedBuffer = std::move(m_instancedBuffer);
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
 
     other.m_VAO = 0;
   }
 
   return *this;
-}
-
-//---------------------------------------------------------------------------------------
-
-GenericRenderAction::GenericRenderAction(
-  const RawDataView& bufferData,
-  const ShaderAttributes& shaderAttributes)
-{
-  Create(bufferData, shaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -133,36 +117,10 @@ GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const RawDataView& vertexData,
-                            const ShaderAttributes& shaderAttributes)
-{
-  Clear();
-
-  SetupVAO();
-  SetupOwnVertexBuffer(
-    vertexData, nullptr /*optionalIndexData*/, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::Create(const RawDataView& vertexData,
-                            const RawArrayView& indexData,
-                            const ShaderAttributes& shaderAttributes)
-{
-  Clear();
-
-  SetupVAO();
-  SetupOwnVertexBuffer(vertexData, &indexData, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
 GenericRenderAction::CreateInstanced(
   const VertexDataInstance& reusableVertexBuffer,
   const ShaderAttributes& shaderAttributes,
-  const RawArrayView& instancesData,
+  const InstancedDataInstance& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   Clear();
@@ -171,7 +129,9 @@ GenericRenderAction::CreateInstanced(
 
   SetupVAO();
   Configure(reusableVertexBuffer, nullptr /*indexData*/, shaderAttributes);
-  SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
+
+  m_referenceInstancedDatas.push_back(instancesData);
+  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
 }
 
 //---------------------------------------------------------------------------------------
@@ -181,7 +141,7 @@ GenericRenderAction::CreateInstanced(
   const VertexDataInstance& reusableVertexBuffer,
   const IndexDataInstance& reusableIndexBuffer,
   const ShaderAttributes& shaderAttributes,
-  const RawArrayView& instancesData,
+  const InstancedDataInstance& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   Clear();
@@ -191,40 +151,9 @@ GenericRenderAction::CreateInstanced(
 
   SetupVAO();
   Configure(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
-  SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
-}
 
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::CreateInstanced(
-  const RawDataView& vertexData,
-  const RawArrayView& indexData,
-  const ShaderAttributes& shaderAttributes,
-  const RawArrayView& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  Clear();
-
-  SetupVAO();
-  SetupOwnVertexBuffer(vertexData, &indexData, shaderAttributes);
-  SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::CreateInstanced(
-  const RawDataView& vertexData,
-  const ShaderAttributes& shaderAttributes,
-  const RawArrayView& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  Clear();
-
-  SetupVAO();
-  SetupOwnVertexBuffer(vertexData, nullptr /*indexData*/, shaderAttributes);
-  SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
+  m_referenceInstancedDatas.push_back(instancesData);
+  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
 }
 
 //---------------------------------------------------------------------------------------
@@ -266,57 +195,6 @@ GenericRenderAction::CollectDatasFromBindings(
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::SetupOwnVertexBuffer(
-  const RawDataView& vertexData,
-  const RawArrayView* optionalIndexData,
-  const ShaderAttributes& shaderAttributes)
-{
-  const size_t nVertices =
-    CalculateNumberOfVertices(vertexData, shaderAttributes);
-
-  m_ownBuffer = VertexData::New();
-  m_ownBuffer->Create(vertexData, nVertices);
-  m_referenceVertexDatas.push_back(m_ownBuffer);
-
-  if (optionalIndexData != nullptr) {
-    m_ownIndexBuffer = IndexData::New();
-    m_ownIndexBuffer->Create(*optionalIndexData);
-  }
-
-  Configure(m_ownBuffer, m_ownIndexBuffer, shaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::SetupOwnInstancedBuffer(
-  const RawArrayView& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  m_instancedBuffer = InstancedData::New();
-  m_instancedBuffer->Create(instancesData);
-  m_referenceInstancedDatas.push_back(m_instancedBuffer);
-
-  BufferUtils::LinkShaderAttributes(instanceShaderAttributes,
-                                    m_instancedBuffer);
-}
-
-//---------------------------------------------------------------------------------------
-
-size_t
-GenericRenderAction::CalculateNumberOfVertices(
-  const RawDataView& vertexData,
-  const ShaderAttributes& shaderAttributes) const
-{
-  const size_t vertexDataSize = vertexData.size;
-  const size_t sizePerVertex =
-    BufferUtils::ComputeTotalSizeOfAttributes(shaderAttributes);
-  return vertexDataSize / sizePerVertex;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
 GenericRenderAction::Configure(const VertexDataInstance& buffer,
                                const IndexDataInstance& indexData,
                                const ShaderAttributes& shaderAttributes)
@@ -331,44 +209,23 @@ GenericRenderAction::Configure(const VertexDataInstance& buffer,
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::LoadVertexData(const RawDataView& vertexData)
+GenericRenderAction::Clear()
 {
-  if (m_VAO == 0 || m_ownBuffer == nullptr) {
-    return;
+  if (m_VAO != 0) {
+    glDeleteVertexArrays(1, &m_VAO);
+    m_VAO = 0;
   }
 
-  m_ownBuffer->Load(vertexData);
+  m_referenceVertexDatas.clear();
+  m_referenceIndexBuffer = nullptr;
+  m_referenceInstancedDatas.clear();
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::LoadIndexData(const RawArrayView& indexData)
-{
-  if (m_VAO == 0 || m_ownIndexBuffer == nullptr) {
-    return;
-  }
-
-  m_ownIndexBuffer->LoadIndexData(indexData);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::LoadInstancedData(const RawArrayView& instancesData)
-{
-  if (m_VAO == 0 || m_instancedBuffer == nullptr) {
-    return;
-  }
-
-  m_instancedBuffer->Load(instancesData);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::RecreateInstancedBuffer(
-  const RawArrayView& instancesData,
+GenericRenderAction::RelinkInstancedData(
+  const InstancedDataInstance& instancesData,
   const ShaderAttributes& instanceShaderAttributes)
 {
   if (m_VAO == 0) {
@@ -383,37 +240,13 @@ GenericRenderAction::RecreateInstancedBuffer(
      reason this makes the process work in the graphics driver.
   */
   GLState::BindVertexArray(m_VAO);
-  InstancedDataInstance oldBuffer = std::move(m_instancedBuffer);
-  m_referenceInstancedDatas.erase(std::remove(m_referenceInstancedDatas.begin(),
-                                              m_referenceInstancedDatas.end(),
-                                              oldBuffer),
-                                  m_referenceInstancedDatas.end());
 
-  SetupOwnInstancedBuffer(instancesData, instanceShaderAttributes);
+  m_referenceInstancedDatas.clear();
 
-  oldBuffer->Clear();
+  m_referenceInstancedDatas.push_back(instancesData);
+  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
 
   GLState::BindVertexArray(0);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::Clear()
-{
-  if (m_VAO != 0) {
-    glDeleteVertexArrays(1, &m_VAO);
-    m_VAO = 0;
-  }
-
-  m_ownBuffer = nullptr;
-  m_referenceVertexDatas.clear();
-
-  m_ownIndexBuffer = nullptr;
-  m_referenceIndexBuffer = nullptr;
-
-  m_instancedBuffer = nullptr;
-  m_referenceInstancedDatas.clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -425,29 +258,26 @@ GenericRenderAction::Render() const
     return;
   }
 
-  const IndexDataInstance indexData = m_referenceIndexBuffer != nullptr
-                                        ? m_referenceIndexBuffer
-                                        : m_ownIndexBuffer;
-
   GLState::BindVertexArray(m_VAO);
 
   const bool isInstanced = !m_referenceInstancedDatas.empty();
   if (isInstanced) {
-    RenderInstanced(indexData);
+    RenderInstanced();
   } else {
-    RenderSingle(indexData);
+    RenderSingle();
   }
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderInstanced(const IndexDataInstance& indexData) const
+GenericRenderAction::RenderInstanced() const
 {
-  const bool isIndexed = indexData != nullptr;
+  const bool isIndexed = m_referenceIndexBuffer != nullptr;
   const unsigned nInstances = PickReferenceInstanceCount();
   if (isIndexed) {
-    const unsigned nElements = BufferPrivate::GetNIndices(indexData);
+    const unsigned nElements =
+      BufferPrivate::GetNIndices(m_referenceIndexBuffer);
     glDrawElementsInstanced(
       GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0, nInstances);
   } else {
@@ -459,11 +289,12 @@ GenericRenderAction::RenderInstanced(const IndexDataInstance& indexData) const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderSingle(const IndexDataInstance& indexData) const
+GenericRenderAction::RenderSingle() const
 {
-  const bool isIndexed = indexData != nullptr;
+  const bool isIndexed = m_referenceIndexBuffer != nullptr;
   if (isIndexed) {
-    const unsigned nElements = BufferPrivate::GetNIndices(indexData);
+    const unsigned nElements =
+      BufferPrivate::GetNIndices(m_referenceIndexBuffer);
     glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
   } else {
     const unsigned nVertices = PickReferenceVertexCount();

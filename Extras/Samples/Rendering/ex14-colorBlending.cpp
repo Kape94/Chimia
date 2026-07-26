@@ -67,10 +67,6 @@ const float vertex2[] = { -1.0f, 0.0f, transparentDepth1, 0.0f, 1.0f, 0.0f, alph
 
 const unsigned vertex2DataSize = 21 * sizeof(float);
 
-const unsigned index2Data[] = { 0, 1, 2 };
-
-const unsigned index2DataNItems = 3;
-
 // 3) Transparent triangle #2
 
 constexpr float alpha2 = 0.3f;
@@ -85,9 +81,7 @@ const float vertex3[] = { -1.0f, 0.0f, transparentDepth2, 0.0f, 0.0f, 1.0f, alph
 
 const unsigned vertex3DataSize = 21 * sizeof(float);
 
-const unsigned index3Data[] = { 0, 1, 2 };
-
-const unsigned index3DataNItems = 3;
+const unsigned nVertices = 3;
 }
 }
 
@@ -103,24 +97,43 @@ main()
   Chimia::Rendering::Shader shader;
   shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
 
+  auto vertexData1 = Chimia::Rendering::VertexData::New();
+  vertexData1->Create(
+    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
+    Inputs::BufferData::nVertices);
+
+  auto vertexData2 = Chimia::Rendering::VertexData::New();
+  vertexData2->Create(
+    { Inputs::BufferData::vertex2, Inputs::BufferData::vertex2DataSize },
+    Inputs::BufferData::nVertices);
+
+  auto vertexData3 = Chimia::Rendering::VertexData::New();
+  vertexData3->Create(
+    { Inputs::BufferData::vertex3, Inputs::BufferData::vertex3DataSize },
+    Inputs::BufferData::nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create(
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
+
   Chimia::Rendering::IndexedRenderAction opaqueTriangle;
   opaqueTriangle.Create(
-    { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
+    vertexData1,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
 
   Chimia::Rendering::IndexedRenderAction transparentTriangle1;
   transparentTriangle1.Create(
-    { Inputs::BufferData::vertex2, Inputs::BufferData::vertex2DataSize },
-    { Inputs::BufferData::index2Data, Inputs::BufferData::index2DataNItems },
+    vertexData2,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
 
   Chimia::Rendering::IndexedRenderAction transparentTriangle2;
   transparentTriangle2.Create(
-    { Inputs::BufferData::vertex3, Inputs::BufferData::vertex3DataSize },
-    { Inputs::BufferData::index3Data, Inputs::BufferData::index3DataNItems },
+    vertexData3,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
 

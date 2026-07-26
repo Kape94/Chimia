@@ -9,6 +9,34 @@
 USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
+// TEST - will be removed soon
+// ----------------------------------------------------------------------------
+
+namespace {
+unsigned
+ComputeTotalSizeOfAttributes(const Chimia::Rendering::ShaderAttributes& attrs)
+{
+  unsigned totalSize = 0;
+  for (const Chimia::Rendering::ShaderAttribute& attr : attrs) {
+    totalSize += attr.DataSizeInBytes();
+  }
+  return totalSize;
+}
+
+size_t
+CalculateNumberOfVertices(
+  const Chimia::RawDataView& vertexData,
+  const Chimia::Rendering::ShaderAttributes& shaderAttributes)
+{
+  const size_t vertexDataSize = vertexData.size;
+  const size_t sizePerVertex = ComputeTotalSizeOfAttributes(shaderAttributes);
+  return vertexDataSize / sizePerVertex;
+}
+}
+
+// ----------------------------------------------------------------------------
+// TEST - will be removed soon
+// ----------------------------------------------------------------------------
 
 void
 RetainedTrianglesBatch::Create(
@@ -25,8 +53,14 @@ RetainedTrianglesBatch::Create(
 
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
 
-  m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
-                     shaderAttributes);
+  m_gpuAction.data = Rendering::VertexData::New();
+
+  RawDataView rawData{ nullptr, batchSizeInBytes };
+  m_gpuAction.data->Create(
+    rawData, CalculateNumberOfVertices(rawData, shaderAttributes));
+
+  m_gpuAction.action.Create(m_gpuAction.data, shaderAttributes);
+
   m_inputBuffer.Resize(batchSizeInBytes);
 
   m_currentGPUBatchSize = batchSize;
@@ -64,7 +98,7 @@ RetainedTrianglesBatch::Render()
 {
   if (CanRenderWithCurrentBuffer()) {
     if (HasSomethingToRender()) {
-      m_gpuAction.Render();
+      m_gpuAction.action.Render();
     }
     return;
   }
@@ -137,9 +171,12 @@ RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
   const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
 
   const size_t batchSizeInBytes = effectiveBatchSize * m_triangleSizeInBytes;
-  m_gpuAction.Clear();
-  m_gpuAction.Create(RawDataView{ nullptr, batchSizeInBytes },
-                     m_vertexAttributes);
+
+  RawDataView rawData{ nullptr, batchSizeInBytes };
+  m_gpuAction.data->Create(
+    rawData, CalculateNumberOfVertices(rawData, m_vertexAttributes));
+
+  m_gpuAction.action.Create(m_gpuAction.data, m_vertexAttributes);
 
   m_currentGPUBatchSize = effectiveBatchSize;
 }

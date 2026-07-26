@@ -112,10 +112,19 @@ main()
       return std::max(current, incoming.iData.size());
     });
 
+  const unsigned nComponentsPerVertex = 6;
+  const unsigned nVertices = maximumVertexSize / nComponentsPerVertex;
+
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) }, nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
+
   Chimia::Rendering::IndexedRenderAction action;
   action.Create(
-    { nullptr, maximumVertexSize * sizeof(float) },
-    { nullptr, maximumIndexSize, sizeof(unsigned) },
+    vertexData,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -125,8 +134,8 @@ main()
 
   const auto& state = states[selected];
 
-  action.LoadVertexData(state.vData);
-  action.LoadIndexData(state.iData);
+  vertexData->Load(state.vData);
+  indexData->LoadIndexData(state.iData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -139,8 +148,8 @@ main()
 
       const auto& state = states[selected];
 
-      action.LoadVertexData(state.vData);
-      action.LoadIndexData(state.iData);
+      vertexData->Load(state.vData);
+      indexData->LoadIndexData(state.iData);
     }
 
     shader.Use();

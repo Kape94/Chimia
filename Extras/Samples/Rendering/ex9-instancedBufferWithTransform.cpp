@@ -50,6 +50,7 @@ const std::vector<float> vertex{ // x ,    y,    z
                                  0.0f, -0.1f, 0.0f
 };
 // clang-format on
+const unsigned nVertices = 6;
 
 }
 
@@ -83,12 +84,18 @@ main()
   Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
                                    Inputs::ShaderCodes::fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+
+  auto instancedData = Chimia::Rendering::InstancedData::New();
+  instancedData->Create(Inputs::InstanceData::transforms);
+
   Chimia::Rendering::InstancedRenderAction action;
   action.CreateInstanced(
-    Inputs::BufferData::vertex,
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
                                                 3 /*nEntries*/) },
-    Inputs::InstanceData::transforms,
+    instancedData,
     { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
       Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),

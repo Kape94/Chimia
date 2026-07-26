@@ -48,6 +48,7 @@ Basic(Window& win)
                           1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                           0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
   // clang-format on
+  const unsigned nVertices = 3;
 
   const unsigned vertexDataSize = 18 * sizeof(float);
 
@@ -58,9 +59,12 @@ Basic(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
+  auto triangleVertexData = Chimia::Rendering::VertexData::New();
+  triangleVertexData->Create({ vertex, vertexDataSize }, nVertices);
+
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(
-    { vertex, vertexDataSize },
+    triangleVertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -106,6 +110,7 @@ Indexed(Window& win)
                           1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                           0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
   // clang-format on
+  const unsigned nVertices = 3;
 
   const unsigned vertexDataSize = 18 * sizeof(float);
 
@@ -116,10 +121,16 @@ Indexed(Window& win)
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
+  auto triangleVertexData = Chimia::Rendering::VertexData::New();
+  triangleVertexData->Create({ vertex, vertexDataSize }, nVertices);
+
+  auto triangleIndexData = Chimia::Rendering::IndexData::New();
+  triangleIndexData->Create({ indexData, indexDataNItems });
+
   Chimia::Rendering::IndexedRenderAction renderTriangle;
   renderTriangle.Create(
-    { vertex, vertexDataSize },
-    { indexData, indexDataNItems },
+    triangleVertexData,
+    triangleIndexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -181,13 +192,17 @@ Subdata(Window& win)
   // clang-format on
 
   const std::vector<std::vector<float>> vertexDatas{ vertex, vertex2 };
+  const unsigned nVertices = 6;
 
   Chimia::Rendering::Shader shader;
   shader.Create(vShader, fShader);
 
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create({ nullptr, vertex.size() * sizeof(float) }, nVertices);
+
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(
-    { nullptr, vertex.size() * sizeof(float) },
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -198,7 +213,7 @@ Subdata(Window& win)
 
     const int current = i % vertexDatas.size();
     const std::vector<float>& data = vertexDatas[current];
-    renderTriangle.Load(data);
+    vertexData->Load(data);
 
     shader.Use();
     renderTriangle.Render();
@@ -290,9 +305,15 @@ SubDataWithVaryingSize(Window& win)
                       return std::max(current, incoming.size());
                     });
 
+  const unsigned nComponentsPerVertex = 6;
+  const unsigned nVertices = maximumSize / nComponentsPerVertex;
+
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, nVertices);
+
   Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create(
-    { nullptr, maximumSize * sizeof(float) },
+    vertexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -304,7 +325,7 @@ SubDataWithVaryingSize(Window& win)
     const int current = i % states.size();
     const std::vector<float>& data = states[current];
 
-    renderTriangles.Load(data);
+    vertexData->Load(data);
 
     shader.Use();
     renderTriangles.Render();
@@ -403,10 +424,19 @@ VertexAndIndexSubData(Window& win)
       return std::max(current, incoming.iData.size());
     });
 
+  const unsigned nComponentsPerVertex = 6;
+  const unsigned nVertices = maximumVertexSize / nComponentsPerVertex;
+
+  auto vertexData = Chimia::Rendering::VertexData::New();
+  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) }, nVertices);
+
+  auto indexData = Chimia::Rendering::IndexData::New();
+  indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
+
   Chimia::Rendering::IndexedRenderAction renderTriangles;
   renderTriangles.Create(
-    { nullptr, maximumVertexSize * sizeof(float) },
-    { nullptr, maximumIndexSize, sizeof(unsigned) },
+    vertexData,
+    indexData,
     { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
       Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
 
@@ -419,8 +449,8 @@ VertexAndIndexSubData(Window& win)
     const int current = i % states.size();
     const auto& state = states[current];
 
-    renderTriangles.LoadVertexData(state.vData);
-    renderTriangles.LoadIndexData(state.iData);
+    vertexData->Load(state.vData);
+    indexData->LoadIndexData(state.iData);
 
     shader.Use();
     renderTriangles.Render();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BatchUtils.h"
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
@@ -56,7 +57,7 @@ private:
 
   // These attributes get modified as rendering requests come in
   size_t m_currentGPUBatchSize = 0;
-  Rendering::RenderAction m_gpuAction;
+  BatchUtils::SimpleGPUComponent m_gpuAction;
   DataBuffer m_inputBuffer;
   ObjectTable<DataBuffer> m_staticTrianglesTable;
 };
