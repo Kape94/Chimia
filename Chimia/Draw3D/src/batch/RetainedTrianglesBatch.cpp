@@ -53,13 +53,13 @@ RetainedTrianglesBatch::Create(
 
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
 
-  m_gpuAction.data = Rendering::VertexData::New();
+  m_gpuComponent.data = Rendering::VertexData::New();
 
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuAction.data->Create(
+  m_gpuComponent.data->Create(
     rawData, CalculateNumberOfVertices(rawData, shaderAttributes));
 
-  m_gpuAction.action.Create(m_gpuAction.data, shaderAttributes);
+  m_gpuComponent.action.Create(m_gpuComponent.data, shaderAttributes);
 
   m_inputBuffer.Resize(batchSizeInBytes);
 
@@ -98,7 +98,7 @@ RetainedTrianglesBatch::Render()
 {
   if (CanRenderWithCurrentBuffer()) {
     if (HasSomethingToRender()) {
-      m_gpuAction.action.Render();
+      m_gpuComponent.action.Render();
     }
     return;
   }
@@ -173,10 +173,10 @@ RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
   const size_t batchSizeInBytes = effectiveBatchSize * m_triangleSizeInBytes;
 
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuAction.data->Create(
+  m_gpuComponent.data->Create(
     rawData, CalculateNumberOfVertices(rawData, m_vertexAttributes));
 
-  m_gpuAction.action.Create(m_gpuAction.data, m_vertexAttributes);
+  m_gpuComponent.action.Create(m_gpuComponent.data, m_vertexAttributes);
 
   m_currentGPUBatchSize = effectiveBatchSize;
 }
@@ -191,8 +191,10 @@ RetainedTrianglesBatch::RenderByBatches()
     return;
   }
 
-  BatchUtils::RenderByBatches(
-    inputSizeInBytes, CurrentGPUBatchSizeInBytes(), m_inputBuffer, m_gpuAction);
+  BatchUtils::RenderByBatches(inputSizeInBytes,
+                              CurrentGPUBatchSizeInBytes(),
+                              m_inputBuffer,
+                              m_gpuComponent);
 }
 
 // ----------------------------------------------------------------------------

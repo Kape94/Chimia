@@ -57,7 +57,7 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
                           const Rendering::IndexDataInstance& indexData) {
     BatchUtils::InstancedGPUComponent& gpuComponent =
-      m_gpuActions.emplace_back();
+      m_gpuComponent.emplace_back();
 
     gpuComponent.data = Rendering::InstancedData::New();
     gpuComponent.data->Create(
@@ -189,7 +189,7 @@ RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
 
-  for (auto& component : m_gpuActions) {
+  for (auto& component : m_gpuComponent) {
     Rendering::InstancedDataInstance oldData = std::move(component.data);
 
     component.data = Rendering::InstancedData::New();
@@ -217,7 +217,7 @@ RetainedModelInstancesBatch::RenderByBatches()
                                        CurrentGPUBatchSizeInBytes(),
                                        m_instanceDataSizeInBytes,
                                        m_instanceDataBuffer,
-                                       m_gpuActions);
+                                       m_gpuComponent);
 }
 
 // ----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ RetainedModelInstancesBatch::RenderByBatches()
 void
 RetainedModelInstancesBatch::RenderCurrentBuffers()
 {
-  for (BatchUtils::InstancedGPUComponent& component : m_gpuActions) {
+  for (BatchUtils::InstancedGPUComponent& component : m_gpuComponent) {
     component.action.Render();
   }
 }

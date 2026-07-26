@@ -51,7 +51,7 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
-  BatchUtils::InstancedGPUComponent& inserted = m_gpuActions.emplace_back();
+  BatchUtils::InstancedGPUComponent& inserted = m_gpuComponents.emplace_back();
 
   inserted.data = Rendering::InstancedData::New();
   inserted.data->Create(
@@ -109,7 +109,7 @@ ImmediateModelInstancesBatch::DoFlush(
                                        m_currentGPUBatchSizeInBytes,
                                        m_instancedDataSizeInBytes,
                                        m_instancedInputBuffer,
-                                       m_gpuActions);
+                                       m_gpuComponents);
 
   if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_instancedInputBuffer.Reset();
@@ -150,7 +150,7 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
 
-  for (auto& gpuComponent : m_gpuActions) {
+  for (auto& gpuComponent : m_gpuComponents) {
 
     Rendering::InstancedDataInstance oldBuffer = std::move(gpuComponent.data);
 

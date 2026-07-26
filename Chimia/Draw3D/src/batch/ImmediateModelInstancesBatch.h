@@ -6,13 +6,11 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 #include "Rendering/IndexData.h"
-#include "Rendering/InstancedData.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
@@ -69,7 +67,7 @@ private:
   // These attributes change often, during frame flow
   DataBuffer m_instancedInputBuffer;
 
-  std::vector<BatchUtils::InstancedGPUComponent> m_gpuActions;
+  std::vector<BatchUtils::InstancedGPUComponent> m_gpuComponents;
 };
 
 // ----------------------------------------------------------------------------

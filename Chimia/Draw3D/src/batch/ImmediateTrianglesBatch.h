@@ -55,7 +55,7 @@ private:
 
   // These attributes are changed often as rendering requests came in
   DataBuffer m_inputBuffer;
-  BatchUtils::SimpleGPUComponent m_gpuAction;
+  BatchUtils::SimpleGPUComponent m_gpuComponent;
 };
 
 // ----------------------------------------------------------------------------

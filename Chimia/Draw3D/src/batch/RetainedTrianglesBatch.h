@@ -8,7 +8,6 @@
 #include "Types.h"
 
 #include "ObjectTable.h"
-#include "Rendering/RenderAction.h"
 #include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
@@ -57,7 +56,7 @@ private:
 
   // These attributes get modified as rendering requests come in
   size_t m_currentGPUBatchSize = 0;
-  BatchUtils::SimpleGPUComponent m_gpuAction;
+  BatchUtils::SimpleGPUComponent m_gpuComponent;
   DataBuffer m_inputBuffer;
   ObjectTable<DataBuffer> m_staticTrianglesTable;
 };
