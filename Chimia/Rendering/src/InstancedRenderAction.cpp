@@ -70,16 +70,6 @@ InstancedRenderAction::CreateInstanced(
 //---------------------------------------------------------------------------------------
 
 void
-InstancedRenderAction::RelinkInstancedData(
-  const InstancedDataInstance& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  m_action.RelinkInstancedData(instancesData, instanceShaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
 InstancedRenderAction::Clear()
 {
   m_action.Clear();

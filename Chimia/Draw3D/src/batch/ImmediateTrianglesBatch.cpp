@@ -151,11 +151,7 @@ ImmediateTrianglesBatch::Resize(size_t batchSize)
 {
   const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
 
-  RawDataView rawData{ nullptr, newBatchSizeInBytes };
-  m_gpuComponent.data->Create(
-    rawData, CalculateNumberOfVertices(rawData, m_vertexAttributes));
-
-  m_gpuComponent.action.Create(m_gpuComponent.data, m_vertexAttributes);
+  m_gpuComponent.data->Resize({ nullptr, newBatchSizeInBytes });
 
   m_currentGpuBufferSizeInBytes = newBatchSizeInBytes;
 }

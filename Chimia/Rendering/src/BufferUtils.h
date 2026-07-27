@@ -26,9 +26,17 @@ LoadDataOnBuffer(const unsigned bufferID,
                  const unsigned dataSize,
                  const bool isIndexBuffer);
 
+std::vector<ShaderBinding>
+CreateBindings(const ShaderAttributes& shaderAttributes,
+               const VertexDataInstance& vertexData);
+
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
                      const VertexDataInstance& vertexData);
+
+std::vector<ShaderBinding>
+CreateBindings(const ShaderAttributes& shaderAttributes,
+               const InstancedDataInstance& instancedData);
 
 void
 LinkShaderAttributes(const ShaderAttributes& shaderAttributes,

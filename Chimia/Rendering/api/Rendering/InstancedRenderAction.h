@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
-#include "Core/Types.h"
 #include "GenericRenderAction.h"
 #include "IndexData.h"
 #include "Rendering/InstancedData.h"
@@ -36,9 +35,6 @@ public:
                        const ShaderAttributes& shaderAttributes,
                        const InstancedDataInstance& instancesData,
                        const ShaderAttributes& instanceShaderAttributes);
-
-  void RelinkInstancedData(const InstancedDataInstance& instancesData,
-                           const ShaderAttributes& instanceShaderAttributes);
 
   void Clear();
 

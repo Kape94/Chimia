@@ -317,8 +317,13 @@ Implementation steps:
     * for non-indexed draw, the number of vertices should correspond to the smaller number across all buffers; [DONE]
     * for instanced draw, the number of instances should be the smaller across all instanced buffers; [DONE]
   - Rename InstancedDataBuffer -> InstancedData; [DONE]
-  - Use shared_ptr for VertexData, IndexData and InstancedDataBuffer (and Shader?);
-  - Remove self owned datas from render actions. Datas should be explicitly created and managed;
-  - Create support for reference InstancedDataBuffer; 
-  - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;
+  - Use shared_ptr for VertexData, IndexData and InstancedDataBuffer; [DONE]
+  - Remove self owned datas from render actions. Datas should be explicitly created and managed; [DONE]
+  - Create support for reference InstancedDataBuffer;  [DONE]
+  - Implement dataLayout definition and named binding;
+  - Move IDataChangeListener definition to module's impl and also the Listeners structure;
+  - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing;
+  - We shouldn`t rely in reusing public methods inside other methods of the same object;
   - The renderAction could hold the reference to the shader it uses for rendering;
+  - Use shared_ptr for Shader? RenderAction should hold a shader?
+  - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;

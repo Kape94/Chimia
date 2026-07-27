@@ -169,14 +169,9 @@ void
 RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 {
   const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
-
   const size_t batchSizeInBytes = effectiveBatchSize * m_triangleSizeInBytes;
 
-  RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuComponent.data->Create(
-    rawData, CalculateNumberOfVertices(rawData, m_vertexAttributes));
-
-  m_gpuComponent.action.Create(m_gpuComponent.data, m_vertexAttributes);
+  m_gpuComponent.data->Resize({ nullptr, batchSizeInBytes });
 
   m_currentGPUBatchSize = effectiveBatchSize;
 }

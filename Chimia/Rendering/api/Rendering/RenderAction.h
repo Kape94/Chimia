@@ -3,7 +3,6 @@
 #include "Core/ClassDefs.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "Core/Types.h"
 #include "GenericRenderAction.h"
 #include "ShaderAttribute.h"
 #include "VertexData.h"

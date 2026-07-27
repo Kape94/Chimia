@@ -190,14 +190,8 @@ RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
   const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
 
   for (auto& component : m_gpuComponent) {
-    Rendering::InstancedDataInstance oldData = std::move(component.data);
-
-    component.data = Rendering::InstancedData::New();
-    component.data->Create(
+    component.data->Resize(
       RawArrayView{ nullptr, effectiveBatchSize, m_instanceDataSizeInBytes });
-    component.action.RelinkInstancedData(component.data, m_instancedAttributes);
-
-    oldData->Clear();
   }
   m_currentGPUBatchSize = effectiveBatchSize;
 }

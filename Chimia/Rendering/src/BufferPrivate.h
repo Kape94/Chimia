@@ -22,15 +22,27 @@ public:
   static void Bind(const VertexDataInstance& data);
   static unsigned GetNVertices(const VertexDataInstance& data);
   static unsigned GetLayoutSize(const VertexDataInstance& data);
+  static void AddListener(VertexDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(VertexDataInstance& data,
+                             IDataChangeListener* listener);
 
   // IndexData
   static void Bind(const IndexDataInstance& data);
   static unsigned GetNIndices(const IndexDataInstance& data);
+  static void AddListener(IndexDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(IndexDataInstance& data,
+                             IDataChangeListener* listener);
 
   // InstancedDataBuffer
   static void Bind(const InstancedDataInstance& buffer);
   static unsigned GetNInstances(const InstancedDataInstance& buffer);
   static unsigned GetInstanceSize(const InstancedDataInstance& buffer);
+  static void AddListener(InstancedDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(InstancedDataInstance& data,
+                             IDataChangeListener* listener);
 
   // ShaderBinding
   static const VertexDataInstance& GetVertexData(const ShaderBinding& binding);

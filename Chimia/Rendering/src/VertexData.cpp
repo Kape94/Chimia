@@ -3,6 +3,7 @@
 #include "BufferUtils.h"
 #include "Core/Types.h"
 #include "GLState.h"
+#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -25,6 +26,7 @@ VertexData::VertexData(VertexData&& other)
   , m_nVertices(other.m_nVertices)
   , m_currentVertexSize(other.m_currentVertexSize)
   , m_maximumVertexSize(other.m_maximumVertexSize)
+  , m_listeners(std::move(other.m_listeners))
 {
   other.m_VBO = 0;
   other.m_sizePerVertex = 0;
@@ -43,6 +45,7 @@ VertexData::operator=(VertexData&& other)
   m_nVertices = other.m_nVertices;
   m_currentVertexSize = other.m_currentVertexSize;
   m_maximumVertexSize = other.m_maximumVertexSize;
+  m_listeners = std::move(other.m_listeners);
 
   other.m_VBO = 0;
   other.m_sizePerVertex = 0;
@@ -107,6 +110,19 @@ VertexData::Load(const RawDataView& data)
 // ----------------------------------------------------------------------------
 
 void
+VertexData::Resize(const RawDataView& data)
+{
+  const unsigned nVerticesNew = data.size / m_sizePerVertex;
+
+  Clear();
+  Create(data, nVerticesNew);
+
+  m_listeners.DataChanged();
+}
+
+// ----------------------------------------------------------------------------
+
+void
 VertexData::Clear()
 {
   if (m_VBO != 0) {
@@ -144,6 +160,22 @@ unsigned
 VertexData::GetLayoutSize() const
 {
   return m_sizePerVertex;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexData::AddListener(IDataChangeListener* listener)
+{
+  m_listeners.Add(listener);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexData::RemoveListener(IDataChangeListener* listener)
+{
+  m_listeners.Remove(listener);
 }
 
 // ----------------------------------------------------------------------------

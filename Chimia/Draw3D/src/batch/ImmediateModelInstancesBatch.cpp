@@ -151,16 +151,8 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
 
   for (auto& gpuComponent : m_gpuComponents) {
-
-    Rendering::InstancedDataInstance oldBuffer = std::move(gpuComponent.data);
-
-    gpuComponent.data = Rendering::InstancedData::New();
-    gpuComponent.data->Create(
+    gpuComponent.data->Resize(
       RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes });
-    gpuComponent.action.RelinkInstancedData(gpuComponent.data,
-                                            m_instancedAttributes);
-
-    oldBuffer->Clear();
   }
 
   m_currentGPUBatchSizeInBytes = batchSizeInBytes;

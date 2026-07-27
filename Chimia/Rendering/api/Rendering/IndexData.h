@@ -4,9 +4,12 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "Rendering/DataListeners.h"
+#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
+#include <set>
 
 // ----------------------------------------------------------------------------
 
@@ -29,6 +32,7 @@ public:
   void Create(const RawArrayView& indexData);
 
   void LoadIndexData(const RawArrayView& indexData);
+  void Resize(const RawArrayView& indexData);
 
   void Clear();
 
@@ -37,6 +41,8 @@ private:
 
   void Bind() const;
   unsigned GetNIndices() const;
+  void AddListener(IDataChangeListener* listener);
+  void RemoveListener(IDataChangeListener* listener);
 
   void AllocateIndexData(const RawArrayView& indexData);
 
@@ -47,6 +53,8 @@ private:
 
   size_t m_currentIndexSize = 0;
   size_t m_maximumIndexSize = 0;
+
+  DataListeners m_listeners;
 };
 
 // ----------------------------------------------------------------------------

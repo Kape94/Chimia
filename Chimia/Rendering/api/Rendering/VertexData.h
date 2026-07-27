@@ -4,9 +4,12 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "Rendering/DataListeners.h"
+#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
+#include <set>
 
 // ----------------------------------------------------------------------------
 
@@ -28,6 +31,7 @@ public:
 
   void Create(const RawDataView& vertexData, const unsigned nVertices);
   void Load(const RawDataView& data);
+  void Resize(const RawDataView& data);
 
   void Clear();
 
@@ -39,6 +43,8 @@ private:
   unsigned GetNVertices() const;
   unsigned GetLayoutSize() const;
   void Bind() const;
+  void AddListener(IDataChangeListener* listener);
+  void RemoveListener(IDataChangeListener* listener);
 
   void AllocateVertexData(const RawDataView& vertexData,
                           const unsigned nVertices);
@@ -50,6 +56,8 @@ private:
 
   size_t m_currentVertexSize = 0;
   size_t m_maximumVertexSize = 0;
+
+  DataListeners m_listeners;
 };
 
 // ----------------------------------------------------------------------------

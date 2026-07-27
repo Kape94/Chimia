@@ -6,8 +6,6 @@
 
 #include "ShaderAttribute.h"
 
-#include "Core/Types.h"
-
 //---------------------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE

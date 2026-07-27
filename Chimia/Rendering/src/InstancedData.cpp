@@ -3,6 +3,7 @@
 #include "BufferUtils.h"
 #include "Core/Types.h"
 #include "GLState.h"
+#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -97,6 +98,17 @@ InstancedData::Load(const RawArrayView& instancedData)
 // ----------------------------------------------------------------------------
 
 void
+InstancedData::Resize(const RawArrayView& data)
+{
+  Clear();
+  Create(data);
+
+  m_listeners.DataChanged();
+}
+
+// ----------------------------------------------------------------------------
+
+void
 InstancedData::Clear()
 {
   if (m_instancedVBO != 0) {
@@ -131,6 +143,22 @@ unsigned
 InstancedData::GetInstanceSize() const
 {
   return static_cast<unsigned>(m_currentSize) / m_nInstances;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+InstancedData::AddListener(IDataChangeListener* listener)
+{
+  m_listeners.Add(listener);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+InstancedData::RemoveListener(IDataChangeListener* listener)
+{
+  m_listeners.Remove(listener);
 }
 
 // ----------------------------------------------------------------------------

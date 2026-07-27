@@ -1,4 +1,5 @@
 #include "BufferPrivate.h"
+#include "IndexData.h"
 #include "ShaderBinding.h"
 
 // --------------------------------------------------------------------------------------
@@ -32,6 +33,24 @@ BufferPrivate::GetLayoutSize(const VertexDataInstance& data)
 // --------------------------------------------------------------------------------------
 
 void
+BufferPrivate::AddListener(VertexDataInstance& data,
+                           IDataChangeListener* listener)
+{
+  data->AddListener(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::RemoveListener(VertexDataInstance& data,
+                              IDataChangeListener* listener)
+{
+  data->RemoveListener(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
 BufferPrivate::Bind(const IndexDataInstance& data)
 {
   data->Bind();
@@ -43,6 +62,24 @@ unsigned
 BufferPrivate::GetNIndices(const IndexDataInstance& data)
 {
   return data->GetNIndices();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::AddListener(IndexDataInstance& data,
+                           IDataChangeListener* listener)
+{
+  data->AddListener(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::RemoveListener(IndexDataInstance& data,
+                              IDataChangeListener* listener)
+{
+  data->RemoveListener(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -83,6 +120,24 @@ const InstancedDataInstance&
 BufferPrivate::GetInstancedData(const ShaderBinding& binding)
 {
   return binding.GetInstancedData();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::AddListener(InstancedDataInstance& data,
+                           IDataChangeListener* listener)
+{
+  data->AddListener(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::RemoveListener(InstancedDataInstance& data,
+                              IDataChangeListener* listener)
+{
+  data->RemoveListener(listener);
 }
 
 // --------------------------------------------------------------------------------------

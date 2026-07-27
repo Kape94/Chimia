@@ -10,6 +10,8 @@
 #include "ShaderBinding.h"
 #include "VertexData.h"
 #include <set>
+#include <utility>
+#include <vector>
 
 //---------------------------------------------------------------------------------------
 
@@ -22,6 +24,7 @@ GenericRenderAction::GenericRenderAction(GenericRenderAction&& other) noexcept
   , m_referenceVertexDatas(std::move(other.m_referenceVertexDatas))
   , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
+  , m_bindings(std::move(other.m_bindings))
 {
   other.m_VAO = 0;
 }
@@ -36,6 +39,7 @@ GenericRenderAction::operator=(GenericRenderAction&& other) noexcept
     m_referenceVertexDatas = std::move(other.m_referenceVertexDatas);
     m_referenceIndexBuffer = std::move(other.m_referenceIndexBuffer);
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
+    m_bindings = std::move(other.m_bindings);
 
     other.m_VAO = 0;
   }
@@ -58,11 +62,14 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings)
   Clear();
 
   CollectDatasFromBindings(bindings);
+  RegisterAsListener();
 
   SetupVAO();
   for (const ShaderBinding& binding : bindings) {
     BufferUtils::LinkShaderBinding(binding);
   }
+
+  m_bindings = bindings;
 }
 
 //---------------------------------------------------------------------------------------
@@ -74,6 +81,7 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings,
   Clear();
 
   CollectDatasFromBindings(bindings);
+  RegisterAsListener();
 
   SetupVAO();
   for (const ShaderBinding& binding : bindings) {
@@ -82,6 +90,8 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings,
 
   m_referenceIndexBuffer = indexData;
   BufferPrivate::Bind(indexData);
+
+  m_bindings = bindings;
 }
 
 //---------------------------------------------------------------------------------------
@@ -92,10 +102,12 @@ GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(reusableVertexBuffer);
-
-  SetupVAO();
-  Configure(reusableVertexBuffer, nullptr /*indexData*/, shaderAttributes);
+  const ShaderAttributes emptyInstanceAttributes{};
+  GenerateBindingsAndCreate(reusableVertexBuffer,
+                            nullptr,
+                            shaderAttributes,
+                            nullptr,
+                            emptyInstanceAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -107,11 +119,12 @@ GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(reusableVertexBuffer);
-  m_referenceIndexBuffer = reusableIndexBuffer;
-
-  SetupVAO();
-  Configure(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
+  const ShaderAttributes emptyInstanceAttributes{};
+  GenerateBindingsAndCreate(reusableVertexBuffer,
+                            reusableIndexBuffer,
+                            shaderAttributes,
+                            nullptr,
+                            emptyInstanceAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -125,13 +138,11 @@ GenericRenderAction::CreateInstanced(
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(reusableVertexBuffer);
-
-  SetupVAO();
-  Configure(reusableVertexBuffer, nullptr /*indexData*/, shaderAttributes);
-
-  m_referenceInstancedDatas.push_back(instancesData);
-  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
+  GenerateBindingsAndCreate(reusableVertexBuffer,
+                            nullptr,
+                            shaderAttributes,
+                            instancesData,
+                            instanceShaderAttributes);
 }
 
 //---------------------------------------------------------------------------------------
@@ -146,14 +157,37 @@ GenericRenderAction::CreateInstanced(
 {
   Clear();
 
-  m_referenceVertexDatas.push_back(reusableVertexBuffer);
-  m_referenceIndexBuffer = reusableIndexBuffer;
+  GenerateBindingsAndCreate(reusableVertexBuffer,
+                            reusableIndexBuffer,
+                            shaderAttributes,
+                            instancesData,
+                            instanceShaderAttributes);
+}
 
-  SetupVAO();
-  Configure(reusableVertexBuffer, reusableIndexBuffer, shaderAttributes);
+//---------------------------------------------------------------------------------------
 
-  m_referenceInstancedDatas.push_back(instancesData);
-  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
+void
+GenericRenderAction::GenerateBindingsAndCreate(
+  const VertexDataInstance& vertexData,
+  const IndexDataInstance& indexData,
+  const ShaderAttributes& vertexAttributes,
+  const InstancedDataInstance& instancedData,
+  const ShaderAttributes& instancedAttributes)
+{
+  auto allBindings = BufferUtils::CreateBindings(vertexAttributes, vertexData);
+  if (instancedData != nullptr) {
+    auto instancedBindings =
+      BufferUtils::CreateBindings(instancedAttributes, instancedData);
+
+    allBindings.insert(
+      allBindings.end(), instancedBindings.begin(), instancedBindings.end());
+  }
+
+  if (indexData != nullptr) {
+    Create(allBindings, indexData);
+  } else {
+    Create(allBindings);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -195,21 +229,16 @@ GenericRenderAction::CollectDatasFromBindings(
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Configure(const VertexDataInstance& buffer,
-                               const IndexDataInstance& indexData,
-                               const ShaderAttributes& shaderAttributes)
+GenericRenderAction::Clear()
 {
-  BufferUtils::LinkShaderAttributes(shaderAttributes, buffer);
-
-  if (indexData != nullptr) {
-    BufferPrivate::Bind(indexData);
-  }
+  UnregisterAsListener();
+  ClearRenderingData();
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Clear()
+GenericRenderAction::ClearRenderingData()
 {
   if (m_VAO != 0) {
     glDeleteVertexArrays(1, &m_VAO);
@@ -219,34 +248,39 @@ GenericRenderAction::Clear()
   m_referenceVertexDatas.clear();
   m_referenceIndexBuffer = nullptr;
   m_referenceInstancedDatas.clear();
+  m_bindings.clear();
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RelinkInstancedData(
-  const InstancedDataInstance& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
+GenericRenderAction::RegisterAsListener()
 {
-  if (m_VAO == 0) {
-    return;
+  for (VertexDataInstance& data : m_referenceVertexDatas) {
+    BufferPrivate::AddListener(data, this);
   }
+  if (m_referenceIndexBuffer != nullptr) {
+    BufferPrivate::AddListener(m_referenceIndexBuffer, this);
+  }
+  for (InstancedDataInstance& data : m_referenceInstancedDatas) {
+    BufferPrivate::AddListener(data, this);
+  }
+}
 
-  /* A quick note: for some reason clearing the buffer and creating a new one
-     right after doesn't works. While debugging I noticed that doing that way,
-     the ID for the buffer wasn't getting changed, and this was kinda messing
-     things in the driver. Doing this way (creating the new buffer first), the
-     m_instancedVBO forcefully acquires a different ID, and I think for some
-     reason this makes the process work in the graphics driver.
-  */
-  GLState::BindVertexArray(m_VAO);
+//---------------------------------------------------------------------------------------
 
-  m_referenceInstancedDatas.clear();
-
-  m_referenceInstancedDatas.push_back(instancesData);
-  BufferUtils::LinkShaderAttributes(instanceShaderAttributes, instancesData);
-
-  GLState::BindVertexArray(0);
+void
+GenericRenderAction::UnregisterAsListener()
+{
+  for (VertexDataInstance& data : m_referenceVertexDatas) {
+    BufferPrivate::RemoveListener(data, this);
+  }
+  if (m_referenceIndexBuffer != nullptr) {
+    BufferPrivate::RemoveListener(m_referenceIndexBuffer, this);
+  }
+  for (InstancedDataInstance& data : m_referenceInstancedDatas) {
+    BufferPrivate::RemoveListener(data, this);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -340,6 +374,24 @@ GenericRenderAction::PickReferenceInstanceCount() const
   }
 
   return nInstances;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+GenericRenderAction::DataChanged()
+{
+  std::vector<ShaderBinding> backupBindings = m_bindings;
+  const IndexDataInstance backupIndex = m_referenceIndexBuffer;
+
+  // ClearRenderingData();
+  Clear();
+
+  if (backupIndex != nullptr) {
+    Create(backupBindings, backupIndex);
+  } else {
+    Create(backupBindings);
+  }
 }
 
 //---------------------------------------------------------------------------------------

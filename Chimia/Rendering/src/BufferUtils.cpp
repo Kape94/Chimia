@@ -140,6 +140,23 @@ BufferUtils::LoadDataOnBuffer(const unsigned bufferID,
 
 //---------------------------------------------------------------------------------------
 
+std::vector<ShaderBinding>
+BufferUtils::CreateBindings(const ShaderAttributes& shaderAttributes,
+                            const VertexDataInstance& vertexData)
+{
+  std::vector<ShaderBinding> bindings;
+
+  unsigned offset = 0;
+  for (const ShaderAttribute& attribute : shaderAttributes) {
+    bindings.emplace_back(CreateShaderBinding(attribute, offset, vertexData));
+    offset += attribute.DataSizeInBytes();
+  }
+
+  return bindings;
+}
+
+//---------------------------------------------------------------------------------------
+
 void
 BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
                                   const VertexDataInstance& vertexData)
@@ -155,6 +172,24 @@ BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
   for (const ShaderBinding& binding : bindings) {
     LinkShaderBinding(binding);
   }
+}
+
+//---------------------------------------------------------------------------------------
+
+std::vector<ShaderBinding>
+BufferUtils::CreateBindings(const ShaderAttributes& shaderAttributes,
+                            const InstancedDataInstance& instancedData)
+{
+  std::vector<ShaderBinding> bindings;
+
+  unsigned offset = 0;
+  for (const ShaderAttribute& attribute : shaderAttributes) {
+    bindings.emplace_back(
+      CreateShaderBinding(attribute, offset, instancedData));
+    offset += attribute.DataSizeInBytes();
+  }
+
+  return bindings;
 }
 
 //---------------------------------------------------------------------------------------

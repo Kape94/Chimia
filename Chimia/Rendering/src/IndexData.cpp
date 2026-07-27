@@ -3,6 +3,7 @@
 #include "BufferUtils.h"
 #include "Core/Types.h"
 #include "GLState.h"
+#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -24,6 +25,7 @@ IndexData::IndexData(IndexData&& other)
   , m_nIndices(other.m_nIndices)
   , m_currentIndexSize(other.m_currentIndexSize)
   , m_maximumIndexSize(other.m_maximumIndexSize)
+  , m_listeners(std::move(other.m_listeners))
 {
   other.m_EBO = 0;
   other.m_nIndices = 0;
@@ -40,6 +42,7 @@ IndexData::operator=(IndexData&& other)
   m_nIndices = other.m_nIndices;
   m_currentIndexSize = other.m_currentIndexSize;
   m_maximumIndexSize = other.m_maximumIndexSize;
+  m_listeners = std::move(other.m_listeners);
 
   other.m_EBO = 0;
   other.m_nIndices = 0;
@@ -102,6 +105,17 @@ IndexData::LoadIndexData(const RawArrayView& indexData)
 // ----------------------------------------------------------------------------
 
 void
+IndexData::Resize(const RawArrayView& indexData)
+{
+  Clear();
+  Create(indexData);
+
+  m_listeners.DataChanged();
+}
+
+// ----------------------------------------------------------------------------
+
+void
 IndexData::Clear()
 {
   if (m_EBO != 0) {
@@ -130,6 +144,22 @@ unsigned
 IndexData::GetNIndices() const
 {
   return m_nIndices;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+IndexData::AddListener(IDataChangeListener* listener)
+{
+  m_listeners.Add(listener);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+IndexData::RemoveListener(IDataChangeListener* listener)
+{
+  m_listeners.Remove(listener);
 }
 
 // ----------------------------------------------------------------------------
