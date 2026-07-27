@@ -9,7 +9,6 @@
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
-#include <set>
 
 // ----------------------------------------------------------------------------
 

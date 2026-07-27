@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
-#include "Core/Types.h"
 #include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
