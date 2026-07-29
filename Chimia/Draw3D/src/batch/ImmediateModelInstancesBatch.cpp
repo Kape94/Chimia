@@ -19,6 +19,7 @@ void
 ImmediateModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes,
   const std::function<void(void)>& onFlush)
@@ -32,8 +33,12 @@ ImmediateModelInstancesBatch::Create(
   const size_t batchSize = batchingSettings.initialBatchSize;
   model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
                           const Rendering::IndexDataInstance& indexData) {
-    AddGPUBuffer(
-      vertexData, indexData, batchSize, vertexAttributes, instanceAttributes);
+    AddGPUBuffer(vertexData,
+                 indexData,
+                 batchSize,
+                 instancedDataLayout,
+                 vertexAttributes,
+                 instanceAttributes);
   });
 
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
@@ -48,6 +53,7 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::VertexDataInstance& vertexData,
   const Rendering::IndexDataInstance& indexData,
   const size_t instanceBatchSize,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
@@ -55,7 +61,8 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
 
   inserted.data = Rendering::InstancedData::New();
   inserted.data->Create(
-    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes });
+    RawDataView{ nullptr, instanceBatchSize * m_instancedDataSizeInBytes },
+    instancedDataLayout);
 
   inserted.action.CreateInstanced(
     vertexData, indexData, vertexAttributes, inserted.data, instanceAttributes);
@@ -152,7 +159,7 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 
   for (auto& gpuComponent : m_gpuComponents) {
     gpuComponent.data->Resize(
-      RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes });
+      RawDataView{ nullptr, batchSize * m_instancedDataSizeInBytes });
   }
 
   m_currentGPUBatchSizeInBytes = batchSizeInBytes;

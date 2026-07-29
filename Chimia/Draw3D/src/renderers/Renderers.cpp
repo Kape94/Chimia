@@ -32,7 +32,12 @@ Renderers::CreateRenderer(
   const VertexLayoutAttributes layoutAttributes =
     RenderersUtils::GetAttributesForLayout(vertexLayout);
 
+  const VertexLayoutDataSchemas dataSchemas =
+    RenderersUtils::GetDataSchemasForLayout(vertexLayout);
+
   renderer->Create(id,
+                   dataSchemas.vertexDataLayout,
+                   dataSchemas.instancedDataLayout,
                    layoutAttributes.vertexAttributes,
                    layoutAttributes.instancedAttributes,
                    setupShaderForTriangleRendering,

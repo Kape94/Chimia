@@ -41,6 +41,7 @@ CalculateNumberOfVertices(
 void
 RetainedTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
+  const Rendering::DataLayout& vertexDataLayout,
   const Rendering::ShaderAttributes& shaderAttributes)
 {
   m_batchingSettings = batchingSettings;
@@ -56,8 +57,7 @@ RetainedTrianglesBatch::Create(
   m_gpuComponent.data = Rendering::VertexData::New();
 
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuComponent.data->Create(
-    rawData, CalculateNumberOfVertices(rawData, shaderAttributes));
+  m_gpuComponent.data->Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(m_gpuComponent.data, shaderAttributes);
 

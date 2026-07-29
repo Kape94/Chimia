@@ -2,6 +2,7 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "DataLayout.h"
 #include "GLState.h"
 #include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
@@ -23,6 +24,7 @@ InstancedData::New()
 InstancedData::InstancedData(InstancedData&& other)
   : m_instancedVBO(other.m_instancedVBO)
   , m_nInstances(other.m_nInstances)
+  , m_dataLayout(std::move(other.m_dataLayout))
   , m_currentSize(other.m_currentSize)
   , m_maximumSize(other.m_maximumSize)
 {
@@ -39,6 +41,7 @@ InstancedData::operator=(InstancedData&& other)
 {
   m_instancedVBO = other.m_instancedVBO;
   m_nInstances = other.m_nInstances;
+  m_dataLayout = std::move(other.m_dataLayout);
   m_currentSize = other.m_currentSize;
   m_maximumSize = other.m_maximumSize;
 
@@ -60,20 +63,25 @@ InstancedData::~InstancedData()
 // ----------------------------------------------------------------------------
 
 void
-InstancedData::Create(const RawArrayView& instancedData)
+InstancedData::Create(const RawDataView& instancedData,
+                      const DataLayout& dataLayout)
 {
   Clear();
 
-  const void* instancedRawData = instancedData.array;
-  const unsigned instanceDataSize = instancedData.itemSize;
-  const unsigned nInstances = instancedData.nItems;
+  const void* instancedRawData = instancedData.data;
+
+  const size_t instanceSize = dataLayout.TotalSize();
+  const size_t totalDataSize = instancedData.size;
+
+  const unsigned instanceDataSize = instanceSize;
+  const unsigned nInstances = totalDataSize / instanceSize;
 
   m_instancedVBO = BufferUtils::CreateBufferAndLoadData(
     instancedRawData, instanceDataSize * nInstances, false /*isIndexBuffer*/);
 
   m_nInstances = nInstances;
+  m_dataLayout = dataLayout;
 
-  const size_t totalDataSize = instancedData.TotalSize();
   m_currentSize = totalDataSize;
   m_maximumSize = totalDataSize;
 }
@@ -98,10 +106,12 @@ InstancedData::Load(const RawArrayView& instancedData)
 // ----------------------------------------------------------------------------
 
 void
-InstancedData::Resize(const RawArrayView& data)
+InstancedData::Resize(const RawDataView& data)
 {
+  const DataLayout backupLayout = m_dataLayout;
+
   Clear();
-  Create(data);
+  Create(data, backupLayout);
 
   m_listeners.DataChanged();
 }
@@ -143,6 +153,14 @@ unsigned
 InstancedData::GetInstanceSize() const
 {
   return static_cast<unsigned>(m_currentSize) / m_nInstances;
+}
+
+// ----------------------------------------------------------------------------
+
+const DataLayout&
+InstancedData::GetDataLayout() const
+{
+  return m_dataLayout;
 }
 
 // ----------------------------------------------------------------------------

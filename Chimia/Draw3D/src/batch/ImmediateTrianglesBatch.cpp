@@ -11,38 +11,11 @@
 USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
-// TEST - will be removed soon
-// ----------------------------------------------------------------------------
-
-namespace {
-unsigned
-ComputeTotalSizeOfAttributes(const Chimia::Rendering::ShaderAttributes& attrs)
-{
-  unsigned totalSize = 0;
-  for (const Chimia::Rendering::ShaderAttribute& attr : attrs) {
-    totalSize += attr.DataSizeInBytes();
-  }
-  return totalSize;
-}
-
-size_t
-CalculateNumberOfVertices(
-  const Chimia::RawDataView& vertexData,
-  const Chimia::Rendering::ShaderAttributes& shaderAttributes)
-{
-  const size_t vertexDataSize = vertexData.size;
-  const size_t sizePerVertex = ComputeTotalSizeOfAttributes(shaderAttributes);
-  return vertexDataSize / sizePerVertex;
-}
-}
-
-// ----------------------------------------------------------------------------
-// TEST - will be removed soon
-// ----------------------------------------------------------------------------
 
 void
 ImmediateTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
+  const Rendering::DataLayout& vertexDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const std::function<void(void)>& onFlush)
 {
@@ -60,8 +33,7 @@ ImmediateTrianglesBatch::Create(
   m_gpuComponent.data = Rendering::VertexData::New();
 
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuComponent.data->Create(
-    rawData, CalculateNumberOfVertices(rawData, vertexAttributes));
+  m_gpuComponent.data->Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(m_gpuComponent.data, vertexAttributes);
 

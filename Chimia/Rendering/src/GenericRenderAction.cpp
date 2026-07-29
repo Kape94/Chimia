@@ -57,7 +57,7 @@ GenericRenderAction::~GenericRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings)
+GenericRenderAction::Create(const ShaderBindings& bindings)
 {
   Clear();
 
@@ -75,7 +75,7 @@ GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings)
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const std::vector<ShaderBinding>& bindings,
+GenericRenderAction::Create(const ShaderBindings& bindings,
                             const IndexDataInstance& indexData)
 {
   Clear();
@@ -174,13 +174,13 @@ GenericRenderAction::GenerateBindingsAndCreate(
   const InstancedDataInstance& instancedData,
   const ShaderAttributes& instancedAttributes)
 {
-  auto allBindings = BufferUtils::CreateBindings(vertexAttributes, vertexData);
+  ShaderBindings allBindings =
+    BufferUtils::CreateBindings(vertexAttributes, vertexData);
   if (instancedData != nullptr) {
-    auto instancedBindings =
+    ShaderBindings instancedBindings =
       BufferUtils::CreateBindings(instancedAttributes, instancedData);
 
-    allBindings.insert(
-      allBindings.end(), instancedBindings.begin(), instancedBindings.end());
+    allBindings.Insert(instancedBindings);
   }
 
   if (indexData != nullptr) {
@@ -202,8 +202,7 @@ GenericRenderAction::SetupVAO()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::CollectDatasFromBindings(
-  const std::vector<ShaderBinding>& bindings)
+GenericRenderAction::CollectDatasFromBindings(const ShaderBindings& bindings)
 {
   std::set<VertexDataInstance> vertexSet;
   std::set<InstancedDataInstance> instancedSet;
@@ -248,7 +247,7 @@ GenericRenderAction::ClearRenderingData()
   m_referenceVertexDatas.clear();
   m_referenceIndexBuffer = nullptr;
   m_referenceInstancedDatas.clear();
-  m_bindings.clear();
+  m_bindings.Clear();
 }
 
 //---------------------------------------------------------------------------------------
@@ -381,7 +380,7 @@ GenericRenderAction::PickReferenceInstanceCount() const
 void
 GenericRenderAction::DataChanged()
 {
-  std::vector<ShaderBinding> backupBindings = m_bindings;
+  ShaderBindings backupBindings = m_bindings;
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;
 
   // ClearRenderingData();

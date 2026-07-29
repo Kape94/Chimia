@@ -26,9 +26,9 @@ public:
 
   ~GenericRenderAction();
 
-  void Create(const std::vector<ShaderBinding>& bindings);
+  void Create(const ShaderBindings& bindings);
 
-  void Create(const std::vector<ShaderBinding>& bindings,
+  void Create(const ShaderBindings& bindings,
               const IndexDataInstance& indexData);
 
   void Create(const VertexDataInstance& reusableVertexBuffer,
@@ -58,7 +58,7 @@ private:
 
   void ClearRenderingData();
 
-  void CollectDatasFromBindings(const std::vector<ShaderBinding>& bindings);
+  void CollectDatasFromBindings(const ShaderBindings& bindings);
 
   void RegisterAsListener();
   void UnregisterAsListener();
@@ -84,7 +84,7 @@ private:
   IndexDataInstance m_referenceIndexBuffer = nullptr;
   std::vector<InstancedDataInstance> m_referenceInstancedDatas;
 
-  std::vector<ShaderBinding> m_bindings;
+  ShaderBindings m_bindings;
 };
 
 //---------------------------------------------------------------------------------------

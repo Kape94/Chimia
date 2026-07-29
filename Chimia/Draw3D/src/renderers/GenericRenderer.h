@@ -7,6 +7,7 @@
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/ShaderAttribute.h"
 #include "ResourceGroup.h"
 #include "TriangleMeshComponent.h"
@@ -26,6 +27,8 @@ public:
   DEFAULT_CONSTUCTIBLE(GenericRenderer)
 
   void Create(const unsigned id,
+              const Rendering::DataLayout& vertexDataLayout,
+              const Rendering::DataLayout& instancedDataLayout,
               const Rendering::ShaderAttributes& vertexAttributes,
               const Rendering::ShaderAttributes& instancedAttributes,
               void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
@@ -68,6 +71,8 @@ private:
   NON_COPYABLE_NON_MOVABLE(GenericRenderer)
 
   unsigned m_id;
+  Rendering::DataLayout m_vertexDataLayout;
+  Rendering::DataLayout m_instancedDataLayout;
   Rendering::ShaderAttributes m_vertexAttributes;
   Rendering::ShaderAttributes m_instancedAttributes;
 

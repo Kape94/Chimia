@@ -8,13 +8,16 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 void
 TriangleMeshComponent::Init(const BatchingSettings& batchingSettings,
+                            const Rendering::DataLayout& vertexDataLayout,
                             const Rendering::ShaderAttributes& vertexAttributes,
                             const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
 
-  m_triangleBatch.Create(batchingSettings, vertexAttributes, onFlush);
-  m_staticTriangles.Create(batchingSettings, vertexAttributes);
+  m_triangleBatch.Create(
+    batchingSettings, vertexDataLayout, vertexAttributes, onFlush);
+  m_staticTriangles.Create(
+    batchingSettings, vertexDataLayout, vertexAttributes);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,9 +1,11 @@
 #include "Core/Types.h"
 #include "Media/Image.h"
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
+#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -57,7 +59,6 @@ const std::vector<float> vertex{
     0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
 // clang-format on
-const unsigned nVertices = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -74,21 +75,27 @@ main(int argc, char** argv)
 
   Chimia::Rendering::Initialize();
 
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
+
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+  vertexData->Create(Inputs::BufferData::vertex, dataLayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::IndexedRenderAction renderTriangleAction;
-  renderTriangleAction.Create(
-    vertexData,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction renderTriangleAction;
+  renderTriangleAction.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData, "pos", shader, "pos"),
+                                Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData, "uv", shader, "uv") },
+                              indexData);
 
   const std::string testPath = ExtrasUtils::GetCurrentAppDir(argv);
   const std::string assetsDir = testPath + "/assets/";

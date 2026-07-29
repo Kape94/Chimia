@@ -4,6 +4,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/DataListeners.h"
 #include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
@@ -28,7 +29,7 @@ public:
 
   ~VertexData();
 
-  void Create(const RawDataView& vertexData, const unsigned nVertices);
+  void Create(const RawDataView& vertexData, const DataLayout& dataLayout);
   void Load(const RawDataView& data);
   void Resize(const RawDataView& data);
 
@@ -39,6 +40,7 @@ private:
 
   friend class BufferPrivate;
 
+  const DataLayout& GetDataLayout() const;
   unsigned GetNVertices() const;
   unsigned GetLayoutSize() const;
   void Bind() const;
@@ -50,6 +52,7 @@ private:
 
   unsigned m_VBO = 0;
 
+  DataLayout m_dataLayout;
   unsigned m_sizePerVertex = 0;
   unsigned m_nVertices = 0;
 

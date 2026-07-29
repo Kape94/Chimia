@@ -1,8 +1,10 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/RenderAction.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <algorithm>
@@ -92,8 +94,14 @@ main()
   Window win(1280, 1080, "Example #10");
   Chimia::Rendering::Initialize();
 
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   const auto& states = Inputs::BufferData::vertexStates;
   const size_t maximumSize =
@@ -103,17 +111,15 @@ main()
                     [](size_t current, const std::vector<float>& incoming) {
                       return std::max(current, incoming.size());
                     });
-  const unsigned nComponentsPerVertex = 6;
-  const unsigned nVertices = maximumSize / nComponentsPerVertex;
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, nVertices);
+  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
 
-  Chimia::Rendering::RenderAction action;
-  action.Create(
-    vertexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "color", shader, "color") });
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

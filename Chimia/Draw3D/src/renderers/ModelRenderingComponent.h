@@ -8,6 +8,7 @@
 #include "ImmediateModelInstancesBatch.h"
 #include "InternalTypes.h"
 #include "ObjectTable.h"
+#include "Rendering/DataLayout.h"
 #include "RetainedModelInstancesBatch.h"
 #include "Types.h"
 
@@ -28,6 +29,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(ModelRenderingComponent)
 
   void Init(const BatchingSettings& batchingSettings,
+            const Rendering::DataLayout& instancedDataLayout,
             const Rendering::ShaderAttributes& vertexAttributes,
             const Rendering::ShaderAttributes& instanceAttributes,
             const std::function<void(void)>& onFlush);
@@ -54,6 +56,8 @@ private:
     const ModelID& modelID);
 
   BatchingSettings m_batchingSettings;
+  Rendering::DataLayout m_vertexDataLayout;
+  Rendering::DataLayout m_instancedDataLayout;
   Rendering::ShaderAttributes m_vertexAttributes;
   Rendering::ShaderAttributes m_instanceAttributes;
   std::function<void(void)> m_onFlush;

@@ -1,3 +1,4 @@
+#include "Rendering/DataLayout.h"
 #include "Rendering/GenericRenderAction.h"
 #include "Rendering/InstancedData.h"
 #include "Rendering/Rendering.h"
@@ -53,8 +54,6 @@ const std::vector<float> vertexColors{  0.0f, 1.0f, 0.0f,
                                         0.0f, 0.0f, 1.0f };
 // clang-format on
 
-const unsigned nVertices = 3;
-
 const std::vector<glm::vec3> offsets{ { 0.0f, 0.0f, 0.0f },
                                       { -1.0f, 0.0f, 0.0f } };
 
@@ -69,24 +68,35 @@ main()
   Chimia::Rendering::Initialize();
 
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(Inputs::ShaderCodes::vShader,
+                Inputs::ShaderCodes::fShader,
+                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+                  { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+                  { "offset", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto positionData = Chimia::Rendering::VertexData::New();
-  positionData->Create(Inputs::BufferData::vertexPositions,
-                       Inputs::BufferData::nVertices);
+  positionData->Create(
+    Inputs::BufferData::vertexPositions,
+    { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto colorData = Chimia::Rendering::VertexData::New();
-  colorData->Create(Inputs::BufferData::vertexColors,
-                    Inputs::BufferData::nVertices);
+  colorData->Create(
+    Inputs::BufferData::vertexColors,
+    { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto offsetData = Chimia::Rendering::InstancedData::New();
-  offsetData->Create(Inputs::BufferData::offsets);
+  offsetData->Create(
+    Inputs::BufferData::offsets,
+    { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   Chimia::Rendering::GenericRenderAction action;
   action.Create({
-    Chimia::Rendering::ShaderBinding::Float(positionData, 0 /*pos*/, 3, 0),
-    Chimia::Rendering::ShaderBinding::Float(colorData, 1 /*color*/, 3, 0),
-    Chimia::Rendering::ShaderBinding::Float(offsetData, 2 /*offset*/, 3, 0),
+    Chimia::Rendering::ShaderBinding::Connect(
+      positionData, "data", shader, "pos"),
+    Chimia::Rendering::ShaderBinding::Connect(
+      colorData, "data", shader, "color"),
+    Chimia::Rendering::ShaderBinding::Connect(
+      offsetData, "data", shader, "offset"),
   });
 
   while (!win.ShouldClose()) {

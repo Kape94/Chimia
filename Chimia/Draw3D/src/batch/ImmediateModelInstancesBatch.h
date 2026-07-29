@@ -5,6 +5,7 @@
 #include "BatchUtils.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
@@ -31,6 +32,7 @@ public:
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& instancedDataLayout,
               const Rendering::ShaderAttributes& vertexAttributes,
               const Rendering::ShaderAttributes& instanceAttributes,
               const std::function<void(void)>& onFlush);
@@ -44,6 +46,7 @@ private:
   void AddGPUBuffer(const Rendering::VertexDataInstance& vertexData,
                     const Rendering::IndexDataInstance& indexData,
                     const size_t instanceBatchSize,
+                    const Rendering::DataLayout& instancedDataLayout,
                     const Rendering::ShaderAttributes& vertexAttributes,
                     const Rendering::ShaderAttributes& instanceAttributes);
 

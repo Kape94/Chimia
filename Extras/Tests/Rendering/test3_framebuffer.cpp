@@ -1,10 +1,12 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Media/Image.h"
 
 #include "Rendering/FrameBuffer.h"
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
+#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -101,7 +103,6 @@ const std::vector<float> vertex{
   0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 };
 // clang-format on
-const unsigned nVerticesTriangle = 3;
 
 const std::vector<unsigned> index{ 0, 1, 2 };
 
@@ -113,7 +114,6 @@ const std::vector<float> quad{ // x    y     z     u     v
                                -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 // clang-format on
-const unsigned nVerticesQuad = 4;
 
 const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 
@@ -134,22 +134,27 @@ main(int argc, char** argv)
 
   Chimia::Rendering::SetViewport(0, 0, scrWidth, scrHeight);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout datalayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
+
+  Chimia::Rendering::Shader shader;
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, datalayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex,
-                     Inputs::BufferData::nVerticesTriangle);
+  vertexData->Create(Inputs::BufferData::vertex, datalayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::IndexedRenderAction renderTriangle;
-  renderTriangle.Create(
-    vertexData,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction renderTriangle;
+  renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                            vertexData, "pos", shader, "pos"),
+                          Chimia::Rendering::ShaderBinding::Connect(
+                            vertexData, "uv", shader, "uv") },
+                        indexData);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
@@ -164,22 +169,23 @@ main(int argc, char** argv)
 
   Chimia::Rendering::FrameBuffer frameBuffer(scrWidth, scrHeight);
 
-  Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
-                                             Inputs::ShaderCodes::fShaderPost);
+  Chimia::Rendering::Shader secondPassShader;
+  secondPassShader.Create(Inputs::ShaderCodes::vShaderPost,
+                          Inputs::ShaderCodes::fShaderPost,
+                          datalayout);
 
   auto vertexDataQuad = Chimia::Rendering::VertexData::New();
-  vertexDataQuad->Create(Inputs::BufferData::quad,
-                         Inputs::BufferData::nVerticesQuad);
+  vertexDataQuad->Create(Inputs::BufferData::quad, datalayout);
 
   auto indexDataQuad = Chimia::Rendering::IndexData::New();
   indexDataQuad->Create(Inputs::BufferData::quadIndex);
 
-  Chimia::Rendering::IndexedRenderAction renderScreenQuad;
-  renderScreenQuad.Create(
-    vertexDataQuad,
-    indexDataQuad,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
+  Chimia::Rendering::GenericRenderAction renderScreenQuad;
+  renderScreenQuad.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                              vertexDataQuad, "pos", shader, "pos"),
+                            Chimia::Rendering::ShaderBinding::Connect(
+                              vertexDataQuad, "uv", shader, "uv") },
+                          indexDataQuad);
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;

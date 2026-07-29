@@ -23,6 +23,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(RetainedTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& vertexDataLayout,
               const Rendering::ShaderAttributes& shaderAttributes);
 
   unsigned AddStaticMesh(const RawDataView& vertexData);

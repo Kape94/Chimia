@@ -2,6 +2,7 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "DataLayout.h"
 #include "GLState.h"
 #include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
@@ -26,6 +27,7 @@ VertexData::VertexData(VertexData&& other)
   , m_nVertices(other.m_nVertices)
   , m_currentVertexSize(other.m_currentVertexSize)
   , m_maximumVertexSize(other.m_maximumVertexSize)
+  , m_dataLayout(std::move(other.m_dataLayout))
   , m_listeners(std::move(other.m_listeners))
 {
   other.m_VBO = 0;
@@ -45,6 +47,7 @@ VertexData::operator=(VertexData&& other)
   m_nVertices = other.m_nVertices;
   m_currentVertexSize = other.m_currentVertexSize;
   m_maximumVertexSize = other.m_maximumVertexSize;
+  m_dataLayout = std::move(other.m_dataLayout);
   m_listeners = std::move(other.m_listeners);
 
   other.m_VBO = 0;
@@ -66,10 +69,16 @@ VertexData::~VertexData()
 // ----------------------------------------------------------------------------
 
 void
-VertexData::Create(const RawDataView& vertexData, const unsigned nVertices)
+VertexData::Create(const RawDataView& vertexData, const DataLayout& dataLayout)
 {
   Clear();
 
+  m_dataLayout = dataLayout;
+
+  const size_t dataSize = vertexData.size;
+  const size_t layoutSize = dataLayout.TotalSize();
+
+  const unsigned nVertices = static_cast<unsigned>(dataSize / layoutSize);
   AllocateVertexData(vertexData, nVertices);
 }
 
@@ -112,10 +121,10 @@ VertexData::Load(const RawDataView& data)
 void
 VertexData::Resize(const RawDataView& data)
 {
-  const unsigned nVerticesNew = data.size / m_sizePerVertex;
+  const DataLayout backupLayout = m_dataLayout;
 
   Clear();
-  Create(data, nVerticesNew);
+  Create(data, backupLayout);
 
   m_listeners.DataChanged();
 }
@@ -176,6 +185,14 @@ void
 VertexData::RemoveListener(IDataChangeListener* listener)
 {
   m_listeners.Remove(listener);
+}
+
+// ----------------------------------------------------------------------------
+
+const DataLayout&
+VertexData::GetDataLayout() const
+{
+  return m_dataLayout;
 }
 
 // ----------------------------------------------------------------------------

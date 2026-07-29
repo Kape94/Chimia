@@ -22,6 +22,7 @@ public:
   static void Bind(const VertexDataInstance& data);
   static unsigned GetNVertices(const VertexDataInstance& data);
   static unsigned GetLayoutSize(const VertexDataInstance& data);
+  static const DataLayout& GetDataLayout(const VertexDataInstance& data);
   static void AddListener(VertexDataInstance& data,
                           IDataChangeListener* listener);
   static void RemoveListener(VertexDataInstance& data,
@@ -39,6 +40,7 @@ public:
   static void Bind(const InstancedDataInstance& buffer);
   static unsigned GetNInstances(const InstancedDataInstance& buffer);
   static unsigned GetInstanceSize(const InstancedDataInstance& buffer);
+  static const DataLayout& GetDataLayout(const InstancedDataInstance& data);
   static void AddListener(InstancedDataInstance& data,
                           IDataChangeListener* listener);
   static void RemoveListener(InstancedDataInstance& data,
@@ -52,6 +54,11 @@ public:
   static unsigned GetNEntries(const ShaderBinding& binding);
   static unsigned GetDataType(const ShaderBinding& binding);
   static unsigned GetOffset(const ShaderBinding& binding);
+
+  // Shader
+  static const DataLayout& GetDataLayout(const Shader& shader);
+  static unsigned GetAttributeLocation(const std::string& attributeName,
+                                       const Shader& shader);
 };
 
 // --------------------------------------------------------------------------------------

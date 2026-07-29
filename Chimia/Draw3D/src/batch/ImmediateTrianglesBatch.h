@@ -3,6 +3,7 @@
 #include "BatchUtils.h"
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
+#include "Rendering/DataLayout.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
@@ -27,6 +28,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(ImmediateTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& vertexDataLayout,
               const Rendering::ShaderAttributes& vertexAttributes,
               const std::function<void(void)>& onFlush);
 

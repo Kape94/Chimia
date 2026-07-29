@@ -1,8 +1,10 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -50,7 +52,6 @@ const std::vector<float> vertex{ // x ,    y,    z
                                  0.0f, -0.1f, 0.0f
 };
 // clang-format on
-const unsigned nVertices = 6;
 
 }
 
@@ -81,26 +82,28 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  Chimia::Rendering::Shader shader;
+  shader.Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+  vertexData->Create(
+    Inputs::BufferData::vertex,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(Inputs::InstanceData::transforms);
+  instancedData->Create(
+    Inputs::InstanceData::transforms,
+    { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::InstancedRenderAction action;
-  action.CreateInstanced(
-    vertexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) },
-    instancedData,
-    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*location*/,
-                                                4 /*nEntries*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    instancedData, "transform", shader, "transform") });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

@@ -1,10 +1,12 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Media/Image.h"
 
 #include "Rendering/FrameBuffer.h"
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
+#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -101,7 +103,6 @@ const std::vector<float> vertex{
 // clang-format on
 
 const std::vector<unsigned> index{ 0, 1, 2 };
-const unsigned nVertices = 3;
 
 // clang-format off
 const std::vector<float> quad{ // x    y     z     u     v
@@ -111,7 +112,6 @@ const std::vector<float> quad{ // x    y     z     u     v
                                -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
 };
 // clang-format on
-const unsigned nVerticesQuad = 4;
 
 const std::vector<unsigned> quadIndex{ 0, 1, 2, 2, 3, 0 };
 
@@ -128,21 +128,27 @@ main(int argc, char** argv)
 
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
+
+  Chimia::Rendering::Shader shader;
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+  vertexData->Create(Inputs::BufferData::vertex, dataLayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::IndexedRenderAction action;
-  action.Create(
-    vertexData,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "uv", shader, "uv") },
+                indexData);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
@@ -158,22 +164,23 @@ main(int argc, char** argv)
   Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
                                              Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
-                                             Inputs::ShaderCodes::fShaderPost);
+  Chimia::Rendering::Shader secondPassShader;
+  secondPassShader.Create(Inputs::ShaderCodes::vShaderPost,
+                          Inputs::ShaderCodes::fShaderPost,
+                          dataLayout);
 
   auto quadVertexData = Chimia::Rendering::VertexData::New();
-  quadVertexData->Create(Inputs::BufferData::quad,
-                         Inputs::BufferData::nVerticesQuad);
+  quadVertexData->Create(Inputs::BufferData::quad, dataLayout);
 
   auto quadIndexData = Chimia::Rendering::IndexData::New();
   quadIndexData->Create(Inputs::BufferData::quadIndex);
 
-  Chimia::Rendering::IndexedRenderAction renderScreenQuadAction;
-  renderScreenQuadAction.Create(
-    quadVertexData,
-    quadIndexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
+  Chimia::Rendering::GenericRenderAction renderScreenQuadAction;
+  renderScreenQuadAction.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                                    quadVertexData, "pos", shader, "pos"),
+                                  Chimia::Rendering::ShaderBinding::Connect(
+                                    quadVertexData, "uv", shader, "uv") },
+                                quadIndexData);
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;

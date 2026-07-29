@@ -1,6 +1,7 @@
 #include "BufferPrivate.h"
 #include "IndexData.h"
 #include "ShaderBinding.h"
+#include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -28,6 +29,14 @@ unsigned
 BufferPrivate::GetLayoutSize(const VertexDataInstance& data)
 {
   return data->GetLayoutSize();
+}
+
+// --------------------------------------------------------------------------------------
+
+const DataLayout&
+BufferPrivate::GetDataLayout(const VertexDataInstance& data)
+{
+  return data->GetDataLayout();
 }
 
 // --------------------------------------------------------------------------------------
@@ -108,6 +117,14 @@ BufferPrivate::GetInstanceSize(const InstancedDataInstance& buffer)
 
 // --------------------------------------------------------------------------------------
 
+const DataLayout&
+BufferPrivate::GetDataLayout(const InstancedDataInstance& data)
+{
+  return data->GetDataLayout();
+}
+
+// --------------------------------------------------------------------------------------
+
 const VertexDataInstance&
 BufferPrivate::GetVertexData(const ShaderBinding& binding)
 {
@@ -170,6 +187,23 @@ unsigned
 BufferPrivate::GetOffset(const ShaderBinding& binding)
 {
   return binding.GetOffset();
+}
+
+// --------------------------------------------------------------------------------------
+
+const DataLayout&
+BufferPrivate::GetDataLayout(const Shader& shader)
+{
+  return shader.GetDataLayout();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetAttributeLocation(const std::string& attributeName,
+                                    const Shader& shader)
+{
+  return shader.GetLocationOfAttribute(attributeName);
 }
 
 // --------------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+#include "Rendering/DataLayout.h"
 #include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
@@ -58,8 +59,6 @@ const std::vector<float> vertex_target{ 0.5f, 0.0f, 0.0f, 0.5f, 1.0f, 0.0f,
                                         0.0f, 0.0f, 0.0f, 0.5f, 0.3f, 1.0f };
 // clang-format on
 
-const unsigned nVertices = 3;
-
 const std::vector<unsigned> indexData{ 0, 1, 2 };
 
 }
@@ -73,30 +72,39 @@ main()
   Chimia::Rendering::Initialize();
 
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "target_pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "target_color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto startData = Chimia::Rendering::VertexData::New();
-  startData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+  startData->Create(
+    Inputs::BufferData::vertex,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto targetData = Chimia::Rendering::VertexData::New();
-  targetData->Create(Inputs::BufferData::vertex_target,
-                     Inputs::BufferData::nVertices);
+  targetData->Create(
+    Inputs::BufferData::vertex_target,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(Inputs::BufferData::indexData);
 
   Chimia::Rendering::GenericRenderAction action;
-  action.Create(
-    {
-      Chimia::Rendering::ShaderBinding::Float(startData, 0 /*pos*/, 3, 0),
-      Chimia::Rendering::ShaderBinding::Float(
-        startData, 1 /*color*/, 3, 3 * sizeof(float)),
-      Chimia::Rendering::ShaderBinding::Float(
-        targetData, 2 /*target_pos*/, 3, 0),
-      Chimia::Rendering::ShaderBinding::Float(
-        targetData, 3 /*target_color*/, 3, 3 * sizeof(float)),
-    },
-    reusableIndexData);
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    startData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    startData, "color", shader, "color"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    targetData, "pos", shader, "target_pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    targetData, "color", shader, "target_color") },
+                reusableIndexData);
 
   constexpr float SPEED = 0.002f;
   float interpolationRate = 0.0f;

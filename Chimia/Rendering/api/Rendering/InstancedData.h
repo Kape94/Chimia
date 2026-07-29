@@ -4,6 +4,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/DataListeners.h"
 #include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
@@ -28,9 +29,9 @@ public:
 
   ~InstancedData();
 
-  void Create(const RawArrayView& instancedData);
+  void Create(const RawDataView& instancedData, const DataLayout& dataLayout);
   void Load(const RawArrayView& data);
-  void Resize(const RawArrayView& data);
+  void Resize(const RawDataView& data);
 
   void Clear();
 
@@ -39,6 +40,7 @@ private:
 
   friend class BufferPrivate;
 
+  const DataLayout& GetDataLayout() const;
   void Bind() const;
   unsigned GetNInstances() const;
   unsigned GetInstanceSize() const;
@@ -48,6 +50,7 @@ private:
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;
 
+  DataLayout m_dataLayout;
   size_t m_currentSize = 0;
   size_t m_maximumSize = 0;
 

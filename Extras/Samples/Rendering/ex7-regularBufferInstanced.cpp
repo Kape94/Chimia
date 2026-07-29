@@ -1,8 +1,10 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -49,7 +51,6 @@ const std::vector<float> vertex{ // x ,    y,    z
                                  0.0f, -0.1f, 0.0f
 };
 // clang-format on
-const unsigned nVertices = 6;
 
 }
 
@@ -73,22 +74,27 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  Chimia::Rendering::Shader shader;
+  shader.Create(Inputs::ShaderCodes::vShader,
+                Inputs::ShaderCodes::fShader,
+                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+                  { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, Inputs::BufferData::nVertices);
+  vertexData->Create(
+    Inputs::BufferData::vertex,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(Inputs::InstanceData::positions);
+  instancedData->Create(
+    Inputs::InstanceData::positions,
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::InstancedRenderAction action;
-  action.CreateInstanced(vertexData,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         instancedData,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    instancedData, "offset", shader, "offset") });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

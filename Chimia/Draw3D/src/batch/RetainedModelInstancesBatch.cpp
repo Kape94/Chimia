@@ -19,6 +19,7 @@ void
 RetainedModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes,
   const std::function<void()>& onRender)
@@ -34,6 +35,7 @@ RetainedModelInstancesBatch::Create(
   CreateGPUBuffers(model,
                    batchSize,
                    instanceDataSizeInBytes,
+                   instancedDataLayout,
                    vertexAttributes,
                    instanceAttributes);
 
@@ -51,6 +53,7 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const Model& model,
   const size_t batchSize,
   const size_t instanceBatchDataSize,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes)
 {
@@ -61,7 +64,8 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
 
     gpuComponent.data = Rendering::InstancedData::New();
     gpuComponent.data->Create(
-      RawArrayView{ nullptr, batchSize, instanceBatchDataSize });
+      RawDataView{ nullptr, batchSize * instanceBatchDataSize },
+      instancedDataLayout);
 
     gpuComponent.action.CreateInstanced(vertexData,
                                         indexData,
@@ -191,7 +195,7 @@ RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 
   for (auto& component : m_gpuComponent) {
     component.data->Resize(
-      RawArrayView{ nullptr, effectiveBatchSize, m_instanceDataSizeInBytes });
+      RawDataView{ nullptr, effectiveBatchSize * m_instanceDataSizeInBytes });
   }
   m_currentGPUBatchSize = effectiveBatchSize;
 }

@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
+#include "Rendering/DataLayout.h"
 #include "ResourceGroup.h"
 #include "Types.h"
 
@@ -21,10 +22,22 @@ struct VertexLayoutAttributes
   Chimia::Rendering::ShaderAttributes instancedAttributes;
 };
 
+struct VertexLayoutDataSchemas
+{
+  Chimia::Rendering::DataLayout vertexDataLayout;
+  Chimia::Rendering::DataLayout instancedDataLayout;
+};
+
 namespace RenderersUtils {
 
 VertexLayoutAttributes
 GetAttributesForLayout(const eVertexLayout& layout);
+
+VertexLayoutDataSchemas
+GetDataSchemasForLayout(const eVertexLayout& layout);
+
+Chimia::Rendering::DataLayout
+GetVertexDataSchema(const eVertexLayout& layout);
 
 void
 ConfigureShaderForRendering(Rendering::Shader& shader,
@@ -35,7 +48,6 @@ void
 ConfigureShaderForInstancedRendering(Rendering::Shader& shader,
                                      const eVertexLayout& layout,
                                      const ResourcesGroup& resources);
-
 }
 
 // ----------------------------------------------------------------------------

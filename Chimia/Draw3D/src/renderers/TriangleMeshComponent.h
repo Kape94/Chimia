@@ -25,6 +25,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(TriangleMeshComponent)
 
   void Init(const BatchingSettings& batchingSettings,
+            const Rendering::DataLayout& vertexDataLayout,
             const Rendering::ShaderAttributes& vertexAttributes,
             const std::function<void(void)>& onFlush);
 

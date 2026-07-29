@@ -14,11 +14,21 @@ BEGIN_CHIMIA_CORE_NAMESPACE
 
 #define NON_DEFAULT_CONSTRUCTIBLE(className) className() = delete;
 
+#define DEFAULT_DESTRUCTIBLE(className) ~className() = default;
+
 #define NON_DESTRUCTIBLE(className) ~className() = delete;
+
+#define DEFAULT_COPYABLE(className)                                            \
+  className(const className&) = default;                                       \
+  className& operator=(const className&) = default;
 
 #define NON_COPYABLE(className)                                                \
   className(const className&) = delete;                                        \
   className& operator=(const className&) = delete;
+
+#define DEFAULT_MOVABLE(className)                                             \
+  className(className&&) = default;                                            \
+  className& operator=(className&&) = default;
 
 #define NON_MOVABLE(className)                                                 \
   className(className&&) = delete;                                             \

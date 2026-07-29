@@ -1,10 +1,12 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderAttribute.h"
+#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
@@ -109,15 +111,24 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader1(Inputs::ShaderCodes::vShader,
-                                    Inputs::ShaderCodes::fShader);
+  Chimia::Rendering::Shader shader1;
+  shader1.Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::Shader shader2(Inputs::ShaderCodes::vShaderTransformed,
-                                    Inputs::ShaderCodes::fShaderTransformed);
+  Chimia::Rendering::Shader shader2;
+  shader2.Create(
+    Inputs::ShaderCodes::vShaderTransformed,
+    Inputs::ShaderCodes::fShaderTransformed,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
   auto reusableVertexData = Chimia::Rendering::VertexData::New();
-  reusableVertexData->Create(Inputs::BufferData::vertex,
-                             Inputs::BufferData::nVertices);
+  reusableVertexData->Create(
+    Inputs::BufferData::vertex,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(Inputs::BufferData::index);
@@ -128,30 +139,29 @@ main()
   };
 
   auto positionsData = Chimia::Rendering::InstancedData::New();
-  positionsData->Create(Inputs::InstanceData::positions);
+  positionsData->Create(
+    Inputs::InstanceData::positions,
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::InstancedRenderAction renderWithOffsets;
-  renderWithOffsets.CreateInstanced(reusableVertexData,
-                                    reusableIndexData,
-                                    vertexAttributes,
-                                    positionsData,
-                                    { Chimia::Rendering::ShaderAttribute::Float(
-                                      1 /*location*/, 2 /*nEntries*/) });
+  Chimia::Rendering::GenericRenderAction renderWithOffsets;
+  renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                               reusableVertexData, "pos", shader1, "pos"),
+                             Chimia::Rendering::ShaderBinding::Connect(
+                               positionsData, "offset", shader1, "offset") },
+                           reusableIndexData);
 
   auto transformData = Chimia::Rendering::InstancedData::New();
-  transformData->Create(Inputs::InstanceData::transforms);
+  transformData->Create(
+    Inputs::InstanceData::transforms,
+    { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::InstancedRenderAction renderTransformed;
-  renderTransformed.CreateInstanced(
-    reusableVertexData,
-    reusableIndexData,
-    vertexAttributes,
-    transformData,
-    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*location*/,
-                                                4 /*nEntries*/) });
+  Chimia::Rendering::GenericRenderAction renderTransformed;
+  renderTransformed.Create(
+    { Chimia::Rendering::ShaderBinding::Connect(
+        reusableVertexData, "pos", shader2, "pos"),
+      Chimia::Rendering::ShaderBinding::Connect(
+        transformData, "transform", shader2, "transform") },
+    reusableIndexData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

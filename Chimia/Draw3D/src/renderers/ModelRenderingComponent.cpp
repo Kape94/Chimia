@@ -16,11 +16,13 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 ModelRenderingComponent::Init(
   const BatchingSettings& batchingSettings,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instanceAttributes,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
+  m_instancedDataLayout = instancedDataLayout;
   m_vertexAttributes = vertexAttributes;
   m_instanceAttributes = instanceAttributes;
   m_onFlush = onFlush;
@@ -96,6 +98,7 @@ ModelRenderingComponent::AllocateImmediateBatchForModelInstances(
   const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
   batch->Create(*model,
                 m_batchingSettings,
+                m_instancedDataLayout,
                 m_vertexAttributes,
                 m_instanceAttributes,
                 m_onFlush);
@@ -163,6 +166,7 @@ ModelRenderingComponent::AllocateRetainedBatchForModelInstances(
   const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
   staticModel->Create(*model,
                       m_batchingSettings,
+                      m_instancedDataLayout,
                       m_vertexAttributes,
                       m_instanceAttributes,
                       m_onFlush);

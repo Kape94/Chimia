@@ -20,12 +20,16 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 GenericRenderer::Create(
   const unsigned id,
+  const Rendering::DataLayout& vertexDataLayout,
+  const Rendering::DataLayout& instancedDataLayout,
   const Rendering::ShaderAttributes& vertexAttributes,
   const Rendering::ShaderAttributes& instancedAttributes,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
 {
   m_id = id;
+  m_vertexDataLayout = vertexDataLayout;
+  m_instancedDataLayout = instancedDataLayout;
   m_vertexAttributes = vertexAttributes;
   m_instancedAttributes = instancedAttributes;
   m_setupShaderForTriangleRendering = setupShaderForTriangleRendering;
@@ -99,6 +103,7 @@ GenericRenderer::FetchTriangleRenderComponentForResource(
 
     renderComponent->Init(
       Config::Batching::TriangleBatchingByResourceSettings(),
+      m_vertexDataLayout,
       m_vertexAttributes,
       [&, resourceID]() { ConfigureShaderForTriangleDrawing(resourceID); });
   }
@@ -118,6 +123,7 @@ GenericRenderer::FetchModelRenderComponentForResource(
     renderComponent = m_modelComponents.Insert(idValue);
 
     renderComponent->Init(Config::Batching::ModelBatchingByResourceSettings(),
+                          m_instancedDataLayout,
                           m_vertexAttributes,
                           m_instancedAttributes,
                           [&, resourceID]() {

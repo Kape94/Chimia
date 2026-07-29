@@ -9,6 +9,7 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
@@ -30,6 +31,7 @@ public:
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& instancedDataLayout,
               const Rendering::ShaderAttributes& vertexAttributes,
               const Rendering::ShaderAttributes& instanceAttributes,
               const std::function<void()>& onRender);
@@ -45,6 +47,7 @@ private:
   void CreateGPUBuffers(const Model& model,
                         const size_t batchSize,
                         const size_t instanceBatchDataSize,
+                        const Rendering::DataLayout& instancedDataLayout,
                         const Rendering::ShaderAttributes& vertexAttributes,
                         const Rendering::ShaderAttributes& instanceAttributes);
 

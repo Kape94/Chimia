@@ -1,10 +1,9 @@
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderAttribute.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -45,7 +44,6 @@ const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 const unsigned vertexDataItems = 18;
 const unsigned vertexDataSize = vertexDataItems * sizeof(float);
-const unsigned nVertices = 3;
 
 const unsigned indexData[] = { 0, 1, 2 };
 
@@ -60,25 +58,31 @@ main()
 
   Chimia::Rendering::Initialize();
 
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto reusableVertexData = Chimia::Rendering::VertexData::New();
   reusableVertexData->Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    Inputs::BufferData::nVertices);
+    dataLayout);
 
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create({ Inputs::BufferData::indexData,
                               Inputs::BufferData::indexDataItems,
                               sizeof(unsigned) });
 
-  Chimia::Rendering::IndexedRenderAction action;
-  action.Create(
-    reusableVertexData,
-    reusableIndexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    reusableVertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    reusableVertexData, "color", shader, "color") },
+                reusableIndexData);
 
   while (!win.ShouldClose()) {
     shader.Use();

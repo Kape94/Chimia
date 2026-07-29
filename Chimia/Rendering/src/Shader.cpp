@@ -1,9 +1,11 @@
 #include "Shader.h"
 
+#include "DataLayout.h"
 #include "OpenGLDefs.h"
 
 #include "Core/Diagnostics.h"
 
+#include <cassert>
 #include <glm/gtc/type_ptr.hpp>
 
 //---------------------------------------------------------------------------------------
@@ -12,23 +14,9 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-Shader::Shader(const std::string& vertexShaderCode,
-               const std::string& fragmentShaderCode)
-  : Shader(vertexShaderCode.c_str(), fragmentShaderCode.c_str())
-{
-}
-
-//---------------------------------------------------------------------------------------
-
-Shader::Shader(const char* vertexShaderCode, const char* fragmentShaderCode)
-{
-  Create(vertexShaderCode, fragmentShaderCode);
-}
-
-//---------------------------------------------------------------------------------------
-
 Shader::Shader(Shader&& other)
   : m_programId(other.m_programId)
+  , m_dataLayout(std::move(other.m_dataLayout))
 {
   other.m_programId = 0;
 }
@@ -56,25 +44,21 @@ Shader::~Shader()
 
 void
 Shader::Create(const std::string& vertexShaderCode,
-               const std::string& fragmentShaderCode)
-{
-  Create(vertexShaderCode.c_str(), fragmentShaderCode.c_str());
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-Shader::Create(const char* vertexShaderCode, const char* fragmentShaderCode)
+               const std::string& fragmentShaderCode,
+               const DataLayout& dataLayout)
 {
   Clear();
 
-  const unsigned vShaderID = CreateVertexShader(vertexShaderCode);
-  const unsigned fShaderID = CreateFragmentShader(fragmentShaderCode);
+  const unsigned vShaderID = CreateVertexShader(vertexShaderCode.c_str());
+  const unsigned fShaderID = CreateFragmentShader(fragmentShaderCode.c_str());
 
   LinkProgram(vShaderID, fShaderID);
 
   glDeleteShader(vShaderID);
   glDeleteShader(fShaderID);
+
+  m_dataLayout = dataLayout;
+  PopulateAttributeLocations(dataLayout);
 }
 
 //---------------------------------------------------------------------------------------
@@ -158,6 +142,23 @@ Shader::CheckProgramLinkStatus(const int programID)
 //---------------------------------------------------------------------------------------
 
 void
+Shader::PopulateAttributeLocations(const DataLayout& dataLayout)
+{
+  dataLayout.ForEachSpec([&](const auto& spec) {
+    const std::string name = spec.name;
+
+    const int posLocation = glGetAttribLocation(m_programId, name.c_str());
+    if (posLocation == -1) {
+      assert(false && "Couldn't find location for shader attribute specified");
+    }
+
+    m_attributeLocationTable.push_back({ name, posLocation });
+  });
+}
+
+//---------------------------------------------------------------------------------------
+
+void
 Shader::Use()
 {
   glUseProgram(m_programId);
@@ -236,6 +237,31 @@ Shader::Clear()
     glDeleteProgram(m_programId);
     m_programId = 0;
   }
+}
+
+// ----------------------------------------------------------------------------
+
+const DataLayout&
+Shader::GetDataLayout() const
+{
+  return m_dataLayout;
+}
+
+//---------------------------------------------------------------------------------------
+
+unsigned
+Shader::GetLocationOfAttribute(const std::string& attributeName) const
+{
+  for (const auto& dataToLocation : m_attributeLocationTable) {
+    const std::string& dataName = dataToLocation.first;
+    const unsigned dataLocation = static_cast<unsigned>(dataToLocation.second);
+    if (dataName == attributeName) {
+      return dataLocation;
+    }
+  }
+
+  assert(false && "Didn't find location for searched attribute");
+  return 0;
 }
 
 //---------------------------------------------------------------------------------------

@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "IlluminationPrivate.h"
 #include "Pipelines.h"
+#include "Rendering/DataLayout.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "ShaderUniformsNames.h"
@@ -339,6 +340,58 @@ RenderersUtils::GetAttributesForLayout(const eVertexLayout& layout)
       Diagnostics::Error(1, "Unable to fetch attributes for undefined layout");
       return {};
     }
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+VertexLayoutDataSchemas
+RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
+{
+  const Rendering::DataLayout vertexDataLayout = GetVertexDataSchema(layout);
+
+  const Rendering::DataLayout instancedDataLayout = {
+    { "transform", Rendering::eDataType::MATRIX_FLOAT_4X4 }
+  };
+
+  return { vertexDataLayout, instancedDataLayout };
+}
+
+// ----------------------------------------------------------------------------
+
+Chimia::Rendering::DataLayout
+RenderersUtils::GetVertexDataSchema(const eVertexLayout& layout)
+{
+  switch (layout) {
+    case eVertexLayout::POSITION3_COLOR4:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT } };
+    case eVertexLayout::POSITION3_NORMAL3:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } };
+    case eVertexLayout::POSITION3_TEXCOORD2:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
+               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } };
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
+               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
+    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
+      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
+               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
+    case eVertexLayout::UNDEFINED:
+    default:
+      return {};
   }
 }
 

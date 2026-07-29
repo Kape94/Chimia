@@ -1,8 +1,10 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -80,8 +82,6 @@ const float vertex3[] = { -1.0f, 0.0f, transparentDepth2, 0.0f, 0.0f, 1.0f, alph
 // clang-format on
 
 const unsigned vertex3DataSize = 21 * sizeof(float);
-
-const unsigned nVertices = 3;
 }
 }
 
@@ -94,48 +94,54 @@ main()
   Chimia::Rendering::EnableDepthTest(true);
   Chimia::Rendering::EnableColorBlend(true);
 
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT }
+  };
+
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData1 = Chimia::Rendering::VertexData::New();
   vertexData1->Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    Inputs::BufferData::nVertices);
+    dataLayout);
 
   auto vertexData2 = Chimia::Rendering::VertexData::New();
   vertexData2->Create(
     { Inputs::BufferData::vertex2, Inputs::BufferData::vertex2DataSize },
-    Inputs::BufferData::nVertices);
+    dataLayout);
 
   auto vertexData3 = Chimia::Rendering::VertexData::New();
   vertexData3->Create(
     { Inputs::BufferData::vertex3, Inputs::BufferData::vertex3DataSize },
-    Inputs::BufferData::nVertices);
+    dataLayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
-  Chimia::Rendering::IndexedRenderAction opaqueTriangle;
-  opaqueTriangle.Create(
-    vertexData1,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction opaqueTriangle;
+  opaqueTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                            vertexData1, "pos", shader, "pos"),
+                          Chimia::Rendering::ShaderBinding::Connect(
+                            vertexData1, "color", shader, "color") },
+                        indexData);
 
-  Chimia::Rendering::IndexedRenderAction transparentTriangle1;
-  transparentTriangle1.Create(
-    vertexData2,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction transparentTriangle1;
+  transparentTriangle1.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData2, "pos", shader, "pos"),
+                                Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData2, "color", shader, "color") },
+                              indexData);
 
-  Chimia::Rendering::IndexedRenderAction transparentTriangle2;
-  transparentTriangle2.Create(
-    vertexData3,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction transparentTriangle2;
+  transparentTriangle2.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData3, "pos", shader, "pos"),
+                                Chimia::Rendering::ShaderBinding::Connect(
+                                  vertexData3, "color", shader, "color") },
+                              indexData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::EnableDepthMask(true);

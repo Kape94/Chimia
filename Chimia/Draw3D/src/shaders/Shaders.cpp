@@ -1,6 +1,7 @@
 #include "Shaders.h"
 // ----------------------------------------------------------------------------
 
+#include "Rendering/DataLayout.h"
 #include "ShaderCodebase.h"
 
 #include "glslCodes/Common.h"
@@ -50,8 +51,14 @@ Chimia::Draw3D::Shaders::Initialize()
 {
   InitializeCodebase();
 
-  generic.Create(ShaderCodebase::Code("vertex::generic"),
-                 ShaderCodebase::Code("fragment::generic"));
+  generic.Create(
+    ShaderCodebase::Code("vertex::generic"),
+    ShaderCodebase::Code("fragment::generic"),
+    { { "a_vertexPos", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_vertexColor", Rendering::eDataType::VECTOR_4_FLOAT },
+      { "a_vertexNorm", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_vertexTexCoord", Rendering::eDataType::VECTOR_2_FLOAT },
+      { "a_instanceTransform", Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 }
 
 // ----------------------------------------------------------------------------

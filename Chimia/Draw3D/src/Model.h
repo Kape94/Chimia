@@ -37,7 +37,8 @@ public:
   eVertexLayout GetVertexLayout() const;
 
 private:
-  void AllocateBufferDataOnGPU(const MeshDataView& bufferData);
+  void AllocateBufferDataOnGPU(const MeshDataView& bufferData,
+                               const eVertexLayout vertexLayout);
 
   eVertexLayout m_vertexLayout;
   std::vector<Rendering::VertexDataInstance> m_gpuVertexDatas;

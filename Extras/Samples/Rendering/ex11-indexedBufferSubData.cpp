@@ -1,6 +1,6 @@
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedRenderAction.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -99,8 +99,14 @@ main()
   Window win(1280, 1080, "Example #11");
   Chimia::Rendering::Initialize();
 
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
   Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  shader.Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   const auto& states = Inputs::BufferData::states;
   const size_t maximumVertexSize = std::accumulate(
@@ -112,21 +118,19 @@ main()
       return std::max(current, incoming.iData.size());
     });
 
-  const unsigned nComponentsPerVertex = 6;
-  const unsigned nVertices = maximumVertexSize / nComponentsPerVertex;
-
   auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) }, nVertices);
+  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) },
+                     dataLayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
 
-  Chimia::Rendering::IndexedRenderAction action;
-  action.Create(
-    vertexData,
-    indexData,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  Chimia::Rendering::GenericRenderAction action;
+  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "pos", shader, "pos"),
+                  Chimia::Rendering::ShaderBinding::Connect(
+                    vertexData, "color", shader, "color") },
+                indexData);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

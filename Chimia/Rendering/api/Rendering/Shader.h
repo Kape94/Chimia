@@ -3,6 +3,7 @@
 //---------------------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "Rendering/DataLayout.h"
 #include "RenderingNamespaceDefs.h"
 #include "TextureUnit.h"
 
@@ -23,34 +24,31 @@ public:
   DEFAULT_CONSTUCTIBLE(Shader)
   NON_COPYABLE(Shader)
 
-  Shader(const std::string& vertexShaderCode,
-         const std::string& fragmentShaderCode);
-  Shader(const char* vertexShaderCode, const char* fragmentShaderCode);
-
   Shader(Shader&& other);
   Shader& operator=(Shader&& other);
 
   ~Shader();
 
   void Create(const std::string& vertexShaderCode,
-              const std::string& fragmentShaderCode);
-  void Create(const char* vertexShaderCode, const char* fragmentShaderCode);
+              const std::string& fragmentShaderCode,
+              const DataLayout& dataLayout);
 
   void Use();
 
   void Clear();
 
   void SetUniform(const std::string& name, const int value);
-
   void SetUniform(const std::string& name, const float value);
-
   void SetUniform(const std::string& name, const TextureUnit& unit);
-
   void SetUniform(const std::string& name, const glm::mat4x4& matrix);
-
   void SetUniform(const std::string& name, const glm::vec3& vector);
 
 private:
+  friend class BufferPrivate;
+
+  const DataLayout& GetDataLayout() const;
+  unsigned GetLocationOfAttribute(const std::string& attributeName) const;
+
   int GetUniformLocation(const std::string& name) const;
 
   unsigned CreateVertexShader(const char* vertexShaderCode);
@@ -65,6 +63,12 @@ private:
 
   void LinkProgram(const unsigned vShaderID, const unsigned fShaderID);
 
+  void PopulateAttributeLocations(const DataLayout& dataLayout);
+
+  using AttributeLocationTable = std::vector<std::pair<std::string, int>>;
+  AttributeLocationTable m_attributeLocationTable;
+
+  DataLayout m_dataLayout;
   unsigned m_programId = 0;
 };
 
