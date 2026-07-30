@@ -1,4 +1,4 @@
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -79,7 +79,7 @@ main()
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({ Chimia::Rendering::ShaderBinding::Connect(
                   vertexData, "pos", shader, "pos") },
                 indexData);

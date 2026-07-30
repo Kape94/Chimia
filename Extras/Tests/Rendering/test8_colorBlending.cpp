@@ -1,5 +1,5 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -118,21 +118,21 @@ BlendingSimple(Window& win)
   auto triangleIndexData = Chimia::Rendering::IndexData::New();
   triangleIndexData->Create({ indexData, indexDataNItems });
 
-  Chimia::Rendering::GenericRenderAction opaqueTriangle;
+  Chimia::Rendering::RenderAction opaqueTriangle;
   opaqueTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             vertexData1, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
                             vertexData1, "color", shader, "color") },
                         triangleIndexData);
 
-  Chimia::Rendering::GenericRenderAction transparentTriangle1;
+  Chimia::Rendering::RenderAction transparentTriangle1;
   transparentTriangle1.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                   vertexData2, "pos", shader, "pos"),
                                 Chimia::Rendering::ShaderBinding::Connect(
                                   vertexData2, "color", shader, "color") },
                               triangleIndexData);
 
-  Chimia::Rendering::GenericRenderAction transparentTriangle2;
+  Chimia::Rendering::RenderAction transparentTriangle2;
   transparentTriangle2.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                   vertexData3, "pos", shader, "pos"),
                                 Chimia::Rendering::ShaderBinding::Connect(

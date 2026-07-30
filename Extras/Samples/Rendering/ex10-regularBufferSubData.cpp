@@ -1,5 +1,5 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -115,7 +115,7 @@ main()
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({ Chimia::Rendering::ShaderBinding::Connect(
                     vertexData, "pos", shader, "pos"),
                   Chimia::Rendering::ShaderBinding::Connect(

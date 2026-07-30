@@ -14,16 +14,16 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-class GenericRenderAction : public IDataChangeListener
+class RenderAction : public IDataChangeListener
 {
 public:
-  DEFAULT_CONSTUCTIBLE(GenericRenderAction)
-  NON_COPYABLE(GenericRenderAction)
+  DEFAULT_CONSTUCTIBLE(RenderAction)
+  NON_COPYABLE(RenderAction)
 
-  GenericRenderAction(GenericRenderAction&& other) noexcept;
-  GenericRenderAction& operator=(GenericRenderAction&& other) noexcept;
+  RenderAction(RenderAction&& other) noexcept;
+  RenderAction& operator=(RenderAction&& other) noexcept;
 
-  ~GenericRenderAction();
+  ~RenderAction();
 
   void Create(const ShaderBindings& bindings);
 

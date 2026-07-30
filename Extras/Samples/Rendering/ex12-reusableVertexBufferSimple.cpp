@@ -1,5 +1,5 @@
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -77,7 +77,7 @@ main()
                               Inputs::BufferData::indexDataItems,
                               sizeof(unsigned) });
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({ Chimia::Rendering::ShaderBinding::Connect(
                     reusableVertexData, "pos", shader, "pos"),
                   Chimia::Rendering::ShaderBinding::Connect(

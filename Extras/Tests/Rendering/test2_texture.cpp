@@ -1,7 +1,7 @@
 #include "Core/Types.h"
 #include "Media/Image.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -90,7 +90,7 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::GenericRenderAction renderTriangleAction;
+  Chimia::Rendering::RenderAction renderTriangleAction;
   renderTriangleAction.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                   vertexData, "pos", shader, "pos"),
                                 Chimia::Rendering::ShaderBinding::Connect(

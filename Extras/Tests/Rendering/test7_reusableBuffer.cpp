@@ -1,7 +1,7 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -67,7 +67,7 @@ IndexedBuffer(Window& win)
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(indexData);
 
-  Chimia::Rendering::GenericRenderAction renderReusable;
+  Chimia::Rendering::RenderAction renderReusable;
   renderReusable.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             reusableVertexData, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
@@ -183,7 +183,7 @@ Instancing(Window& win)
   instancedPositions->Create(
     positions, { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction renderReusableWithOffsets;
+  Chimia::Rendering::RenderAction renderReusableWithOffsets;
   renderReusableWithOffsets.Create(
     { Chimia::Rendering::ShaderBinding::Connect(
         reusableVertexData, "pos", shader1, "pos"),
@@ -196,7 +196,7 @@ Instancing(Window& win)
     transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::GenericRenderAction renderReusableTransformed;
+  Chimia::Rendering::RenderAction renderReusableTransformed;
   renderReusableTransformed.Create(
     { Chimia::Rendering::ShaderBinding::Connect(
         reusableVertexData, "pos", shader2, "pos"),

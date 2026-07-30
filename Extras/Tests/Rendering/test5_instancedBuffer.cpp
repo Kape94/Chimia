@@ -1,6 +1,6 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -70,7 +70,7 @@ Basic(Window& win)
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction renderWithOffsets;
+  Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                vertexData, "pos", shader, "pos"),
                              Chimia::Rendering::ShaderBinding::Connect(
@@ -142,7 +142,7 @@ BasicIndexed(Window& win)
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction renderWithOffsets;
+  Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                vertexData, "pos", shader, "pos"),
                              Chimia::Rendering::ShaderBinding::Connect(
@@ -238,7 +238,7 @@ InstanceSubData(Window& win)
     { nullptr, positions.size() * dataSize },
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction renderWithOffsets;
+  Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                vertexData, "pos", shader, "pos"),
                              Chimia::Rendering::ShaderBinding::Connect(
@@ -329,7 +329,7 @@ InstancingByTransformMatrix(Window& win)
     transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::GenericRenderAction renderTransformed;
+  Chimia::Rendering::RenderAction renderTransformed;
   renderTransformed.Create(
     { Chimia::Rendering::ShaderBinding::Connect(
         vertexData, "pos", shader, "pos"),

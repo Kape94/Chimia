@@ -1,6 +1,6 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -95,7 +95,7 @@ main()
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(Inputs::BufferData::indexData);
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({ Chimia::Rendering::ShaderBinding::Connect(
                     startData, "pos", shader, "pos"),
                   Chimia::Rendering::ShaderBinding::Connect(

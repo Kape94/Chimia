@@ -1,5 +1,5 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -67,7 +67,7 @@ Basic(Window& win)
   auto triangleVertexData = Chimia::Rendering::VertexData::New();
   triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
 
-  Chimia::Rendering::GenericRenderAction renderTriangle;
+  Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             triangleVertexData, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
@@ -137,7 +137,7 @@ Indexed(Window& win)
   auto triangleIndexData = Chimia::Rendering::IndexData::New();
   triangleIndexData->Create({ indexData, indexDataNItems });
 
-  Chimia::Rendering::GenericRenderAction renderTriangle;
+  Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             triangleVertexData, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
@@ -214,7 +214,7 @@ Subdata(Window& win)
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, vertex.size() * sizeof(float) }, dataLayout);
 
-  Chimia::Rendering::GenericRenderAction renderTriangle;
+  Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             vertexData, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
@@ -327,7 +327,7 @@ SubDataWithVaryingSize(Window& win)
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
 
-  Chimia::Rendering::GenericRenderAction renderTriangles;
+  Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create({ Chimia::Rendering::ShaderBinding::Connect(
                              vertexData, "pos", shader, "pos"),
                            Chimia::Rendering::ShaderBinding::Connect(
@@ -452,7 +452,7 @@ VertexAndIndexSubData(Window& win)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
 
-  Chimia::Rendering::GenericRenderAction renderTriangles;
+  Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create({ Chimia::Rendering::ShaderBinding::Connect(
                              vertexData, "pos", shader, "pos"),
                            Chimia::Rendering::ShaderBinding::Connect(

@@ -1,8 +1,8 @@
 #include "Core/Types.h"
 #include "Media/Image.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -89,7 +89,7 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({ Chimia::Rendering::ShaderBinding::Connect(
                     vertexData, "position", shader, "pos"),
                   Chimia::Rendering::ShaderBinding::Connect(

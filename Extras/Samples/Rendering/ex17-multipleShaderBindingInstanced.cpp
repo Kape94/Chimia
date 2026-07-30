@@ -1,6 +1,6 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -89,7 +89,7 @@ main()
     Inputs::BufferData::offsets,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction action;
+  Chimia::Rendering::RenderAction action;
   action.Create({
     Chimia::Rendering::ShaderBinding::Connect(
       positionData, "data", shader, "pos"),

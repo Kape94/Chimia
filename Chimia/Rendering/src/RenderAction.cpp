@@ -1,4 +1,4 @@
-#include "GenericRenderAction.h"
+#include "RenderAction.h"
 
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
@@ -16,7 +16,7 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-GenericRenderAction::GenericRenderAction(GenericRenderAction&& other) noexcept
+RenderAction::RenderAction(RenderAction&& other) noexcept
   : m_VAO(other.m_VAO)
   , m_referenceVertexDatas(std::move(other.m_referenceVertexDatas))
   , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
@@ -28,8 +28,8 @@ GenericRenderAction::GenericRenderAction(GenericRenderAction&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-GenericRenderAction&
-GenericRenderAction::operator=(GenericRenderAction&& other) noexcept
+RenderAction&
+RenderAction::operator=(RenderAction&& other) noexcept
 {
   if (&other != this) {
     m_VAO = other.m_VAO;
@@ -46,7 +46,7 @@ GenericRenderAction::operator=(GenericRenderAction&& other) noexcept
 
 //---------------------------------------------------------------------------------------
 
-GenericRenderAction::~GenericRenderAction()
+RenderAction::~RenderAction()
 {
   Clear();
 }
@@ -54,7 +54,7 @@ GenericRenderAction::~GenericRenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const ShaderBindings& bindings)
+RenderAction::Create(const ShaderBindings& bindings)
 {
   Clear();
 
@@ -72,8 +72,8 @@ GenericRenderAction::Create(const ShaderBindings& bindings)
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Create(const ShaderBindings& bindings,
-                            const IndexDataInstance& indexData)
+RenderAction::Create(const ShaderBindings& bindings,
+                     const IndexDataInstance& indexData)
 {
   Clear();
 
@@ -94,7 +94,7 @@ GenericRenderAction::Create(const ShaderBindings& bindings,
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::SetupVAO()
+RenderAction::SetupVAO()
 {
   glGenVertexArrays(1, &m_VAO);
   GLState::BindVertexArray(m_VAO);
@@ -103,7 +103,7 @@ GenericRenderAction::SetupVAO()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::CollectDatasFromBindings(const ShaderBindings& bindings)
+RenderAction::CollectDatasFromBindings(const ShaderBindings& bindings)
 {
   std::set<VertexDataInstance> vertexSet;
   std::set<InstancedDataInstance> instancedSet;
@@ -129,7 +129,7 @@ GenericRenderAction::CollectDatasFromBindings(const ShaderBindings& bindings)
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Clear()
+RenderAction::Clear()
 {
   UnregisterAsListener();
   ClearRenderingData();
@@ -138,7 +138,7 @@ GenericRenderAction::Clear()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::ClearRenderingData()
+RenderAction::ClearRenderingData()
 {
   if (m_VAO != 0) {
     glDeleteVertexArrays(1, &m_VAO);
@@ -154,7 +154,7 @@ GenericRenderAction::ClearRenderingData()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RegisterAsListener()
+RenderAction::RegisterAsListener()
 {
   for (VertexDataInstance& data : m_referenceVertexDatas) {
     BufferPrivate::AddListener(data, this);
@@ -170,7 +170,7 @@ GenericRenderAction::RegisterAsListener()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::UnregisterAsListener()
+RenderAction::UnregisterAsListener()
 {
   for (VertexDataInstance& data : m_referenceVertexDatas) {
     BufferPrivate::RemoveListener(data, this);
@@ -186,7 +186,7 @@ GenericRenderAction::UnregisterAsListener()
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::Render() const
+RenderAction::Render() const
 {
   if (m_VAO == 0) {
     return;
@@ -205,7 +205,7 @@ GenericRenderAction::Render() const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderInstanced() const
+RenderAction::RenderInstanced() const
 {
   const bool isIndexed = m_referenceIndexBuffer != nullptr;
   const unsigned nInstances = PickReferenceInstanceCount();
@@ -223,7 +223,7 @@ GenericRenderAction::RenderInstanced() const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::RenderSingle() const
+RenderAction::RenderSingle() const
 {
   const bool isIndexed = m_referenceIndexBuffer != nullptr;
   if (isIndexed) {
@@ -239,7 +239,7 @@ GenericRenderAction::RenderSingle() const
 //---------------------------------------------------------------------------------------
 
 unsigned
-GenericRenderAction::PickReferenceVertexCount() const
+RenderAction::PickReferenceVertexCount() const
 {
   unsigned nVertices =
     BufferPrivate::GetNVertices(m_referenceVertexDatas.front());
@@ -259,7 +259,7 @@ GenericRenderAction::PickReferenceVertexCount() const
 //---------------------------------------------------------------------------------------
 
 unsigned
-GenericRenderAction::PickReferenceInstanceCount() const
+RenderAction::PickReferenceInstanceCount() const
 {
   unsigned nInstances =
     BufferPrivate::GetNInstances(m_referenceInstancedDatas.front());
@@ -279,7 +279,7 @@ GenericRenderAction::PickReferenceInstanceCount() const
 //---------------------------------------------------------------------------------------
 
 void
-GenericRenderAction::DataChanged()
+RenderAction::DataChanged()
 {
   ShaderBindings backupBindings = m_bindings;
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;

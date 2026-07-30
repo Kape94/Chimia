@@ -1,6 +1,6 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
@@ -137,7 +137,7 @@ main()
     Inputs::InstanceData::positions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::GenericRenderAction renderWithOffsets;
+  Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
                                reusableVertexData, "pos", shader1, "pos"),
                              Chimia::Rendering::ShaderBinding::Connect(
@@ -149,7 +149,7 @@ main()
     Inputs::InstanceData::transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::GenericRenderAction renderTransformed;
+  Chimia::Rendering::RenderAction renderTransformed;
   renderTransformed.Create(
     { Chimia::Rendering::ShaderBinding::Connect(
         reusableVertexData, "pos", shader2, "pos"),

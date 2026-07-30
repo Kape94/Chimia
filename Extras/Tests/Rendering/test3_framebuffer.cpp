@@ -1,5 +1,5 @@
 #include "Rendering/DataLayout.h"
-#include "Rendering/GenericRenderAction.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Media/Image.h"
@@ -149,7 +149,7 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
-  Chimia::Rendering::GenericRenderAction renderTriangle;
+  Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
                             vertexData, "pos", shader, "pos"),
                           Chimia::Rendering::ShaderBinding::Connect(
@@ -180,7 +180,7 @@ main(int argc, char** argv)
   auto indexDataQuad = Chimia::Rendering::IndexData::New();
   indexDataQuad->Create(Inputs::BufferData::quadIndex);
 
-  Chimia::Rendering::GenericRenderAction renderScreenQuad;
+  Chimia::Rendering::RenderAction renderScreenQuad;
   renderScreenQuad.Create({ Chimia::Rendering::ShaderBinding::Connect(
                               vertexDataQuad, "pos", shader, "pos"),
                             Chimia::Rendering::ShaderBinding::Connect(
