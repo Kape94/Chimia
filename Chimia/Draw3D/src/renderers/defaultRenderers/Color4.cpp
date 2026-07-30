@@ -48,8 +48,10 @@ GenericRenderer* g_renderer = nullptr;
 void
 Color4::Init()
 {
-  g_renderer = &Renderers::CreateRenderer(
-    VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
+  g_renderer = &Renderers::CreateRenderer(VERTEX_LAYOUT,
+                                          Shaders::Generic(),
+                                          ConfigureForTriangleDrawing,
+                                          ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------

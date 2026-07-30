@@ -49,6 +49,7 @@ TexCoord2::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
+                               Shaders::Generic(),
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
 }

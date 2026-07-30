@@ -4,11 +4,11 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "Rendering/DataLayout.h"
+#include "Rendering/ShaderBinding.h"
 #include "ResourceGroup.h"
 #include "Types.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
 
@@ -16,25 +16,28 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-struct VertexLayoutAttributes
-{
-  Chimia::Rendering::ShaderAttributes vertexAttributes;
-  Chimia::Rendering::ShaderAttributes instancedAttributes;
-};
-
 struct VertexLayoutDataSchemas
 {
   Chimia::Rendering::DataLayout vertexDataLayout;
   Chimia::Rendering::DataLayout instancedDataLayout;
 };
 
-namespace RenderersUtils {
+struct VertexLayoutBindingsTemplates
+{
+  Rendering::ShaderBindingsTemplate vertexBindingsTemplate;
+  Rendering::ShaderBindingsTemplate instancedBindingsTemplate;
+};
 
-VertexLayoutAttributes
-GetAttributesForLayout(const eVertexLayout& layout);
+// ----------------------------------------------------------------------------
+
+namespace RenderersUtils {
 
 VertexLayoutDataSchemas
 GetDataSchemasForLayout(const eVertexLayout& layout);
+
+VertexLayoutBindingsTemplates
+GetBindingsTemplatesForLayout(const eVertexLayout& layout,
+                              const Rendering::Shader& shader);
 
 Chimia::Rendering::DataLayout
 GetVertexDataSchema(const eVertexLayout& layout);

@@ -49,6 +49,7 @@ Color4Normal3::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
+                               Shaders::Generic(),
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
 }

@@ -14,6 +14,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 namespace Renderers {
 GenericRenderer&
 CreateRenderer(const eVertexLayout& vertexLayout,
+               const Rendering::Shader& shader,
                void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
                void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 

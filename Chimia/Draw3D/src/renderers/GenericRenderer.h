@@ -8,7 +8,7 @@
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/ShaderBinding.h"
 #include "ResourceGroup.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
@@ -26,13 +26,14 @@ class GenericRenderer
 public:
   DEFAULT_CONSTUCTIBLE(GenericRenderer)
 
-  void Create(const unsigned id,
-              const Rendering::DataLayout& vertexDataLayout,
-              const Rendering::DataLayout& instancedDataLayout,
-              const Rendering::ShaderAttributes& vertexAttributes,
-              const Rendering::ShaderAttributes& instancedAttributes,
-              void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-              void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
+  void Create(
+    const unsigned id,
+    const Rendering::DataLayout& vertexDataLayout,
+    const Rendering::DataLayout& instancedDataLayout,
+    const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
+    const Rendering::ShaderBindingsTemplate& instancedBindingsTemplates,
+    void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
+    void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
   void Init();
 
@@ -73,8 +74,8 @@ private:
   unsigned m_id;
   Rendering::DataLayout m_vertexDataLayout;
   Rendering::DataLayout m_instancedDataLayout;
-  Rendering::ShaderAttributes m_vertexAttributes;
-  Rendering::ShaderAttributes m_instancedAttributes;
+  Rendering::ShaderBindingsTemplate m_vertexBindingsTemplates;
+  Rendering::ShaderBindingsTemplate m_instancedBindingsTemplates;
 
   void (*m_setupShaderForTriangleRendering)(const ResourcesGroup&) = nullptr;
   void (*m_setupShaderForInstancedRendering)(const ResourcesGroup&) = nullptr;

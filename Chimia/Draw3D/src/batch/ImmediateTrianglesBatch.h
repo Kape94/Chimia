@@ -7,7 +7,6 @@
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
 #include <functional>
@@ -29,7 +28,7 @@ public:
 
   void Create(const BatchingSettings& batchingSettings,
               const Rendering::DataLayout& vertexDataLayout,
-              const Rendering::ShaderAttributes& vertexAttributes,
+              const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
               const std::function<void(void)>& onFlush);
 
   void Draw(const std::initializer_list<RawDataView>& vertexDatas);
@@ -49,7 +48,7 @@ private:
   // Fixed attributes, defined only on creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderAttributes m_vertexAttributes;
+  Rendering::ShaderBindingsTemplate m_vertexBindingsTemplate;
   size_t m_triangleSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens

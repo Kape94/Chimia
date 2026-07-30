@@ -2,14 +2,13 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Rendering/GenericRenderAction.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
-#include "Rendering/InstancedRenderAction.h"
-#include "Rendering/RenderAction.h"
 
 #include <cstddef>
 #include <functional>
@@ -27,13 +26,13 @@ namespace BatchUtils {
 struct SimpleGPUComponent
 {
   Rendering::VertexDataInstance data;
-  Rendering::RenderAction action;
+  Rendering::GenericRenderAction action;
 };
 
 struct InstancedGPUComponent
 {
   Rendering::InstancedDataInstance data;
-  Rendering::InstancedRenderAction action;
+  Rendering::GenericRenderAction action;
 };
 
 std::vector<size_t>

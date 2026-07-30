@@ -5,14 +5,13 @@
 #include "IlluminationPrivate.h"
 #include "Pipelines.h"
 #include "Rendering/DataLayout.h"
+#include "Rendering/ShaderBinding.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "ShaderUniformsNames.h"
 #include "Types.h"
 
-#include "Core/Diagnostics.h"
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
 
@@ -24,39 +23,6 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 namespace RenderersUtilsPrivate {
 using namespace Chimia;
-
-Rendering::ShaderAttribute
-PositionAttribute()
-{
-  return Rendering::ShaderAttribute::Float(0 /*pos*/, 3);
-}
-
-Rendering::ShaderAttribute
-ColorAttribute()
-{
-  return Rendering::ShaderAttribute::Float(1 /*color*/, 4);
-}
-
-Rendering::ShaderAttribute
-NormalAttribute()
-{
-  return Rendering::ShaderAttribute::Float(2 /*normal*/, 3);
-}
-
-Rendering::ShaderAttribute
-TexCoordAttribute()
-{
-  return Rendering::ShaderAttribute::Float(3 /*texCoord*/, 2);
-}
-
-Rendering::ShaderAttributes
-TransformAttributes()
-{
-  return { Rendering::ShaderAttribute::Float(4 /*transform*/, 4),
-           Rendering::ShaderAttribute::Float(5 /*transform*/, 4),
-           Rendering::ShaderAttribute::Float(6 /*transform*/, 4),
-           Rendering::ShaderAttribute::Float(7 /*transform*/, 4) };
-}
 
 bool
 HasColor(const eVertexLayout& layout)
@@ -298,53 +264,6 @@ ConfigureShaderForRendering(Rendering::Shader& shader,
 // RenderersUtils
 // ----------------------------------------------------------------------------
 
-VertexLayoutAttributes
-RenderersUtils::GetAttributesForLayout(const eVertexLayout& layout)
-{
-  using namespace RenderersUtilsPrivate;
-
-  switch (layout) {
-    case eVertexLayout::POSITION3_COLOR4: {
-      return { { PositionAttribute(), ColorAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_NORMAL3: {
-      return { { PositionAttribute(), NormalAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_TEXCOORD2: {
-      return { { PositionAttribute(), TexCoordAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3: {
-      return { { PositionAttribute(), ColorAttribute(), NormalAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2: {
-      return { { PositionAttribute(), ColorAttribute(), TexCoordAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2: {
-      return { { PositionAttribute(), NormalAttribute(), TexCoordAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2: {
-      return { { PositionAttribute(),
-                 ColorAttribute(),
-                 NormalAttribute(),
-                 TexCoordAttribute() },
-               TransformAttributes() };
-    }
-    case eVertexLayout::UNDEFINED:
-    default: {
-      Diagnostics::Error(1, "Unable to fetch attributes for undefined layout");
-      return {};
-    }
-  }
-}
-
-// ----------------------------------------------------------------------------
-
 VertexLayoutDataSchemas
 RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
 {
@@ -355,6 +274,62 @@ RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
   };
 
   return { vertexDataLayout, instancedDataLayout };
+}
+
+// ----------------------------------------------------------------------------
+
+VertexLayoutBindingsTemplates
+RenderersUtils::GetBindingsTemplatesForLayout(const eVertexLayout& layout,
+                                              const Rendering::Shader& shader)
+{
+  const Rendering::ShaderBindingsTemplate instancedTemplate(
+    { { "transform", "a_instanceTransform" } }, shader);
+
+  switch (layout) {
+    case eVertexLayout::POSITION3_COLOR4:
+      return { { { { "position", "a_vertexPos" },
+                   { "color", "a_vertexColor" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_NORMAL3:
+      return { { { { "position", "a_vertexPos" },
+                   { "normal", "a_vertexNorm" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_TEXCOORD2:
+      return { { { { "position", "a_vertexPos" },
+                   { "texCoord", "a_vertexTexCoord" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3:
+      return { { { { "position", "a_vertexPos" },
+                   { "color", "a_vertexColor" },
+                   { "normal", "a_vertexNorm" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
+      return { { { { "position", "a_vertexPos" },
+                   { "color", "a_vertexColor" },
+                   { "texCoord", "a_vertexTexCoord" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
+      return { { { { "position", "a_vertexPos" },
+                   { "normal", "a_vertexNorm" },
+                   { "texCoord", "a_vertexTexCoord" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
+      return { { { { "position", "a_vertexPos" },
+                   { "color", "a_vertexColor" },
+                   { "normal", "a_vertexNorm" },
+                   { "texCoord", "a_vertexTexCoord" } },
+                 shader },
+               instancedTemplate };
+    case eVertexLayout::UNDEFINED:
+    default:
+      return {};
+  }
 }
 
 // ----------------------------------------------------------------------------

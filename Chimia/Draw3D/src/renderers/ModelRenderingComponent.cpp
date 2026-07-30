@@ -4,7 +4,6 @@
 #include "ResourcesManager.h"
 
 #include "Core/Diagnostics.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
 // ----------------------------------------------------------------------------
@@ -17,14 +16,14 @@ void
 ModelRenderingComponent::Init(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes,
+  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
+  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
   m_instancedDataLayout = instancedDataLayout;
-  m_vertexAttributes = vertexAttributes;
-  m_instanceAttributes = instanceAttributes;
+  m_vertexBindingsTemplates = vertexBindingsTemplates;
+  m_instancedBindingsTemplates = instancedBindingsTemplates;
   m_onFlush = onFlush;
 }
 
@@ -99,8 +98,8 @@ ModelRenderingComponent::AllocateImmediateBatchForModelInstances(
   batch->Create(*model,
                 m_batchingSettings,
                 m_instancedDataLayout,
-                m_vertexAttributes,
-                m_instanceAttributes,
+                m_vertexBindingsTemplates,
+                m_instancedBindingsTemplates,
                 m_onFlush);
   return batch;
 }
@@ -167,8 +166,8 @@ ModelRenderingComponent::AllocateRetainedBatchForModelInstances(
   staticModel->Create(*model,
                       m_batchingSettings,
                       m_instancedDataLayout,
-                      m_vertexAttributes,
-                      m_instanceAttributes,
+                      m_vertexBindingsTemplates,
+                      m_instancedBindingsTemplates,
                       m_onFlush);
   return staticModel;
 }

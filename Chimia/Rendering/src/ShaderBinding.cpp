@@ -102,6 +102,8 @@ sizeOfDataType(const unsigned dataType)
 USING_RENDERLIB_NAMESPACE
 
 //-----------------------------------------------------------------------------
+// ShaderBinding
+//-----------------------------------------------------------------------------
 
 ShaderBinding::ShaderBinding(const VertexDataInstance& vertexData,
                              const InstancedDataInstance& instancedData,
@@ -532,6 +534,49 @@ std::vector<ShaderBinding>::const_iterator
 ShaderBindings::end() const
 {
   return m_bindings.end();
+}
+
+//-----------------------------------------------------------------------------
+// ShaderBindingsTemplate
+//-----------------------------------------------------------------------------
+
+ShaderBindingsTemplate::ShaderBindingsTemplate(
+  const std::initializer_list<Item>& items,
+  const Shader& shader)
+  : m_templates(items)
+  , m_shader(&shader)
+{
+}
+
+//-----------------------------------------------------------------------------
+
+ShaderBindings
+ShaderBindingsTemplate::GenerateFor(const VertexDataInstance& vertexData) const
+{
+  ShaderBindings bindings;
+
+  for (const auto& item : m_templates) {
+    bindings.Insert(ShaderBinding::Connect(
+      vertexData, item.sourceName, *m_shader, item.destinationName));
+  }
+
+  return bindings;
+}
+
+//-----------------------------------------------------------------------------
+
+ShaderBindings
+ShaderBindingsTemplate::GenerateFor(
+  const InstancedDataInstance& instancedData) const
+{
+  ShaderBindings bindings;
+
+  for (const auto& item : m_templates) {
+    bindings.Insert(ShaderBinding::Connect(
+      instancedData, item.sourceName, *m_shader, item.destinationName));
+  }
+
+  return bindings;
 }
 
 //-----------------------------------------------------------------------------

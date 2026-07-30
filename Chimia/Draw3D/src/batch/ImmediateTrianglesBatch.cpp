@@ -2,7 +2,6 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
@@ -16,15 +15,15 @@ void
 ImmediateTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& vertexDataLayout,
-  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
-  m_vertexAttributes = vertexAttributes;
+  m_vertexBindingsTemplate = vertexBindingsTemplates;
 
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   const size_t triangleSizeInBytes =
-    vertexAttributes.ComputeTotalSizeOfAttributes() * N_VERTICES_IN_TRIANGLE;
+    vertexDataLayout.TotalSize() * N_VERTICES_IN_TRIANGLE;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
@@ -35,7 +34,8 @@ ImmediateTrianglesBatch::Create(
   RawDataView rawData{ nullptr, batchSizeInBytes };
   m_gpuComponent.data->Create(rawData, vertexDataLayout);
 
-  m_gpuComponent.action.Create(m_gpuComponent.data, vertexAttributes);
+  m_gpuComponent.action.Create(
+    vertexBindingsTemplates.GenerateFor(m_gpuComponent.data));
 
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;
 

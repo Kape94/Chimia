@@ -18,6 +18,8 @@ BEGIN_RENDERLIB_NAMESPACE
 class ShaderBindings;
 
 //---------------------------------------------------------------------------------------
+// ShaderBinding
+//---------------------------------------------------------------------------------------
 
 class ShaderBinding
 {
@@ -145,6 +147,8 @@ private:
 };
 
 //---------------------------------------------------------------------------------------
+// ShaderBindings
+//---------------------------------------------------------------------------------------
 
 class ShaderBindings
 {
@@ -162,6 +166,32 @@ public:
 
 private:
   std::vector<ShaderBinding> m_bindings;
+};
+
+//---------------------------------------------------------------------------------------
+// ShaderBindingsTemplate
+//---------------------------------------------------------------------------------------
+
+class ShaderBindingsTemplate
+{
+private:
+  struct Item
+  {
+    std::string sourceName;
+    std::string destinationName;
+  };
+
+public:
+  ShaderBindingsTemplate() = default;
+  ShaderBindingsTemplate(const std::initializer_list<Item>& items,
+                         const Shader& shader);
+
+  ShaderBindings GenerateFor(const VertexDataInstance& vertexData) const;
+  ShaderBindings GenerateFor(const InstancedDataInstance& instancedData) const;
+
+private:
+  std::vector<Item> m_templates;
+  const Shader* m_shader = nullptr;
 };
 
 //---------------------------------------------------------------------------------------

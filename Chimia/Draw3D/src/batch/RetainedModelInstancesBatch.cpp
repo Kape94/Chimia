@@ -5,8 +5,7 @@
 #include "Core/Types.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
-#include "Rendering/InstancedRenderAction.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 
 // ----------------------------------------------------------------------------
@@ -20,24 +19,23 @@ RetainedModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes,
+  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
+  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate,
   const std::function<void()>& onRender)
 {
   m_onRender = onRender;
   m_batchingSettings = batchingSettings;
-  m_instancedAttributes = instanceAttributes;
+  m_instancedBindingsTemplate = instancedBindingsTemplate;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  const size_t instanceDataSizeInBytes =
-    instanceAttributes.ComputeTotalSizeOfAttributes();
+  const size_t instanceDataSizeInBytes = instancedDataLayout.TotalSize();
 
   CreateGPUBuffers(model,
                    batchSize,
                    instanceDataSizeInBytes,
                    instancedDataLayout,
-                   vertexAttributes,
-                   instanceAttributes);
+                   vertexBindingsTemplate,
+                   instancedBindingsTemplate);
 
   m_instanceDataSizeInBytes = instanceDataSizeInBytes;
   m_currentGPUBatchSize = batchSize;
@@ -54,8 +52,8 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const size_t batchSize,
   const size_t instanceBatchDataSize,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes)
+  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
+  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate)
 {
   model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
                           const Rendering::IndexDataInstance& indexData) {
@@ -67,11 +65,11 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
       RawDataView{ nullptr, batchSize * instanceBatchDataSize },
       instancedDataLayout);
 
-    gpuComponent.action.CreateInstanced(vertexData,
-                                        indexData,
-                                        vertexAttributes,
-                                        gpuComponent.data,
-                                        instanceAttributes);
+    Rendering::ShaderBindings bindings =
+      vertexBindingsTemplate.GenerateFor(vertexData);
+    bindings.Insert(instancedBindingsTemplate.GenerateFor(gpuComponent.data));
+
+    gpuComponent.action.Create(bindings);
   });
 }
 
