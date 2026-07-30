@@ -9,7 +9,6 @@
 #include "Types.h"
 
 #include "ObjectTable.h"
-#include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
 

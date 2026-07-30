@@ -5,7 +5,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderAttribute.h"
 #include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 #include "Utils/Window.h"
@@ -132,11 +131,6 @@ main()
 
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(Inputs::BufferData::index);
-
-  const Chimia::Rendering::ShaderAttributes vertexAttributes{
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) }
-  };
 
   auto positionsData = Chimia::Rendering::InstancedData::New();
   positionsData->Create(

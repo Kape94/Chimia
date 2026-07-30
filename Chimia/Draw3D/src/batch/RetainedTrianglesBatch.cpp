@@ -9,34 +9,6 @@
 USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
-// TEST - will be removed soon
-// ----------------------------------------------------------------------------
-
-namespace {
-unsigned
-ComputeTotalSizeOfAttributes(const Chimia::Rendering::ShaderAttributes& attrs)
-{
-  unsigned totalSize = 0;
-  for (const Chimia::Rendering::ShaderAttribute& attr : attrs) {
-    totalSize += attr.DataSizeInBytes();
-  }
-  return totalSize;
-}
-
-size_t
-CalculateNumberOfVertices(
-  const Chimia::RawDataView& vertexData,
-  const Chimia::Rendering::ShaderAttributes& shaderAttributes)
-{
-  const size_t vertexDataSize = vertexData.size;
-  const size_t sizePerVertex = ComputeTotalSizeOfAttributes(shaderAttributes);
-  return vertexDataSize / sizePerVertex;
-}
-}
-
-// ----------------------------------------------------------------------------
-// TEST - will be removed soon
-// ----------------------------------------------------------------------------
 
 void
 RetainedTrianglesBatch::Create(

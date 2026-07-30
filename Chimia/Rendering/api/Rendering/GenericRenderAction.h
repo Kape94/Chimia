@@ -5,7 +5,6 @@
 #include "InstancedData.h"
 #include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
-#include "ShaderAttribute.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
 
@@ -31,24 +30,6 @@ public:
   void Create(const ShaderBindings& bindings,
               const IndexDataInstance& indexData);
 
-  void Create(const VertexDataInstance& reusableVertexBuffer,
-              const ShaderAttributes& shaderAttributes);
-
-  void Create(const VertexDataInstance& reusableVertexBuffer,
-              const IndexDataInstance& reusableIndexBuffer,
-              const ShaderAttributes& shaderAttributes);
-
-  void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
-                       const ShaderAttributes& shaderAttributes,
-                       const InstancedDataInstance& instancesData,
-                       const ShaderAttributes& instanceShaderAttributes);
-
-  void CreateInstanced(const VertexDataInstance& reusableVertexBuffer,
-                       const IndexDataInstance& reusableIndexBuffer,
-                       const ShaderAttributes& shaderAttributes,
-                       const InstancedDataInstance& instancesData,
-                       const ShaderAttributes& instanceShaderAttributes);
-
   void Clear();
 
   void Render() const;
@@ -62,12 +43,6 @@ private:
 
   void RegisterAsListener();
   void UnregisterAsListener();
-
-  void GenerateBindingsAndCreate(const VertexDataInstance& vertexData,
-                                 const IndexDataInstance& indexData,
-                                 const ShaderAttributes& vertexAttributes,
-                                 const InstancedDataInstance& instancedData,
-                                 const ShaderAttributes& instancedAttributes);
 
   void RenderInstanced() const;
 

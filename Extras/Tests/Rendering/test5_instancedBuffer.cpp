@@ -3,7 +3,6 @@
 #include "Rendering/IndexData.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedRenderAction.h"
 #include "Rendering/Shader.h"
 
 #include "Rendering/ShaderBinding.h"

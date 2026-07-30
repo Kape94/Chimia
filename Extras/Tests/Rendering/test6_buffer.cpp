@@ -2,8 +2,6 @@
 #include "Rendering/GenericRenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedRenderAction.h"
-#include "Rendering/RenderAction.h"
 #include "Rendering/Shader.h"
 #include "Rendering/ShaderBinding.h"
 #include "TestsUtils.h"

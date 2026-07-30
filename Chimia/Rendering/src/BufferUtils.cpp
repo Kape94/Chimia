@@ -4,7 +4,6 @@
 #include "GLState.h"
 #include "InstancedData.h"
 #include "OpenGLDefs.h"
-#include "ShaderAttribute.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
 
@@ -72,37 +71,6 @@ SetAttributeRateFromBinding(const ShaderBinding& binding)
   }
 }
 
-template<class InputData>
-ShaderBinding
-CreateShaderBinding(const ShaderAttribute& attribute,
-                    const unsigned offset,
-                    const InputData& data)
-{
-  const unsigned type = attribute.DataType();
-  const unsigned location = attribute.Location();
-  const unsigned nEntries = attribute.NEntries();
-
-  switch (type) {
-    case GL_DOUBLE:
-      return ShaderBinding::Double(data, location, nEntries, offset);
-    case GL_INT:
-      return ShaderBinding::Int(data, location, nEntries, offset);
-    case GL_UNSIGNED_INT:
-      return ShaderBinding::UnsignedInt(data, location, nEntries, offset);
-    case GL_SHORT:
-      return ShaderBinding::Short(data, location, nEntries, offset);
-    case GL_UNSIGNED_SHORT:
-      return ShaderBinding::UnsignedShort(data, location, nEntries, offset);
-    case GL_BYTE:
-      return ShaderBinding::Byte(data, location, nEntries, offset);
-    case GL_UNSIGNED_BYTE:
-      return ShaderBinding::UnsignedByte(data, location, nEntries, offset);
-    case GL_FLOAT:
-    default:
-      return ShaderBinding::Float(data, location, nEntries, offset);
-  }
-}
-
 }
 
 // --------------------------------------------------------------------------------------
@@ -136,91 +104,6 @@ BufferUtils::LoadDataOnBuffer(const unsigned bufferID,
 
   const int bufferType = GetGLBufferType(isIndexBuffer);
   glBufferSubData(bufferType, 0, dataSize, data);
-}
-
-//---------------------------------------------------------------------------------------
-
-ShaderBindings
-BufferUtils::CreateBindings(const ShaderAttributes& shaderAttributes,
-                            const VertexDataInstance& vertexData)
-{
-  ShaderBindings bindings;
-
-  unsigned offset = 0;
-  for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.Insert(CreateShaderBinding(attribute, offset, vertexData));
-    offset += attribute.DataSizeInBytes();
-  }
-
-  return bindings;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                                  const VertexDataInstance& vertexData)
-{
-  std::vector<ShaderBinding> bindings;
-
-  unsigned offset = 0;
-  for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.emplace_back(CreateShaderBinding(attribute, offset, vertexData));
-    offset += attribute.DataSizeInBytes();
-  }
-
-  for (const ShaderBinding& binding : bindings) {
-    LinkShaderBinding(binding);
-  }
-}
-
-//---------------------------------------------------------------------------------------
-
-ShaderBindings
-BufferUtils::CreateBindings(const ShaderAttributes& shaderAttributes,
-                            const InstancedDataInstance& instancedData)
-{
-  ShaderBindings bindings;
-
-  unsigned offset = 0;
-  for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.Insert(CreateShaderBinding(attribute, offset, instancedData));
-    offset += attribute.DataSizeInBytes();
-  }
-
-  return bindings;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-BufferUtils::LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                                  const InstancedDataInstance& instancedData)
-{
-  std::vector<ShaderBinding> bindings;
-
-  unsigned offset = 0;
-  for (const ShaderAttribute& attribute : shaderAttributes) {
-    bindings.emplace_back(
-      CreateShaderBinding(attribute, offset, instancedData));
-    offset += attribute.DataSizeInBytes();
-  }
-
-  for (const ShaderBinding& binding : bindings) {
-    LinkShaderBinding(binding);
-  }
-}
-
-//---------------------------------------------------------------------------------------
-
-unsigned
-BufferUtils::ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs)
-{
-  unsigned totalSize = 0;
-  for (const ShaderAttribute& attr : attrs) {
-    totalSize += attr.DataSizeInBytes();
-  }
-  return totalSize;
 }
 
 //---------------------------------------------------------------------------------------

@@ -6,12 +6,9 @@
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "OpenGLDefs.h"
-#include "ShaderAttribute.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
 #include <set>
-#include <utility>
-#include <vector>
 
 //---------------------------------------------------------------------------------------
 
@@ -92,102 +89,6 @@ GenericRenderAction::Create(const ShaderBindings& bindings,
   BufferPrivate::Bind(indexData);
 
   m_bindings = bindings;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
-                            const ShaderAttributes& shaderAttributes)
-{
-  Clear();
-
-  const ShaderAttributes emptyInstanceAttributes{};
-  GenerateBindingsAndCreate(reusableVertexBuffer,
-                            nullptr,
-                            shaderAttributes,
-                            nullptr,
-                            emptyInstanceAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::Create(const VertexDataInstance& reusableVertexBuffer,
-                            const IndexDataInstance& reusableIndexBuffer,
-                            const ShaderAttributes& shaderAttributes)
-{
-  Clear();
-
-  const ShaderAttributes emptyInstanceAttributes{};
-  GenerateBindingsAndCreate(reusableVertexBuffer,
-                            reusableIndexBuffer,
-                            shaderAttributes,
-                            nullptr,
-                            emptyInstanceAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::CreateInstanced(
-  const VertexDataInstance& reusableVertexBuffer,
-  const ShaderAttributes& shaderAttributes,
-  const InstancedDataInstance& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  Clear();
-
-  GenerateBindingsAndCreate(reusableVertexBuffer,
-                            nullptr,
-                            shaderAttributes,
-                            instancesData,
-                            instanceShaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::CreateInstanced(
-  const VertexDataInstance& reusableVertexBuffer,
-  const IndexDataInstance& reusableIndexBuffer,
-  const ShaderAttributes& shaderAttributes,
-  const InstancedDataInstance& instancesData,
-  const ShaderAttributes& instanceShaderAttributes)
-{
-  Clear();
-
-  GenerateBindingsAndCreate(reusableVertexBuffer,
-                            reusableIndexBuffer,
-                            shaderAttributes,
-                            instancesData,
-                            instanceShaderAttributes);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-GenericRenderAction::GenerateBindingsAndCreate(
-  const VertexDataInstance& vertexData,
-  const IndexDataInstance& indexData,
-  const ShaderAttributes& vertexAttributes,
-  const InstancedDataInstance& instancedData,
-  const ShaderAttributes& instancedAttributes)
-{
-  ShaderBindings allBindings =
-    BufferUtils::CreateBindings(vertexAttributes, vertexData);
-  if (instancedData != nullptr) {
-    ShaderBindings instancedBindings =
-      BufferUtils::CreateBindings(instancedAttributes, instancedData);
-
-    allBindings.Insert(instancedBindings);
-  }
-
-  if (indexData != nullptr) {
-    Create(allBindings, indexData);
-  } else {
-    Create(allBindings);
-  }
 }
 
 //---------------------------------------------------------------------------------------

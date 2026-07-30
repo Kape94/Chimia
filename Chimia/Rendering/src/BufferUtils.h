@@ -1,11 +1,8 @@
 #pragma once
 
-#include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 
-#include "ShaderAttribute.h"
 #include "ShaderBinding.h"
-#include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -25,25 +22,6 @@ LoadDataOnBuffer(const unsigned bufferID,
                  const void* data,
                  const unsigned dataSize,
                  const bool isIndexBuffer);
-
-ShaderBindings
-CreateBindings(const ShaderAttributes& shaderAttributes,
-               const VertexDataInstance& vertexData);
-
-void
-LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                     const VertexDataInstance& vertexData);
-
-ShaderBindings
-CreateBindings(const ShaderAttributes& shaderAttributes,
-               const InstancedDataInstance& instancedData);
-
-void
-LinkShaderAttributes(const ShaderAttributes& shaderAttributes,
-                     const InstancedDataInstance& instancedData);
-
-unsigned
-ComputeTotalSizeOfAttributes(const ShaderAttributes& attrs);
 
 void
 LinkShaderBinding(const ShaderBinding& binding);
