@@ -15,7 +15,7 @@ void
 ImmediateTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& vertexDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
@@ -35,6 +35,7 @@ ImmediateTrianglesBatch::Create(
   m_gpuComponent.data->Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(
+    vertexBindingsTemplates.GetShader(),
     vertexBindingsTemplates.GenerateFor(m_gpuComponent.data));
 
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;

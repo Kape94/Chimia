@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -78,10 +77,9 @@ main()
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    positionData, "data", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    colorData, "data", shader, "color") });
+  action.Create(
+    shader,
+    { { positionData, "data", "pos" }, { colorData, "data", "color" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

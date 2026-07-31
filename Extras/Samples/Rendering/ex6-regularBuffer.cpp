@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <chrono>
@@ -86,10 +85,8 @@ main()
   vertexData->Create(Inputs::BufferData::vertex, dataLayout);
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "color", shader, "color") });
+  action.Create(
+    shader, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

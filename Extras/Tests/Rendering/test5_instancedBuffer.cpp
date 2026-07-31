@@ -5,7 +5,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
 
@@ -71,10 +70,9 @@ Basic(Window& win)
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   Chimia::Rendering::RenderAction renderWithOffsets;
-  renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                               vertexData, "pos", shader, "pos"),
-                             Chimia::Rendering::ShaderBinding::Connect(
-                               instancedData, "offset", shader, "offset") });
+  renderWithOffsets.Create(
+    shader,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   Chimia::Rendering::Clear();
 
@@ -143,11 +141,10 @@ BasicIndexed(Window& win)
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   Chimia::Rendering::RenderAction renderWithOffsets;
-  renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                               vertexData, "pos", shader, "pos"),
-                             Chimia::Rendering::ShaderBinding::Connect(
-                               instancedData, "offset", shader, "offset") },
-                           indexData);
+  renderWithOffsets.Create(
+    shader,
+    indexData,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   Chimia::Rendering::Clear();
 
@@ -239,10 +236,9 @@ InstanceSubData(Window& win)
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   Chimia::Rendering::RenderAction renderWithOffsets;
-  renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                               vertexData, "pos", shader, "pos"),
-                             Chimia::Rendering::ShaderBinding::Connect(
-                               instancedData, "offset", shader, "offset") });
+  renderWithOffsets.Create(
+    shader,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   instancedData->Load(positions);
 
@@ -330,11 +326,9 @@ InstancingByTransformMatrix(Window& win)
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
   Chimia::Rendering::RenderAction renderTransformed;
-  renderTransformed.Create(
-    { Chimia::Rendering::ShaderBinding::Connect(
-        vertexData, "pos", shader, "pos"),
-      Chimia::Rendering::ShaderBinding::Connect(
-        instancedData, "transform", shader, "transform") });
+  renderTransformed.Create(shader,
+                           { { vertexData, "pos", "pos" },
+                             { instancedData, "transform", "transform" } });
 
   Chimia::Rendering::Clear();
 

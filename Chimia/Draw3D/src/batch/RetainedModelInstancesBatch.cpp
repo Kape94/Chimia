@@ -5,7 +5,6 @@
 #include "Core/Types.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 
 // ----------------------------------------------------------------------------
@@ -19,8 +18,8 @@ RetainedModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate,
   const std::function<void()>& onRender)
 {
   m_onRender = onRender;
@@ -52,8 +51,8 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const size_t batchSize,
   const size_t instanceBatchDataSize,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate)
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate)
 {
   model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
                           const Rendering::IndexDataInstance& indexData) {
@@ -65,11 +64,15 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
       RawDataView{ nullptr, batchSize * instanceBatchDataSize },
       instancedDataLayout);
 
-    Rendering::ShaderBindings bindings =
-      vertexBindingsTemplate.GenerateFor(vertexData);
-    bindings.Insert(instancedBindingsTemplate.GenerateFor(gpuComponent.data));
+    auto bindings = vertexBindingsTemplate.GenerateFor(vertexData);
+    const auto instancedBindings =
+      instancedBindingsTemplate.GenerateFor(gpuComponent.data);
 
-    gpuComponent.action.Create(bindings);
+    bindings.insert(
+      bindings.end(), instancedBindings.begin(), instancedBindings.end());
+
+    gpuComponent.action.Create(
+      vertexBindingsTemplate.GetShader(), indexData, bindings);
   });
 }
 

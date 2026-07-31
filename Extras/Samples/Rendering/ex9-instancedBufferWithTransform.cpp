@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -100,10 +99,9 @@ main()
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    instancedData, "transform", shader, "transform") });
+  action.Create(shader,
+                { { vertexData, "pos", "pos" },
+                  { instancedData, "transform", "transform" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

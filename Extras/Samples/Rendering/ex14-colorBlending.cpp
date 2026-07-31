@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -123,25 +122,22 @@ main()
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
   Chimia::Rendering::RenderAction opaqueTriangle;
-  opaqueTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData1, "pos", shader, "pos"),
-                          Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData1, "color", shader, "color") },
-                        indexData);
+  opaqueTriangle.Create(
+    shader,
+    indexData,
+    { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle1;
-  transparentTriangle1.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData2, "pos", shader, "pos"),
-                                Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData2, "color", shader, "color") },
-                              indexData);
+  transparentTriangle1.Create(
+    shader,
+    indexData,
+    { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle2;
-  transparentTriangle2.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData3, "pos", shader, "pos"),
-                                Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData3, "color", shader, "color") },
-                              indexData);
+  transparentTriangle2.Create(
+    shader,
+    indexData,
+    { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::EnableDepthMask(true);

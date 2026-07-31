@@ -7,6 +7,7 @@
 
 #include "ImmediateTrianglesBatch.h"
 #include "RetainedTrianglesBatch.h"
+#include "ShaderBindingsTemplate.h"
 
 #include <initializer_list>
 
@@ -24,7 +25,7 @@ public:
 
   void Init(const BatchingSettings& batchingSettings,
             const Rendering::DataLayout& vertexDataLayout,
-            const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
+            const ShaderBindingsTemplate& vertexBindingsTemplates,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);

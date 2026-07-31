@@ -6,7 +6,6 @@
 
 #include "Rendering/FrameBuffer.h"
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -150,11 +149,10 @@ main(int argc, char** argv)
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData, "pos", shader, "pos"),
-                          Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData, "uv", shader, "uv") },
-                        indexData);
+  renderTriangle.Create(
+    shader,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
@@ -181,11 +179,10 @@ main(int argc, char** argv)
   indexDataQuad->Create(Inputs::BufferData::quadIndex);
 
   Chimia::Rendering::RenderAction renderScreenQuad;
-  renderScreenQuad.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                              vertexDataQuad, "pos", shader, "pos"),
-                            Chimia::Rendering::ShaderBinding::Connect(
-                              vertexDataQuad, "uv", shader, "uv") },
-                          indexDataQuad);
+  renderScreenQuad.Create(
+    secondPassShader,
+    indexDataQuad,
+    { { vertexDataQuad, "pos", "pos" }, { vertexDataQuad, "uv", "uv" } });
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;

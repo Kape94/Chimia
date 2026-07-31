@@ -10,7 +10,7 @@ void
 TriangleMeshComponent::Init(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& vertexDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;

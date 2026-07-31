@@ -6,6 +6,7 @@
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "OpenGLDefs.h"
+#include "Shader.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
 #include <set>
@@ -14,6 +15,57 @@
 
 USING_RENDERLIB_NAMESPACE
 
+//---------------------------------------------------------------------------------------
+// RenderAction::Binding
+//---------------------------------------------------------------------------------------
+
+RenderAction::Binding::Binding(const VertexDataInstance& data,
+                               const std::string& sourceData,
+                               const std::string& shaderInput)
+  : m_vertexData(data)
+  , m_instancedData(nullptr)
+  , m_data(sourceData)
+  , m_shaderInput(shaderInput)
+{
+}
+
+//---------------------------------------------------------------------------------------
+
+RenderAction::Binding::Binding(const InstancedDataInstance& data,
+                               const std::string& sourceData,
+                               const std::string& shaderInput)
+  : m_vertexData(nullptr)
+  , m_instancedData(data)
+  , m_data(sourceData)
+  , m_shaderInput(shaderInput)
+{
+}
+
+//---------------------------------------------------------------------------------------
+
+RenderAction::Binding::Binding(const Binding& other)
+  : m_vertexData(other.m_vertexData)
+  , m_instancedData(other.m_instancedData)
+  , m_data(other.m_data)
+  , m_shaderInput(other.m_shaderInput)
+{
+}
+
+//---------------------------------------------------------------------------------------
+
+RenderAction::Binding&
+RenderAction::Binding::operator=(const Binding& other)
+{
+  m_vertexData = other.m_vertexData;
+  m_instancedData = other.m_instancedData;
+  m_data = other.m_data;
+  m_shaderInput = other.m_shaderInput;
+
+  return *this;
+}
+
+//---------------------------------------------------------------------------------------
+// RenderAction
 //---------------------------------------------------------------------------------------
 
 RenderAction::RenderAction(RenderAction&& other) noexcept
@@ -54,10 +106,62 @@ RenderAction::~RenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const ShaderBindings& bindings)
+RenderAction::Create(const Shader& shader, const std::vector<Binding>& bindings)
 {
   Clear();
 
+  ShaderBindings detailedBindings;
+  for (const auto& binding : bindings) {
+    if (const VertexDataInstance vertexData = binding.m_vertexData) {
+      detailedBindings.Insert(ShaderBinding::Connect(
+        vertexData, binding.m_data, shader, binding.m_shaderInput));
+    } else {
+      detailedBindings.Insert(ShaderBinding::Connect(binding.m_instancedData,
+                                                     binding.m_data,
+                                                     shader,
+                                                     binding.m_shaderInput));
+    }
+  }
+
+  Create(detailedBindings);
+
+  m_bindings = bindings;
+  m_shader = &shader;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+RenderAction::Create(const Shader& shader,
+                     const IndexDataInstance& indexData,
+                     const std::vector<Binding>& bindings)
+{
+  Clear();
+
+  ShaderBindings detailedBindings;
+  for (const auto& binding : bindings) {
+    if (const VertexDataInstance vertexData = binding.m_vertexData) {
+      detailedBindings.Insert(ShaderBinding::Connect(
+        vertexData, binding.m_data, shader, binding.m_shaderInput));
+    } else {
+      detailedBindings.Insert(ShaderBinding::Connect(binding.m_instancedData,
+                                                     binding.m_data,
+                                                     shader,
+                                                     binding.m_shaderInput));
+    }
+  }
+
+  Create(detailedBindings, indexData);
+
+  m_bindings = bindings;
+  m_shader = &shader;
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+RenderAction::Create(const ShaderBindings& bindings)
+{
   CollectDatasFromBindings(bindings);
   RegisterAsListener();
 
@@ -65,8 +169,6 @@ RenderAction::Create(const ShaderBindings& bindings)
   for (const ShaderBinding& binding : bindings) {
     BufferUtils::LinkShaderBinding(binding);
   }
-
-  m_bindings = bindings;
 }
 
 //---------------------------------------------------------------------------------------
@@ -75,8 +177,6 @@ void
 RenderAction::Create(const ShaderBindings& bindings,
                      const IndexDataInstance& indexData)
 {
-  Clear();
-
   CollectDatasFromBindings(bindings);
   RegisterAsListener();
 
@@ -87,8 +187,6 @@ RenderAction::Create(const ShaderBindings& bindings,
 
   m_referenceIndexBuffer = indexData;
   BufferPrivate::Bind(indexData);
-
-  m_bindings = bindings;
 }
 
 //---------------------------------------------------------------------------------------
@@ -148,7 +246,8 @@ RenderAction::ClearRenderingData()
   m_referenceVertexDatas.clear();
   m_referenceIndexBuffer = nullptr;
   m_referenceInstancedDatas.clear();
-  m_bindings.Clear();
+  m_bindings.clear();
+  m_shader = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -281,16 +380,17 @@ RenderAction::PickReferenceInstanceCount() const
 void
 RenderAction::DataChanged()
 {
-  ShaderBindings backupBindings = m_bindings;
+  const std::vector<Binding> backupBindings = m_bindings;
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;
+  const Shader* backupShader = m_shader;
 
   // ClearRenderingData();
   Clear();
 
   if (backupIndex != nullptr) {
-    Create(backupBindings, backupIndex);
+    Create(*backupShader, backupIndex, backupBindings);
   } else {
-    Create(backupBindings);
+    Create(*backupShader, backupBindings);
   }
 }
 

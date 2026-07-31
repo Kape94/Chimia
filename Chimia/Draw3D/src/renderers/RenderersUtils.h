@@ -4,8 +4,8 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/ShaderBinding.h"
 #include "ResourceGroup.h"
+#include "ShaderBindingsTemplate.h"
 #include "Types.h"
 
 #include "Rendering/Shader.h"
@@ -24,8 +24,8 @@ struct VertexLayoutDataSchemas
 
 struct VertexLayoutBindingsTemplates
 {
-  Rendering::ShaderBindingsTemplate vertexBindingsTemplate;
-  Rendering::ShaderBindingsTemplate instancedBindingsTemplate;
+  ShaderBindingsTemplate vertexBindingsTemplate;
+  ShaderBindingsTemplate instancedBindingsTemplate;
 };
 
 // ----------------------------------------------------------------------------

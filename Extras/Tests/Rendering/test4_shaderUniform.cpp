@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -97,9 +96,7 @@ main(int argc, char** argv)
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                          vertexData, "pos", shader, "pos") },
-                        indexData);
+  renderTriangle.Create(shader, indexData, { { vertexData, "pos", "pos" } });
 
   constexpr float PI = 3.141592;
   float angle = 0.0f;

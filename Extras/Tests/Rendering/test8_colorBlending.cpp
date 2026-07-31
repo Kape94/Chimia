@@ -3,7 +3,6 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
 
@@ -119,25 +118,22 @@ BlendingSimple(Window& win)
   triangleIndexData->Create({ indexData, indexDataNItems });
 
   Chimia::Rendering::RenderAction opaqueTriangle;
-  opaqueTriangle.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData1, "pos", shader, "pos"),
-                          Chimia::Rendering::ShaderBinding::Connect(
-                            vertexData1, "color", shader, "color") },
-                        triangleIndexData);
+  opaqueTriangle.Create(
+    shader,
+    triangleIndexData,
+    { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle1;
-  transparentTriangle1.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData2, "pos", shader, "pos"),
-                                Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData2, "color", shader, "color") },
-                              triangleIndexData);
+  transparentTriangle1.Create(
+    shader,
+    triangleIndexData,
+    { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle2;
-  transparentTriangle2.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData3, "pos", shader, "pos"),
-                                Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData3, "color", shader, "color") },
-                              triangleIndexData);
+  transparentTriangle2.Create(
+    shader,
+    triangleIndexData,
+    { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } });
 
   Chimia::Rendering::EnableDepthMask(true);
 

@@ -10,6 +10,7 @@
 #include "ObjectTable.h"
 #include "Rendering/DataLayout.h"
 #include "RetainedModelInstancesBatch.h"
+#include "ShaderBindingsTemplate.h"
 #include "Types.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -28,8 +29,8 @@ public:
 
   void Init(const BatchingSettings& batchingSettings,
             const Rendering::DataLayout& instancedDataLayout,
-            const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
-            const Rendering::ShaderBindingsTemplate& instancedBindingsTemplates,
+            const ShaderBindingsTemplate& vertexBindingsTemplates,
+            const ShaderBindingsTemplate& instancedBindingsTemplates,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
@@ -56,8 +57,8 @@ private:
   BatchingSettings m_batchingSettings;
   Rendering::DataLayout m_vertexDataLayout;
   Rendering::DataLayout m_instancedDataLayout;
-  Rendering::ShaderBindingsTemplate m_vertexBindingsTemplates;
-  Rendering::ShaderBindingsTemplate m_instancedBindingsTemplates;
+  ShaderBindingsTemplate m_vertexBindingsTemplates;
+  ShaderBindingsTemplate m_instancedBindingsTemplates;
   std::function<void(void)> m_onFlush;
 
   ObjectTable<ImmediateModelInstancesBatch> m_transformedModelsTable;

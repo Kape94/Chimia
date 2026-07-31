@@ -4,7 +4,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/ExtrasUtils.h"
 #include "Utils/Window.h"
 
@@ -118,10 +117,9 @@ main()
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    instancedData, "offset", shader, "offset") });
+  action.Create(
+    shader,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   instancedData->Load(Inputs::InstanceData::positions);
 

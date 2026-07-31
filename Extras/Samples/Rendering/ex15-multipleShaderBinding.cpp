@@ -5,7 +5,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -96,15 +95,12 @@ main()
   reusableIndexData->Create(Inputs::BufferData::indexData);
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    startData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    startData, "color", shader, "color"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    targetData, "pos", shader, "target_pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    targetData, "color", shader, "target_color") },
-                reusableIndexData);
+  action.Create(shader,
+                reusableIndexData,
+                { { startData, "pos", "pos" },
+                  { startData, "color", "color" },
+                  { targetData, "pos", "target_pos" },
+                  { targetData, "color", "target_color" } });
 
   constexpr float SPEED = 0.002f;
   float interpolationRate = 0.0f;

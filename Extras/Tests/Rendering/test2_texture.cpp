@@ -5,7 +5,6 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -91,11 +90,10 @@ main(int argc, char** argv)
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction renderTriangleAction;
-  renderTriangleAction.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData, "pos", shader, "pos"),
-                                Chimia::Rendering::ShaderBinding::Connect(
-                                  vertexData, "uv", shader, "uv") },
-                              indexData);
+  renderTriangleAction.Create(
+    shader,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
   const std::string testPath = ExtrasUtils::GetCurrentAppDir(argv);
   const std::string assetsDir = testPath + "/assets/";

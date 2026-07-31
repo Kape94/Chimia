@@ -5,7 +5,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
@@ -138,11 +137,10 @@ main()
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   Chimia::Rendering::RenderAction renderWithOffsets;
-  renderWithOffsets.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                               reusableVertexData, "pos", shader1, "pos"),
-                             Chimia::Rendering::ShaderBinding::Connect(
-                               positionsData, "offset", shader1, "offset") },
-                           reusableIndexData);
+  renderWithOffsets.Create(shader1,
+                           reusableIndexData,
+                           { { reusableVertexData, "pos", "pos" },
+                             { positionsData, "offset", "offset" } });
 
   auto transformData = Chimia::Rendering::InstancedData::New();
   transformData->Create(
@@ -150,12 +148,10 @@ main()
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
   Chimia::Rendering::RenderAction renderTransformed;
-  renderTransformed.Create(
-    { Chimia::Rendering::ShaderBinding::Connect(
-        reusableVertexData, "pos", shader2, "pos"),
-      Chimia::Rendering::ShaderBinding::Connect(
-        transformData, "transform", shader2, "transform") },
-    reusableIndexData);
+  renderTransformed.Create(shader2,
+                           reusableIndexData,
+                           { { reusableVertexData, "pos", "pos" },
+                             { transformData, "transform", "transform" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

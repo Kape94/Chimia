@@ -6,7 +6,6 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -90,11 +89,10 @@ main(int argc, char** argv)
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "position", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "texCoord", shader, "uv") },
-                indexData);
+  action.Create(
+    shader,
+    indexData,
+    { { vertexData, "position", "pos" }, { vertexData, "texCoord", "uv" } });
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";

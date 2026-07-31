@@ -5,7 +5,6 @@
 #include "Rendering/Rendering.h"
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
@@ -68,11 +67,10 @@ IndexedBuffer(Window& win)
   reusableIndexData->Create(indexData);
 
   Chimia::Rendering::RenderAction renderReusable;
-  renderReusable.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                            reusableVertexData, "pos", shader, "pos"),
-                          Chimia::Rendering::ShaderBinding::Connect(
-                            reusableVertexData, "color", shader, "color") },
-                        reusableIndexData);
+  renderReusable.Create(shader,
+                        reusableIndexData,
+                        { { reusableVertexData, "pos", "pos" },
+                          { reusableVertexData, "color", "color" } });
 
   shader.Use();
   renderReusable.Render();
@@ -185,11 +183,10 @@ Instancing(Window& win)
 
   Chimia::Rendering::RenderAction renderReusableWithOffsets;
   renderReusableWithOffsets.Create(
-    { Chimia::Rendering::ShaderBinding::Connect(
-        reusableVertexData, "pos", shader1, "pos"),
-      Chimia::Rendering::ShaderBinding::Connect(
-        instancedPositions, "offset", shader1, "offset") },
-    reusableIndexData);
+    shader1,
+    reusableIndexData,
+    { { reusableVertexData, "pos", "pos" },
+      { instancedPositions, "offset", "offset" } });
 
   auto instancedTransforms = Chimia::Rendering::InstancedData::New();
   instancedTransforms->Create(
@@ -198,11 +195,10 @@ Instancing(Window& win)
 
   Chimia::Rendering::RenderAction renderReusableTransformed;
   renderReusableTransformed.Create(
-    { Chimia::Rendering::ShaderBinding::Connect(
-        reusableVertexData, "pos", shader2, "pos"),
-      Chimia::Rendering::ShaderBinding::Connect(
-        instancedTransforms, "transform", shader2, "transform") },
-    reusableIndexData);
+    shader2,
+    reusableIndexData,
+    { { reusableVertexData, "pos", "pos" },
+      { instancedTransforms, "transform", "transform" } });
 
   shader1.Use();
   renderReusableWithOffsets.Render();

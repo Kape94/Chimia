@@ -5,7 +5,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
@@ -79,11 +78,10 @@ main()
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ { Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "position", shader, "pos") },
-                  { Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "color", shader, "color") } },
-                indexData);
+  action.Create(
+    shader,
+    indexData,
+    { { vertexData, "position", "pos" }, { vertexData, "color", "color" } });
 
   while (!win.ShouldClose()) {
     shader.Use();

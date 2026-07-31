@@ -8,6 +8,7 @@
 #include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/VertexData.h"
+#include "ShaderBindingsTemplate.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"
@@ -29,13 +30,12 @@ public:
   DEFAULT_CONSTUCTIBLE(ImmediateModelInstancesBatch)
   NON_COPYABLE_NON_MOVABLE(ImmediateModelInstancesBatch)
 
-  void Create(
-    const Model& model,
-    const BatchingSettings& batchingSettings,
-    const Rendering::DataLayout& instancedDataLayout,
-    const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-    const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate,
-    const std::function<void(void)>& onFlush);
+  void Create(const Model& model,
+              const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& instancedDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplate,
+              const ShaderBindingsTemplate& instancedBindingsTemplate,
+              const std::function<void(void)>& onFlush);
 
   void Draw(const RawDataView& instanceData);
   void Draw(const std::initializer_list<RawDataView>& instanceDatas);
@@ -43,13 +43,12 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void AddGPUBuffer(
-    const Rendering::VertexDataInstance& vertexData,
-    const Rendering::IndexDataInstance& indexData,
-    const size_t instanceBatchSize,
-    const Rendering::DataLayout& instancedDataLayout,
-    const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-    const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate);
+  void AddGPUBuffer(const Rendering::VertexDataInstance& vertexData,
+                    const Rendering::IndexDataInstance& indexData,
+                    const size_t instanceBatchSize,
+                    const Rendering::DataLayout& instancedDataLayout,
+                    const ShaderBindingsTemplate& vertexBindingsTemplate,
+                    const ShaderBindingsTemplate& instancedBindingsTemplate);
 
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
@@ -62,7 +61,7 @@ private:
   // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderBindingsTemplate m_instancedBindingsTemplates;
+  ShaderBindingsTemplate m_instancedBindingsTemplates;
   size_t m_instancedDataSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens

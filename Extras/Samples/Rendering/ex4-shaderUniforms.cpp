@@ -3,7 +3,6 @@
 
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderBinding.h"
 #include "Utils/Window.h"
 
 #include <glm/ext/matrix_transform.hpp>
@@ -80,9 +79,7 @@ main()
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                  vertexData, "pos", shader, "pos") },
-                indexData);
+  action.Create(shader, indexData, { { vertexData, "pos", "pos" } });
 
   float angle = 0.0f;
 

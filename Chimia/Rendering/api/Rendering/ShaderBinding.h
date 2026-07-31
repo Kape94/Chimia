@@ -89,32 +89,6 @@ private:
 };
 
 //---------------------------------------------------------------------------------------
-// ShaderBindingsTemplate
-//---------------------------------------------------------------------------------------
-
-class ShaderBindingsTemplate
-{
-private:
-  struct Item
-  {
-    std::string sourceName;
-    std::string destinationName;
-  };
-
-public:
-  ShaderBindingsTemplate() = default;
-  ShaderBindingsTemplate(const std::initializer_list<Item>& items,
-                         const Shader& shader);
-
-  ShaderBindings GenerateFor(const VertexDataInstance& vertexData) const;
-  ShaderBindings GenerateFor(const InstancedDataInstance& instancedData) const;
-
-private:
-  std::vector<Item> m_templates;
-  const Shader* m_shader = nullptr;
-};
-
-//---------------------------------------------------------------------------------------
 
 END_RENDERLIB_NAMESPACE
 

@@ -14,7 +14,7 @@ void
 RetainedTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& vertexDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate)
+  const ShaderBindingsTemplate& vertexBindingsTemplate)
 {
   m_batchingSettings = batchingSettings;
   m_vertexBindingsTemplate = vertexBindingsTemplate;
@@ -32,6 +32,7 @@ RetainedTrianglesBatch::Create(
   m_gpuComponent.data->Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(
+    vertexBindingsTemplate.GetShader(),
     vertexBindingsTemplate.GenerateFor(m_gpuComponent.data));
 
   m_inputBuffer.Resize(batchSizeInBytes);

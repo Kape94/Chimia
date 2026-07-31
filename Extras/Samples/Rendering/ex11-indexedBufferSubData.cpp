@@ -126,11 +126,10 @@ main()
   indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "color", shader, "color") },
-                indexData);
+  action.Create(
+    shader,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

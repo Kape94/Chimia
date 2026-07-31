@@ -6,11 +6,11 @@
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 #include "ObjectTable.h"
+#include "ShaderBindingsTemplate.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/ShaderBinding.h"
 #include "Types.h"
 
 #include <functional>
@@ -29,13 +29,12 @@ public:
   DEFAULT_CONSTUCTIBLE(RetainedModelInstancesBatch)
   NON_COPYABLE_NON_MOVABLE(RetainedModelInstancesBatch)
 
-  void Create(
-    const Model& model,
-    const BatchingSettings& batchingSettings,
-    const Rendering::DataLayout& instancedDataLayout,
-    const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-    const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate,
-    const std::function<void()>& onRender);
+  void Create(const Model& model,
+              const BatchingSettings& batchingSettings,
+              const Rendering::DataLayout& instancedDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplate,
+              const ShaderBindingsTemplate& instancedBindingsTemplate,
+              const std::function<void()>& onRender);
 
   unsigned AddInstance(const RawDataView& instanceData);
   unsigned AddInstance(const std::initializer_list<RawDataView>& instanceDatas);
@@ -50,8 +49,8 @@ private:
     const size_t batchSize,
     const size_t instanceBatchDataSize,
     const Rendering::DataLayout& instancedDataLayout,
-    const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-    const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate);
+    const ShaderBindingsTemplate& vertexBindingsTemplate,
+    const ShaderBindingsTemplate& instancedBindingsTemplate);
 
   bool HasSomethingToRender() const;
 
@@ -72,7 +71,7 @@ private:
   // Fixed attributes, don't get changed after initial batch creation
   std::function<void()> m_onRender;
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderBindingsTemplate m_instancedBindingsTemplate;
+  ShaderBindingsTemplate m_instancedBindingsTemplate;
   size_t m_instanceDataSizeInBytes = 0;
 
   // Cache attribute to indicate whenever a new instance gets added

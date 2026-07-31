@@ -16,8 +16,8 @@ void
 ModelRenderingComponent::Init(
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplates,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& instancedBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;

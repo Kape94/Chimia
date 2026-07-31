@@ -78,11 +78,10 @@ main()
                               sizeof(unsigned) });
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    reusableVertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    reusableVertexData, "color", shader, "color") },
-                reusableIndexData);
+  action.Create(shader,
+                reusableIndexData,
+                { { reusableVertexData, "pos", "pos" },
+                  { reusableVertexData, "color", "color" } });
 
   while (!win.ShouldClose()) {
     shader.Use();

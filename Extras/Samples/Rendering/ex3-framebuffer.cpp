@@ -6,7 +6,6 @@
 
 #include "Rendering/FrameBuffer.h"
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderBinding.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
 
@@ -144,11 +143,9 @@ main(int argc, char** argv)
   indexData->Create(Inputs::BufferData::index);
 
   Chimia::Rendering::RenderAction action;
-  action.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "pos", shader, "pos"),
-                  Chimia::Rendering::ShaderBinding::Connect(
-                    vertexData, "uv", shader, "uv") },
-                indexData);
+  action.Create(shader,
+                indexData,
+                { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
@@ -176,11 +173,10 @@ main(int argc, char** argv)
   quadIndexData->Create(Inputs::BufferData::quadIndex);
 
   Chimia::Rendering::RenderAction renderScreenQuadAction;
-  renderScreenQuadAction.Create({ Chimia::Rendering::ShaderBinding::Connect(
-                                    quadVertexData, "pos", shader, "pos"),
-                                  Chimia::Rendering::ShaderBinding::Connect(
-                                    quadVertexData, "uv", shader, "uv") },
-                                quadIndexData);
+  renderScreenQuadAction.Create(
+    shader,
+    quadIndexData,
+    { { quadVertexData, "pos", "pos" }, { quadVertexData, "uv", "uv" } });
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;

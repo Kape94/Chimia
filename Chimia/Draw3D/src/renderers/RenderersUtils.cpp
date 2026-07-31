@@ -5,7 +5,6 @@
 #include "IlluminationPrivate.h"
 #include "Pipelines.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/ShaderBinding.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "ShaderUniformsNames.h"
@@ -282,7 +281,7 @@ VertexLayoutBindingsTemplates
 RenderersUtils::GetBindingsTemplatesForLayout(const eVertexLayout& layout,
                                               const Rendering::Shader& shader)
 {
-  const Rendering::ShaderBindingsTemplate instancedTemplate(
+  const ShaderBindingsTemplate instancedTemplate(
     { { "transform", "a_instanceTransform" } }, shader);
 
   switch (layout) {

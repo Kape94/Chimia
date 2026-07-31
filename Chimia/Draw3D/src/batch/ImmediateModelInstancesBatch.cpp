@@ -4,7 +4,7 @@
 #include "Core/Types.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
-#include "Rendering/ShaderBinding.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
@@ -19,8 +19,8 @@ ImmediateModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate,
   const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
@@ -52,8 +52,8 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::IndexDataInstance& indexData,
   const size_t instanceBatchSize,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplate,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplate)
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate)
 {
   BatchUtils::InstancedGPUComponent& inserted = m_gpuComponents.emplace_back();
 
@@ -62,10 +62,14 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
     RawDataView{ nullptr, instanceBatchSize * m_instancedDataSizeInBytes },
     instancedDataLayout);
 
-  Rendering::ShaderBindings bindings =
-    vertexBindingsTemplate.GenerateFor(vertexData);
-  bindings.Insert(instancedBindingsTemplate.GenerateFor(inserted.data));
-  inserted.action.Create(bindings);
+  auto bindings = vertexBindingsTemplate.GenerateFor(vertexData);
+  const auto instancedBindings =
+    instancedBindingsTemplate.GenerateFor(inserted.data);
+
+  bindings.insert(
+    bindings.end(), instancedBindings.begin(), instancedBindings.end());
+  inserted.action.Create(
+    vertexBindingsTemplate.GetShader(), indexData, bindings);
 }
 
 // ----------------------------------------------------------------------------

@@ -21,8 +21,8 @@ GenericRenderer::Create(
   const unsigned id,
   const Rendering::DataLayout& vertexDataLayout,
   const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::ShaderBindingsTemplate& vertexBindingsTemplates,
-  const Rendering::ShaderBindingsTemplate& instancedBindingsTemplates,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& instancedBindingsTemplates,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
 {
