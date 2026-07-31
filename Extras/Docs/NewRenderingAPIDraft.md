@@ -61,11 +61,11 @@ Implementation steps:
   - Drop ShaderAttributes from the codebase; [DONE]
   - Drop RenderAction, IndexedRenderAction and InstancedRenderAction from the codebase; [DONE]
   - Rename GenericRenderAction to RenderAction; [DONE]
-  - Hide ShaderBinding structure on Rendering module's impl;
-    * Remove ShaderBindingsTemplate;
-    * The binding definition will be specified directly in the render action (check example code); 
-    * On Graphics module, we can create own structures for propagating the attributes from renderer to batching components;
-  - Move IDataChangeListener definition to module's impl and also the Listeners structure;
+  - Hide ShaderBinding structure on Rendering module's impl; [DONE]
+    * Remove ShaderBindingsTemplate; [DONE]
+    * The binding definition will be specified directly in the render action (check example code); [DONE]
+    * On Graphics module, we can create own structures for propagating the attributes from renderer to batching components; [DONE]
+  - Move IDataChangeListener definition to module's impl and also the Listeners structure; [DONE]
   - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing;
   - We shouldn`t rely in reusing public methods inside other methods of the same object. See RenderActions, Data objects and Shader.
   - The renderAction could hold the reference to the shader it uses for rendering;

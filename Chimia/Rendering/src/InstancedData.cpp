@@ -5,7 +5,6 @@
 #include "DataLayout.h"
 #include "DataListeners.h"
 #include "GLState.h"
-#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
