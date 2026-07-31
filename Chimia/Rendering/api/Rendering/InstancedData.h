@@ -5,8 +5,6 @@
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/DataListeners.h"
-#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
@@ -14,6 +12,10 @@
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+class DataListeners;
 
 // ----------------------------------------------------------------------------
 
@@ -36,7 +38,7 @@ public:
   void Clear();
 
 private:
-  InstancedData() = default;
+  InstancedData();
 
   friend class BufferPrivate;
 
@@ -44,8 +46,7 @@ private:
   void Bind() const;
   unsigned GetNInstances() const;
   unsigned GetInstanceSize() const;
-  void AddListener(IDataChangeListener* listener);
-  void RemoveListener(IDataChangeListener* listener);
+  DataListeners& GetListeners();
 
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;
@@ -54,7 +55,7 @@ private:
   size_t m_currentSize = 0;
   size_t m_maximumSize = 0;
 
-  DataListeners m_listeners;
+  std::unique_ptr<DataListeners> m_listeners;
 };
 
 // ----------------------------------------------------------------------------

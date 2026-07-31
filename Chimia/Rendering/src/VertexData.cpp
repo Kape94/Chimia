@@ -3,8 +3,8 @@
 #include "BufferUtils.h"
 #include "Core/Types.h"
 #include "DataLayout.h"
+#include "DataListeners.h"
 #include "GLState.h"
-#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -17,6 +17,13 @@ std::shared_ptr<VertexData>
 VertexData::New()
 {
   return std::shared_ptr<VertexData>(new VertexData);
+}
+
+// ----------------------------------------------------------------------------
+
+VertexData::VertexData()
+  : m_listeners(new DataListeners)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -126,7 +133,7 @@ VertexData::Resize(const RawDataView& data)
   Clear();
   Create(data, backupLayout);
 
-  m_listeners.DataChanged();
+  m_listeners->DataChanged();
 }
 
 // ----------------------------------------------------------------------------
@@ -173,18 +180,10 @@ VertexData::GetLayoutSize() const
 
 // ----------------------------------------------------------------------------
 
-void
-VertexData::AddListener(IDataChangeListener* listener)
+DataListeners&
+VertexData::GetListeners()
 {
-  m_listeners.Add(listener);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-VertexData::RemoveListener(IDataChangeListener* listener)
-{
-  m_listeners.Remove(listener);
+  return *m_listeners;
 }
 
 // ----------------------------------------------------------------------------

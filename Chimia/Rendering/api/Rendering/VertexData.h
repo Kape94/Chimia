@@ -5,8 +5,6 @@
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
 #include "Rendering/DataLayout.h"
-#include "Rendering/DataListeners.h"
-#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
@@ -14,6 +12,10 @@
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+class DataListeners;
 
 // ----------------------------------------------------------------------------
 
@@ -36,7 +38,7 @@ public:
   void Clear();
 
 private:
-  VertexData() = default;
+  VertexData();
 
   friend class BufferPrivate;
 
@@ -44,8 +46,7 @@ private:
   unsigned GetNVertices() const;
   unsigned GetLayoutSize() const;
   void Bind() const;
-  void AddListener(IDataChangeListener* listener);
-  void RemoveListener(IDataChangeListener* listener);
+  DataListeners& GetListeners();
 
   void AllocateVertexData(const RawDataView& vertexData,
                           const unsigned nVertices);
@@ -59,7 +60,7 @@ private:
   size_t m_currentVertexSize = 0;
   size_t m_maximumVertexSize = 0;
 
-  DataListeners m_listeners;
+  std::unique_ptr<DataListeners> m_listeners;
 };
 
 // ----------------------------------------------------------------------------

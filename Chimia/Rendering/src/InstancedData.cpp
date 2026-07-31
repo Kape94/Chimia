@@ -3,6 +3,7 @@
 #include "BufferUtils.h"
 #include "Core/Types.h"
 #include "DataLayout.h"
+#include "DataListeners.h"
 #include "GLState.h"
 #include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
@@ -17,6 +18,13 @@ std::shared_ptr<InstancedData>
 InstancedData::New()
 {
   return std::shared_ptr<InstancedData>(new InstancedData);
+}
+
+// ----------------------------------------------------------------------------
+
+InstancedData::InstancedData()
+  : m_listeners(new DataListeners)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -113,7 +121,7 @@ InstancedData::Resize(const RawDataView& data)
   Clear();
   Create(data, backupLayout);
 
-  m_listeners.DataChanged();
+  m_listeners->DataChanged();
 }
 
 // ----------------------------------------------------------------------------
@@ -165,18 +173,10 @@ InstancedData::GetDataLayout() const
 
 // ----------------------------------------------------------------------------
 
-void
-InstancedData::AddListener(IDataChangeListener* listener)
+DataListeners&
+InstancedData::GetListeners()
 {
-  m_listeners.Add(listener);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-InstancedData::RemoveListener(IDataChangeListener* listener)
-{
-  m_listeners.Remove(listener);
+  return *m_listeners;
 }
 
 // ----------------------------------------------------------------------------

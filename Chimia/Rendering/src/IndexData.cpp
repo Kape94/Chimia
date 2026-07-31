@@ -2,8 +2,8 @@
 
 #include "BufferUtils.h"
 #include "Core/Types.h"
+#include "DataListeners.h"
 #include "GLState.h"
-#include "IDataChangeListener.h"
 #include "OpenGLDefs.h"
 
 // ----------------------------------------------------------------------------
@@ -16,6 +16,13 @@ std::shared_ptr<IndexData>
 IndexData::New()
 {
   return std::shared_ptr<IndexData>(new IndexData);
+}
+
+// ----------------------------------------------------------------------------
+
+IndexData::IndexData()
+  : m_listeners(new DataListeners)
+{
 }
 
 // ----------------------------------------------------------------------------
@@ -110,7 +117,7 @@ IndexData::Resize(const RawArrayView& indexData)
   Clear();
   Create(indexData);
 
-  m_listeners.DataChanged();
+  m_listeners->DataChanged();
 }
 
 // ----------------------------------------------------------------------------
@@ -148,18 +155,10 @@ IndexData::GetNIndices() const
 
 // ----------------------------------------------------------------------------
 
-void
-IndexData::AddListener(IDataChangeListener* listener)
+DataListeners&
+IndexData::GetListeners()
 {
-  m_listeners.Add(listener);
-}
-
-// ----------------------------------------------------------------------------
-
-void
-IndexData::RemoveListener(IDataChangeListener* listener)
-{
-  m_listeners.Remove(listener);
+  return *m_listeners;
 }
 
 // ----------------------------------------------------------------------------

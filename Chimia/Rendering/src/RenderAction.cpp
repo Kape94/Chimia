@@ -3,6 +3,7 @@
 #include "BufferPrivate.h"
 #include "BufferUtils.h"
 #include "GLState.h"
+#include "IDataChangeListener.h"
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "OpenGLDefs.h"
@@ -65,7 +66,121 @@ RenderAction::Binding::operator=(const Binding& other)
 }
 
 //---------------------------------------------------------------------------------------
+
+const VertexDataInstance&
+RenderAction::Binding::GetVertexData() const
+{
+  return m_vertexData;
+}
+
+//---------------------------------------------------------------------------------------
+
+const InstancedDataInstance&
+RenderAction::Binding::GetInstancedData() const
+{
+  return m_instancedData;
+}
+
+//---------------------------------------------------------------------------------------
+
+const std::string&
+RenderAction::Binding::GetInputDataName() const
+{
+  return m_data;
+}
+
+//---------------------------------------------------------------------------------------
+
+const std::string&
+RenderAction::Binding::GetShaderInputName() const
+{
+  return m_shaderInput;
+}
+
+//---------------------------------------------------------------------------------------
+// RenderAction::Listener
+//---------------------------------------------------------------------------------------
+
+class RenderAction::Listener : public IDataChangeListener
+{
+public:
+  Listener(RenderAction& action)
+    : m_action(action)
+  {
+  }
+
+  void DataChanged() override { m_action.DataChanged(); }
+
+private:
+  RenderAction& m_action;
+};
+
+//---------------------------------------------------------------------------------------
+// RenderActionInternal
+//---------------------------------------------------------------------------------------
+
+namespace RenderActionInternal {
+void
+CollectDatasFromBindings(const ShaderBindings& bindings,
+                         std::vector<VertexDataInstance>& vertexDatas,
+                         std::vector<InstancedDataInstance>& instancedDatas)
+{
+  std::set<VertexDataInstance> vertexSet;
+  std::set<InstancedDataInstance> instancedSet;
+
+  for (const ShaderBinding& binding : bindings) {
+    if (const VertexDataInstance data = BufferPrivate::GetVertexData(binding)) {
+      vertexSet.insert(data);
+    }
+    if (const InstancedDataInstance instancedData =
+          BufferPrivate::GetInstancedData(binding)) {
+      instancedSet.insert(instancedData);
+    }
+  }
+
+  for (const VertexDataInstance& vertexData : vertexSet) {
+    vertexDatas.push_back(vertexData);
+  }
+  for (const InstancedDataInstance& instancedData : instancedSet) {
+    instancedDatas.push_back(instancedData);
+  }
+}
+
+ShaderBindings
+GenerateDetailedBindings(const Shader& shader,
+                         const std::vector<RenderAction::Binding>& bindings)
+{
+  ShaderBindings detailedBindings;
+
+  for (const auto& binding : bindings) {
+    if (const VertexDataInstance vertexData = binding.GetVertexData()) {
+      detailedBindings.Insert(
+        ShaderBinding::Connect(vertexData,
+                               binding.GetInputDataName(),
+                               shader,
+                               binding.GetShaderInputName()));
+    } else {
+      detailedBindings.Insert(
+        ShaderBinding::Connect(binding.GetInstancedData(),
+                               binding.GetInputDataName(),
+                               shader,
+                               binding.GetShaderInputName()));
+    }
+  }
+
+  return detailedBindings;
+}
+}
+
+//---------------------------------------------------------------------------------------
 // RenderAction
+//---------------------------------------------------------------------------------------
+
+RenderAction::RenderAction()
+  : m_dataListener(new Listener(*this))
+{
+}
+
 //---------------------------------------------------------------------------------------
 
 RenderAction::RenderAction(RenderAction&& other) noexcept
@@ -74,6 +189,7 @@ RenderAction::RenderAction(RenderAction&& other) noexcept
   , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
   , m_bindings(std::move(other.m_bindings))
+  , m_dataListener(std::move(other.m_dataListener))
 {
   other.m_VAO = 0;
 }
@@ -89,6 +205,7 @@ RenderAction::operator=(RenderAction&& other) noexcept
     m_referenceIndexBuffer = std::move(other.m_referenceIndexBuffer);
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
     m_bindings = std::move(other.m_bindings);
+    m_dataListener = std::move(other.m_dataListener);
 
     other.m_VAO = 0;
   }
@@ -110,23 +227,7 @@ RenderAction::Create(const Shader& shader, const std::vector<Binding>& bindings)
 {
   Clear();
 
-  ShaderBindings detailedBindings;
-  for (const auto& binding : bindings) {
-    if (const VertexDataInstance vertexData = binding.m_vertexData) {
-      detailedBindings.Insert(ShaderBinding::Connect(
-        vertexData, binding.m_data, shader, binding.m_shaderInput));
-    } else {
-      detailedBindings.Insert(ShaderBinding::Connect(binding.m_instancedData,
-                                                     binding.m_data,
-                                                     shader,
-                                                     binding.m_shaderInput));
-    }
-  }
-
-  Create(detailedBindings);
-
-  m_bindings = bindings;
-  m_shader = &shader;
+  Setup(shader, nullptr /*indexData*/, bindings);
 }
 
 //---------------------------------------------------------------------------------------
@@ -138,55 +239,35 @@ RenderAction::Create(const Shader& shader,
 {
   Clear();
 
-  ShaderBindings detailedBindings;
-  for (const auto& binding : bindings) {
-    if (const VertexDataInstance vertexData = binding.m_vertexData) {
-      detailedBindings.Insert(ShaderBinding::Connect(
-        vertexData, binding.m_data, shader, binding.m_shaderInput));
-    } else {
-      detailedBindings.Insert(ShaderBinding::Connect(binding.m_instancedData,
-                                                     binding.m_data,
-                                                     shader,
-                                                     binding.m_shaderInput));
-    }
+  Setup(shader, indexData, bindings);
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+RenderAction::Setup(const Shader& shader,
+                    const IndexDataInstance& indexData,
+                    const std::vector<Binding>& bindings)
+{
+  const ShaderBindings detailedBindings =
+    RenderActionInternal::GenerateDetailedBindings(shader, bindings);
+
+  RenderActionInternal::CollectDatasFromBindings(
+    detailedBindings, m_referenceVertexDatas, m_referenceInstancedDatas);
+  RegisterAsListener();
+
+  SetupVAO();
+  for (const ShaderBinding& binding : detailedBindings) {
+    BufferUtils::LinkShaderBinding(binding);
   }
 
-  Create(detailedBindings, indexData);
+  if (indexData != nullptr) {
+    m_referenceIndexBuffer = indexData;
+    BufferPrivate::Bind(indexData);
+  }
 
   m_bindings = bindings;
   m_shader = &shader;
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::Create(const ShaderBindings& bindings)
-{
-  CollectDatasFromBindings(bindings);
-  RegisterAsListener();
-
-  SetupVAO();
-  for (const ShaderBinding& binding : bindings) {
-    BufferUtils::LinkShaderBinding(binding);
-  }
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::Create(const ShaderBindings& bindings,
-                     const IndexDataInstance& indexData)
-{
-  CollectDatasFromBindings(bindings);
-  RegisterAsListener();
-
-  SetupVAO();
-  for (const ShaderBinding& binding : bindings) {
-    BufferUtils::LinkShaderBinding(binding);
-  }
-
-  m_referenceIndexBuffer = indexData;
-  BufferPrivate::Bind(indexData);
 }
 
 //---------------------------------------------------------------------------------------
@@ -196,32 +277,6 @@ RenderAction::SetupVAO()
 {
   glGenVertexArrays(1, &m_VAO);
   GLState::BindVertexArray(m_VAO);
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::CollectDatasFromBindings(const ShaderBindings& bindings)
-{
-  std::set<VertexDataInstance> vertexSet;
-  std::set<InstancedDataInstance> instancedSet;
-
-  for (const ShaderBinding& binding : bindings) {
-    if (const VertexDataInstance data = BufferPrivate::GetVertexData(binding)) {
-      vertexSet.insert(data);
-    }
-    if (const InstancedDataInstance instancedData =
-          BufferPrivate::GetInstancedData(binding)) {
-      instancedSet.insert(instancedData);
-    }
-  }
-
-  for (const VertexDataInstance& vertexData : vertexSet) {
-    m_referenceVertexDatas.push_back(vertexData);
-  }
-  for (const InstancedDataInstance& instancedData : instancedSet) {
-    m_referenceInstancedDatas.push_back(instancedData);
-  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -255,14 +310,16 @@ RenderAction::ClearRenderingData()
 void
 RenderAction::RegisterAsListener()
 {
+  Listener* listener = this->m_dataListener.get();
+
   for (VertexDataInstance& data : m_referenceVertexDatas) {
-    BufferPrivate::AddListener(data, this);
+    BufferPrivate::AddListener(data, listener);
   }
   if (m_referenceIndexBuffer != nullptr) {
-    BufferPrivate::AddListener(m_referenceIndexBuffer, this);
+    BufferPrivate::AddListener(m_referenceIndexBuffer, listener);
   }
   for (InstancedDataInstance& data : m_referenceInstancedDatas) {
-    BufferPrivate::AddListener(data, this);
+    BufferPrivate::AddListener(data, listener);
   }
 }
 
@@ -271,14 +328,16 @@ RenderAction::RegisterAsListener()
 void
 RenderAction::UnregisterAsListener()
 {
+  Listener* listener = this->m_dataListener.get();
+
   for (VertexDataInstance& data : m_referenceVertexDatas) {
-    BufferPrivate::RemoveListener(data, this);
+    BufferPrivate::RemoveListener(data, listener);
   }
   if (m_referenceIndexBuffer != nullptr) {
-    BufferPrivate::RemoveListener(m_referenceIndexBuffer, this);
+    BufferPrivate::RemoveListener(m_referenceIndexBuffer, listener);
   }
   for (InstancedDataInstance& data : m_referenceInstancedDatas) {
-    BufferPrivate::RemoveListener(data, this);
+    BufferPrivate::RemoveListener(data, listener);
   }
 }
 

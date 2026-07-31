@@ -4,8 +4,6 @@
 
 #include "Core/ClassDefs.h"
 #include "Core/Types.h"
-#include "Rendering/DataListeners.h"
-#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 
 #include <memory>
@@ -13,6 +11,10 @@
 // ----------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
+
+// ----------------------------------------------------------------------------
+
+class DataListeners;
 
 // ----------------------------------------------------------------------------
 
@@ -36,12 +38,11 @@ public:
   void Clear();
 
 private:
-  IndexData() = default;
+  IndexData();
 
   void Bind() const;
   unsigned GetNIndices() const;
-  void AddListener(IDataChangeListener* listener);
-  void RemoveListener(IDataChangeListener* listener);
+  DataListeners& GetListeners();
 
   void AllocateIndexData(const RawArrayView& indexData);
 
@@ -53,7 +54,7 @@ private:
   size_t m_currentIndexSize = 0;
   size_t m_maximumIndexSize = 0;
 
-  DataListeners m_listeners;
+  std::unique_ptr<DataListeners> m_listeners;
 };
 
 // ----------------------------------------------------------------------------

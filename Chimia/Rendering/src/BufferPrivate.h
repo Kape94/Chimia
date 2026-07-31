@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "IDataChangeListener.h"
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"

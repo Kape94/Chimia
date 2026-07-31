@@ -3,12 +3,10 @@
 #include "Core/ClassDefs.h"
 #include "IndexData.h"
 #include "InstancedData.h"
-#include "Rendering/IDataChangeListener.h"
 #include "RenderingNamespaceDefs.h"
 #include "Shader.h"
-#include "ShaderBinding.h"
 #include "VertexData.h"
-#include <initializer_list>
+
 #include <vector>
 
 //---------------------------------------------------------------------------------------
@@ -17,7 +15,7 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-class RenderAction : public IDataChangeListener
+class RenderAction
 {
 public:
   // ----------------------------------------------------------------
@@ -35,6 +33,11 @@ public:
     Binding(const Binding& other);
     Binding& operator=(const Binding& other);
 
+    const VertexDataInstance& GetVertexData() const;
+    const InstancedDataInstance& GetInstancedData() const;
+    const std::string& GetInputDataName() const;
+    const std::string& GetShaderInputName() const;
+
   private:
     friend class RenderAction;
 
@@ -45,8 +48,9 @@ public:
   };
   // ----------------------------------------------------------------
 
-  DEFAULT_CONSTUCTIBLE(RenderAction)
   NON_COPYABLE(RenderAction)
+
+  RenderAction();
 
   RenderAction(RenderAction&& other) noexcept;
   RenderAction& operator=(RenderAction&& other) noexcept;
@@ -64,16 +68,13 @@ public:
   void Render() const;
 
 private:
-  void Create(const ShaderBindings& bindings);
-
-  void Create(const ShaderBindings& bindings,
-              const IndexDataInstance& indexData);
+  void Setup(const Shader& shader,
+             const IndexDataInstance& indexData,
+             const std::vector<Binding>& bindings);
 
   void SetupVAO();
 
   void ClearRenderingData();
-
-  void CollectDatasFromBindings(const ShaderBindings& bindings);
 
   void RegisterAsListener();
   void UnregisterAsListener();
@@ -85,7 +86,7 @@ private:
   unsigned PickReferenceVertexCount() const;
   unsigned PickReferenceInstanceCount() const;
 
-  void DataChanged() override;
+  void DataChanged();
 
   unsigned m_VAO = 0;
 
@@ -95,6 +96,9 @@ private:
 
   const Shader* m_shader = nullptr;
   std::vector<Binding> m_bindings;
+
+  class Listener;
+  std::unique_ptr<Listener> m_dataListener;
 };
 
 //---------------------------------------------------------------------------------------

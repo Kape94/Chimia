@@ -1,4 +1,5 @@
 #include "BufferPrivate.h"
+#include "DataListeners.h"
 #include "IndexData.h"
 #include "ShaderBinding.h"
 #include "VertexData.h"
@@ -45,7 +46,7 @@ void
 BufferPrivate::AddListener(VertexDataInstance& data,
                            IDataChangeListener* listener)
 {
-  data->AddListener(listener);
+  data->GetListeners().Add(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ void
 BufferPrivate::RemoveListener(VertexDataInstance& data,
                               IDataChangeListener* listener)
 {
-  data->RemoveListener(listener);
+  data->GetListeners().Remove(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -79,7 +80,7 @@ void
 BufferPrivate::AddListener(IndexDataInstance& data,
                            IDataChangeListener* listener)
 {
-  data->AddListener(listener);
+  data->GetListeners().Add(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ void
 BufferPrivate::RemoveListener(IndexDataInstance& data,
                               IDataChangeListener* listener)
 {
-  data->RemoveListener(listener);
+  data->GetListeners().Remove(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -145,7 +146,7 @@ void
 BufferPrivate::AddListener(InstancedDataInstance& data,
                            IDataChangeListener* listener)
 {
-  data->AddListener(listener);
+  data->GetListeners().Add(listener);
 }
 
 // --------------------------------------------------------------------------------------
@@ -154,7 +155,7 @@ void
 BufferPrivate::RemoveListener(InstancedDataInstance& data,
                               IDataChangeListener* listener)
 {
-  data->RemoveListener(listener);
+  data->GetListeners().Remove(listener);
 }
 
 // --------------------------------------------------------------------------------------
