@@ -72,6 +72,10 @@ Implementation steps:
   - Adopt m_ prefix for Framebuffer and Texture members;
   - Move Texture::GetId functionality to private section;
   - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state;
+    * For Texture::Use: The texture should be passed altogether in the Shader::SetUniform call;
+    * For Framebuffer::Use, the framebuffer could optionally be provided to RenderAction. Or, a new structure called Target could be 
+        created, to hold a framebuffer and a shader, and the RenderAction could reference it;
+    * For Shader::Use, the RenderAction should hold a reference to it, or it should be passed to RenderAction::Render call as parameter;
   - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing;
     * Does it makes sense to clear the data before its scope ends?
     * I don't think so, we're currently doing only for data resize, but we should get public functions in the datas for that;
