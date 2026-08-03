@@ -91,8 +91,5 @@ main()
     win.PollEvents();
   }
 
-  action.Clear();
-  shader.Clear();
-
   return 0;
 }

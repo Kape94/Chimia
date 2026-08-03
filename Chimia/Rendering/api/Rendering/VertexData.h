@@ -35,19 +35,17 @@ public:
   void Load(const RawDataView& data);
   void Resize(const RawDataView& data);
 
-  void Clear();
-
 private:
   VertexData();
 
   friend class BufferPrivate;
-
   const DataLayout& GetDataLayout() const;
   unsigned GetNVertices() const;
   unsigned GetLayoutSize() const;
   void Bind() const;
   DataListeners& GetListeners();
 
+  void Clear();
   void AllocateVertexData(const RawDataView& vertexData,
                           const unsigned nVertices);
 

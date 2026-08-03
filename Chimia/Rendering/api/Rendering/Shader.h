@@ -35,8 +35,6 @@ public:
 
   void Use();
 
-  void Clear();
-
   void SetUniform(const std::string& name, const int value);
   void SetUniform(const std::string& name, const float value);
   void SetUniform(const std::string& name, const TextureUnit& unit);
@@ -45,10 +43,10 @@ public:
 
 private:
   friend class BufferPrivate;
-
   const DataLayout& GetDataLayout() const;
   unsigned GetLocationOfAttribute(const std::string& attributeName) const;
 
+  void Clear();
   int GetUniformLocation(const std::string& name) const;
 
   unsigned CreateVertexShader(const char* vertexShaderCode);

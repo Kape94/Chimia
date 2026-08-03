@@ -75,7 +75,6 @@ FrameBuffer::UseTexture(const TextureUnit& textureUnit)
 void
 FrameBuffer::Clear()
 {
-  frameTexture.Clear();
   if (id != 0) {
     glDeleteFramebuffers(1, &id);
     id = 0;

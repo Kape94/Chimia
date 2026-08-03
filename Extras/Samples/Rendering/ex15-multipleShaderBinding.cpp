@@ -125,8 +125,5 @@ main()
     interpolationRate += increment;
   }
 
-  action.Clear();
-  shader.Clear();
-
   return 0;
 }

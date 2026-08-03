@@ -35,18 +35,17 @@ public:
   void Load(const RawArrayView& data);
   void Resize(const RawDataView& data);
 
-  void Clear();
-
 private:
   InstancedData();
 
   friend class BufferPrivate;
-
   const DataLayout& GetDataLayout() const;
   void Bind() const;
   unsigned GetNInstances() const;
   unsigned GetInstanceSize() const;
   DataListeners& GetListeners();
+
+  void Clear();
 
   unsigned m_instancedVBO = 0;
   unsigned m_nInstances = 0;

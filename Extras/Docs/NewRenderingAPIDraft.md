@@ -69,6 +69,9 @@ Implementation steps:
   - For shaderBinding, we should mention the shader only once. Doesn't makes any sense to link to different shaders in the same action; [DONE]
   
   
+  - Adopt m_ prefix for Framebuffer and Texture members;
+  - Move Texture::GetId functionality to private section;
+  - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state;
   - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing;
     * Does it makes sense to clear the data before its scope ends?
     * I don't think so, we're currently doing only for data resize, but we should get public functions in the datas for that;
@@ -78,5 +81,4 @@ Implementation steps:
   - The renderAction could hold the reference to the shader it uses for rendering;
   - Use shared_ptr for Shader? RenderAction should hold a shader?
     * Probably yes. We do need to support shader re-targeting though;
-  - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state;
   - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;

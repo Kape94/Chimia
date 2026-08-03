@@ -63,8 +63,6 @@ public:
               const IndexDataInstance& indexData,
               const std::vector<Binding>& bindings);
 
-  void Clear();
-
   void Render() const;
 
 private:
@@ -74,6 +72,7 @@ private:
 
   void SetupVAO();
 
+  void Clear();
   void ClearRenderingData();
 
   void RegisterAsListener();

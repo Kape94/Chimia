@@ -32,9 +32,9 @@ public:
 
   unsigned GetId() const;
 
+private:
   void Clear();
 
-private:
   unsigned id = 0;
 };
 

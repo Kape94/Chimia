@@ -127,10 +127,5 @@ main(int argc, char** argv)
     win.PollEvents();
   }
 
-  action.Clear();
-  texture.Clear();
-  texture2.Clear();
-  shader.Clear();
-
   return 0;
 }

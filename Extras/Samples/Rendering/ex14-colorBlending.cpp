@@ -154,10 +154,5 @@ main()
     win.PollEvents();
   }
 
-  opaqueTriangle.Clear();
-  transparentTriangle1.Clear();
-  transparentTriangle2.Clear();
-  shader.Clear();
-
   return 0;
 }

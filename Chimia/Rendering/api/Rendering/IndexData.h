@@ -35,18 +35,16 @@ public:
   void LoadIndexData(const RawArrayView& indexData);
   void Resize(const RawArrayView& indexData);
 
-  void Clear();
-
 private:
   IndexData();
 
+  friend class BufferPrivate;
   void Bind() const;
   unsigned GetNIndices() const;
   DataListeners& GetListeners();
 
   void AllocateIndexData(const RawArrayView& indexData);
-
-  friend class BufferPrivate;
+  void Clear();
 
   unsigned m_EBO = 0;
   unsigned m_nIndices = 0;

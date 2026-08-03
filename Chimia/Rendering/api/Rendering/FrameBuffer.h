@@ -26,11 +26,11 @@ public:
 
   void UseTexture(const TextureUnit& textureUnit);
 
-  void Clear();
-
   static void UseDefaultFrameBuffer();
 
 private:
+  void Clear();
+
   unsigned int id = 0;
 
   Texture2D frameTexture;
