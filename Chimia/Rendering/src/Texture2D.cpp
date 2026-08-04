@@ -32,9 +32,9 @@ Texture2D::Create(const unsigned char* data,
 {
   Clear();
 
-  glGenTextures(1, &id);
+  glGenTextures(1, &m_id);
 
-  GLState::BindTexture2D(id);
+  GLState::BindTexture2D(m_id);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -54,7 +54,7 @@ Texture2D::Use(const TextureUnit& textureUnit)
 {
   const unsigned textureUnitID = static_cast<unsigned>(textureUnit);
   glActiveTexture(GL_TEXTURE0 + textureUnitID);
-  GLState::BindTexture2D(id);
+  GLState::BindTexture2D(m_id);
 }
 
 //---------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ Texture2D::Use(const TextureUnit& textureUnit)
 unsigned
 Texture2D::GetId() const
 {
-  return id;
+  return m_id;
 }
 
 //---------------------------------------------------------------------------------------
@@ -70,9 +70,9 @@ Texture2D::GetId() const
 void
 Texture2D::Clear()
 {
-  if (id != 0) {
-    glDeleteTextures(1, &id);
-    id = 0;
+  if (m_id != 0) {
+    glDeleteTextures(1, &m_id);
+    m_id = 0;
   }
 }
 

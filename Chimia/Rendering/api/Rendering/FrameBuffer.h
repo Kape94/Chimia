@@ -31,10 +31,10 @@ public:
 private:
   void Clear();
 
-  unsigned int id = 0;
+  unsigned int m_id = 0;
 
-  Texture2D frameTexture;
-  unsigned renderBufferId = 0;
+  Texture2D m_frameTexture;
+  unsigned m_renderBufferId = 0;
 };
 
 //---------------------------------------------------------------------------------------
