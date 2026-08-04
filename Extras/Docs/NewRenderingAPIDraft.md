@@ -67,21 +67,21 @@ Implementation steps:
     * On Graphics module, we can create own structures for propagating the attributes from renderer to batching components; [DONE]
   - Move IDataChangeListener definition to module's impl and also the Listeners structure; [DONE]
   - For shaderBinding, we should mention the shader only once. Doesn't makes any sense to link to different shaders in the same action; [DONE]
+  - We shouldn`t rely in reusing public methods inside other methods of the same object. See RenderActions, Data objects and Shader. [DONE]
+    * Guess we could try moving the clear functions to private; [DONE]
+    * Clear will only be called if we try to re-created a already existing data; [DONE]
+  - Adopt m_ prefix for Framebuffer and Texture members; [DONE]
+  - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing; [DONE]
+    * Does it makes sense to clear the data before its scope ends? [DONE]
+    * I don't think so, we're currently doing only for data resize, but we should get public functions in the datas for that; [DONE]
   
   
-  - Adopt m_ prefix for Framebuffer and Texture members;
   - Move Texture::GetId functionality to private section;
   - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state;
     * For Texture::Use: The texture should be passed altogether in the Shader::SetUniform call;
     * For Framebuffer::Use, the framebuffer could optionally be provided to RenderAction. Or, a new structure called Target could be 
         created, to hold a framebuffer and a shader, and the RenderAction could reference it;
     * For Shader::Use, the RenderAction should hold a reference to it, or it should be passed to RenderAction::Render call as parameter;
-  - Data clear should notify actions as well, we should have a separate funcion for internal clearing and user clearing;
-    * Does it makes sense to clear the data before its scope ends?
-    * I don't think so, we're currently doing only for data resize, but we should get public functions in the datas for that;
-  - We shouldn`t rely in reusing public methods inside other methods of the same object. See RenderActions, Data objects and Shader.
-    * Guess we could try moving the clear functions to private;
-    * Clear will only be called if we try to re-created a already existing data;
   - The renderAction could hold the reference to the shader it uses for rendering;
   - Use shared_ptr for Shader? RenderAction should hold a shader?
     * Probably yes. We do need to support shader re-targeting though;
