@@ -115,12 +115,9 @@ main(int argc, char** argv)
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    texture.Use(texUnit);
-    texture2.Use(tex2Unit);
-
     shader.Use();
-    shader.SetUniform("tex", texUnit);
-    shader.SetUniform("tex2", tex2Unit);
+    shader.SetTexture("tex", texture, texUnit);
+    shader.SetTexture("tex2", texture2, tex2Unit);
     action.Render();
 
     win.Swap();

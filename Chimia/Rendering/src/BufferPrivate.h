@@ -6,6 +6,8 @@
 #include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 #include "ShaderBinding.h"
+#include "Texture2D.h"
+#include "TextureUnit.h"
 #include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
@@ -60,6 +62,10 @@ public:
   static const DataLayout& GetDataLayout(const Shader& shader);
   static unsigned GetAttributeLocation(const std::string& attributeName,
                                        const Shader& shader);
+
+  // Texture
+  static unsigned GetTextureID(const Texture2D& texture);
+  static void UseTexture(const Texture2D& texture, const TextureUnit& unit);
 };
 
 // --------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 #include "Shader.h"
 
+#include "BufferPrivate.h"
 #include "DataLayout.h"
 #include "OpenGLDefs.h"
 
@@ -189,10 +190,13 @@ Shader::SetUniform(const std::string& name, const float value)
 //---------------------------------------------------------------------------------------
 
 void
-Shader::SetUniform(const std::string& name, const TextureUnit& unit)
+Shader::SetTexture(const std::string& name,
+                   const Texture2D& texture,
+                   const TextureUnit& unit)
 {
   const int location = GetUniformLocation(name);
   if (location != -1) {
+    BufferPrivate::UseTexture(texture, unit);
     glProgramUniform1i(m_programId, location, static_cast<unsigned>(unit));
   }
 }

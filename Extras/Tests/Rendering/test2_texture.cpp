@@ -117,12 +117,9 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit tex2Unit =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  texture.Use(texUnit);
-  texture2.Use(tex2Unit);
-
   shader.Use();
-  shader.SetUniform("tex", texUnit);
-  shader.SetUniform("tex2", tex2Unit);
+  shader.SetTexture("tex", texture, texUnit);
+  shader.SetTexture("tex2", texture2, tex2Unit);
   renderTriangleAction.Render();
 
   win.Swap();

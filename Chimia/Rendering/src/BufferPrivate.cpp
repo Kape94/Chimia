@@ -208,3 +208,19 @@ BufferPrivate::GetAttributeLocation(const std::string& attributeName,
 }
 
 // --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetTextureID(const Texture2D& texture)
+{
+  return texture.m_id;
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::UseTexture(const Texture2D& texture, const TextureUnit& unit)
+{
+  texture.Use(unit);
+}
+
+// --------------------------------------------------------------------------------------

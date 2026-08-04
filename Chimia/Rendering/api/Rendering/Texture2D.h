@@ -28,12 +28,12 @@ public:
               const unsigned width,
               const unsigned height);
 
-  void Use(const Rendering::TextureUnit& textureUnit);
-
-  unsigned GetId() const;
-
 private:
+  void Use(const TextureUnit& textureUnit) const;
+
   void Clear();
+
+  friend class BufferPrivate;
 
   unsigned m_id = 0;
 };

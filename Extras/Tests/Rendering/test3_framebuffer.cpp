@@ -189,18 +189,14 @@ main(int argc, char** argv)
 
   frameBuffer.Use();
 
-  texture.Use(texUnit);
-
   shader.Use();
-  shader.SetUniform("tex", texUnit);
+  shader.SetTexture("tex", texture, texUnit);
   renderTriangle.Render();
 
   Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
 
-  frameBuffer.UseTexture(texUnitPost);
-
   secondPassShader.Use();
-  secondPassShader.SetUniform("tex", texUnitPost);
+  secondPassShader.SetTexture("tex", frameBuffer.GetTexture(), texUnitPost);
   renderScreenQuad.Render();
 
   win.Swap();

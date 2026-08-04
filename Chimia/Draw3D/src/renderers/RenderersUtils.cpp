@@ -122,9 +122,7 @@ ConfigureTextureOnShader(const ResourcesGroup& resources,
   }
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
-  texture->Use(TEXTURE_UNIT);
-
-  shader.SetUniform(ShaderUniformsNames::TEXTURE, TEXTURE_UNIT);
+  shader.SetTexture(ShaderUniformsNames::TEXTURE, *texture, TEXTURE_UNIT);
 }
 
 void

@@ -1,5 +1,6 @@
 #include "FrameBuffer.h"
 
+#include "BufferPrivate.h"
 #include "GLState.h"
 #include "OpenGLDefs.h"
 
@@ -39,7 +40,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
   glFramebufferTexture2D(GL_FRAMEBUFFER,
                          GL_COLOR_ATTACHMENT0,
                          GL_TEXTURE_2D,
-                         m_frameTexture.GetId(),
+                         BufferPrivate::GetTextureID(m_frameTexture),
                          0);
 
   glGenRenderbuffers(1, &m_renderBufferId);
@@ -67,10 +68,10 @@ FrameBuffer::Use()
 
 //---------------------------------------------------------------------------------------
 
-void
-FrameBuffer::UseTexture(const TextureUnit& textureUnit)
+const Texture2D&
+FrameBuffer::GetTexture() const
 {
-  m_frameTexture.Use(textureUnit);
+  return m_frameTexture;
 }
 
 //---------------------------------------------------------------------------------------

@@ -5,6 +5,7 @@
 #include "Core/ClassDefs.h"
 #include "Rendering/DataLayout.h"
 #include "RenderingNamespaceDefs.h"
+#include "Texture2D.h"
 #include "TextureUnit.h"
 
 #include <glm/mat4x4.hpp>
@@ -37,7 +38,9 @@ public:
 
   void SetUniform(const std::string& name, const int value);
   void SetUniform(const std::string& name, const float value);
-  void SetUniform(const std::string& name, const TextureUnit& unit);
+  void SetTexture(const std::string& name,
+                  const Texture2D& texture,
+                  const TextureUnit& unit);
   void SetUniform(const std::string& name, const glm::mat4x4& matrix);
   void SetUniform(const std::string& name, const glm::vec3& vector);
 

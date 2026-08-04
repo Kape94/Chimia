@@ -50,19 +50,11 @@ Texture2D::Create(const unsigned char* data,
 //---------------------------------------------------------------------------------------
 
 void
-Texture2D::Use(const TextureUnit& textureUnit)
+Texture2D::Use(const TextureUnit& textureUnit) const
 {
   const unsigned textureUnitID = static_cast<unsigned>(textureUnit);
   glActiveTexture(GL_TEXTURE0 + textureUnitID);
   GLState::BindTexture2D(m_id);
-}
-
-//---------------------------------------------------------------------------------------
-
-unsigned
-Texture2D::GetId() const
-{
-  return m_id;
 }
 
 //---------------------------------------------------------------------------------------

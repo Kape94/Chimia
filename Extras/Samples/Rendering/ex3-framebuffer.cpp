@@ -184,18 +184,14 @@ main(int argc, char** argv)
   while (!win.ShouldClose()) {
     frameBuffer.Use();
 
-    texture.Use(texUnit);
-
     shader.Use();
-    shader.SetUniform("tex", texUnit);
+    shader.SetTexture("tex", texture, texUnit);
     action.Render();
 
     Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
 
-    frameBuffer.UseTexture(texUnitPost);
-
     secondPassShader.Use();
-    secondPassShader.SetUniform("tex", texUnitPost);
+    secondPassShader.SetTexture("tex", frameBuffer.GetTexture(), texUnitPost);
     renderScreenQuadAction.Render();
 
     win.Swap();

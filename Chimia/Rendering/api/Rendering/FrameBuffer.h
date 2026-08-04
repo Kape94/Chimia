@@ -24,7 +24,7 @@ public:
 
   void Use();
 
-  void UseTexture(const TextureUnit& textureUnit);
+  const Texture2D& GetTexture() const;
 
   static void UseDefaultFrameBuffer();
 
