@@ -25,7 +25,6 @@ void
 ConfigureForTriangleDrawing(const ResourcesGroup& resource)
 {
   Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
 }
@@ -34,7 +33,6 @@ void
 ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 {
   Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);
@@ -48,10 +46,11 @@ GenericRenderer* g_renderer = nullptr;
 void
 Color4::Init()
 {
-  g_renderer = &Renderers::CreateRenderer(VERTEX_LAYOUT,
-                                          Shaders::Generic(),
-                                          ConfigureForTriangleDrawing,
-                                          ConfigureForInstancedDrawing);
+  g_renderer =
+    &Renderers::CreateRenderer(VERTEX_LAYOUT,
+                               RenderersUtils::GetDefaultRenderingTarget(),
+                               ConfigureForTriangleDrawing,
+                               ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------

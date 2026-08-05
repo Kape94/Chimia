@@ -29,11 +29,10 @@ public:
               const unsigned height);
 
 private:
+  friend class BufferPrivate;
   void Use(const TextureUnit& textureUnit) const;
 
   void Clear();
-
-  friend class BufferPrivate;
 
   unsigned m_id = 0;
 };

@@ -84,13 +84,14 @@ main(int argc, char** argv)
   indexData->Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
-  shader.Use();
   action.Render();
 
   win.Swap();

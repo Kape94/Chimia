@@ -5,9 +5,11 @@
 #include "IlluminationPrivate.h"
 #include "Pipelines.h"
 #include "Rendering/DataLayout.h"
+#include "Rendering/Target.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "ShaderUniformsNames.h"
+#include "Shaders.h"
 #include "Types.h"
 
 #include "Rendering/Shader.h"
@@ -276,52 +278,53 @@ RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
 // ----------------------------------------------------------------------------
 
 VertexLayoutBindingsTemplates
-RenderersUtils::GetBindingsTemplatesForLayout(const eVertexLayout& layout,
-                                              const Rendering::Shader& shader)
+RenderersUtils::GetBindingsTemplatesForLayout(
+  const eVertexLayout& layout,
+  const Rendering::TargetInstance& target)
 {
   const ShaderBindingsTemplate instancedTemplate(
-    { { "transform", "a_instanceTransform" } }, shader);
+    { { "transform", "a_instanceTransform" } }, target);
 
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR4:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_NORMAL3:
       return { { { { "position", "a_vertexPos" },
                    { "normal", "a_vertexNorm" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "texCoord", "a_vertexTexCoord" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_NORMAL3:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "normal", "a_vertexNorm" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "texCoord", "a_vertexTexCoord" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "normal", "a_vertexNorm" },
                    { "texCoord", "a_vertexTexCoord" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "normal", "a_vertexNorm" },
                    { "texCoord", "a_vertexTexCoord" } },
-                 shader },
+                 target },
                instancedTemplate };
     case eVertexLayout::UNDEFINED:
     default:
@@ -365,6 +368,17 @@ RenderersUtils::GetVertexDataSchema(const eVertexLayout& layout)
     default:
       return {};
   }
+}
+
+// ----------------------------------------------------------------------------
+
+const Chimia::Rendering::TargetInstance&
+RenderersUtils::GetDefaultRenderingTarget()
+{
+  static Rendering::TargetInstance defaultTarget =
+    Rendering::Target::Create(Shaders::Generic());
+
+  return defaultTarget;
 }
 
 // ----------------------------------------------------------------------------

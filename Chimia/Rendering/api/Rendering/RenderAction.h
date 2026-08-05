@@ -4,7 +4,7 @@
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
-#include "Shader.h"
+#include "Target.h"
 #include "VertexData.h"
 
 #include <vector>
@@ -57,16 +57,17 @@ public:
 
   ~RenderAction();
 
-  void Create(const Shader& shader, const std::vector<Binding>& bindings);
+  void Create(const TargetInstance& target,
+              const std::vector<Binding>& bindings);
 
-  void Create(const Shader& shader,
+  void Create(const TargetInstance& target,
               const IndexDataInstance& indexData,
               const std::vector<Binding>& bindings);
 
   void Render() const;
 
 private:
-  void Setup(const Shader& shader,
+  void Setup(const TargetInstance& target,
              const IndexDataInstance& indexData,
              const std::vector<Binding>& bindings);
 
@@ -93,7 +94,7 @@ private:
   IndexDataInstance m_referenceIndexBuffer = nullptr;
   std::vector<InstancedDataInstance> m_referenceInstancedDatas;
 
-  const Shader* m_shader = nullptr;
+  TargetInstance m_target = nullptr;
   std::vector<Binding> m_bindings;
 
   class Listener;

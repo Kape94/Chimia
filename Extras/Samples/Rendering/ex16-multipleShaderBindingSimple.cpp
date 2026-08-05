@@ -76,14 +76,15 @@ main()
     Inputs::BufferData::vertexColors,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     { { positionData, "data", "pos" }, { colorData, "data", "color" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
-    shader.Use();
 
     action.Render();
 

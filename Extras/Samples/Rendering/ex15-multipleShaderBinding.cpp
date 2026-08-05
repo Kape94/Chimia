@@ -94,8 +94,10 @@ main()
   auto reusableIndexData = Chimia::Rendering::IndexData::New();
   reusableIndexData->Create(Inputs::BufferData::indexData);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader,
+  action.Create(target,
                 reusableIndexData,
                 { { startData, "pos", "pos" },
                   { startData, "color", "color" },
@@ -107,7 +109,6 @@ main()
   float increment = SPEED;
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
-    shader.Use();
 
     shader.SetUniform("interpolation_rate", interpolationRate);
     action.Render();

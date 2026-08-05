@@ -69,14 +69,15 @@ Basic(Window& win)
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create(
-    shader,
+    target,
     { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
   renderWithOffsets.Render();
 
   win.Swap();
@@ -140,15 +141,16 @@ BasicIndexed(Window& win)
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
   renderWithOffsets.Render();
 
   win.Swap();
@@ -235,9 +237,11 @@ InstanceSubData(Window& win)
     { nullptr, positions.size() * dataSize },
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create(
-    shader,
+    target,
     { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   instancedData->Load(positions);
@@ -250,7 +254,6 @@ InstanceSubData(Window& win)
     const std::vector<glm::vec2>& positions = positionGroups[selectedGroup];
     instancedData->Load(positions);
 
-    shader.Use();
     renderWithOffsets.Render();
 
     win.Swap();
@@ -325,14 +328,15 @@ InstancingByTransformMatrix(Window& win)
     transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTransformed;
-  renderTransformed.Create(shader,
+  renderTransformed.Create(target,
                            { { vertexData, "pos", "pos" },
                              { instancedData, "transform", "transform" } });
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
   renderTransformed.Render();
 
   win.Swap();

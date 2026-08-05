@@ -5,6 +5,7 @@
 #include "OpenGLDefs.h"
 
 #include "Core/Diagnostics.h"
+#include "TextureUnit.h"
 
 #include <cassert>
 #include <glm/gtc/type_ptr.hpp>
@@ -160,9 +161,14 @@ Shader::PopulateAttributeLocations(const DataLayout& dataLayout)
 //---------------------------------------------------------------------------------------
 
 void
-Shader::Use()
+Shader::Use() const
 {
   glUseProgram(m_programId);
+
+  for (const auto& inUseTexture : m_inUseTextures) {
+    const auto& textureEntry = inUseTexture.second;
+    BufferPrivate::UseTexture(*textureEntry.texture, textureEntry.unit);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -196,7 +202,7 @@ Shader::SetTexture(const std::string& name,
 {
   const int location = GetUniformLocation(name);
   if (location != -1) {
-    BufferPrivate::UseTexture(texture, unit);
+    m_inUseTextures[name] = { &texture, unit };
     glProgramUniform1i(m_programId, location, static_cast<unsigned>(unit));
   }
 }

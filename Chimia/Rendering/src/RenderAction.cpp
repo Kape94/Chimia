@@ -9,6 +9,7 @@
 #include "OpenGLDefs.h"
 #include "Shader.h"
 #include "ShaderBinding.h"
+#include "Target.h"
 #include "VertexData.h"
 #include <set>
 
@@ -188,6 +189,7 @@ RenderAction::RenderAction(RenderAction&& other) noexcept
   , m_referenceVertexDatas(std::move(other.m_referenceVertexDatas))
   , m_referenceIndexBuffer(std::move(other.m_referenceIndexBuffer))
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
+  , m_target(std::move(other.m_target))
   , m_bindings(std::move(other.m_bindings))
   , m_dataListener(std::move(other.m_dataListener))
 {
@@ -204,6 +206,7 @@ RenderAction::operator=(RenderAction&& other) noexcept
     m_referenceVertexDatas = std::move(other.m_referenceVertexDatas);
     m_referenceIndexBuffer = std::move(other.m_referenceIndexBuffer);
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
+    m_target = std::move(other.m_target);
     m_bindings = std::move(other.m_bindings);
     m_dataListener = std::move(other.m_dataListener);
 
@@ -223,34 +226,36 @@ RenderAction::~RenderAction()
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const Shader& shader, const std::vector<Binding>& bindings)
+RenderAction::Create(const TargetInstance& target,
+                     const std::vector<Binding>& bindings)
 {
   Clear();
 
-  Setup(shader, nullptr /*indexData*/, bindings);
+  Setup(target, nullptr /*indexData*/, bindings);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Create(const Shader& shader,
+RenderAction::Create(const TargetInstance& target,
                      const IndexDataInstance& indexData,
                      const std::vector<Binding>& bindings)
 {
   Clear();
 
-  Setup(shader, indexData, bindings);
+  Setup(target, indexData, bindings);
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-RenderAction::Setup(const Shader& shader,
+RenderAction::Setup(const TargetInstance& target,
                     const IndexDataInstance& indexData,
                     const std::vector<Binding>& bindings)
 {
   const ShaderBindings detailedBindings =
-    RenderActionInternal::GenerateDetailedBindings(shader, bindings);
+    RenderActionInternal::GenerateDetailedBindings(
+      BufferPrivate::GetShader(target), bindings);
 
   RenderActionInternal::CollectDatasFromBindings(
     detailedBindings, m_referenceVertexDatas, m_referenceInstancedDatas);
@@ -267,7 +272,7 @@ RenderAction::Setup(const Shader& shader,
   }
 
   m_bindings = bindings;
-  m_shader = &shader;
+  m_target = target;
 }
 
 //---------------------------------------------------------------------------------------
@@ -302,7 +307,7 @@ RenderAction::ClearRenderingData()
   m_referenceIndexBuffer = nullptr;
   m_referenceInstancedDatas.clear();
   m_bindings.clear();
-  m_shader = nullptr;
+  m_target = nullptr;
 }
 
 //---------------------------------------------------------------------------------------
@@ -349,6 +354,10 @@ RenderAction::Render() const
   if (m_VAO == 0) {
     return;
   }
+
+  BufferPrivate::UseShader(BufferPrivate::GetShader(m_target));
+  BufferPrivate::UseFramebuffer(
+    BufferPrivate::BufferPrivate::GetFramebuffer(m_target));
 
   GLState::BindVertexArray(m_VAO);
 
@@ -441,15 +450,15 @@ RenderAction::DataChanged()
 {
   const std::vector<Binding> backupBindings = m_bindings;
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;
-  const Shader* backupShader = m_shader;
+  const TargetInstance backupTarget = m_target;
 
   // ClearRenderingData();
   Clear();
 
   if (backupIndex != nullptr) {
-    Create(*backupShader, backupIndex, backupBindings);
+    Create(backupTarget, backupIndex, backupBindings);
   } else {
-    Create(*backupShader, backupBindings);
+    Create(backupTarget, backupBindings);
   }
 }
 

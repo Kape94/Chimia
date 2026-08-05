@@ -24,7 +24,6 @@ void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
   Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
 }
@@ -33,7 +32,6 @@ void
 ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 {
   Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);
@@ -49,7 +47,7 @@ TexCoord2::Init()
 {
   g_renderer =
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
-                               Shaders::Generic(),
+                               RenderersUtils::GetDefaultRenderingTarget(),
                                ConfigureShaderForTriangleDrawing,
                                ConfigureShaderForTransformedModelDrawing);
 }

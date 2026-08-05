@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "Rendering/DataLayout.h"
+#include "Rendering/Target.h"
 #include "ResourceGroup.h"
 #include "ShaderBindingsTemplate.h"
 #include "Types.h"
@@ -37,7 +38,10 @@ GetDataSchemasForLayout(const eVertexLayout& layout);
 
 VertexLayoutBindingsTemplates
 GetBindingsTemplatesForLayout(const eVertexLayout& layout,
-                              const Rendering::Shader& shader);
+                              const Rendering::TargetInstance& target);
+
+const Rendering::TargetInstance&
+GetDefaultRenderingTarget();
 
 Chimia::Rendering::DataLayout
 GetVertexDataSchema(const eVertexLayout& layout);

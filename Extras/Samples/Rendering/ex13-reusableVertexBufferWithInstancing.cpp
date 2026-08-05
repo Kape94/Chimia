@@ -136,8 +136,10 @@ main()
     Inputs::InstanceData::positions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target1 = Chimia::Rendering::Target::Create(shader1);
+
   Chimia::Rendering::RenderAction renderWithOffsets;
-  renderWithOffsets.Create(shader1,
+  renderWithOffsets.Create(target1,
                            reusableIndexData,
                            { { reusableVertexData, "pos", "pos" },
                              { positionsData, "offset", "offset" } });
@@ -147,8 +149,10 @@ main()
     Inputs::InstanceData::transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
+  auto target2 = Chimia::Rendering::Target::Create(shader2);
+
   Chimia::Rendering::RenderAction renderTransformed;
-  renderTransformed.Create(shader2,
+  renderTransformed.Create(target2,
                            reusableIndexData,
                            { { reusableVertexData, "pos", "pos" },
                              { transformData, "transform", "transform" } });
@@ -156,10 +160,7 @@ main()
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
 
-    shader1.Use();
     renderWithOffsets.Render();
-
-    shader2.Use();
     renderTransformed.Render();
 
     win.Swap();

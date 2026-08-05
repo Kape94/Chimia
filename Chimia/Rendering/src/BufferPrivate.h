@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "FrameBuffer.h"
 #include "IDataChangeListener.h"
 #include "IndexData.h"
 #include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
 #include "ShaderBinding.h"
+#include "Target.h"
 #include "Texture2D.h"
 #include "TextureUnit.h"
 #include "VertexData.h"
@@ -62,10 +64,18 @@ public:
   static const DataLayout& GetDataLayout(const Shader& shader);
   static unsigned GetAttributeLocation(const std::string& attributeName,
                                        const Shader& shader);
+  static void UseShader(const Shader& shader);
+
+  // Framebuffer
+  static void UseFramebuffer(const FrameBuffer& frameBuffer);
 
   // Texture
   static unsigned GetTextureID(const Texture2D& texture);
   static void UseTexture(const Texture2D& texture, const TextureUnit& unit);
+
+  // Target
+  static const Shader& GetShader(const TargetInstance& target);
+  static const FrameBuffer& GetFramebuffer(const TargetInstance& target);
 };
 
 // --------------------------------------------------------------------------------------

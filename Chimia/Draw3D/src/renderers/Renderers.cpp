@@ -3,7 +3,6 @@
 #include "GenericRenderer.h"
 #include "ObjectTable.h"
 #include "RenderersUtils.h"
-#include "Rendering/Shader.h"
 
 // ----------------------------------------------------------------------------
 
@@ -25,14 +24,14 @@ RenderersTable()
 GenericRenderer&
 Renderers::CreateRenderer(
   const eVertexLayout& vertexLayout,
-  const Rendering::Shader& shader,
+  const Rendering::TargetInstance& target,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
 {
   auto [id, renderer] = RenderersInternal::RenderersTable().Insert();
 
   const VertexLayoutBindingsTemplates bindingTemplates =
-    RenderersUtils::GetBindingsTemplatesForLayout(vertexLayout, shader);
+    RenderersUtils::GetBindingsTemplatesForLayout(vertexLayout, target);
 
   const VertexLayoutDataSchemas dataSchemas =
     RenderersUtils::GetDataSchemasForLayout(vertexLayout);

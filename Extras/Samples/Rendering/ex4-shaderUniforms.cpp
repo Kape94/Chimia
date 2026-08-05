@@ -78,15 +78,15 @@ main()
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader, indexData, { { vertexData, "pos", "pos" } });
+  action.Create(target, indexData, { { vertexData, "pos", "pos" } });
 
   float angle = 0.0f;
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
-
-    shader.Use();
 
     const glm::mat4x4 identity = glm::identity<glm::mat4x4>();
     const glm::mat4x4 t = glm::rotate(identity, angle, { 0.0, 0.0, 1.0 }) *

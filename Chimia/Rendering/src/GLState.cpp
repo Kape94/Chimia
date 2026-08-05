@@ -1,10 +1,22 @@
 #include "GLState.h"
 
 #include "OpenGLDefs.h"
+#include <limits>
 
 // --------------------------------------------------------------------------------------
 
 USING_RENDERLIB_NAMESPACE
+
+// --------------------------------------------------------------------------------------
+
+namespace GLStateCache {
+
+const unsigned INVALID_ID = std::numeric_limits<unsigned>::max();
+
+unsigned g_currentShader = INVALID_ID;
+unsigned g_currentFrameBuffer = INVALID_ID;
+
+}
 
 // --------------------------------------------------------------------------------------
 
@@ -35,7 +47,10 @@ GLState::BindElementBuffer(const unsigned id)
 void
 GLState::BindFramebuffer(const unsigned id)
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, id);
+  if (id != GLStateCache::g_currentFrameBuffer) {
+    glBindFramebuffer(GL_FRAMEBUFFER, id);
+    GLStateCache::g_currentFrameBuffer = id;
+  }
 }
 
 // --------------------------------------------------------------------------------------
@@ -59,7 +74,10 @@ GLState::BindTexture2D(const unsigned id)
 void
 GLState::BindShader(const unsigned id)
 {
-  glUseProgram(id);
+  if (id != GLStateCache::g_currentShader) {
+    glUseProgram(id);
+    GLStateCache::g_currentShader = id;
+  }
 }
 
 // --------------------------------------------------------------------------------------

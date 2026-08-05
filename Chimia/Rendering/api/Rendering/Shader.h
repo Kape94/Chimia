@@ -11,6 +11,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+#include <map>
 #include <string>
 
 //---------------------------------------------------------------------------------------
@@ -34,8 +35,6 @@ public:
               const std::string& fragmentShaderCode,
               const DataLayout& dataLayout);
 
-  void Use();
-
   void SetUniform(const std::string& name, const int value);
   void SetUniform(const std::string& name, const float value);
   void SetTexture(const std::string& name,
@@ -46,6 +45,7 @@ public:
 
 private:
   friend class BufferPrivate;
+  void Use() const;
   const DataLayout& GetDataLayout() const;
   unsigned GetLocationOfAttribute(const std::string& attributeName) const;
 
@@ -68,6 +68,13 @@ private:
 
   using AttributeLocationTable = std::vector<std::pair<std::string, int>>;
   AttributeLocationTable m_attributeLocationTable;
+
+  using TextureEntry = struct
+  {
+    const Texture2D* texture;
+    TextureUnit unit;
+  };
+  std::map<std::string, TextureEntry> m_inUseTextures;
 
   DataLayout m_dataLayout;
   unsigned m_programId = 0;

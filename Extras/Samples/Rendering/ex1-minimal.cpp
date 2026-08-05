@@ -5,6 +5,7 @@
 
 #include "Rendering/Shader.h"
 
+#include "Rendering/Target.h"
 #include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
@@ -77,14 +78,15 @@ main()
   indexData->Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "position", "pos" }, { vertexData, "color", "color" } });
 
   while (!win.ShouldClose()) {
-    shader.Use();
     action.Render();
 
     win.Swap();

@@ -116,9 +116,11 @@ main()
       Inputs::InstanceData::positions.size() * Inputs::InstanceData::dataSize },
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   instancedData->Load(Inputs::InstanceData::positions);
@@ -131,7 +133,6 @@ main()
       Inputs::InstanceData::positionGroups[selectedGroup];
     instancedData->Load(positions);
 
-    shader.Use();
     action.Render();
 
     win.Swap();

@@ -88,9 +88,11 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "position", "pos" }, { vertexData, "texCoord", "uv" } });
 
@@ -115,7 +117,6 @@ main(int argc, char** argv)
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    shader.Use();
     shader.SetTexture("tex", texture, texUnit);
     shader.SetTexture("tex2", texture2, tex2Unit);
     action.Render();

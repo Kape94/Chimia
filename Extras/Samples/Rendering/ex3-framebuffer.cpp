@@ -136,14 +136,20 @@ main(int argc, char** argv)
   shader.Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
+  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
+                                             Inputs::SCR_HEIGHT);
+
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(Inputs::BufferData::vertex, dataLayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto targetDrawToFramebuffer =
+    Chimia::Rendering::Target::Create(shader, frameBuffer);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader,
+  action.Create(targetDrawToFramebuffer,
                 indexData,
                 { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
@@ -158,9 +164,6 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
-                                             Inputs::SCR_HEIGHT);
-
   Chimia::Rendering::Shader secondPassShader;
   secondPassShader.Create(Inputs::ShaderCodes::vShaderPost,
                           Inputs::ShaderCodes::fShaderPost,
@@ -172,9 +175,11 @@ main(int argc, char** argv)
   auto quadIndexData = Chimia::Rendering::IndexData::New();
   quadIndexData->Create(Inputs::BufferData::quadIndex);
 
+  auto targetDrawToScreen = Chimia::Rendering::Target::Create(secondPassShader);
+
   Chimia::Rendering::RenderAction renderScreenQuadAction;
   renderScreenQuadAction.Create(
-    shader,
+    targetDrawToScreen,
     quadIndexData,
     { { quadVertexData, "pos", "pos" }, { quadVertexData, "uv", "uv" } });
 
@@ -182,15 +187,9 @@ main(int argc, char** argv)
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    frameBuffer.Use();
-
-    shader.Use();
     shader.SetTexture("tex", texture, texUnit);
     action.Render();
 
-    Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
-
-    secondPassShader.Use();
     secondPassShader.SetTexture("tex", frameBuffer.GetTexture(), texUnitPost);
     renderScreenQuadAction.Render();
 

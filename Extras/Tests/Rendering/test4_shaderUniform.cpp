@@ -95,16 +95,16 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create(shader, indexData, { { vertexData, "pos", "pos" } });
+  renderTriangle.Create(target, indexData, { { vertexData, "pos", "pos" } });
 
   constexpr float PI = 3.141592;
   float angle = 0.0f;
 
   auto draw = [&]() {
     Chimia::Rendering::Clear();
-
-    shader.Use();
 
     const glm::mat4x4 t = RotationMatrix(angle);
 

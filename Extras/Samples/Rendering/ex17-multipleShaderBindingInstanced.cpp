@@ -88,8 +88,10 @@ main()
     Inputs::BufferData::offsets,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader,
+  action.Create(target,
                 {
                   { positionData, "data", "pos" },
                   { colorData, "data", "color" },
@@ -98,7 +100,6 @@ main()
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
-    shader.Use();
 
     action.Render();
 

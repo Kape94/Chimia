@@ -121,21 +121,23 @@ main()
   indexData->Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction opaqueTriangle;
   opaqueTriangle.Create(
-    shader,
+    target,
     indexData,
     { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle1;
   transparentTriangle1.Create(
-    shader,
+    target,
     indexData,
     { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } });
 
   Chimia::Rendering::RenderAction transparentTriangle2;
   transparentTriangle2.Create(
-    shader,
+    target,
     indexData,
     { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } });
 
@@ -143,7 +145,7 @@ main()
     Chimia::Rendering::EnableDepthMask(true);
 
     Chimia::Rendering::Clear(0.0f, 0.0f, 0.0f, 1.0f);
-    shader.Use();
+
     opaqueTriangle.Render();
 
     Chimia::Rendering::EnableDepthMask(false);

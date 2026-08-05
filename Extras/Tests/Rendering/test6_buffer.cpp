@@ -66,12 +66,13 @@ Basic(Window& win)
   auto triangleVertexData = Chimia::Rendering::VertexData::New();
   triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create(shader,
+  renderTriangle.Create(target,
                         { { triangleVertexData, "pos", "pos" },
                           { triangleVertexData, "color", "color" } });
 
-  shader.Use();
   renderTriangle.Render();
 
   win.Swap();
@@ -135,13 +136,14 @@ Indexed(Window& win)
   auto triangleIndexData = Chimia::Rendering::IndexData::New();
   triangleIndexData->Create({ indexData, indexDataNItems });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create(shader,
+  renderTriangle.Create(target,
                         triangleIndexData,
                         { { triangleVertexData, "pos", "pos" },
                           { triangleVertexData, "color", "color" } });
 
-  shader.Use();
   renderTriangle.Render();
 
   win.Swap();
@@ -211,9 +213,11 @@ Subdata(Window& win)
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, vertex.size() * sizeof(float) }, dataLayout);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(
-    shader, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
   const int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -224,7 +228,6 @@ Subdata(Window& win)
     const std::vector<float>& data = vertexDatas[current];
     vertexData->Load(data);
 
-    shader.Use();
     renderTriangle.Render();
 
     win.Swap();
@@ -322,9 +325,11 @@ SubDataWithVaryingSize(Window& win)
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create(
-    shader, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
   constexpr int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -336,7 +341,6 @@ SubDataWithVaryingSize(Window& win)
 
     vertexData->Load(data);
 
-    shader.Use();
     renderTriangles.Render();
 
     win.Swap();
@@ -445,9 +449,11 @@ VertexAndIndexSubData(Window& win)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
@@ -463,7 +469,6 @@ VertexAndIndexSubData(Window& win)
     vertexData->Load(state.vData);
     indexData->LoadIndexData(state.iData);
 
-    shader.Use();
     renderTriangles.Render();
 
     win.Swap();

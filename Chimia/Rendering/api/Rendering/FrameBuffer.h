@@ -22,14 +22,15 @@ public:
 
   void Create(const unsigned width, const unsigned height);
 
-  void Use();
-
   const Texture2D& GetTexture() const;
 
-  static void UseDefaultFrameBuffer();
+  static const FrameBuffer& DefaultFrameBuffer();
 
 private:
   void Clear();
+
+  friend class BufferPrivate;
+  void Use() const;
 
   unsigned int m_id = 0;
 

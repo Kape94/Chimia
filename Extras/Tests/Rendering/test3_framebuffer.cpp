@@ -142,15 +142,20 @@ main(int argc, char** argv)
   shader.Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, datalayout);
 
+  Chimia::Rendering::FrameBuffer frameBuffer(scrWidth, scrHeight);
+
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(Inputs::BufferData::vertex, datalayout);
 
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto renderToFramebuffer =
+    Chimia::Rendering::Target::Create(shader, frameBuffer);
+
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(
-    shader,
+    renderToFramebuffer,
     indexData,
     { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
@@ -165,8 +170,6 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::FrameBuffer frameBuffer(scrWidth, scrHeight);
-
   Chimia::Rendering::Shader secondPassShader;
   secondPassShader.Create(Inputs::ShaderCodes::vShaderPost,
                           Inputs::ShaderCodes::fShaderPost,
@@ -178,24 +181,20 @@ main(int argc, char** argv)
   auto indexDataQuad = Chimia::Rendering::IndexData::New();
   indexDataQuad->Create(Inputs::BufferData::quadIndex);
 
+  auto renderToScreen = Chimia::Rendering::Target::Create(secondPassShader);
+
   Chimia::Rendering::RenderAction renderScreenQuad;
   renderScreenQuad.Create(
-    secondPassShader,
+    renderToScreen,
     indexDataQuad,
     { { vertexDataQuad, "pos", "pos" }, { vertexDataQuad, "uv", "uv" } });
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  frameBuffer.Use();
-
-  shader.Use();
   shader.SetTexture("tex", texture, texUnit);
   renderTriangle.Render();
 
-  Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
-
-  secondPassShader.Use();
   secondPassShader.SetTexture("tex", frameBuffer.GetTexture(), texUnitPost);
   renderScreenQuad.Render();
 

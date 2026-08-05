@@ -77,13 +77,13 @@ Implementation steps:
   - Move Texture::GetId functionality to private section; [DONE]
   - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state; [DONE]
     * For Texture::Use: The texture should be passed altogether in the Shader::SetUniform call; [DONE]
-  
-  - "Use" methods on Shader, Texture, Framebuffer etc., should be private. The public API shouldn`t rely on state;
     * For Framebuffer::Use, the framebuffer could optionally be provided to RenderAction. Or, a new structure called Target could be 
-        created, to hold a framebuffer and a shader, and the RenderAction could reference it;
-    * For Shader::Use, the RenderAction should hold a reference to it, or it should be passed to RenderAction::Render call as parameter;
-  - Shader shouldn't bind the texture right away when the uniform is setted, it should do that when it's Use method is called;
-  - The renderAction could hold the reference to the shader it uses for rendering;
-  - Use shared_ptr for Shader? RenderAction should hold a shader?
+        created, to hold a framebuffer and a shader, and the RenderAction could reference it; [DONE]
+    * For Shader::Use, the RenderAction should hold a reference to it, or it should be passed to RenderAction::Render call as parameter; [DONE]
+  - Shader shouldn't bind the texture right away when the uniform is setted, it should do that when it's Use method is called; [DONE]
+  - The renderAction could hold the reference to the shader it uses for rendering; [DONE]
+  
+  - Use shared_ptr for Shader!
     * Probably yes. We do need to support shader re-targeting though;
+  - Create uniform location cache inside Shader;
   - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;

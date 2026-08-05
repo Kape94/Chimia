@@ -89,9 +89,11 @@ main(int argc, char** argv)
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create(Inputs::BufferData::index);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction renderTriangleAction;
   renderTriangleAction.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
 
@@ -117,7 +119,6 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit tex2Unit =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  shader.Use();
   shader.SetTexture("tex", texture, texUnit);
   shader.SetTexture("tex2", texture2, tex2Unit);
   renderTriangleAction.Render();

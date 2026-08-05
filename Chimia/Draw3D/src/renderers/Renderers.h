@@ -4,6 +4,7 @@
 
 #include "Draw3DNamespaceDefs.h"
 #include "GenericRenderer.h"
+#include "Rendering/Target.h"
 
 // ----------------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 namespace Renderers {
 GenericRenderer&
 CreateRenderer(const eVertexLayout& vertexLayout,
-               const Rendering::Shader& shader,
+               const Rendering::TargetInstance& target,
                void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
                void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 

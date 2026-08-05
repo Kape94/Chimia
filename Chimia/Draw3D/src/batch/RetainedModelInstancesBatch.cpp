@@ -72,7 +72,7 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
       bindings.end(), instancedBindings.begin(), instancedBindings.end());
 
     gpuComponent.action.Create(
-      vertexBindingsTemplate.GetShader(), indexData, bindings);
+      vertexBindingsTemplate.GetTarget(), indexData, bindings);
   });
 }
 

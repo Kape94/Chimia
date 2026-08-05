@@ -1,4 +1,5 @@
 #include "ShaderBindingsTemplate.h"
+#include "Rendering/Target.h"
 
 // ----------------------------------------------------------------------------
 
@@ -8,9 +9,9 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 
 ShaderBindingsTemplate::ShaderBindingsTemplate(
   const std::initializer_list<Item>& items,
-  const Rendering::Shader& shader)
+  const Rendering::TargetInstance& target)
   : m_templates(items)
-  , m_shader(&shader)
+  , m_target(target)
 {
 }
 
@@ -47,10 +48,10 @@ ShaderBindingsTemplate::GenerateFor(
 
 // ----------------------------------------------------------------------------
 
-const Chimia::Rendering::Shader&
-ShaderBindingsTemplate::GetShader() const
+const Chimia::Rendering::TargetInstance&
+ShaderBindingsTemplate::GetTarget() const
 {
-  return *m_shader;
+  return m_target;
 }
 
 // ----------------------------------------------------------------------------

@@ -91,16 +91,17 @@ main()
     Inputs::InstanceData::positions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
 
-    shader.Use();
     action.Render();
 
     win.Swap();

@@ -209,6 +209,22 @@ BufferPrivate::GetAttributeLocation(const std::string& attributeName,
 
 // --------------------------------------------------------------------------------------
 
+void
+BufferPrivate::UseShader(const Shader& shader)
+{
+  shader.Use();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::UseFramebuffer(const FrameBuffer& frameBuffer)
+{
+  frameBuffer.Use();
+}
+
+// --------------------------------------------------------------------------------------
+
 unsigned
 BufferPrivate::GetTextureID(const Texture2D& texture)
 {
@@ -221,6 +237,22 @@ void
 BufferPrivate::UseTexture(const Texture2D& texture, const TextureUnit& unit)
 {
   texture.Use(unit);
+}
+
+// --------------------------------------------------------------------------------------
+
+const Shader&
+BufferPrivate::GetShader(const TargetInstance& target)
+{
+  return target->m_shader;
+}
+
+// --------------------------------------------------------------------------------------
+
+const FrameBuffer&
+BufferPrivate::GetFramebuffer(const TargetInstance& target)
+{
+  return target->m_framebuffer;
 }
 
 // --------------------------------------------------------------------------------------

@@ -84,9 +84,11 @@ main()
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(Inputs::BufferData::vertex, dataLayout);
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();
@@ -106,7 +108,6 @@ main()
       vertexData->Load(data);
     }
 
-    shader.Use();
     action.Render();
 
     win.Swap();

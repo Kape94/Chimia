@@ -6,7 +6,7 @@
 
 #include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
-#include "Rendering/Shader.h"
+#include "Rendering/Target.h"
 #include "Rendering/VertexData.h"
 
 #include <string>
@@ -30,18 +30,18 @@ private:
 public:
   ShaderBindingsTemplate() = default;
   ShaderBindingsTemplate(const std::initializer_list<Item>& items,
-                         const Rendering::Shader& shader);
+                         const Rendering::TargetInstance& target);
 
   std::vector<Rendering::RenderAction::Binding> GenerateFor(
     const Rendering::VertexDataInstance& vertexData) const;
   std::vector<Rendering::RenderAction::Binding> GenerateFor(
     const Rendering::InstancedDataInstance& instancedData) const;
 
-  const Rendering::Shader& GetShader() const;
+  const Rendering::TargetInstance& GetTarget() const;
 
 private:
   std::vector<Item> m_templates;
-  const Rendering::Shader* m_shader = nullptr;
+  Rendering::TargetInstance m_target = nullptr;
 };
 
 //---------------------------------------------------------------------------------------

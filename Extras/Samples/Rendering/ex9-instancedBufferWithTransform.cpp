@@ -98,15 +98,16 @@ main()
     Inputs::InstanceData::transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader,
+  action.Create(target,
                 { { vertexData, "pos", "pos" },
                   { instancedData, "transform", "transform" } });
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
 
-    shader.Use();
     action.Render();
 
     win.Swap();

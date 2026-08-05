@@ -61,7 +61,7 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
 //---------------------------------------------------------------------------------------
 
 void
-FrameBuffer::Use()
+FrameBuffer::Use() const
 {
   GLState::BindFramebuffer(m_id);
 }
@@ -91,10 +91,11 @@ FrameBuffer::Clear()
 
 //---------------------------------------------------------------------------------------
 
-void
-FrameBuffer::UseDefaultFrameBuffer()
+const FrameBuffer&
+FrameBuffer::DefaultFrameBuffer()
 {
-  GLState::BindFramebuffer(0);
+  static FrameBuffer defaultFramebuffer;
+  return defaultFramebuffer;
 }
 
 //---------------------------------------------------------------------------------------

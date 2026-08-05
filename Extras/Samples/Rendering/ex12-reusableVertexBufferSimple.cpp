@@ -77,14 +77,15 @@ main()
                               Inputs::BufferData::indexDataItems,
                               sizeof(unsigned) });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
-  action.Create(shader,
+  action.Create(target,
                 reusableIndexData,
                 { { reusableVertexData, "pos", "pos" },
                   { reusableVertexData, "color", "color" } });
 
   while (!win.ShouldClose()) {
-    shader.Use();
     action.Render();
 
     win.Swap();

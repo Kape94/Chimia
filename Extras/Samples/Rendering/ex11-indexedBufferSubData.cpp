@@ -125,9 +125,11 @@ main()
   auto indexData = Chimia::Rendering::IndexData::New();
   indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
 
+  auto target = Chimia::Rendering::Target::Create(shader);
+
   Chimia::Rendering::RenderAction action;
   action.Create(
-    shader,
+    target,
     indexData,
     { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
 
@@ -155,7 +157,6 @@ main()
       indexData->LoadIndexData(state.iData);
     }
 
-    shader.Use();
     action.Render();
 
     win.Swap();
