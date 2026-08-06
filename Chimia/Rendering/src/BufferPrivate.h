@@ -61,21 +61,22 @@ public:
   static unsigned GetOffset(const ShaderBinding& binding);
 
   // Shader
-  static const DataLayout& GetDataLayout(const Shader& shader);
+  static const DataLayout& GetDataLayout(const ShaderInstance& shader);
   static unsigned GetAttributeLocation(const std::string& attributeName,
-                                       const Shader& shader);
-  static void UseShader(const Shader& shader);
+                                       const ShaderInstance& shader);
+  static void UseShader(const ShaderInstance& shader);
 
   // Framebuffer
-  static void UseFramebuffer(const FrameBuffer& frameBuffer);
+  static void UseFramebuffer(const FrameBufferInstance& frameBuffer);
 
   // Texture
   static unsigned GetTextureID(const Texture2D& texture);
   static void UseTexture(const Texture2D& texture, const TextureUnit& unit);
 
   // Target
-  static const Shader& GetShader(const TargetInstance& target);
-  static const FrameBuffer& GetFramebuffer(const TargetInstance& target);
+  static const ShaderInstance& GetShader(const TargetInstance& target);
+  static const FrameBufferInstance& GetFramebuffer(
+    const TargetInstance& target);
 };
 
 // --------------------------------------------------------------------------------------

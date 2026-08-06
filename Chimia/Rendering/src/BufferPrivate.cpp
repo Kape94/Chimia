@@ -193,34 +193,34 @@ BufferPrivate::GetOffset(const ShaderBinding& binding)
 // --------------------------------------------------------------------------------------
 
 const DataLayout&
-BufferPrivate::GetDataLayout(const Shader& shader)
+BufferPrivate::GetDataLayout(const ShaderInstance& shader)
 {
-  return shader.GetDataLayout();
+  return shader->GetDataLayout();
 }
 
 // --------------------------------------------------------------------------------------
 
 unsigned
 BufferPrivate::GetAttributeLocation(const std::string& attributeName,
-                                    const Shader& shader)
+                                    const ShaderInstance& shader)
 {
-  return shader.GetLocationOfAttribute(attributeName);
+  return shader->GetLocationOfAttribute(attributeName);
 }
 
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::UseShader(const Shader& shader)
+BufferPrivate::UseShader(const ShaderInstance& shader)
 {
-  shader.Use();
+  shader->Use();
 }
 
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::UseFramebuffer(const FrameBuffer& frameBuffer)
+BufferPrivate::UseFramebuffer(const FrameBufferInstance& frameBuffer)
 {
-  frameBuffer.Use();
+  frameBuffer->Use();
 }
 
 // --------------------------------------------------------------------------------------
@@ -241,7 +241,7 @@ BufferPrivate::UseTexture(const Texture2D& texture, const TextureUnit& unit)
 
 // --------------------------------------------------------------------------------------
 
-const Shader&
+const ShaderInstance&
 BufferPrivate::GetShader(const TargetInstance& target)
 {
   return target->m_shader;
@@ -249,7 +249,7 @@ BufferPrivate::GetShader(const TargetInstance& target)
 
 // --------------------------------------------------------------------------------------
 
-const FrameBuffer&
+const FrameBufferInstance&
 BufferPrivate::GetFramebuffer(const TargetInstance& target)
 {
   return target->m_framebuffer;

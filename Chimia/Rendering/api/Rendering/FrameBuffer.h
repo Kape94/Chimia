@@ -4,6 +4,8 @@
 #include "RenderingNamespaceDefs.h"
 #include "Texture2D.h"
 
+#include <memory>
+
 //---------------------------------------------------------------------------------------
 
 BEGIN_RENDERLIB_NAMESPACE
@@ -13,20 +15,21 @@ BEGIN_RENDERLIB_NAMESPACE
 class FrameBuffer
 {
 public:
-  DEFAULT_CONSTUCTIBLE(FrameBuffer)
   NON_COPYABLE_NON_MOVABLE(FrameBuffer)
-
-  FrameBuffer(const unsigned width, const unsigned height);
 
   ~FrameBuffer();
 
-  void Create(const unsigned width, const unsigned height);
+  static std::shared_ptr<FrameBuffer> Create(const unsigned width,
+                                             const unsigned height);
 
   const Texture2D& GetTexture() const;
 
-  static const FrameBuffer& DefaultFrameBuffer();
+  static const std::shared_ptr<FrameBuffer>& DefaultFrameBuffer();
 
 private:
+  FrameBuffer() = default;
+  FrameBuffer(const unsigned width, const unsigned height);
+
   void Clear();
 
   friend class BufferPrivate;
@@ -37,6 +40,8 @@ private:
   Texture2D m_frameTexture;
   unsigned m_renderBufferId = 0;
 };
+
+using FrameBufferInstance = std::shared_ptr<FrameBuffer>;
 
 //---------------------------------------------------------------------------------------
 

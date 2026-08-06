@@ -155,7 +155,7 @@ ShaderBinding::operator=(const ShaderBinding& other)
 ShaderBindings
 ShaderBinding::Connect(const VertexDataInstance& data,
                        const std::string& vertexAttribute,
-                       const Shader& shader,
+                       const ShaderInstance& shader,
                        const std::string& shaderAttribute)
 {
   const DataLayout& vertexLayout = BufferPrivate::GetDataLayout(data);
@@ -190,7 +190,7 @@ ShaderBinding::Connect(const VertexDataInstance& data,
 ShaderBindings
 ShaderBinding::Connect(const InstancedDataInstance& data,
                        const std::string& vertexAttribute,
-                       const Shader& shader,
+                       const ShaderInstance& shader,
                        const std::string& shaderAttribute)
 {
   const DataLayout& vertexLayout = BufferPrivate::GetDataLayout(data);

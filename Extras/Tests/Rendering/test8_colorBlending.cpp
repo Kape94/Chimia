@@ -102,8 +102,7 @@ BlendingSimple(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   auto vertexData1 = Chimia::Rendering::VertexData::New();
   vertexData1->Create({ vertex, vertexDataSize }, dataLayout);

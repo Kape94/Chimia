@@ -104,8 +104,7 @@ main()
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   const auto& states = Inputs::BufferData::states;

@@ -18,16 +18,16 @@ class Pipeline
 public:
   NON_COPYABLE_NON_MOVABLE(Pipeline)
 
-  Pipeline(
-    const std::function<void(void)> activateFunction,
-    const std::function<void(Chimia::Rendering::Shader&)> configureShader);
+  Pipeline(const std::function<void(void)> activateFunction,
+           const std::function<void(Chimia::Rendering::ShaderInstance&)>
+             configureShader);
 
   void Use() const;
-  void ConfigureShader(Chimia::Rendering::Shader& shader) const;
+  void ConfigureShader(Chimia::Rendering::ShaderInstance& shader) const;
 
 private:
   std::function<void(void)> m_activateFunction;
-  std::function<void(Chimia::Rendering::Shader&)> m_configureFunction;
+  std::function<void(Chimia::Rendering::ShaderInstance&)> m_configureFunction;
 };
 
 // ----------------------------------------------------------------------------

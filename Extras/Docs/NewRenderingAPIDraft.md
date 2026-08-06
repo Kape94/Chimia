@@ -82,8 +82,16 @@ Implementation steps:
     * For Shader::Use, the RenderAction should hold a reference to it, or it should be passed to RenderAction::Render call as parameter; [DONE]
   - Shader shouldn't bind the texture right away when the uniform is setted, it should do that when it's Use method is called; [DONE]
   - The renderAction could hold the reference to the shader it uses for rendering; [DONE]
+  - Create uniform location cache inside Shader; [NO]
+    * When applied, it led to a performance regression; [NO]
   
   - Use shared_ptr for Shader!
     * Probably yes. We do need to support shader re-targeting though;
-  - Create uniform location cache inside Shader;
+  - Create Texture2DInstance as well!
+    * Will be held by shader inUseTextures table;
+  - Don't forget to create the RenderAction retargeting function, it should be pretty easy!  
+  - VertexData::Create and VertexData::New should be combined into the same function;
+    * Same applies to InstancedData and IndexData;
+  - The static object creation functions should be all centered at Chimia::Rendering;
+  - We should maybe swap the classes names? ShaderInstance should be called Shader, and the Shader could be called ShaderInstance or ShaderObject?
   - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;

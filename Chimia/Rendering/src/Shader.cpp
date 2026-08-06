@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 
 //---------------------------------------------------------------------------------------
 
@@ -44,23 +45,27 @@ Shader::~Shader()
 
 //---------------------------------------------------------------------------------------
 
-void
+std::shared_ptr<Shader>
 Shader::Create(const std::string& vertexShaderCode,
                const std::string& fragmentShaderCode,
                const DataLayout& dataLayout)
 {
-  Clear();
+  std::shared_ptr<Shader> newShader(new Shader);
 
-  const unsigned vShaderID = CreateVertexShader(vertexShaderCode.c_str());
-  const unsigned fShaderID = CreateFragmentShader(fragmentShaderCode.c_str());
+  const unsigned vShaderID =
+    newShader->CreateVertexShader(vertexShaderCode.c_str());
+  const unsigned fShaderID =
+    newShader->CreateFragmentShader(fragmentShaderCode.c_str());
 
-  LinkProgram(vShaderID, fShaderID);
+  newShader->LinkProgram(vShaderID, fShaderID);
 
   glDeleteShader(vShaderID);
   glDeleteShader(fShaderID);
 
-  m_dataLayout = dataLayout;
-  PopulateAttributeLocations(dataLayout);
+  newShader->m_dataLayout = dataLayout;
+  newShader->PopulateAttributeLocations(dataLayout);
+
+  return newShader;
 }
 
 //---------------------------------------------------------------------------------------

@@ -132,12 +132,11 @@ main(int argc, char** argv)
     { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
-  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
-                                             Inputs::SCR_HEIGHT);
+  auto frameBuffer = Chimia::Rendering::FrameBuffer::Create(Inputs::SCR_WIDTH,
+                                                            Inputs::SCR_HEIGHT);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(Inputs::BufferData::vertex, dataLayout);
@@ -164,10 +163,10 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::Shader secondPassShader;
-  secondPassShader.Create(Inputs::ShaderCodes::vShaderPost,
-                          Inputs::ShaderCodes::fShaderPost,
-                          dataLayout);
+  auto secondPassShader =
+    Chimia::Rendering::Shader::Create(Inputs::ShaderCodes::vShaderPost,
+                                      Inputs::ShaderCodes::fShaderPost,
+                                      dataLayout);
 
   auto quadVertexData = Chimia::Rendering::VertexData::New();
   quadVertexData->Create(Inputs::BufferData::quad, dataLayout);
@@ -187,10 +186,10 @@ main(int argc, char** argv)
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    shader.SetTexture("tex", texture, texUnit);
+    shader->SetTexture("tex", texture, texUnit);
     action.Render();
 
-    secondPassShader.SetTexture("tex", frameBuffer.GetTexture(), texUnitPost);
+    secondPassShader->SetTexture("tex", frameBuffer->GetTexture(), texUnitPost);
     renderScreenQuadAction.Render();
 
     win.Swap();

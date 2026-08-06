@@ -73,11 +73,11 @@ main(int argc, char** argv)
 
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader,
-                Inputs::ShaderCodes::fShader,
-                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-                  { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(
@@ -117,8 +117,8 @@ main(int argc, char** argv)
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    shader.SetTexture("tex", texture, texUnit);
-    shader.SetTexture("tex2", texture2, tex2Unit);
+    shader->SetTexture("tex", texture, texUnit);
+    shader->SetTexture("tex2", texture2, tex2Unit);
     action.Render();
 
     win.Swap();

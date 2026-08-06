@@ -26,36 +26,39 @@ FrameBuffer::~FrameBuffer()
 
 //---------------------------------------------------------------------------------------
 
-void
+std::shared_ptr<FrameBuffer>
 FrameBuffer::Create(const unsigned width, const unsigned height)
 {
-  Clear();
+  std::shared_ptr<FrameBuffer> newFrameBuffer(new FrameBuffer);
 
-  glGenFramebuffers(1, &m_id);
+  glGenFramebuffers(1, &newFrameBuffer->m_id);
 
-  GLState::BindFramebuffer(m_id);
+  GLState::BindFramebuffer(newFrameBuffer->m_id);
 
-  m_frameTexture.Create(nullptr /*data*/, width, height);
+  newFrameBuffer->m_frameTexture.Create(nullptr /*data*/, width, height);
 
-  glFramebufferTexture2D(GL_FRAMEBUFFER,
-                         GL_COLOR_ATTACHMENT0,
-                         GL_TEXTURE_2D,
-                         BufferPrivate::GetTextureID(m_frameTexture),
-                         0);
+  glFramebufferTexture2D(
+    GL_FRAMEBUFFER,
+    GL_COLOR_ATTACHMENT0,
+    GL_TEXTURE_2D,
+    BufferPrivate::GetTextureID(newFrameBuffer->m_frameTexture),
+    0);
 
-  glGenRenderbuffers(1, &m_renderBufferId);
-  GLState::BindRenderbuffer(m_renderBufferId);
+  glGenRenderbuffers(1, &newFrameBuffer->m_renderBufferId);
+  GLState::BindRenderbuffer(newFrameBuffer->m_renderBufferId);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             GL_DEPTH_STENCIL_ATTACHMENT,
                             GL_RENDERBUFFER,
-                            m_renderBufferId);
+                            newFrameBuffer->m_renderBufferId);
 
   if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
     assert(false && "Framebuffer::Create: Error creating new framebuffer");
   }
 
   GLState::BindFramebuffer(0);
+
+  return newFrameBuffer;
 }
 
 //---------------------------------------------------------------------------------------
@@ -91,10 +94,10 @@ FrameBuffer::Clear()
 
 //---------------------------------------------------------------------------------------
 
-const FrameBuffer&
+const FrameBufferInstance&
 FrameBuffer::DefaultFrameBuffer()
 {
-  static FrameBuffer defaultFramebuffer;
+  static FrameBufferInstance defaultFramebuffer(new FrameBuffer);
   return defaultFramebuffer;
 }
 

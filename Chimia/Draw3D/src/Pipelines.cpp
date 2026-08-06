@@ -32,8 +32,8 @@ Pipelines::Init()
       Chimia::Rendering::EnableDepthMask(true);
       Chimia::Rendering::EnableColorBlend(false);
     },
-    [](Chimia::Rendering::Shader& shader) {
-      shader.SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, false);
+    [](Chimia::Rendering::ShaderInstance& shader) {
+      shader->SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, false);
     }));
 
   g_transparentRenderingPipeline.reset(new Pipeline(
@@ -41,8 +41,8 @@ Pipelines::Init()
       Chimia::Rendering::EnableDepthMask(false);
       Chimia::Rendering::EnableColorBlend(true);
     },
-    [](Chimia::Rendering::Shader& shader) {
-      shader.SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, true);
+    [](Chimia::Rendering::ShaderInstance& shader) {
+      shader->SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, true);
     }));
 
   g_currentPipeline = g_regularPipeline.get();

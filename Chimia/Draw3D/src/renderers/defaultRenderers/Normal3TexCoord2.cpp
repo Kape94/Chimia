@@ -25,7 +25,7 @@ constexpr eVertexLayout VERTEX_LAYOUT =
 void
 ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 {
-  Chimia::Rendering::Shader& shader = Shaders::Generic();
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
 }
@@ -35,7 +35,7 @@ ConfigureShaderForTriangleDrawing(const ResourcesGroup& resource)
 void
 ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
 {
-  Chimia::Rendering::Shader& shader = Shaders::Generic();
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);

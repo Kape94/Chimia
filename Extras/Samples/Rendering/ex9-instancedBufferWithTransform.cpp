@@ -81,8 +81,7 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader,
     Inputs::ShaderCodes::fShader,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },

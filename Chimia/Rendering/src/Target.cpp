@@ -9,7 +9,7 @@ USING_RENDERLIB_NAMESPACE
 // ----------------------------------------------------------------------------
 
 std::shared_ptr<Target>
-Target::Create(const Shader& shader)
+Target::Create(const ShaderInstance& shader)
 {
   return std::shared_ptr<Target>(new Target(shader));
 }
@@ -17,14 +17,15 @@ Target::Create(const Shader& shader)
 // ----------------------------------------------------------------------------
 
 std::shared_ptr<Target>
-Target::Create(const Shader& shader, const FrameBuffer& framebuffer)
+Target::Create(const ShaderInstance& shader,
+               const FrameBufferInstance& framebuffer)
 {
   return std::shared_ptr<Target>(new Target(shader, framebuffer));
 }
 
 // ----------------------------------------------------------------------------
 
-Target::Target(const Shader& shader)
+Target::Target(const ShaderInstance& shader)
   : m_shader(shader)
   , m_framebuffer(FrameBuffer::DefaultFrameBuffer())
 {
@@ -32,7 +33,8 @@ Target::Target(const Shader& shader)
 
 // ----------------------------------------------------------------------------
 
-Target::Target(const Shader& shader, const FrameBuffer& framebuffer)
+Target::Target(const ShaderInstance& shader,
+               const FrameBufferInstance& framebuffer)
   : m_shader(shader)
   , m_framebuffer(framebuffer)
 {

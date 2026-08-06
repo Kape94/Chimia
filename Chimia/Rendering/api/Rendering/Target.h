@@ -22,18 +22,18 @@ public:
   DEFAULT_DESTRUCTIBLE(Target)
   NON_COPYABLE_NON_MOVABLE(Target)
 
-  static std::shared_ptr<Target> Create(const Shader& shader);
-  static std::shared_ptr<Target> Create(const Shader& shader,
-                                        const FrameBuffer& framebuffer);
+  static std::shared_ptr<Target> Create(const ShaderInstance& shader);
+  static std::shared_ptr<Target> Create(const ShaderInstance& shader,
+                                        const FrameBufferInstance& framebuffer);
 
 private:
-  Target(const Shader& shader);
-  Target(const Shader& shader, const FrameBuffer& framebuffer);
+  Target(const ShaderInstance& shader);
+  Target(const ShaderInstance& shader, const FrameBufferInstance& framebuffer);
 
   friend class BufferPrivate;
 
-  const Shader& m_shader;
-  const FrameBuffer& m_framebuffer;
+  ShaderInstance m_shader;
+  FrameBufferInstance m_framebuffer;
 };
 
 using TargetInstance = std::shared_ptr<Target>;

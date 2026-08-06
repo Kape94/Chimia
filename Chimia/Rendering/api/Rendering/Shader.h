@@ -12,6 +12,7 @@
 #include <glm/vec3.hpp>
 
 #include <map>
+#include <memory>
 #include <string>
 
 //---------------------------------------------------------------------------------------
@@ -23,7 +24,6 @@ BEGIN_RENDERLIB_NAMESPACE
 class Shader
 {
 public:
-  DEFAULT_CONSTUCTIBLE(Shader)
   NON_COPYABLE(Shader)
 
   Shader(Shader&& other);
@@ -31,9 +31,9 @@ public:
 
   ~Shader();
 
-  void Create(const std::string& vertexShaderCode,
-              const std::string& fragmentShaderCode,
-              const DataLayout& dataLayout);
+  static std::shared_ptr<Shader> Create(const std::string& vertexShaderCode,
+                                        const std::string& fragmentShaderCode,
+                                        const DataLayout& dataLayout);
 
   void SetUniform(const std::string& name, const int value);
   void SetUniform(const std::string& name, const float value);
@@ -44,6 +44,8 @@ public:
   void SetUniform(const std::string& name, const glm::vec3& vector);
 
 private:
+  Shader() = default;
+
   friend class BufferPrivate;
   void Use() const;
   const DataLayout& GetDataLayout() const;
@@ -79,6 +81,8 @@ private:
   DataLayout m_dataLayout;
   unsigned m_programId = 0;
 };
+
+using ShaderInstance = std::shared_ptr<Shader>;
 
 //---------------------------------------------------------------------------------------
 

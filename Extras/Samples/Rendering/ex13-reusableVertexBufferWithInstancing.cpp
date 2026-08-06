@@ -109,15 +109,13 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader1;
-  shader1.Create(
+  auto shader1 = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader,
     Inputs::ShaderCodes::fShader,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::Shader shader2;
-  shader2.Create(
+  auto shader2 = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShaderTransformed,
     Inputs::ShaderCodes::fShaderTransformed,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },

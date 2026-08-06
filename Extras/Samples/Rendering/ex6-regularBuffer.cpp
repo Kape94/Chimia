@@ -77,8 +77,7 @@ main()
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();

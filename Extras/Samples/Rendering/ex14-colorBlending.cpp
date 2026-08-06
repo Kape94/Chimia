@@ -98,8 +98,7 @@ main()
     { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData1 = Chimia::Rendering::VertexData::New();

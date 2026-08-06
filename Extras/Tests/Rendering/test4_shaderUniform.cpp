@@ -85,8 +85,7 @@ main(int argc, char** argv)
     { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, datalayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
@@ -108,7 +107,7 @@ main(int argc, char** argv)
 
     const glm::mat4x4 t = RotationMatrix(angle);
 
-    shader.SetUniform("transform", t);
+    shader->SetUniform("transform", t);
     renderTriangle.Render();
 
     win.Swap();

@@ -79,8 +79,7 @@ main(int argc, char** argv)
     { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
@@ -119,8 +118,8 @@ main(int argc, char** argv)
   const Chimia::Rendering::TextureUnit tex2Unit =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  shader.SetTexture("tex", texture, texUnit);
-  shader.SetTexture("tex2", texture2, tex2Unit);
+  shader->SetTexture("tex", texture, texUnit);
+  shader->SetTexture("tex2", texture2, tex2Unit);
   renderTriangleAction.Render();
 
   win.Swap();

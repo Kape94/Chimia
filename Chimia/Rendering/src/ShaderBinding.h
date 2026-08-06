@@ -31,12 +31,12 @@ public:
 
   static ShaderBindings Connect(const VertexDataInstance& data,
                                 const std::string& vertexAttribute,
-                                const Shader& shader,
+                                const ShaderInstance& shader,
                                 const std::string& shaderAttribute);
 
   static ShaderBindings Connect(const InstancedDataInstance& data,
                                 const std::string& vertexAttribute,
-                                const Shader& shader,
+                                const ShaderInstance& shader,
                                 const std::string& shaderAttribute);
 
 private:

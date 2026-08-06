@@ -68,8 +68,7 @@ main()
     { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
@@ -92,7 +91,7 @@ main()
     const glm::mat4x4 t = glm::rotate(identity, angle, { 0.0, 0.0, 1.0 }) *
                           glm::scale(identity, { 0.25, 0.25, 0.25 });
 
-    shader.SetUniform("transform", t);
+    shader->SetUniform("transform", t);
 
     action.Render();
 

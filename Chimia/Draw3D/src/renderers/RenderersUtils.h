@@ -47,12 +47,12 @@ Chimia::Rendering::DataLayout
 GetVertexDataSchema(const eVertexLayout& layout);
 
 void
-ConfigureShaderForRendering(Rendering::Shader& shader,
+ConfigureShaderForRendering(Rendering::ShaderInstance& shader,
                             const eVertexLayout& layout,
                             const ResourcesGroup& resources);
 
 void
-ConfigureShaderForInstancedRendering(Rendering::Shader& shader,
+ConfigureShaderForInstancedRendering(Rendering::ShaderInstance& shader,
                                      const eVertexLayout& layout,
                                      const ResourcesGroup& resources);
 }

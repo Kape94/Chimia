@@ -60,8 +60,7 @@ Basic(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   auto triangleVertexData = Chimia::Rendering::VertexData::New();
   triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
@@ -127,8 +126,7 @@ Indexed(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   auto triangleVertexData = Chimia::Rendering::VertexData::New();
   triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
@@ -207,8 +205,7 @@ Subdata(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create({ nullptr, vertex.size() * sizeof(float) }, dataLayout);
@@ -310,8 +307,7 @@ SubDataWithVaryingSize(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   const auto& states = vertexStates;
   const size_t maximumSize =
@@ -430,8 +426,7 @@ VertexAndIndexSubData(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   const size_t maximumVertexSize = std::accumulate(
     states.begin(), states.end(), 0, [](size_t current, const auto& incoming) {

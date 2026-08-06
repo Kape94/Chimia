@@ -57,8 +57,7 @@ IndexedBuffer(Window& win)
     { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader, dataLayout);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   auto reusableVertexData = Chimia::Rendering::VertexData::New();
   reusableVertexData->Create(vertex, dataLayout);
@@ -157,15 +156,13 @@ Instancing(Window& win)
 
   const std::vector<glm::mat4x4> transforms{ m1, m2 };
 
-  Chimia::Rendering::Shader shader1;
-  shader1.Create(
+  auto shader1 = Chimia::Rendering::Shader::Create(
     vShaderDisplaced,
     fShaderDisplaced,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::Shader shader2;
-  shader2.Create(
+  auto shader2 = Chimia::Rendering::Shader::Create(
     vShaderTransformed,
     fShaderTransformed,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },

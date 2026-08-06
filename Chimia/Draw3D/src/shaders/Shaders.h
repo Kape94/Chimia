@@ -14,7 +14,7 @@ namespace Shaders {
 void
 Initialize();
 
-Rendering::Shader&
+Rendering::ShaderInstance&
 Generic();
 }
 

@@ -39,11 +39,11 @@ Basic(Window& win)
       }
     )";
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader,
-                fShader,
-                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-                  { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   // clang-format off
   const std::vector<float> vertex{ // x ,    y,    z
@@ -109,11 +109,11 @@ BasicIndexed(Window& win)
       }
     )";
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader,
-                fShader,
-                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-                  { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   // clang-format off
   const std::vector<float> vertex{ // x    y    z
@@ -222,11 +222,11 @@ InstanceSubData(Window& win)
     positions, positions2, positions3, positions4, positions5, positions6
   };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader,
-                fShader,
-                { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-                  { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   auto vertexData = Chimia::Rendering::VertexData::New();
   vertexData->Create(
@@ -312,8 +312,7 @@ InstancingByTransformMatrix(Window& win)
                        { 0.5f, 0.5f, 0.5f, 1.0f });
   const std::vector<glm::mat4x4> transforms{ m1, m2 };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
     vShader,
     fShader,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },

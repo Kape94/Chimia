@@ -148,7 +148,7 @@ CollectDatasFromBindings(const ShaderBindings& bindings,
 }
 
 ShaderBindings
-GenerateDetailedBindings(const Shader& shader,
+GenerateDetailedBindings(const ShaderInstance& shader,
                          const std::vector<RenderAction::Binding>& bindings)
 {
   ShaderBindings detailedBindings;

@@ -17,7 +17,7 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-Chimia::Rendering::Shader generic;
+Chimia::Rendering::ShaderInstance generic;
 
 void
 InitializeCodebase()
@@ -51,7 +51,7 @@ Chimia::Draw3D::Shaders::Initialize()
 {
   InitializeCodebase();
 
-  generic.Create(
+  generic = Rendering::Shader::Create(
     ShaderCodebase::Code("vertex::generic"),
     ShaderCodebase::Code("fragment::generic"),
     { { "a_vertexPos", Rendering::eDataType::VECTOR_3_FLOAT },
@@ -63,7 +63,7 @@ Chimia::Draw3D::Shaders::Initialize()
 
 // ----------------------------------------------------------------------------
 
-Chimia::Rendering::Shader&
+Chimia::Rendering::ShaderInstance&
 Chimia::Draw3D::Shaders::Generic()
 {
   return generic;
