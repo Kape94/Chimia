@@ -12,13 +12,6 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-FrameBuffer::FrameBuffer(const unsigned width, const unsigned height)
-{
-  Create(width, height);
-}
-
-//---------------------------------------------------------------------------------------
-
 FrameBuffer::~FrameBuffer()
 {
   Clear();
@@ -35,7 +28,8 @@ FrameBuffer::Create(const unsigned width, const unsigned height)
 
   GLState::BindFramebuffer(newFrameBuffer->m_id);
 
-  newFrameBuffer->m_frameTexture.Create(nullptr /*data*/, width, height);
+  newFrameBuffer->m_frameTexture =
+    Texture2D::Create(nullptr /*data*/, width, height);
 
   glFramebufferTexture2D(
     GL_FRAMEBUFFER,
@@ -71,7 +65,7 @@ FrameBuffer::Use() const
 
 //---------------------------------------------------------------------------------------
 
-const Texture2D&
+const Texture2DInstance&
 FrameBuffer::GetTexture() const
 {
   return m_frameTexture;

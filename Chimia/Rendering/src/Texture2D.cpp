@@ -9,15 +9,6 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-Texture2D::Texture2D(const unsigned char* data,
-                     const unsigned width,
-                     const unsigned height)
-{
-  Create(data, width, height);
-}
-
-//---------------------------------------------------------------------------------------
-
 Texture2D::~Texture2D()
 {
   Clear();
@@ -25,16 +16,16 @@ Texture2D::~Texture2D()
 
 //---------------------------------------------------------------------------------------
 
-void
+std::shared_ptr<Texture2D>
 Texture2D::Create(const unsigned char* data,
                   const unsigned width,
                   const unsigned height)
 {
-  Clear();
+  Texture2DInstance newTexture(new Texture2D);
 
-  glGenTextures(1, &m_id);
+  glGenTextures(1, &newTexture->m_id);
 
-  GLState::BindTexture2D(m_id);
+  GLState::BindTexture2D(newTexture->m_id);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -45,6 +36,8 @@ Texture2D::Create(const unsigned char* data,
   glTexImage2D(
     GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
+
+  return newTexture;
 }
 
 //---------------------------------------------------------------------------------------

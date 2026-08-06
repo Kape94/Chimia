@@ -172,7 +172,7 @@ Shader::Use() const
 
   for (const auto& inUseTexture : m_inUseTextures) {
     const auto& textureEntry = inUseTexture.second;
-    BufferPrivate::UseTexture(*textureEntry.texture, textureEntry.unit);
+    BufferPrivate::UseTexture(textureEntry.texture, textureEntry.unit);
   }
 }
 
@@ -202,12 +202,12 @@ Shader::SetUniform(const std::string& name, const float value)
 
 void
 Shader::SetTexture(const std::string& name,
-                   const Texture2D& texture,
+                   const Texture2DInstance& texture,
                    const TextureUnit& unit)
 {
   const int location = GetUniformLocation(name);
   if (location != -1) {
-    m_inUseTextures[name] = { &texture, unit };
+    m_inUseTextures[name] = { texture, unit };
     glProgramUniform1i(m_programId, location, static_cast<unsigned>(unit));
   }
 }

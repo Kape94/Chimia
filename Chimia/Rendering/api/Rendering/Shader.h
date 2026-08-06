@@ -38,7 +38,7 @@ public:
   void SetUniform(const std::string& name, const int value);
   void SetUniform(const std::string& name, const float value);
   void SetTexture(const std::string& name,
-                  const Texture2D& texture,
+                  const Texture2DInstance& texture,
                   const TextureUnit& unit);
   void SetUniform(const std::string& name, const glm::mat4x4& matrix);
   void SetUniform(const std::string& name, const glm::vec3& vector);
@@ -73,7 +73,7 @@ private:
 
   using TextureEntry = struct
   {
-    const Texture2D* texture;
+    Texture2DInstance texture;
     TextureUnit unit;
   };
   std::map<std::string, TextureEntry> m_inUseTextures;

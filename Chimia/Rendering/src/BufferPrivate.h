@@ -70,8 +70,9 @@ public:
   static void UseFramebuffer(const FrameBufferInstance& frameBuffer);
 
   // Texture
-  static unsigned GetTextureID(const Texture2D& texture);
-  static void UseTexture(const Texture2D& texture, const TextureUnit& unit);
+  static unsigned GetTextureID(const Texture2DInstance& texture);
+  static void UseTexture(const Texture2DInstance& texture,
+                         const TextureUnit& unit);
 
   // Target
   static const ShaderInstance& GetShader(const TargetInstance& target);

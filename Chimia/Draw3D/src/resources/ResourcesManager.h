@@ -39,7 +39,8 @@ public:
                           const unsigned width,
                           const unsigned height);
 
-  Rendering::Texture2D* GetTexture(const TextureID& textureID);
+  const Chimia::Rendering::Texture2DInstance* GetTexture(
+    const TextureID& textureID);
 
   OpacityFactorID CreateOpacityFactor(const float value);
 
@@ -80,7 +81,7 @@ private:
 
   ObjectTable<Material> m_materialsTable;
 
-  ObjectTable<Rendering::Texture2D> m_texturesTable;
+  ObjectTable<Rendering::Texture2DInstance> m_texturesTable;
 
   ObjectTable<float> m_opacityFactors;
 

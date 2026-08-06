@@ -226,17 +226,18 @@ BufferPrivate::UseFramebuffer(const FrameBufferInstance& frameBuffer)
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetTextureID(const Texture2D& texture)
+BufferPrivate::GetTextureID(const Texture2DInstance& texture)
 {
-  return texture.m_id;
+  return texture->m_id;
 }
 
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::UseTexture(const Texture2D& texture, const TextureUnit& unit)
+BufferPrivate::UseTexture(const Texture2DInstance& texture,
+                          const TextureUnit& unit)
 {
-  texture.Use(unit);
+  texture->Use(unit);
 }
 
 // --------------------------------------------------------------------------------------

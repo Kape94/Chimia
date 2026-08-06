@@ -22,13 +22,12 @@ public:
   static std::shared_ptr<FrameBuffer> Create(const unsigned width,
                                              const unsigned height);
 
-  const Texture2D& GetTexture() const;
+  const Texture2DInstance& GetTexture() const;
 
   static const std::shared_ptr<FrameBuffer>& DefaultFrameBuffer();
 
 private:
   FrameBuffer() = default;
-  FrameBuffer(const unsigned width, const unsigned height);
 
   void Clear();
 
@@ -37,7 +36,7 @@ private:
 
   unsigned int m_id = 0;
 
-  Texture2D m_frameTexture;
+  Texture2DInstance m_frameTexture = nullptr;
   unsigned m_renderBufferId = 0;
 };
 

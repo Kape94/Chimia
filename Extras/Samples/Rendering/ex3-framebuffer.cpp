@@ -157,7 +157,7 @@ main(int argc, char** argv)
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   Chimia::Media::Image texData(solarFlareAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture(
+  auto texture = Chimia::Rendering::Texture2D::Create(
     texData.RawData(), texData.Width(), texData.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
