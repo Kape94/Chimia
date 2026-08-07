@@ -84,12 +84,13 @@ Implementation steps:
   - The renderAction could hold the reference to the shader it uses for rendering; [DONE]
   - Create uniform location cache inside Shader; [NO]
     * When applied, it led to a performance regression; [NO]
-  
-  - Use shared_ptr for Shader!
-    * Probably yes. We do need to support shader re-targeting though;
-  - Create Texture2DInstance as well!
-    * Will be held by shader inUseTextures table;
-  - Don't forget to create the RenderAction retargeting function, it should be pretty easy!  
+  - Use shared_ptr for Shader! [DONE]
+  - Create Texture2DInstance as well! [DONE]
+    * Will be held by shader inUseTextures table; [DONE]
+  - Don't forget to create the RenderAction retargeting function, it should be pretty easy!  [DONE]
+
+
+
   - VertexData::Create and VertexData::New should be combined into the same function;
     * Same applies to InstancedData and IndexData;
   - The static object creation functions should be all centered at Chimia::Rendering;

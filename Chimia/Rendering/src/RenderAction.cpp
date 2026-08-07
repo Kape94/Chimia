@@ -12,6 +12,7 @@
 #include "Target.h"
 #include "VertexData.h"
 #include <set>
+#include <vector>
 
 //---------------------------------------------------------------------------------------
 
@@ -289,20 +290,12 @@ RenderAction::SetupVAO()
 void
 RenderAction::Clear()
 {
-  UnregisterAsListener();
-  ClearRenderingData();
-}
-
-//---------------------------------------------------------------------------------------
-
-void
-RenderAction::ClearRenderingData()
-{
   if (m_VAO != 0) {
     glDeleteVertexArrays(1, &m_VAO);
     m_VAO = 0;
   }
 
+  UnregisterAsListener();
   m_referenceVertexDatas.clear();
   m_referenceIndexBuffer = nullptr;
   m_referenceInstancedDatas.clear();
@@ -344,6 +337,17 @@ RenderAction::UnregisterAsListener()
   for (InstancedDataInstance& data : m_referenceInstancedDatas) {
     BufferPrivate::RemoveListener(data, listener);
   }
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+RenderAction::Retarget(const TargetInstance& target)
+{
+  const std::vector<Binding> backupBindings = m_bindings;
+  const IndexDataInstance backupIndex = m_referenceIndexBuffer;
+
+  Create(target, backupIndex, backupBindings);
 }
 
 //---------------------------------------------------------------------------------------
@@ -452,7 +456,6 @@ RenderAction::DataChanged()
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;
   const TargetInstance backupTarget = m_target;
 
-  // ClearRenderingData();
   Clear();
 
   if (backupIndex != nullptr) {
