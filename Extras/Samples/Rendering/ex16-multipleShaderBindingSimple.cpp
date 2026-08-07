@@ -66,13 +66,11 @@ main()
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto positionData = Chimia::Rendering::VertexData::New();
-  positionData->Create(
+  auto positionData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertexPositions,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto colorData = Chimia::Rendering::VertexData::New();
-  colorData->Create(
+  auto colorData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertexColors,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 

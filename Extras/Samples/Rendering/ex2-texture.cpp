@@ -79,14 +79,13 @@ main(int argc, char** argv)
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertex,
     { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(Inputs::BufferData::index);
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

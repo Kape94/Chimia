@@ -24,14 +24,14 @@ class VertexData
 public:
   NON_COPYABLE(VertexData)
 
-  static std::shared_ptr<VertexData> New();
-
   VertexData(VertexData&& other);
   VertexData& operator=(VertexData&& other);
 
   ~VertexData();
 
-  void Create(const RawDataView& vertexData, const DataLayout& dataLayout);
+  static std::shared_ptr<VertexData> Create(const RawDataView& vertexData,
+                                            const DataLayout& dataLayout);
+
   void Load(const RawDataView& data);
   void Resize(const RawDataView& data);
 
@@ -46,6 +46,7 @@ private:
   DataListeners& GetListeners();
 
   void Clear();
+  void Setup(const RawDataView& vertexData, const DataLayout& dataLayout);
   void AllocateVertexData(const RawDataView& vertexData,
                           const unsigned nVertices);
 

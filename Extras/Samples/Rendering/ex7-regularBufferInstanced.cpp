@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -79,13 +80,11 @@ main()
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertex,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     Inputs::InstanceData::positions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 

@@ -1,5 +1,6 @@
 #include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -60,12 +61,10 @@ Basic(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
@@ -129,15 +128,12 @@ BasicIndexed(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(index);
+  auto indexData = Chimia::Rendering::IndexData::Create(index);
 
-  auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     instancesPositions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
@@ -228,12 +224,10 @@ InstanceSubData(Window& win)
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     { nullptr, positions.size() * dataSize },
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
@@ -318,12 +312,10 @@ InstancingByTransformMatrix(Window& win)
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto instancedData = Chimia::Rendering::InstancedData::New();
-  instancedData->Create(
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 

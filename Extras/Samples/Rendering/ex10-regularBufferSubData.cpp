@@ -110,8 +110,8 @@ main()
                       return std::max(current, incoming.size());
                     });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumSize * sizeof(float) }, dataLayout);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -74,13 +75,11 @@ main(int argc, char** argv)
   auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     dataLayout);
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(
+  auto indexData = Chimia::Rendering::IndexData::Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
   auto target = Chimia::Rendering::Target::Create(shader);

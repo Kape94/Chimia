@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -144,11 +145,11 @@ main(int argc, char** argv)
   auto frameBuffer =
     Chimia::Rendering::FrameBuffer::Create(scrWidth, scrHeight);
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, datalayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, datalayout);
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(Inputs::BufferData::index);
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
 
   auto renderToFramebuffer =
     Chimia::Rendering::Target::Create(shader, frameBuffer);
@@ -175,11 +176,11 @@ main(int argc, char** argv)
                                       Inputs::ShaderCodes::fShaderPost,
                                       datalayout);
 
-  auto vertexDataQuad = Chimia::Rendering::VertexData::New();
-  vertexDataQuad->Create(Inputs::BufferData::quad, datalayout);
+  auto vertexDataQuad =
+    Chimia::Rendering::VertexData::Create(Inputs::BufferData::quad, datalayout);
 
-  auto indexDataQuad = Chimia::Rendering::IndexData::New();
-  indexDataQuad->Create(Inputs::BufferData::quadIndex);
+  auto indexDataQuad =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::quadIndex);
 
   auto renderToScreen = Chimia::Rendering::Target::Create(secondPassShader);
 

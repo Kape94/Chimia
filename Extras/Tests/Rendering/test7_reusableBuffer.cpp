@@ -59,11 +59,10 @@ IndexedBuffer(Window& win)
 
   auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  auto reusableVertexData = Chimia::Rendering::VertexData::New();
-  reusableVertexData->Create(vertex, dataLayout);
+  auto reusableVertexData =
+    Chimia::Rendering::VertexData::Create(vertex, dataLayout);
 
-  auto reusableIndexData = Chimia::Rendering::IndexData::New();
-  reusableIndexData->Create(indexData);
+  auto reusableIndexData = Chimia::Rendering::IndexData::Create(indexData);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 
@@ -168,15 +167,12 @@ Instancing(Window& win)
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  auto reusableVertexData = Chimia::Rendering::VertexData::New();
-  reusableVertexData->Create(
+  auto reusableVertexData = Chimia::Rendering::VertexData::Create(
     vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto reusableIndexData = Chimia::Rendering::IndexData::New();
-  reusableIndexData->Create(index);
+  auto reusableIndexData = Chimia::Rendering::IndexData::Create(index);
 
-  auto instancedPositions = Chimia::Rendering::InstancedData::New();
-  instancedPositions->Create(
+  auto instancedPositions = Chimia::Rendering::InstancedData::Create(
     positions, { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   auto target1 = Chimia::Rendering::Target::Create(shader1);
@@ -188,8 +184,7 @@ Instancing(Window& win)
     { { reusableVertexData, "pos", "pos" },
       { instancedPositions, "offset", "offset" } });
 
-  auto instancedTransforms = Chimia::Rendering::InstancedData::New();
-  instancedTransforms->Create(
+  auto instancedTransforms = Chimia::Rendering::InstancedData::Create(
     transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 

@@ -80,8 +80,8 @@ main()
   auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create(Inputs::BufferData::vertex, dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, dataLayout);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

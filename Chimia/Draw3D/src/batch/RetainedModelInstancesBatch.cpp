@@ -59,8 +59,7 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
     BatchUtils::InstancedGPUComponent& gpuComponent =
       m_gpuComponent.emplace_back();
 
-    gpuComponent.data = Rendering::InstancedData::New();
-    gpuComponent.data->Create(
+    gpuComponent.data = Rendering::InstancedData::Create(
       RawDataView{ nullptr, batchSize * instanceBatchDataSize },
       instancedDataLayout);
 

@@ -13,14 +13,6 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-std::shared_ptr<InstancedData>
-InstancedData::New()
-{
-  return std::shared_ptr<InstancedData>(new InstancedData);
-}
-
-// ----------------------------------------------------------------------------
-
 InstancedData::InstancedData()
   : m_listeners(new DataListeners)
 {
@@ -69,12 +61,23 @@ InstancedData::~InstancedData()
 
 // ----------------------------------------------------------------------------
 
-void
+std::shared_ptr<InstancedData>
 InstancedData::Create(const RawDataView& instancedData,
                       const DataLayout& dataLayout)
 {
-  Clear();
+  InstancedDataInstance newData(new InstancedData);
 
+  newData->Setup(instancedData, dataLayout);
+
+  return newData;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+InstancedData::Setup(const RawDataView& instancedData,
+                     const DataLayout& dataLayout)
+{
   const void* instancedRawData = instancedData.data;
 
   const size_t instanceSize = dataLayout.TotalSize();
@@ -118,7 +121,7 @@ InstancedData::Resize(const RawDataView& data)
   const DataLayout backupLayout = m_dataLayout;
 
   Clear();
-  Create(data, backupLayout);
+  Setup(data, backupLayout);
 
   m_listeners->DataChanged();
 }

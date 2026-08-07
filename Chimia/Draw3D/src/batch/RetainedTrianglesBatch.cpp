@@ -26,10 +26,9 @@ RetainedTrianglesBatch::Create(
 
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
 
-  m_gpuComponent.data = Rendering::VertexData::New();
-
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuComponent.data->Create(rawData, vertexDataLayout);
+  m_gpuComponent.data =
+    Rendering::VertexData::Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(
     vertexBindingsTemplate.GetTarget(),

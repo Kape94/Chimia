@@ -23,14 +23,12 @@ class IndexData
 public:
   NON_COPYABLE(IndexData)
 
-  static std::shared_ptr<IndexData> New();
-
   IndexData(IndexData&& other);
   IndexData& operator=(IndexData&& other);
 
   ~IndexData();
 
-  void Create(const RawArrayView& indexData);
+  static std::shared_ptr<IndexData> Create(const RawArrayView& indexData);
 
   void LoadIndexData(const RawArrayView& indexData);
   void Resize(const RawArrayView& indexData);

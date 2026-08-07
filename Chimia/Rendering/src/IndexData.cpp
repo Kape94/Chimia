@@ -12,14 +12,6 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-std::shared_ptr<IndexData>
-IndexData::New()
-{
-  return std::shared_ptr<IndexData>(new IndexData);
-}
-
-// ----------------------------------------------------------------------------
-
 IndexData::IndexData()
   : m_listeners(new DataListeners)
 {
@@ -68,12 +60,14 @@ IndexData::~IndexData()
 
 // ----------------------------------------------------------------------------
 
-void
+std::shared_ptr<IndexData>
 IndexData::Create(const RawArrayView& indexData)
 {
-  Clear();
+  IndexDataInstance newData(new IndexData);
 
-  AllocateIndexData(indexData);
+  newData->AllocateIndexData(indexData);
+
+  return newData;
 }
 
 // ----------------------------------------------------------------------------
@@ -115,7 +109,7 @@ void
 IndexData::Resize(const RawArrayView& indexData)
 {
   Clear();
-  Create(indexData);
+  AllocateIndexData(indexData);
 
   m_listeners->DataChanged();
 }

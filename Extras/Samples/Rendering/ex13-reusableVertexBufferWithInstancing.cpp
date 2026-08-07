@@ -1,5 +1,6 @@
 #include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -121,16 +122,14 @@ main()
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  auto reusableVertexData = Chimia::Rendering::VertexData::New();
-  reusableVertexData->Create(
+  auto reusableVertexData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertex,
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto reusableIndexData = Chimia::Rendering::IndexData::New();
-  reusableIndexData->Create(Inputs::BufferData::index);
+  auto reusableIndexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
 
-  auto positionsData = Chimia::Rendering::InstancedData::New();
-  positionsData->Create(
+  auto positionsData = Chimia::Rendering::InstancedData::Create(
     Inputs::InstanceData::positions,
     { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
@@ -142,8 +141,7 @@ main()
                            { { reusableVertexData, "pos", "pos" },
                              { positionsData, "offset", "offset" } });
 
-  auto transformData = Chimia::Rendering::InstancedData::New();
-  transformData->Create(
+  auto transformData = Chimia::Rendering::InstancedData::Create(
     Inputs::InstanceData::transforms,
     { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 

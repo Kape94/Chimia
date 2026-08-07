@@ -13,14 +13,6 @@ USING_RENDERLIB_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-std::shared_ptr<VertexData>
-VertexData::New()
-{
-  return std::shared_ptr<VertexData>(new VertexData);
-}
-
-// ----------------------------------------------------------------------------
-
 VertexData::VertexData()
   : m_listeners(new DataListeners)
 {
@@ -75,11 +67,21 @@ VertexData::~VertexData()
 
 // ----------------------------------------------------------------------------
 
-void
+std::shared_ptr<VertexData>
 VertexData::Create(const RawDataView& vertexData, const DataLayout& dataLayout)
 {
-  Clear();
+  VertexDataInstance newData(new VertexData);
 
+  newData->Setup(vertexData, dataLayout);
+
+  return newData;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+VertexData::Setup(const RawDataView& vertexData, const DataLayout& dataLayout)
+{
   m_dataLayout = dataLayout;
 
   const size_t dataSize = vertexData.size;
@@ -131,7 +133,7 @@ VertexData::Resize(const RawDataView& data)
   const DataLayout backupLayout = m_dataLayout;
 
   Clear();
-  Create(data, backupLayout);
+  Setup(data, backupLayout);
 
   m_listeners->DataChanged();
 }

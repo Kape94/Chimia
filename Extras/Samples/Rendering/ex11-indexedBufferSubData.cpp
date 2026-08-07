@@ -1,3 +1,4 @@
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -117,12 +118,11 @@ main()
       return std::max(current, incoming.iData.size());
     });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) },
-                     dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumVertexSize * sizeof(float) }, dataLayout);
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { nullptr, maximumIndexSize, sizeof(unsigned) });
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

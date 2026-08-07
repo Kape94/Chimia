@@ -67,15 +67,12 @@ main()
     { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-
-  vertexData->Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(
+  auto indexData = Chimia::Rendering::IndexData::Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
   auto target = Chimia::Rendering::Target::Create(shader);

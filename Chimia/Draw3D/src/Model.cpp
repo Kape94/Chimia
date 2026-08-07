@@ -80,13 +80,11 @@ Model::AllocateBufferDataOnGPU(const MeshDataView& meshData,
   const RawDataView& vertex = meshData.VertexData();
   const RawArrayView& index = meshData.Indices();
 
-  auto& insertedVertexData =
-    m_gpuVertexDatas.emplace_back(Rendering::VertexData::New());
-  insertedVertexData->Create(vertex, DataLayoutForVertex(vertexLayout));
+  auto& insertedVertexData = m_gpuVertexDatas.emplace_back(
+    Rendering::VertexData::Create(vertex, DataLayoutForVertex(vertexLayout)));
 
   auto& insertedIndexData =
-    m_gpuIndexDatas.emplace_back(Rendering::IndexData::New());
-  insertedIndexData->Create(index);
+    m_gpuIndexDatas.emplace_back(Rendering::IndexData::Create(index));
 }
 
 // ----------------------------------------------------------------------------

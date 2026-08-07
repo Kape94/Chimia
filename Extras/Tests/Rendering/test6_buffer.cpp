@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -62,8 +63,8 @@ Basic(Window& win)
 
   auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  auto triangleVertexData = Chimia::Rendering::VertexData::New();
-  triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
+  auto triangleVertexData = Chimia::Rendering::VertexData::Create(
+    { vertex, vertexDataSize }, dataLayout);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 
@@ -128,11 +129,11 @@ Indexed(Window& win)
 
   auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  auto triangleVertexData = Chimia::Rendering::VertexData::New();
-  triangleVertexData->Create({ vertex, vertexDataSize }, dataLayout);
+  auto triangleVertexData = Chimia::Rendering::VertexData::Create(
+    { vertex, vertexDataSize }, dataLayout);
 
-  auto triangleIndexData = Chimia::Rendering::IndexData::New();
-  triangleIndexData->Create({ indexData, indexDataNItems });
+  auto triangleIndexData =
+    Chimia::Rendering::IndexData::Create({ indexData, indexDataNItems });
 
   auto target = Chimia::Rendering::Target::Create(shader);
 
@@ -207,8 +208,8 @@ Subdata(Window& win)
 
   auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, vertex.size() * sizeof(float) }, dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, vertex.size() * sizeof(float) }, dataLayout);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 
@@ -318,8 +319,8 @@ SubDataWithVaryingSize(Window& win)
                       return std::max(current, incoming.size());
                     });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumSize * sizeof(float) }, dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumSize * sizeof(float) }, dataLayout);
 
   auto target = Chimia::Rendering::Target::Create(shader);
 
@@ -437,12 +438,11 @@ VertexAndIndexSubData(Window& win)
       return std::max(current, incoming.iData.size());
     });
 
-  auto vertexData = Chimia::Rendering::VertexData::New();
-  vertexData->Create({ nullptr, maximumVertexSize * sizeof(float) },
-                     dataLayout);
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumVertexSize * sizeof(float) }, dataLayout);
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create({ nullptr, maximumIndexSize, sizeof(unsigned) });
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { nullptr, maximumIndexSize, sizeof(unsigned) });
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

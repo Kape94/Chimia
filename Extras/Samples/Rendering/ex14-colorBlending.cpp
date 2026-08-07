@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -101,23 +102,19 @@ main()
   auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
-  auto vertexData1 = Chimia::Rendering::VertexData::New();
-  vertexData1->Create(
+  auto vertexData1 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     dataLayout);
 
-  auto vertexData2 = Chimia::Rendering::VertexData::New();
-  vertexData2->Create(
+  auto vertexData2 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex2, Inputs::BufferData::vertex2DataSize },
     dataLayout);
 
-  auto vertexData3 = Chimia::Rendering::VertexData::New();
-  vertexData3->Create(
+  auto vertexData3 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex3, Inputs::BufferData::vertex3DataSize },
     dataLayout);
 
-  auto indexData = Chimia::Rendering::IndexData::New();
-  indexData->Create(
+  auto indexData = Chimia::Rendering::IndexData::Create(
     { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
 
   auto target = Chimia::Rendering::Target::Create(shader);

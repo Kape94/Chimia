@@ -66,15 +66,14 @@ main()
   auto shader = Chimia::Rendering::Shader::Create(
     Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
-  auto reusableVertexData = Chimia::Rendering::VertexData::New();
-  reusableVertexData->Create(
+  auto reusableVertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
     dataLayout);
 
-  auto reusableIndexData = Chimia::Rendering::IndexData::New();
-  reusableIndexData->Create({ Inputs::BufferData::indexData,
-                              Inputs::BufferData::indexDataItems,
-                              sizeof(unsigned) });
+  auto reusableIndexData =
+    Chimia::Rendering::IndexData::Create({ Inputs::BufferData::indexData,
+                                           Inputs::BufferData::indexDataItems,
+                                           sizeof(unsigned) });
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

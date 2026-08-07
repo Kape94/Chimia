@@ -1,4 +1,5 @@
 #include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
 #include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
@@ -104,17 +105,17 @@ BlendingSimple(Window& win)
 
   auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  auto vertexData1 = Chimia::Rendering::VertexData::New();
-  vertexData1->Create({ vertex, vertexDataSize }, dataLayout);
+  auto vertexData1 = Chimia::Rendering::VertexData::Create(
+    { vertex, vertexDataSize }, dataLayout);
 
-  auto vertexData2 = Chimia::Rendering::VertexData::New();
-  vertexData2->Create({ vertex2, vertex2DataSize }, dataLayout);
+  auto vertexData2 = Chimia::Rendering::VertexData::Create(
+    { vertex2, vertex2DataSize }, dataLayout);
 
-  auto vertexData3 = Chimia::Rendering::VertexData::New();
-  vertexData3->Create({ vertex3, vertex3DataSize }, dataLayout);
+  auto vertexData3 = Chimia::Rendering::VertexData::Create(
+    { vertex3, vertex3DataSize }, dataLayout);
 
-  auto triangleIndexData = Chimia::Rendering::IndexData::New();
-  triangleIndexData->Create({ indexData, indexDataNItems });
+  auto triangleIndexData =
+    Chimia::Rendering::IndexData::Create({ indexData, indexDataNItems });
 
   auto target = Chimia::Rendering::Target::Create(shader);
 

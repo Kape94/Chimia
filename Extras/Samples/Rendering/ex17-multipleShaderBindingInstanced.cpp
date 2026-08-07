@@ -73,18 +73,15 @@ main()
       { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
       { "offset", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto positionData = Chimia::Rendering::VertexData::New();
-  positionData->Create(
+  auto positionData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertexPositions,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto colorData = Chimia::Rendering::VertexData::New();
-  colorData->Create(
+  auto colorData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertexColors,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  auto offsetData = Chimia::Rendering::InstancedData::New();
-  offsetData->Create(
+  auto offsetData = Chimia::Rendering::InstancedData::Create(
     Inputs::BufferData::offsets,
     { { "data", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 

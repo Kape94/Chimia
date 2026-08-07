@@ -57,8 +57,7 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
 {
   BatchUtils::InstancedGPUComponent& inserted = m_gpuComponents.emplace_back();
 
-  inserted.data = Rendering::InstancedData::New();
-  inserted.data->Create(
+  inserted.data = Rendering::InstancedData::Create(
     RawDataView{ nullptr, instanceBatchSize * m_instancedDataSizeInBytes },
     instancedDataLayout);
 

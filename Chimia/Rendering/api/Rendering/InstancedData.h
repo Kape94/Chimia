@@ -24,14 +24,13 @@ class InstancedData
 public:
   NON_COPYABLE(InstancedData)
 
-  static std::shared_ptr<InstancedData> New();
-
   InstancedData(InstancedData&& other);
   InstancedData& operator=(InstancedData&& other);
 
   ~InstancedData();
 
-  void Create(const RawDataView& instancedData, const DataLayout& dataLayout);
+  static std::shared_ptr<InstancedData> Create(const RawDataView& instancedData,
+                                               const DataLayout& dataLayout);
   void Load(const RawArrayView& data);
   void Resize(const RawDataView& data);
 
@@ -45,6 +44,7 @@ private:
   unsigned GetInstanceSize() const;
   DataListeners& GetListeners();
 
+  void Setup(const RawDataView& instancedData, const DataLayout& dataLayout);
   void Clear();
 
   unsigned m_instancedVBO = 0;
