@@ -1,6 +1,7 @@
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -99,8 +100,13 @@ main()
   Window win(1280, 1080, "Example #11");
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   const auto& states = Inputs::BufferData::states;
   const size_t maximumVertexSize = std::accumulate(
@@ -112,12 +118,20 @@ main()
       return std::max(current, incoming.iData.size());
     });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    { nullptr, maximumVertexSize * sizeof(float) },
-    { nullptr, maximumIndexSize, sizeof(unsigned) },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumVertexSize * sizeof(float) }, dataLayout);
+
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { nullptr, maximumIndexSize, sizeof(unsigned) });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();
@@ -125,8 +139,8 @@ main()
 
   const auto& state = states[selected];
 
-  buffer.LoadVertexData(state.vData);
-  buffer.LoadIndexData(state.iData);
+  vertexData->Load(state.vData);
+  indexData->LoadIndexData(state.iData);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -139,19 +153,15 @@ main()
 
       const auto& state = states[selected];
 
-      buffer.LoadVertexData(state.vData);
-      buffer.LoadIndexData(state.iData);
+      vertexData->Load(state.vData);
+      indexData->LoadIndexData(state.iData);
     }
 
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
-
-  buffer.Clear();
-  shader.Clear();
 
   return 0;
 }

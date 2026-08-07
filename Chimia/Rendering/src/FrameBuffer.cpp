@@ -1,17 +1,14 @@
 #include "FrameBuffer.h"
 
+#include "BufferPrivate.h"
+#include "GLState.h"
 #include "OpenGLDefs.h"
+
+#include <cassert>
 
 //---------------------------------------------------------------------------------------
 
 USING_RENDERLIB_NAMESPACE
-
-//---------------------------------------------------------------------------------------
-
-FrameBuffer::FrameBuffer(const unsigned width, const unsigned height)
-{
-  Create(width, height);
-}
 
 //---------------------------------------------------------------------------------------
 
@@ -22,51 +19,56 @@ FrameBuffer::~FrameBuffer()
 
 //---------------------------------------------------------------------------------------
 
-void
+std::shared_ptr<FrameBuffer>
 FrameBuffer::Create(const unsigned width, const unsigned height)
 {
-  Clear();
+  std::shared_ptr<FrameBuffer> newFrameBuffer(new FrameBuffer);
 
-  glGenFramebuffers(1, &id);
+  glGenFramebuffers(1, &newFrameBuffer->m_id);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, id);
+  GLState::BindFramebuffer(newFrameBuffer->m_id);
 
-  frameTexture.Create(nullptr /*data*/, width, height);
+  newFrameBuffer->m_frameTexture =
+    Texture2D::Create(nullptr /*data*/, width, height);
 
-  glFramebufferTexture2D(GL_FRAMEBUFFER,
-                         GL_COLOR_ATTACHMENT0,
-                         GL_TEXTURE_2D,
-                         frameTexture.GetId(),
-                         0);
+  glFramebufferTexture2D(
+    GL_FRAMEBUFFER,
+    GL_COLOR_ATTACHMENT0,
+    GL_TEXTURE_2D,
+    BufferPrivate::GetTextureID(newFrameBuffer->m_frameTexture),
+    0);
 
-  glGenRenderbuffers(1, &renderBufferId);
-  glBindRenderbuffer(GL_RENDERBUFFER, renderBufferId);
+  glGenRenderbuffers(1, &newFrameBuffer->m_renderBufferId);
+  GLState::BindRenderbuffer(newFrameBuffer->m_renderBufferId);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
   glFramebufferRenderbuffer(GL_FRAMEBUFFER,
                             GL_DEPTH_STENCIL_ATTACHMENT,
                             GL_RENDERBUFFER,
-                            renderBufferId);
+                            newFrameBuffer->m_renderBufferId);
 
-  // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-  // return 1;
+  if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    assert(false && "Framebuffer::Create: Error creating new framebuffer");
+  }
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  GLState::BindFramebuffer(0);
+
+  return newFrameBuffer;
 }
 
 //---------------------------------------------------------------------------------------
 
 void
-FrameBuffer::Use()
+FrameBuffer::Use() const
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, id);
+  GLState::BindFramebuffer(m_id);
 }
 
 //---------------------------------------------------------------------------------------
 
-void
-FrameBuffer::UseTexture(const TextureUnit& textureUnit)
+const Texture2DInstance&
+FrameBuffer::GetTexture() const
 {
-  frameTexture.Use(textureUnit);
+  return m_frameTexture;
 }
 
 //---------------------------------------------------------------------------------------
@@ -74,23 +76,23 @@ FrameBuffer::UseTexture(const TextureUnit& textureUnit)
 void
 FrameBuffer::Clear()
 {
-  frameTexture.Clear();
-  if (id != 0) {
-    glDeleteFramebuffers(1, &id);
-    id = 0;
+  if (m_id != 0) {
+    glDeleteFramebuffers(1, &m_id);
+    m_id = 0;
   }
-  if (renderBufferId != 0) {
-    glDeleteRenderbuffers(1, &renderBufferId);
-    renderBufferId = 0;
+  if (m_renderBufferId != 0) {
+    glDeleteRenderbuffers(1, &m_renderBufferId);
+    m_renderBufferId = 0;
   }
 }
 
 //---------------------------------------------------------------------------------------
 
-void
-FrameBuffer::UseDefaultFrameBuffer()
+const FrameBufferInstance&
+FrameBuffer::DefaultFrameBuffer()
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  static FrameBufferInstance defaultFramebuffer(new FrameBuffer);
+  return defaultFramebuffer;
 }
 
 //---------------------------------------------------------------------------------------

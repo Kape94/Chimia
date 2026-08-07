@@ -1,7 +1,8 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/Buffer.h"
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
@@ -55,17 +56,25 @@ Basic(Window& win)
 
   const unsigned indexDataNItems = 3;
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
-    { vertex, vertexDataSize },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  shader.Use();
-  buffer.Render();
+  auto triangleVertexData = Chimia::Rendering::VertexData::Create(
+    { vertex, vertexDataSize }, dataLayout);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(target,
+                        { { triangleVertexData, "pos", "pos" },
+                          { triangleVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  renderTriangle.Render();
 
   win.Swap();
 
@@ -106,6 +115,7 @@ Indexed(Window& win)
                           1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 
                           0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
   // clang-format on
+  const unsigned nVertices = 3;
 
   const unsigned vertexDataSize = 18 * sizeof(float);
 
@@ -113,18 +123,29 @@ Indexed(Window& win)
 
   const unsigned indexDataNItems = 3;
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    { vertex, vertexDataSize },
-    { indexData, indexDataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  shader.Use();
-  buffer.Render();
+  auto triangleVertexData = Chimia::Rendering::VertexData::Create(
+    { vertex, vertexDataSize }, dataLayout);
+
+  auto triangleIndexData =
+    Chimia::Rendering::IndexData::Create({ indexData, indexDataNItems });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(target,
+                        triangleIndexData,
+                        { { triangleVertexData, "pos", "pos" },
+                          { triangleVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  renderTriangle.Render();
 
   win.Swap();
 
@@ -182,14 +203,23 @@ Subdata(Window& win)
 
   const std::vector<std::vector<float>> vertexDatas{ vertex, vertex2 };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
-    { nullptr, vertex.size() * sizeof(float) },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, vertex.size() * sizeof(float) }, dataLayout);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -198,10 +228,9 @@ Subdata(Window& win)
 
     const int current = i % vertexDatas.size();
     const std::vector<float>& data = vertexDatas[current];
-    buffer.Load(data);
+    vertexData->Load(data);
 
-    shader.Use();
-    buffer.Render();
+    renderTriangle.Render();
 
     win.Swap();
 
@@ -278,8 +307,12 @@ SubDataWithVaryingSize(Window& win)
 
   // clang-format on
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   const auto& states = vertexStates;
   const size_t maximumSize =
@@ -290,11 +323,16 @@ SubDataWithVaryingSize(Window& win)
                       return std::max(current, incoming.size());
                     });
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
-    { nullptr, maximumSize * sizeof(float) },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumSize * sizeof(float) }, dataLayout);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangles;
+  renderTriangles.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -304,10 +342,9 @@ SubDataWithVaryingSize(Window& win)
     const int current = i % states.size();
     const std::vector<float>& data = states[current];
 
-    buffer.Load(data);
+    vertexData->Load(data);
 
-    shader.Use();
-    buffer.Render();
+    renderTriangles.Render();
 
     win.Swap();
 
@@ -391,8 +428,12 @@ VertexAndIndexSubData(Window& win)
 
   // clang-format on
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
   const size_t maximumVertexSize = std::accumulate(
     states.begin(), states.end(), 0, [](size_t current, const auto& incoming) {
@@ -403,12 +444,20 @@ VertexAndIndexSubData(Window& win)
       return std::max(current, incoming.iData.size());
     });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    { nullptr, maximumVertexSize * sizeof(float) },
-    { nullptr, maximumIndexSize, sizeof(unsigned) },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumVertexSize * sizeof(float) }, dataLayout);
+
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { nullptr, maximumIndexSize, sizeof(unsigned) });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangles;
+  renderTriangles.Create(
+    target,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -419,11 +468,10 @@ VertexAndIndexSubData(Window& win)
     const int current = i % states.size();
     const auto& state = states[current];
 
-    buffer.LoadVertexData(state.vData);
-    buffer.LoadIndexData(state.iData);
+    vertexData->Load(state.vData);
+    indexData->LoadIndexData(state.iData);
 
-    shader.Use();
-    buffer.Render();
+    renderTriangles.Render();
 
     win.Swap();
 

@@ -1,8 +1,10 @@
 #include "Core/Types.h"
 #include "Media/Image.h"
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
@@ -73,15 +75,28 @@ main(int argc, char** argv)
 
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, dataLayout);
+
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangleAction;
+  renderTriangleAction.Create(
+    target,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string testPath = ExtrasUtils::GetCurrentAppDir(argv);
   const std::string assetsDir = testPath + "/assets/";
@@ -91,27 +106,23 @@ main(int argc, char** argv)
   const std::string blueLightAsset = assetsDir + "blue-light-style.jpg";
   Chimia::Media::Image texData(blueLightAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture;
-  texture.Create(texData.RawData(), texData.Width(), texData.Height());
+  auto texture = Chimia::Rendering::Texture2D::Create(
+    texData.RawData(), texData.Width(), texData.Height());
 
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   Chimia::Media::Image texData2(solarFlareAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture2;
-  texture2.Create(texData2.RawData(), texData2.Width(), texData2.Height());
+  auto texture2 = Chimia::Rendering::Texture2D::Create(
+    texData2.RawData(), texData2.Width(), texData2.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
   const Chimia::Rendering::TextureUnit tex2Unit =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  texture.Use(texUnit);
-  texture2.Use(tex2Unit);
-
-  shader.Use();
-  shader.SetUniform("tex", texUnit);
-  shader.SetUniform("tex2", tex2Unit);
-  buffer.Render();
+  shader->SetTexture("tex", texture, texUnit);
+  shader->SetTexture("tex2", texture2, tex2Unit);
+  renderTriangleAction.Render();
 
   win.Swap();
 

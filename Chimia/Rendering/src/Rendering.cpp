@@ -9,6 +9,8 @@ Chimia::Rendering::Initialize()
 {
   glewExperimental = true;
   glewInit();
+
+  glEnable(GL_PROGRAM_POINT_SIZE);
 }
 
 //---------------------------------------------------------------------------------------

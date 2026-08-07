@@ -1,8 +1,11 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
 #include "TestsUtils.h"
@@ -64,18 +67,31 @@ main(int argc, char** argv)
 
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+    dataLayout);
 
-  shader.Use();
-  buffer.Render();
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  action.Render();
 
   win.Swap();
 

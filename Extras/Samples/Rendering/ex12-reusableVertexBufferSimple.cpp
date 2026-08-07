@@ -1,10 +1,9 @@
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
 #include "Rendering/Shader.h"
 
-#include "Rendering/ShaderAttribute.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -45,7 +44,6 @@ const float vertex[] = { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f,
                          1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 const unsigned vertexDataItems = 18;
 const unsigned vertexDataSize = vertexDataItems * sizeof(float);
-const unsigned nVertices = 3;
 
 const unsigned indexData[] = { 0, 1, 2 };
 
@@ -60,33 +58,38 @@ main()
 
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto reusableVertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    Inputs::BufferData::nVertices,
-    { Inputs::BufferData::indexData,
-      Inputs::BufferData::indexDataItems,
-      sizeof(unsigned) });
+    dataLayout);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    reusableVertexBuffer,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto reusableIndexData =
+    Chimia::Rendering::IndexData::Create({ Inputs::BufferData::indexData,
+                                           Inputs::BufferData::indexDataItems,
+                                           sizeof(unsigned) });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(target,
+                reusableIndexData,
+                { { reusableVertexData, "pos", "pos" },
+                  { reusableVertexData, "color", "color" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
-
-  buffer.Clear();
-  shader.Clear();
 
   return 0;
 }

@@ -1,4 +1,8 @@
 #include "BufferPrivate.h"
+#include "DataListeners.h"
+#include "IndexData.h"
+#include "ShaderBinding.h"
+#include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -6,77 +10,250 @@ USING_RENDERLIB_NAMESPACE
 
 // --------------------------------------------------------------------------------------
 
-unsigned
-BufferPrivate::GetVAO(const Buffer& buffer)
+void
+BufferPrivate::Bind(const VertexDataInstance& data)
 {
-  return buffer.GetVAO();
+  data->Bind();
 }
 
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNVertices(const Buffer& buffer)
+BufferPrivate::GetNVertices(const VertexDataInstance& data)
 {
-  return buffer.GetNVertices();
+  return data->GetNVertices();
 }
 
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetVAO(const IndexedBuffer& buffer)
+BufferPrivate::GetLayoutSize(const VertexDataInstance& data)
 {
-  return buffer.GetVAO();
+  return data->GetLayoutSize();
 }
 
 // --------------------------------------------------------------------------------------
 
-unsigned
-BufferPrivate::GetNElements(const IndexedBuffer& buffer)
+const DataLayout&
+BufferPrivate::GetDataLayout(const VertexDataInstance& data)
 {
-  return buffer.GetNElements();
+  return data->GetDataLayout();
 }
 
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const ReusableVertexBufferObject& reusableVertexBuffer)
+BufferPrivate::AddListener(VertexDataInstance& data,
+                           IDataChangeListener* listener)
 {
-  reusableVertexBuffer.Bind();
-}
-
-// --------------------------------------------------------------------------------------
-
-unsigned
-BufferPrivate::GetNVertices(
-  const ReusableVertexBufferObject& reusableVertexBuffer)
-{
-  return reusableVertexBuffer.GetNVertices();
+  data->GetListeners().Add(listener);
 }
 
 // --------------------------------------------------------------------------------------
 
 void
-BufferPrivate::Bind(const ReusableIndexedVertexBufferObject& reusableBuffer)
+BufferPrivate::RemoveListener(VertexDataInstance& data,
+                              IDataChangeListener* listener)
 {
-  reusableBuffer.Bind();
+  data->GetListeners().Remove(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const IndexDataInstance& data)
+{
+  data->Bind();
 }
 
 // --------------------------------------------------------------------------------------
 
 unsigned
-BufferPrivate::GetNElements(
-  const ReusableIndexedVertexBufferObject& reusableBuffer)
+BufferPrivate::GetNIndices(const IndexDataInstance& data)
 {
-  return reusableBuffer.GetNIndices();
+  return data->GetNIndices();
 }
 
 // --------------------------------------------------------------------------------------
 
-const ReusableVertexBufferObject&
-BufferPrivate::GetBaseVertexBuffer(
-  const ReusableIndexedVertexBufferObject& reusableBuffer)
+void
+BufferPrivate::AddListener(IndexDataInstance& data,
+                           IDataChangeListener* listener)
 {
-  return reusableBuffer.GetBaseBuffer();
+  data->GetListeners().Add(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::RemoveListener(IndexDataInstance& data,
+                              IDataChangeListener* listener)
+{
+  data->GetListeners().Remove(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::Bind(const InstancedDataInstance& buffer)
+{
+  buffer->Bind();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNInstances(const InstancedDataInstance& buffer)
+{
+  return buffer->GetNInstances();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetInstanceSize(const InstancedDataInstance& buffer)
+{
+  return buffer->GetInstanceSize();
+}
+
+// --------------------------------------------------------------------------------------
+
+const DataLayout&
+BufferPrivate::GetDataLayout(const InstancedDataInstance& data)
+{
+  return data->GetDataLayout();
+}
+
+// --------------------------------------------------------------------------------------
+
+const VertexDataInstance&
+BufferPrivate::GetVertexData(const ShaderBinding& binding)
+{
+  return binding.GetVertexData();
+}
+
+// --------------------------------------------------------------------------------------
+
+const InstancedDataInstance&
+BufferPrivate::GetInstancedData(const ShaderBinding& binding)
+{
+  return binding.GetInstancedData();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::AddListener(InstancedDataInstance& data,
+                           IDataChangeListener* listener)
+{
+  data->GetListeners().Add(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::RemoveListener(InstancedDataInstance& data,
+                              IDataChangeListener* listener)
+{
+  data->GetListeners().Remove(listener);
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetLocation(const ShaderBinding& binding)
+{
+  return binding.GetLocation();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetNEntries(const ShaderBinding& binding)
+{
+  return binding.GetNEntries();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetDataType(const ShaderBinding& binding)
+{
+  return binding.GetDataType();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetOffset(const ShaderBinding& binding)
+{
+  return binding.GetOffset();
+}
+
+// --------------------------------------------------------------------------------------
+
+const DataLayout&
+BufferPrivate::GetDataLayout(const ShaderInstance& shader)
+{
+  return shader->GetDataLayout();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetAttributeLocation(const std::string& attributeName,
+                                    const ShaderInstance& shader)
+{
+  return shader->GetLocationOfAttribute(attributeName);
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::UseShader(const ShaderInstance& shader)
+{
+  shader->Use();
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::UseFramebuffer(const FrameBufferInstance& frameBuffer)
+{
+  frameBuffer->Use();
+}
+
+// --------------------------------------------------------------------------------------
+
+unsigned
+BufferPrivate::GetTextureID(const Texture2DInstance& texture)
+{
+  return texture->m_id;
+}
+
+// --------------------------------------------------------------------------------------
+
+void
+BufferPrivate::UseTexture(const Texture2DInstance& texture,
+                          const TextureUnit& unit)
+{
+  texture->Use(unit);
+}
+
+// --------------------------------------------------------------------------------------
+
+const ShaderInstance&
+BufferPrivate::GetShader(const TargetInstance& target)
+{
+  return target->m_shader;
+}
+
+// --------------------------------------------------------------------------------------
+
+const FrameBufferInstance&
+BufferPrivate::GetFramebuffer(const TargetInstance& target)
+{
+  return target->m_framebuffer;
 }
 
 // --------------------------------------------------------------------------------------

@@ -8,10 +8,10 @@
 #include "ImmediateModelInstancesBatch.h"
 #include "InternalTypes.h"
 #include "ObjectTable.h"
+#include "Rendering/DataLayout.h"
 #include "RetainedModelInstancesBatch.h"
+#include "ShaderBindingsTemplate.h"
 #include "Types.h"
-
-#include "Rendering/ShaderAttribute.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
 
@@ -28,8 +28,9 @@ public:
   NON_COPYABLE_NON_MOVABLE(ModelRenderingComponent)
 
   void Init(const BatchingSettings& batchingSettings,
-            const Rendering::ShaderAttributes& vertexAttributes,
-            const Rendering::ShaderAttributes& instanceAttributes,
+            const Rendering::DataLayout& instancedDataLayout,
+            const ShaderBindingsTemplate& vertexBindingsTemplates,
+            const ShaderBindingsTemplate& instancedBindingsTemplates,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
@@ -54,8 +55,10 @@ private:
     const ModelID& modelID);
 
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderAttributes m_vertexAttributes;
-  Rendering::ShaderAttributes m_instanceAttributes;
+  Rendering::DataLayout m_vertexDataLayout;
+  Rendering::DataLayout m_instancedDataLayout;
+  ShaderBindingsTemplate m_vertexBindingsTemplates;
+  ShaderBindingsTemplate m_instancedBindingsTemplates;
   std::function<void(void)> m_onFlush;
 
   ObjectTable<ImmediateModelInstancesBatch> m_transformedModelsTable;

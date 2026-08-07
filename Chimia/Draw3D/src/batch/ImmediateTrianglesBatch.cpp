@@ -2,7 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
@@ -14,22 +14,30 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 ImmediateTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
-  const Rendering::ShaderAttributes& vertexAttributes,
+  const Rendering::DataLayout& vertexDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
-  m_vertexAttributes = vertexAttributes;
+  m_vertexBindingsTemplate = vertexBindingsTemplates;
 
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   const size_t triangleSizeInBytes =
-    vertexAttributes.ComputeTotalSizeOfAttributes() * N_VERTICES_IN_TRIANGLE;
+    vertexDataLayout.TotalSize() * N_VERTICES_IN_TRIANGLE;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
   m_inputBuffer.Resize(batchSizeInBytes);
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
-                     vertexAttributes);
+  RawDataView rawData{ nullptr, batchSizeInBytes };
+  m_gpuComponent.data =
+    Rendering::VertexData::Create(rawData, vertexDataLayout);
+
+  m_gpuComponent.action.Create(
+    vertexBindingsTemplates.GetTarget(),
+    vertexBindingsTemplates.GenerateFor(m_gpuComponent.data),
+    Rendering::ePrimitive::TRIANGLES);
+
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;
 
   m_triangleSizeInBytes = triangleSizeInBytes;
@@ -84,7 +92,7 @@ ImmediateTrianglesBatch::DoFlushing(
   BatchUtils::RenderByBatches(inputSizeInBytes,
                               m_currentGpuBufferSizeInBytes,
                               m_inputBuffer,
-                              m_gpuBuffer);
+                              m_gpuComponent);
 
   if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_inputBuffer.Reset();
@@ -116,8 +124,7 @@ ImmediateTrianglesBatch::Resize(size_t batchSize)
 {
   const size_t newBatchSizeInBytes = batchSize * m_triangleSizeInBytes;
 
-  m_gpuBuffer.Clear();
-  m_gpuBuffer.Create({ nullptr, newBatchSizeInBytes }, m_vertexAttributes);
+  m_gpuComponent.data->Resize({ nullptr, newBatchSizeInBytes });
 
   m_currentGpuBufferSizeInBytes = newBatchSizeInBytes;
 }

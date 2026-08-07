@@ -13,20 +13,28 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 RetainedTrianglesBatch::Create(
   const BatchingSettings& batchingSettings,
-  const Rendering::ShaderAttributes& shaderAttributes)
+  const Rendering::DataLayout& vertexDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplate)
 {
   m_batchingSettings = batchingSettings;
-  m_vertexAttributes = shaderAttributes;
+  m_vertexBindingsTemplate = vertexBindingsTemplate;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  const size_t sizePerVertex = shaderAttributes.ComputeTotalSizeOfAttributes();
+  const size_t sizePerVertex = vertexDataLayout.TotalSize();
   constexpr size_t nVerticesPerTriangle = 3;
   const size_t triangleSizeInBytes = sizePerVertex * nVerticesPerTriangle;
 
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
 
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
-                     shaderAttributes);
+  RawDataView rawData{ nullptr, batchSizeInBytes };
+  m_gpuComponent.data =
+    Rendering::VertexData::Create(rawData, vertexDataLayout);
+
+  m_gpuComponent.action.Create(
+    vertexBindingsTemplate.GetTarget(),
+    vertexBindingsTemplate.GenerateFor(m_gpuComponent.data),
+    Rendering::ePrimitive::TRIANGLES);
+
   m_inputBuffer.Resize(batchSizeInBytes);
 
   m_currentGPUBatchSize = batchSize;
@@ -64,7 +72,7 @@ RetainedTrianglesBatch::Render()
 {
   if (CanRenderWithCurrentBuffer()) {
     if (HasSomethingToRender()) {
-      m_gpuBuffer.Render();
+      m_gpuComponent.action.Render();
     }
     return;
   }
@@ -134,12 +142,12 @@ RetainedTrianglesBatch::HandleDynamicResizing()
 void
 RetainedTrianglesBatch::ResizeGPUBatch(const size_t batchSize)
 {
-  const size_t batchSizeInBytes = batchSize * m_triangleSizeInBytes;
-  m_gpuBuffer.Clear();
-  m_gpuBuffer.Create(RawDataView{ nullptr, batchSizeInBytes },
-                     m_vertexAttributes);
+  const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
+  const size_t batchSizeInBytes = effectiveBatchSize * m_triangleSizeInBytes;
 
-  m_currentGPUBatchSize = batchSize;
+  m_gpuComponent.data->Resize({ nullptr, batchSizeInBytes });
+
+  m_currentGPUBatchSize = effectiveBatchSize;
 }
 
 // ----------------------------------------------------------------------------
@@ -152,8 +160,10 @@ RetainedTrianglesBatch::RenderByBatches()
     return;
   }
 
-  BatchUtils::RenderByBatches(
-    inputSizeInBytes, CurrentGPUBatchSizeInBytes(), m_inputBuffer, m_gpuBuffer);
+  BatchUtils::RenderByBatches(inputSizeInBytes,
+                              CurrentGPUBatchSizeInBytes(),
+                              m_inputBuffer,
+                              m_gpuComponent);
 }
 
 // ----------------------------------------------------------------------------

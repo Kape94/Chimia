@@ -2,9 +2,10 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
-#include "Rendering/InstancedBuffer.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
+#include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 // ----------------------------------------------------------------------------
@@ -17,22 +18,26 @@ void
 ImmediateModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes,
+  const Rendering::DataLayout& instancedDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate,
   const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
-  m_instancedAttributes = instanceAttributes;
-  m_instancedDataSizeInBytes =
-    instanceAttributes.ComputeTotalSizeOfAttributes();
+  m_instancedBindingsTemplates = instancedBindingsTemplate;
+  m_instancedDataSizeInBytes = instancedDataLayout.TotalSize();
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  model.ForEachBuffer(
-    [&](const Rendering::ReusableIndexedVertexBufferObject& reusableBuffer) {
-      AddGPUBuffer(
-        reusableBuffer, batchSize, vertexAttributes, instanceAttributes);
-    });
+  model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
+                          const Rendering::IndexDataInstance& indexData) {
+    AddGPUBuffer(vertexData,
+                 indexData,
+                 batchSize,
+                 instancedDataLayout,
+                 vertexBindingsTemplate,
+                 instancedBindingsTemplate);
+  });
 
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
   m_instancedInputBuffer.Resize(batchSizeInBytes);
@@ -43,17 +48,29 @@ ImmediateModelInstancesBatch::Create(
 
 void
 ImmediateModelInstancesBatch::AddGPUBuffer(
-  const Rendering::ReusableIndexedVertexBufferObject& bufferData,
+  const Rendering::VertexDataInstance& vertexData,
+  const Rendering::IndexDataInstance& indexData,
   const size_t instanceBatchSize,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes)
+  const Rendering::DataLayout& instancedDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate)
 {
-  Rendering::InstancedBuffer& inserted = m_gpuBuffers.emplace_back();
-  inserted.CreateInstanced(
-    bufferData,
-    vertexAttributes,
-    RawArrayView{ nullptr, instanceBatchSize, m_instancedDataSizeInBytes },
-    instanceAttributes);
+  BatchUtils::InstancedGPUComponent& inserted = m_gpuComponents.emplace_back();
+
+  inserted.data = Rendering::InstancedData::Create(
+    RawDataView{ nullptr, instanceBatchSize * m_instancedDataSizeInBytes },
+    instancedDataLayout);
+
+  auto bindings = vertexBindingsTemplate.GenerateFor(vertexData);
+  const auto instancedBindings =
+    instancedBindingsTemplate.GenerateFor(inserted.data);
+
+  bindings.insert(
+    bindings.end(), instancedBindings.begin(), instancedBindings.end());
+  inserted.action.Create(vertexBindingsTemplate.GetTarget(),
+                         indexData,
+                         bindings,
+                         Rendering::ePrimitive::TRIANGLES);
 }
 
 // ----------------------------------------------------------------------------
@@ -104,7 +121,7 @@ ImmediateModelInstancesBatch::DoFlush(
                                        m_currentGPUBatchSizeInBytes,
                                        m_instancedDataSizeInBytes,
                                        m_instancedInputBuffer,
-                                       m_gpuBuffers);
+                                       m_gpuComponents);
 
   if (!BatchUtils::ShouldKeepInput(flushingPolicy)) {
     m_instancedInputBuffer.Reset();
@@ -145,10 +162,9 @@ ImmediateModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
 
-  for (auto& buffer : m_gpuBuffers) {
-    buffer.RecreateInstancedBuffer(
-      RawArrayView{ nullptr, batchSize, m_instancedDataSizeInBytes },
-      m_instancedAttributes);
+  for (auto& gpuComponent : m_gpuComponents) {
+    gpuComponent.data->Resize(
+      RawDataView{ nullptr, batchSize * m_instancedDataSizeInBytes });
   }
 
   m_currentGPUBatchSizeInBytes = batchSizeInBytes;

@@ -48,15 +48,15 @@ void
 BatchUtils::RenderByBatches(const size_t totalSize,
                             const size_t batchSize,
                             const DataBuffer& cpuBuffer,
-                            Rendering::Buffer& gpuBuffer)
+                            SimpleGPUComponent& gpuComponent)
 {
-  auto renderBatch = [&cpuBuffer, &gpuBuffer](const size_t start,
-                                              const size_t size) {
+  auto renderBatch = [&cpuBuffer, &gpuComponent](const size_t start,
+                                                 const size_t size) {
     const unsigned char* data = cpuBuffer.GetData();
     const unsigned char* batchData = data + start;
 
-    gpuBuffer.Load(RawDataView{ batchData, size });
-    gpuBuffer.Render();
+    gpuComponent.data->Load(RawDataView{ batchData, size });
+    gpuComponent.action.Render();
   };
 
   ForEachBatchRange(totalSize, batchSize, renderBatch);
@@ -70,18 +70,18 @@ BatchUtils::RenderInstancedByBatches(
   const size_t batchSize,
   const size_t instanceSize,
   const DataBuffer& cpuBuffer,
-  std::vector<Rendering::InstancedBuffer>& gpuBuffers)
+  std::vector<InstancedGPUComponent>& gpuComponents)
 {
-  auto renderBatch = [instanceSize, &cpuBuffer, &gpuBuffers](
+  auto renderBatch = [instanceSize, &cpuBuffer, &gpuComponents](
                        const size_t start, const size_t rangeSize) {
     const unsigned char* data = cpuBuffer.GetData();
     const unsigned char* batchData = data + start;
 
     const unsigned nInstances = rangeSize / instanceSize;
-    for (Rendering::InstancedBuffer& gpuBuffer : gpuBuffers) {
-      gpuBuffer.LoadInstancedData(
+    for (InstancedGPUComponent& gpuComponent : gpuComponents) {
+      gpuComponent.data->Load(
         RawArrayView{ batchData, nInstances, instanceSize });
-      gpuBuffer.Render();
+      gpuComponent.action.Render();
     }
   };
 
@@ -108,6 +108,14 @@ bool
 BatchUtils::ShouldKeepInput(const eImmediateFlusingPolicy policy)
 {
   return policy == eImmediateFlusingPolicy::RENDER_AND_KEEP_INPUTS;
+}
+
+// ----------------------------------------------------------------------------
+
+size_t
+BatchUtils::EffectiveBatchSize(const size_t requestedBatchSize)
+{
+  return requestedBatchSize > 0 ? requestedBatchSize : 1;
 }
 
 // ----------------------------------------------------------------------------

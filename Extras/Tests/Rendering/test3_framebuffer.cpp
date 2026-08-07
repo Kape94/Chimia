@@ -1,9 +1,11 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Media/Image.h"
 
 #include "Rendering/FrameBuffer.h"
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
@@ -132,55 +134,72 @@ main(int argc, char** argv)
 
   Chimia::Rendering::SetViewport(0, 0, scrWidth, scrHeight);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout datalayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, datalayout);
+
+  auto frameBuffer =
+    Chimia::Rendering::FrameBuffer::Create(scrWidth, scrHeight);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, datalayout);
+
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
+
+  auto renderToFramebuffer =
+    Chimia::Rendering::Target::Create(shader, frameBuffer);
+
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(
+    renderToFramebuffer,
+    indexData,
+    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   Chimia::Media::Image texData(solarFlareAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture(
+  auto texture = Chimia::Rendering::Texture2D::Create(
     texData.RawData(), texData.Width(), texData.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::FrameBuffer frameBuffer(scrWidth, scrHeight);
+  auto secondPassShader =
+    Chimia::Rendering::Shader::Create(Inputs::ShaderCodes::vShaderPost,
+                                      Inputs::ShaderCodes::fShaderPost,
+                                      datalayout);
 
-  Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
-                                             Inputs::ShaderCodes::fShaderPost);
+  auto vertexDataQuad =
+    Chimia::Rendering::VertexData::Create(Inputs::BufferData::quad, datalayout);
 
-  Chimia::Rendering::IndexedBuffer quadBuffer(
-    Inputs::BufferData::quad,
-    Inputs::BufferData::quadIndex,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
+  auto indexDataQuad =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::quadIndex);
+
+  auto renderToScreen = Chimia::Rendering::Target::Create(secondPassShader);
+
+  Chimia::Rendering::RenderAction renderScreenQuad;
+  renderScreenQuad.Create(
+    renderToScreen,
+    indexDataQuad,
+    { { vertexDataQuad, "pos", "pos" }, { vertexDataQuad, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
-  frameBuffer.Use();
+  shader->SetTexture("tex", texture, texUnit);
+  renderTriangle.Render();
 
-  texture.Use(texUnit);
-
-  shader.Use();
-  shader.SetUniform("tex", texUnit);
-  buffer.Render();
-
-  Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
-
-  frameBuffer.UseTexture(texUnitPost);
-
-  secondPassShader.Use();
-  secondPassShader.SetUniform("tex", texUnitPost);
-  quadBuffer.Render();
+  secondPassShader->SetTexture("tex", frameBuffer->GetTexture(), texUnitPost);
+  renderScreenQuad.Render();
 
   win.Swap();
 

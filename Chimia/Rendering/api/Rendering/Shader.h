@@ -3,12 +3,16 @@
 //---------------------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "Rendering/DataLayout.h"
 #include "RenderingNamespaceDefs.h"
+#include "Texture2D.h"
 #include "TextureUnit.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
+#include <map>
+#include <memory>
 #include <string>
 
 //---------------------------------------------------------------------------------------
@@ -20,37 +24,34 @@ BEGIN_RENDERLIB_NAMESPACE
 class Shader
 {
 public:
-  DEFAULT_CONSTUCTIBLE(Shader)
   NON_COPYABLE(Shader)
-
-  Shader(const std::string& vertexShaderCode,
-         const std::string& fragmentShaderCode);
-  Shader(const char* vertexShaderCode, const char* fragmentShaderCode);
 
   Shader(Shader&& other);
   Shader& operator=(Shader&& other);
 
   ~Shader();
 
-  void Create(const std::string& vertexShaderCode,
-              const std::string& fragmentShaderCode);
-  void Create(const char* vertexShaderCode, const char* fragmentShaderCode);
-
-  void Use();
-
-  void Clear();
+  static std::shared_ptr<Shader> Create(const std::string& vertexShaderCode,
+                                        const std::string& fragmentShaderCode,
+                                        const DataLayout& dataLayout);
 
   void SetUniform(const std::string& name, const int value);
-
   void SetUniform(const std::string& name, const float value);
-
-  void SetUniform(const std::string& name, const TextureUnit& unit);
-
+  void SetTexture(const std::string& name,
+                  const Texture2DInstance& texture,
+                  const TextureUnit& unit);
   void SetUniform(const std::string& name, const glm::mat4x4& matrix);
-
   void SetUniform(const std::string& name, const glm::vec3& vector);
 
 private:
+  Shader() = default;
+
+  friend class BufferPrivate;
+  void Use() const;
+  const DataLayout& GetDataLayout() const;
+  unsigned GetLocationOfAttribute(const std::string& attributeName) const;
+
+  void Clear();
   int GetUniformLocation(const std::string& name) const;
 
   unsigned CreateVertexShader(const char* vertexShaderCode);
@@ -65,8 +66,23 @@ private:
 
   void LinkProgram(const unsigned vShaderID, const unsigned fShaderID);
 
+  void PopulateAttributeLocations(const DataLayout& dataLayout);
+
+  using AttributeLocationTable = std::vector<std::pair<std::string, int>>;
+  AttributeLocationTable m_attributeLocationTable;
+
+  using TextureEntry = struct
+  {
+    Texture2DInstance texture;
+    TextureUnit unit;
+  };
+  std::map<std::string, TextureEntry> m_inUseTextures;
+
+  DataLayout m_dataLayout;
   unsigned m_programId = 0;
 };
+
+using ShaderInstance = std::shared_ptr<Shader>;
 
 //---------------------------------------------------------------------------------------
 

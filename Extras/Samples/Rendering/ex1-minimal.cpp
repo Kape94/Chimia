@@ -1,8 +1,12 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
+#include "Rendering/Target.h"
+#include "Rendering/VertexData.h"
 #include "Utils/Window.h"
 
 namespace Inputs {
@@ -57,26 +61,35 @@ main()
 
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+    { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
+
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    indexData,
+    { { vertexData, "position", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
-
-  buffer.Clear();
-  shader.Clear();
 
   return 0;
 }

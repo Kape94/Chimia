@@ -2,15 +2,17 @@
 
 // ----------------------------------------------------------------------------
 
+#include "BatchUtils.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/VertexData.h"
+#include "ShaderBindingsTemplate.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
-#include "Rendering/InstancedBuffer.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
-#include "Rendering/ShaderAttribute.h"
 #include "Types.h"
 
 #include <functional>
@@ -30,8 +32,9 @@ public:
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
-              const Rendering::ShaderAttributes& vertexAttributes,
-              const Rendering::ShaderAttributes& instanceAttributes,
+              const Rendering::DataLayout& instancedDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplate,
+              const ShaderBindingsTemplate& instancedBindingsTemplate,
               const std::function<void(void)>& onFlush);
 
   void Draw(const RawDataView& instanceData);
@@ -40,11 +43,12 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
-  void AddGPUBuffer(
-    const Rendering::ReusableIndexedVertexBufferObject& bufferData,
-    const size_t instanceBatchSize,
-    const Rendering::ShaderAttributes& vertexAttributes,
-    const Rendering::ShaderAttributes& instanceAttributes);
+  void AddGPUBuffer(const Rendering::VertexDataInstance& vertexData,
+                    const Rendering::IndexDataInstance& indexData,
+                    const size_t instanceBatchSize,
+                    const Rendering::DataLayout& instancedDataLayout,
+                    const ShaderBindingsTemplate& vertexBindingsTemplate,
+                    const ShaderBindingsTemplate& instancedBindingsTemplate);
 
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
@@ -57,7 +61,7 @@ private:
   // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderAttributes m_instancedAttributes;
+  ShaderBindingsTemplate m_instancedBindingsTemplates;
   size_t m_instancedDataSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens
@@ -65,7 +69,8 @@ private:
 
   // These attributes change often, during frame flow
   DataBuffer m_instancedInputBuffer;
-  std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
+
+  std::vector<BatchUtils::InstancedGPUComponent> m_gpuComponents;
 };
 
 // ----------------------------------------------------------------------------

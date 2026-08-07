@@ -1,9 +1,11 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
 #include "Media/Image.h"
 
 #include "Rendering/FrameBuffer.h"
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 #include "Rendering/Texture2D.h"
 #include "Rendering/TextureUnit.h"
@@ -126,57 +128,72 @@ main(int argc, char** argv)
 
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "uv", Chimia::Rendering::eDataType::VECTOR_2_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*UVs*/, 2 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto frameBuffer = Chimia::Rendering::FrameBuffer::Create(Inputs::SCR_WIDTH,
+                                                            Inputs::SCR_HEIGHT);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, dataLayout);
+
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
+
+  auto targetDrawToFramebuffer =
+    Chimia::Rendering::Target::Create(shader, frameBuffer);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(targetDrawToFramebuffer,
+                indexData,
+                { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
   const std::string solarFlareAsset = assetsDir + "solar-flare.jpg";
   Chimia::Media::Image texData(solarFlareAsset.c_str());
 
-  Chimia::Rendering::Texture2D texture(
+  auto texture = Chimia::Rendering::Texture2D::Create(
     texData.RawData(), texData.Width(), texData.Height());
 
   const Chimia::Rendering::TextureUnit texUnit =
     Chimia::Rendering::TextureUnit::UNIT_1;
 
-  Chimia::Rendering::FrameBuffer frameBuffer(Inputs::SCR_WIDTH,
-                                             Inputs::SCR_HEIGHT);
+  auto secondPassShader =
+    Chimia::Rendering::Shader::Create(Inputs::ShaderCodes::vShaderPost,
+                                      Inputs::ShaderCodes::fShaderPost,
+                                      dataLayout);
 
-  Chimia::Rendering::Shader secondPassShader(Inputs::ShaderCodes::vShaderPost,
-                                             Inputs::ShaderCodes::fShaderPost);
+  auto quadVertexData =
+    Chimia::Rendering::VertexData::Create(Inputs::BufferData::quad, dataLayout);
 
-  Chimia::Rendering::IndexedBuffer quadBuffer(
-    Inputs::BufferData::quad,
-    Inputs::BufferData::quadIndex,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*pos*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*uv*/, 2 /*nFloats*/) });
+  auto quadIndexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::quadIndex);
+
+  auto targetDrawToScreen = Chimia::Rendering::Target::Create(secondPassShader);
+
+  Chimia::Rendering::RenderAction renderScreenQuadAction;
+  renderScreenQuadAction.Create(
+    targetDrawToScreen,
+    quadIndexData,
+    { { quadVertexData, "pos", "pos" }, { quadVertexData, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;
 
   while (!win.ShouldClose()) {
-    frameBuffer.Use();
+    shader->SetTexture("tex", texture, texUnit);
+    action.Render();
 
-    texture.Use(texUnit);
-
-    shader.Use();
-    shader.SetUniform("tex", texUnit);
-    buffer.Render();
-
-    Chimia::Rendering::FrameBuffer::UseDefaultFrameBuffer();
-
-    frameBuffer.UseTexture(texUnitPost);
-
-    secondPassShader.Use();
-    secondPassShader.SetUniform("tex", texUnitPost);
-    quadBuffer.Render();
+    secondPassShader->SetTexture("tex", frameBuffer->GetTexture(), texUnitPost);
+    renderScreenQuadAction.Render();
 
     win.Swap();
     win.PollEvents();

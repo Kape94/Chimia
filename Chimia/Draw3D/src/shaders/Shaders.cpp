@@ -1,6 +1,7 @@
 #include "Shaders.h"
 // ----------------------------------------------------------------------------
 
+#include "Rendering/DataLayout.h"
 #include "ShaderCodebase.h"
 
 #include "glslCodes/Common.h"
@@ -16,7 +17,7 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace {
-Chimia::Rendering::Shader generic;
+Chimia::Rendering::ShaderInstance generic;
 
 void
 InitializeCodebase()
@@ -50,13 +51,19 @@ Chimia::Draw3D::Shaders::Initialize()
 {
   InitializeCodebase();
 
-  generic.Create(ShaderCodebase::Code("vertex::generic"),
-                 ShaderCodebase::Code("fragment::generic"));
+  generic = Rendering::Shader::Create(
+    ShaderCodebase::Code("vertex::generic"),
+    ShaderCodebase::Code("fragment::generic"),
+    { { "a_vertexPos", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_vertexColor", Rendering::eDataType::VECTOR_4_FLOAT },
+      { "a_vertexNorm", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_vertexTexCoord", Rendering::eDataType::VECTOR_2_FLOAT },
+      { "a_instanceTransform", Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 }
 
 // ----------------------------------------------------------------------------
 
-Chimia::Rendering::Shader&
+Chimia::Rendering::ShaderInstance&
 Chimia::Draw3D::Shaders::Generic()
 {
   return generic;

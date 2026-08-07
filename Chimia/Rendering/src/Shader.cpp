@@ -1,10 +1,15 @@
 #include "Shader.h"
 
+#include "BufferPrivate.h"
+#include "DataLayout.h"
 #include "OpenGLDefs.h"
 
 #include "Core/Diagnostics.h"
+#include "TextureUnit.h"
 
+#include <cassert>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 
 //---------------------------------------------------------------------------------------
 
@@ -12,23 +17,9 @@ USING_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
-Shader::Shader(const std::string& vertexShaderCode,
-               const std::string& fragmentShaderCode)
-  : Shader(vertexShaderCode.c_str(), fragmentShaderCode.c_str())
-{
-}
-
-//---------------------------------------------------------------------------------------
-
-Shader::Shader(const char* vertexShaderCode, const char* fragmentShaderCode)
-{
-  Create(vertexShaderCode, fragmentShaderCode);
-}
-
-//---------------------------------------------------------------------------------------
-
 Shader::Shader(Shader&& other)
   : m_programId(other.m_programId)
+  , m_dataLayout(std::move(other.m_dataLayout))
 {
   other.m_programId = 0;
 }
@@ -54,27 +45,27 @@ Shader::~Shader()
 
 //---------------------------------------------------------------------------------------
 
-void
+std::shared_ptr<Shader>
 Shader::Create(const std::string& vertexShaderCode,
-               const std::string& fragmentShaderCode)
+               const std::string& fragmentShaderCode,
+               const DataLayout& dataLayout)
 {
-  Create(vertexShaderCode.c_str(), fragmentShaderCode.c_str());
-}
+  std::shared_ptr<Shader> newShader(new Shader);
 
-//---------------------------------------------------------------------------------------
+  const unsigned vShaderID =
+    newShader->CreateVertexShader(vertexShaderCode.c_str());
+  const unsigned fShaderID =
+    newShader->CreateFragmentShader(fragmentShaderCode.c_str());
 
-void
-Shader::Create(const char* vertexShaderCode, const char* fragmentShaderCode)
-{
-  Clear();
-
-  const unsigned vShaderID = CreateVertexShader(vertexShaderCode);
-  const unsigned fShaderID = CreateFragmentShader(fragmentShaderCode);
-
-  LinkProgram(vShaderID, fShaderID);
+  newShader->LinkProgram(vShaderID, fShaderID);
 
   glDeleteShader(vShaderID);
   glDeleteShader(fShaderID);
+
+  newShader->m_dataLayout = dataLayout;
+  newShader->PopulateAttributeLocations(dataLayout);
+
+  return newShader;
 }
 
 //---------------------------------------------------------------------------------------
@@ -158,9 +149,31 @@ Shader::CheckProgramLinkStatus(const int programID)
 //---------------------------------------------------------------------------------------
 
 void
-Shader::Use()
+Shader::PopulateAttributeLocations(const DataLayout& dataLayout)
+{
+  dataLayout.ForEachSpec([&](const auto& spec) {
+    const std::string name = spec.name;
+
+    const int posLocation = glGetAttribLocation(m_programId, name.c_str());
+    if (posLocation == -1) {
+      assert(false && "Couldn't find location for shader attribute specified");
+    }
+
+    m_attributeLocationTable.push_back({ name, posLocation });
+  });
+}
+
+//---------------------------------------------------------------------------------------
+
+void
+Shader::Use() const
 {
   glUseProgram(m_programId);
+
+  for (const auto& inUseTexture : m_inUseTextures) {
+    const auto& textureEntry = inUseTexture.second;
+    BufferPrivate::UseTexture(textureEntry.texture, textureEntry.unit);
+  }
 }
 
 //---------------------------------------------------------------------------------------
@@ -188,10 +201,13 @@ Shader::SetUniform(const std::string& name, const float value)
 //---------------------------------------------------------------------------------------
 
 void
-Shader::SetUniform(const std::string& name, const TextureUnit& unit)
+Shader::SetTexture(const std::string& name,
+                   const Texture2DInstance& texture,
+                   const TextureUnit& unit)
 {
   const int location = GetUniformLocation(name);
   if (location != -1) {
+    m_inUseTextures[name] = { texture, unit };
     glProgramUniform1i(m_programId, location, static_cast<unsigned>(unit));
   }
 }
@@ -236,6 +252,31 @@ Shader::Clear()
     glDeleteProgram(m_programId);
     m_programId = 0;
   }
+}
+
+// ----------------------------------------------------------------------------
+
+const DataLayout&
+Shader::GetDataLayout() const
+{
+  return m_dataLayout;
+}
+
+//---------------------------------------------------------------------------------------
+
+unsigned
+Shader::GetLocationOfAttribute(const std::string& attributeName) const
+{
+  for (const auto& dataToLocation : m_attributeLocationTable) {
+    const std::string& dataName = dataToLocation.first;
+    const unsigned dataLocation = static_cast<unsigned>(dataToLocation.second);
+    if (dataName == attributeName) {
+      return dataLocation;
+    }
+  }
+
+  assert(false && "Didn't find location for searched attribute");
+  return 0;
 }
 
 //---------------------------------------------------------------------------------------

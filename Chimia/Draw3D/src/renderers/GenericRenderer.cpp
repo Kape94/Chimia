@@ -7,7 +7,6 @@
 #include "ModelRenderingComponent.h"
 #include "ResourcesManager.h"
 
-#include "Rendering/ShaderAttribute.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -20,14 +19,18 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 GenericRenderer::Create(
   const unsigned id,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instancedAttributes,
+  const Rendering::DataLayout& vertexDataLayout,
+  const Rendering::DataLayout& instancedDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& instancedBindingsTemplates,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
 {
   m_id = id;
-  m_vertexAttributes = vertexAttributes;
-  m_instancedAttributes = instancedAttributes;
+  m_vertexDataLayout = vertexDataLayout;
+  m_instancedDataLayout = instancedDataLayout;
+  m_vertexBindingsTemplates = vertexBindingsTemplates;
+  m_instancedBindingsTemplates = instancedBindingsTemplates;
   m_setupShaderForTriangleRendering = setupShaderForTriangleRendering;
   m_setupShaderForInstancedRendering = setupShaderForInstancedRendering;
 }
@@ -99,7 +102,8 @@ GenericRenderer::FetchTriangleRenderComponentForResource(
 
     renderComponent->Init(
       Config::Batching::TriangleBatchingByResourceSettings(),
-      m_vertexAttributes,
+      m_vertexDataLayout,
+      m_vertexBindingsTemplates,
       [&, resourceID]() { ConfigureShaderForTriangleDrawing(resourceID); });
   }
 
@@ -118,8 +122,9 @@ GenericRenderer::FetchModelRenderComponentForResource(
     renderComponent = m_modelComponents.Insert(idValue);
 
     renderComponent->Init(Config::Batching::ModelBatchingByResourceSettings(),
-                          m_vertexAttributes,
-                          m_instancedAttributes,
+                          m_instancedDataLayout,
+                          m_vertexBindingsTemplates,
+                          m_instancedBindingsTemplates,
                           [&, resourceID]() {
                             ConfigureShaderForTransformedModelDrawing(
                               resourceID);

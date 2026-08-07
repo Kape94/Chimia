@@ -7,8 +7,7 @@
 
 #include "ImmediateTrianglesBatch.h"
 #include "RetainedTrianglesBatch.h"
-
-#include "Rendering/ShaderAttribute.h"
+#include "ShaderBindingsTemplate.h"
 
 #include <initializer_list>
 
@@ -25,7 +24,8 @@ public:
   NON_COPYABLE_NON_MOVABLE(TriangleMeshComponent)
 
   void Init(const BatchingSettings& batchingSettings,
-            const Rendering::ShaderAttributes& vertexAttributes,
+            const Rendering::DataLayout& vertexDataLayout,
+            const ShaderBindingsTemplate& vertexBindingsTemplates,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);

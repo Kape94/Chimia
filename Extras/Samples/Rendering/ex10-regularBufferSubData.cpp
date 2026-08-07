@@ -1,6 +1,7 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/Buffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -92,8 +93,13 @@ main()
   Window win(1280, 1080, "Example #10");
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
+
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
 
   const auto& states = Inputs::BufferData::vertexStates;
   const size_t maximumSize =
@@ -103,18 +109,24 @@ main()
                     [](size_t current, const std::vector<float>& incoming) {
                       return std::max(current, incoming.size());
                     });
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
-    { nullptr, maximumSize * sizeof(float) },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    { nullptr, maximumSize * sizeof(float) }, dataLayout);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();
   int selected = 0;
 
   const std::vector<float>& data = states[selected];
-  buffer.Load(data);
+  vertexData->Load(data);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
@@ -126,18 +138,14 @@ main()
       selected = (selected + 1) % states.size();
       const std::vector<float>& data = states[selected];
 
-      buffer.Load(data);
+      vertexData->Load(data);
     }
 
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
-
-  buffer.Clear();
-  shader.Clear();
 
   return 0;
 }

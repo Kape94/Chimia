@@ -2,13 +2,13 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Rendering/RenderAction.h"
+#include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
 #include "Core/Types.h"
 #include "Draw3DNamespaceDefs.h"
-#include "Rendering/Buffer.h"
-#include "Rendering/InstancedBuffer.h"
 
 #include <cstddef>
 #include <functional>
@@ -22,6 +22,19 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace BatchUtils {
+
+struct SimpleGPUComponent
+{
+  Rendering::VertexDataInstance data;
+  Rendering::RenderAction action;
+};
+
+struct InstancedGPUComponent
+{
+  Rendering::InstancedDataInstance data;
+  Rendering::RenderAction action;
+};
+
 std::vector<size_t>
 ComputeBatchingOffsetsForSize(const size_t totalSize, const size_t batchSize);
 
@@ -34,20 +47,23 @@ void
 RenderByBatches(const size_t totalSize,
                 const size_t batchSize,
                 const DataBuffer& cpuBuffer,
-                Rendering::Buffer& gpuBuffer);
+                SimpleGPUComponent& gpuComponent);
 
 void
 RenderInstancedByBatches(const size_t totalSize,
                          const size_t batchSize,
                          const size_t instanceSize,
                          const DataBuffer& cpuBuffer,
-                         std::vector<Rendering::InstancedBuffer>& gpuBuffers);
+                         std::vector<InstancedGPUComponent>& gpuActions);
 
 size_t
 TotalDataSize(const std::initializer_list<RawDataView>& dataViews);
 
 bool
 ShouldKeepInput(const eImmediateFlusingPolicy policy);
+
+size_t
+EffectiveBatchSize(const size_t requestedBatchSize);
 }
 
 // ----------------------------------------------------------------------------

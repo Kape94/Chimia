@@ -1,6 +1,8 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -80,14 +82,26 @@ main(int argc, char** argv)
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, scrWidth, scrHeight);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout datalayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer buffer(
-    Inputs::BufferData::vertex,
-    Inputs::BufferData::index,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/,
-                                                3 /*nFloats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, datalayout);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, datalayout);
+
+  auto indexData =
+    Chimia::Rendering::IndexData::Create(Inputs::BufferData::index);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTriangle;
+  renderTriangle.Create(target,
+                        indexData,
+                        { { vertexData, "pos", "pos" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr float PI = 3.141592;
   float angle = 0.0f;
@@ -95,12 +109,10 @@ main(int argc, char** argv)
   auto draw = [&]() {
     Chimia::Rendering::Clear();
 
-    shader.Use();
-
     const glm::mat4x4 t = RotationMatrix(angle);
 
-    shader.SetUniform("transform", t);
-    buffer.Render();
+    shader->SetUniform("transform", t);
+    renderTriangle.Render();
 
     win.Swap();
   };

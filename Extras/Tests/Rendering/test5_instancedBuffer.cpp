@@ -1,6 +1,9 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "TestsUtils.h"
@@ -37,7 +40,11 @@ Basic(Window& win)
       }
     )";
 
-  Chimia::Rendering::Shader shader(vShader, fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   // clang-format off
   const std::vector<float> vertex{ // x ,    y,    z
@@ -54,18 +61,24 @@ Basic(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         instancesPositions,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
+
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
+    instancesPositions,
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderWithOffsets;
+  renderWithOffsets.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
-  buffer.Render();
+  renderWithOffsets.Render();
 
   win.Swap();
 
@@ -96,7 +109,11 @@ BasicIndexed(Window& win)
       }
     )";
 
-  Chimia::Rendering::Shader shader(vShader, fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
   // clang-format off
   const std::vector<float> vertex{ // x    y    z
@@ -112,19 +129,27 @@ BasicIndexed(Window& win)
     { 0.2, 0.2 }, { -0.2, 0.2 }, { -0.2, -0.2 }, { 0.2, -0.2 }, { 0.3, 0.3 },
   };
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         index,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         instancesPositions,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
+
+  auto indexData = Chimia::Rendering::IndexData::Create(index);
+
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
+    instancesPositions,
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderWithOffsets;
+  renderWithOffsets.Create(
+    target,
+    indexData,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
-  buffer.Render();
+  renderWithOffsets.Render();
 
   win.Swap();
 
@@ -195,17 +220,28 @@ InstanceSubData(Window& win)
     positions, positions2, positions3, positions4, positions5, positions6
   };
 
-  Chimia::Rendering::Shader shader(vShader, fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(vertex,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         { nullptr, positions.size(), dataSize },
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  buffer.LoadInstancedData(positions);
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
+    { nullptr, positions.size() * dataSize },
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderWithOffsets;
+  renderWithOffsets.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  instancedData->Load(positions);
 
   int selectedGroup = 0;
   for (int selectedGroup = 0; selectedGroup < positionGroups.size();
@@ -213,10 +249,9 @@ InstanceSubData(Window& win)
     Chimia::Rendering::Clear();
 
     const std::vector<glm::vec2>& positions = positionGroups[selectedGroup];
-    buffer.LoadInstancedData(positions);
+    instancedData->Load(positions);
 
-    shader.Use();
-    buffer.Render();
+    renderWithOffsets.Render();
 
     win.Swap();
 
@@ -274,24 +309,30 @@ InstancingByTransformMatrix(Window& win)
                        { 0.5f, 0.5f, 0.5f, 1.0f });
   const std::vector<glm::mat4x4> transforms{ m1, m2 };
 
-  Chimia::Rendering::Shader shader(vShader, fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    vShader,
+    fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(
-    vertex,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) },
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
+
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     transforms,
-    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*location*/,
-                                                4 /*nEntries*/) });
+    { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderTransformed;
+  renderTransformed.Create(target,
+                           { { vertexData, "pos", "pos" },
+                             { instancedData, "transform", "transform" } },
+                           Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 
-  shader.Use();
-  buffer.Render();
+  renderTransformed.Render();
 
   win.Swap();
 

@@ -1,6 +1,8 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -80,26 +82,32 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(
+  auto vertexData = Chimia::Rendering::VertexData::Create(
     Inputs::BufferData::vertex,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) },
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
+
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
     Inputs::InstanceData::transforms,
-    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*location*/,
-                                                4 /*nEntries*/) });
+    { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(target,
+                { { vertexData, "pos", "pos" },
+                  { instancedData, "transform", "transform" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();
 
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();

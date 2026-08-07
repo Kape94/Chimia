@@ -1,6 +1,8 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -67,10 +69,6 @@ const float vertex2[] = { -1.0f, 0.0f, transparentDepth1, 0.0f, 1.0f, 0.0f, alph
 
 const unsigned vertex2DataSize = 21 * sizeof(float);
 
-const unsigned index2Data[] = { 0, 1, 2 };
-
-const unsigned index2DataNItems = 3;
-
 // 3) Transparent triangle #2
 
 constexpr float alpha2 = 0.3f;
@@ -84,10 +82,6 @@ const float vertex3[] = { -1.0f, 0.0f, transparentDepth2, 0.0f, 0.0f, 1.0f, alph
 // clang-format on
 
 const unsigned vertex3DataSize = 21 * sizeof(float);
-
-const unsigned index3Data[] = { 0, 1, 2 };
-
-const unsigned index3DataNItems = 3;
 }
 }
 
@@ -100,35 +94,57 @@ main()
   Chimia::Rendering::EnableDepthTest(true);
   Chimia::Rendering::EnableColorBlend(true);
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT }
+  };
 
-  Chimia::Rendering::IndexedBuffer opaqueTriangle;
-  opaqueTriangle.Create(
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto vertexData1 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex, Inputs::BufferData::vertexDataSize },
-    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+    dataLayout);
 
-  Chimia::Rendering::IndexedBuffer transparentTriangle1;
-  transparentTriangle1.Create(
+  auto vertexData2 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex2, Inputs::BufferData::vertex2DataSize },
-    { Inputs::BufferData::index2Data, Inputs::BufferData::index2DataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+    dataLayout);
 
-  Chimia::Rendering::IndexedBuffer transparentTriangle2;
-  transparentTriangle2.Create(
+  auto vertexData3 = Chimia::Rendering::VertexData::Create(
     { Inputs::BufferData::vertex3, Inputs::BufferData::vertex3DataSize },
-    { Inputs::BufferData::index3Data, Inputs::BufferData::index3DataNItems },
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 4 /*nFLoats*/) });
+    dataLayout);
+
+  auto indexData = Chimia::Rendering::IndexData::Create(
+    { Inputs::BufferData::indexData, Inputs::BufferData::indexDataNItems });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction opaqueTriangle;
+  opaqueTriangle.Create(
+    target,
+    indexData,
+    { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  Chimia::Rendering::RenderAction transparentTriangle1;
+  transparentTriangle1.Create(
+    target,
+    indexData,
+    { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  Chimia::Rendering::RenderAction transparentTriangle2;
+  transparentTriangle2.Create(
+    target,
+    indexData,
+    { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::EnableDepthMask(true);
 
     Chimia::Rendering::Clear(0.0f, 0.0f, 0.0f, 1.0f);
-    shader.Use();
+
     opaqueTriangle.Render();
 
     Chimia::Rendering::EnableDepthMask(false);
@@ -138,11 +154,6 @@ main()
     win.Swap();
     win.PollEvents();
   }
-
-  opaqueTriangle.Clear();
-  transparentTriangle1.Clear();
-  transparentTriangle2.Clear();
-  shader.Clear();
 
   return 0;
 }

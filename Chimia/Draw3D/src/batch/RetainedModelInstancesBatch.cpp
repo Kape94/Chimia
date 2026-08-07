@@ -3,9 +3,9 @@
 #include "BatchUtils.h"
 #include "Core/DataBuffer.h"
 #include "Core/Types.h"
-#include "Rendering/InstancedBuffer.h"
-#include "Rendering/ReusableIndexedVertexBufferObject.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/VertexData.h"
 
 // ----------------------------------------------------------------------------
 
@@ -17,23 +17,24 @@ void
 RetainedModelInstancesBatch::Create(
   const Model& model,
   const BatchingSettings& batchingSettings,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes,
+  const Rendering::DataLayout& instancedDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate,
   const std::function<void()>& onRender)
 {
   m_onRender = onRender;
   m_batchingSettings = batchingSettings;
-  m_instancedAttributes = instanceAttributes;
+  m_instancedBindingsTemplate = instancedBindingsTemplate;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
-  const size_t instanceDataSizeInBytes =
-    instanceAttributes.ComputeTotalSizeOfAttributes();
+  const size_t instanceDataSizeInBytes = instancedDataLayout.TotalSize();
 
   CreateGPUBuffers(model,
                    batchSize,
                    instanceDataSizeInBytes,
-                   vertexAttributes,
-                   instanceAttributes);
+                   instancedDataLayout,
+                   vertexBindingsTemplate,
+                   instancedBindingsTemplate);
 
   m_instanceDataSizeInBytes = instanceDataSizeInBytes;
   m_currentGPUBatchSize = batchSize;
@@ -49,19 +50,31 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
   const Model& model,
   const size_t batchSize,
   const size_t instanceBatchDataSize,
-  const Rendering::ShaderAttributes& vertexAttributes,
-  const Rendering::ShaderAttributes& instanceAttributes)
+  const Rendering::DataLayout& instancedDataLayout,
+  const ShaderBindingsTemplate& vertexBindingsTemplate,
+  const ShaderBindingsTemplate& instancedBindingsTemplate)
 {
-  model.ForEachBuffer(
-    [&](const Rendering::ReusableIndexedVertexBufferObject& buffer) {
-      Rendering::InstancedBuffer& gpuBuffer = m_gpuBuffers.emplace_back();
+  model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
+                          const Rendering::IndexDataInstance& indexData) {
+    BatchUtils::InstancedGPUComponent& gpuComponent =
+      m_gpuComponent.emplace_back();
 
-      gpuBuffer.CreateInstanced(
-        buffer,
-        vertexAttributes,
-        RawArrayView{ nullptr, batchSize, instanceBatchDataSize },
-        instanceAttributes);
-    });
+    gpuComponent.data = Rendering::InstancedData::Create(
+      RawDataView{ nullptr, batchSize * instanceBatchDataSize },
+      instancedDataLayout);
+
+    auto bindings = vertexBindingsTemplate.GenerateFor(vertexData);
+    const auto instancedBindings =
+      instancedBindingsTemplate.GenerateFor(gpuComponent.data);
+
+    bindings.insert(
+      bindings.end(), instancedBindings.begin(), instancedBindings.end());
+
+    gpuComponent.action.Create(vertexBindingsTemplate.GetTarget(),
+                               indexData,
+                               bindings,
+                               Rendering::ePrimitive::TRIANGLES);
+  });
 }
 
 // ----------------------------------------------------------------------------
@@ -180,12 +193,13 @@ RetainedModelInstancesBatch::HandleDynamicResizing()
 void
 RetainedModelInstancesBatch::ResizeBatch(const size_t batchSize)
 {
-  for (auto& buffer : m_gpuBuffers) {
-    buffer.RecreateInstancedBuffer(
-      RawArrayView{ nullptr, batchSize, m_instanceDataSizeInBytes },
-      m_instancedAttributes);
+  const size_t effectiveBatchSize = BatchUtils::EffectiveBatchSize(batchSize);
+
+  for (auto& component : m_gpuComponent) {
+    component.data->Resize(
+      RawDataView{ nullptr, effectiveBatchSize * m_instanceDataSizeInBytes });
   }
-  m_currentGPUBatchSize = batchSize;
+  m_currentGPUBatchSize = effectiveBatchSize;
 }
 
 // ----------------------------------------------------------------------------
@@ -203,7 +217,7 @@ RetainedModelInstancesBatch::RenderByBatches()
                                        CurrentGPUBatchSizeInBytes(),
                                        m_instanceDataSizeInBytes,
                                        m_instanceDataBuffer,
-                                       m_gpuBuffers);
+                                       m_gpuComponent);
 }
 
 // ----------------------------------------------------------------------------
@@ -211,8 +225,8 @@ RetainedModelInstancesBatch::RenderByBatches()
 void
 RetainedModelInstancesBatch::RenderCurrentBuffers()
 {
-  for (Rendering::InstancedBuffer& gpuBuffer : m_gpuBuffers) {
-    gpuBuffer.Render();
+  for (BatchUtils::InstancedGPUComponent& component : m_gpuComponent) {
+    component.action.Render();
   }
 }
 

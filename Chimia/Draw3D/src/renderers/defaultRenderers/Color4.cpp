@@ -24,8 +24,7 @@ constexpr eVertexLayout VERTEX_LAYOUT = eVertexLayout::POSITION3_COLOR4;
 void
 ConfigureForTriangleDrawing(const ResourcesGroup& resource)
 {
-  Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
 
   RenderersUtils::ConfigureShaderForRendering(shader, VERTEX_LAYOUT, resource);
 }
@@ -33,8 +32,7 @@ ConfigureForTriangleDrawing(const ResourcesGroup& resource)
 void
 ConfigureForInstancedDrawing(const ResourcesGroup& resource)
 {
-  Chimia::Rendering::Shader& shader = Shaders::Generic();
-  shader.Use();
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
 
   RenderersUtils::ConfigureShaderForInstancedRendering(
     shader, VERTEX_LAYOUT, resource);
@@ -48,8 +46,11 @@ GenericRenderer* g_renderer = nullptr;
 void
 Color4::Init()
 {
-  g_renderer = &Renderers::CreateRenderer(
-    VERTEX_LAYOUT, ConfigureForTriangleDrawing, ConfigureForInstancedDrawing);
+  g_renderer =
+    &Renderers::CreateRenderer(VERTEX_LAYOUT,
+                               RenderersUtils::GetDefaultRenderingTarget(),
+                               ConfigureForTriangleDrawing,
+                               ConfigureForInstancedDrawing);
 }
 
 // ----------------------------------------------------------------------------

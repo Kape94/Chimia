@@ -76,14 +76,14 @@ ResourcesManager::CreateTexture(const unsigned char* textureData,
 {
   auto [id, texture] = m_texturesTable.Insert();
 
-  texture->Create(textureData, width, height);
+  (*texture) = Rendering::Texture2D::Create(textureData, width, height);
 
   return Draw3DPrivate::CreateTextureID(id);
 }
 
 // ----------------------------------------------------------------------------
 
-Chimia::Rendering::Texture2D*
+const Chimia::Rendering::Texture2DInstance*
 ResourcesManager::GetTexture(const TextureID& textureID)
 {
   const unsigned idValue = Draw3DPrivate::GetTextureIDValue(textureID);

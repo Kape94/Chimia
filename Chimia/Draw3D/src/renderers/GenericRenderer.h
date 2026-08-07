@@ -7,8 +7,9 @@
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
 #include "ObjectTable.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/DataLayout.h"
 #include "ResourceGroup.h"
+#include "ShaderBindingsTemplate.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -26,8 +27,10 @@ public:
   DEFAULT_CONSTUCTIBLE(GenericRenderer)
 
   void Create(const unsigned id,
-              const Rendering::ShaderAttributes& vertexAttributes,
-              const Rendering::ShaderAttributes& instancedAttributes,
+              const Rendering::DataLayout& vertexDataLayout,
+              const Rendering::DataLayout& instancedDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplates,
+              const ShaderBindingsTemplate& instancedBindingsTemplates,
               void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
               void (*setupShaderForInstancedRendering)(const ResourcesGroup&));
 
@@ -68,8 +71,10 @@ private:
   NON_COPYABLE_NON_MOVABLE(GenericRenderer)
 
   unsigned m_id;
-  Rendering::ShaderAttributes m_vertexAttributes;
-  Rendering::ShaderAttributes m_instancedAttributes;
+  Rendering::DataLayout m_vertexDataLayout;
+  Rendering::DataLayout m_instancedDataLayout;
+  ShaderBindingsTemplate m_vertexBindingsTemplates;
+  ShaderBindingsTemplate m_instancedBindingsTemplates;
 
   void (*m_setupShaderForTriangleRendering)(const ResourcesGroup&) = nullptr;
   void (*m_setupShaderForInstancedRendering)(const ResourcesGroup&) = nullptr;

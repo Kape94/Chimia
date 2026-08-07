@@ -1,6 +1,8 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/ExtrasUtils.h"
@@ -98,20 +100,30 @@ main()
   Chimia::Rendering::Initialize();
   Chimia::Rendering::SetViewport(0, 0, Inputs::SCR_WIDTH, Inputs::SCR_HEIGHT);
 
-  Chimia::Rendering::Shader shader(Inputs::ShaderCodes::vShader,
-                                   Inputs::ShaderCodes::fShader);
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader,
+    Inputs::ShaderCodes::fShader,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::InstancedBuffer buffer;
-  buffer.CreateInstanced(Inputs::BufferData::vertex,
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           0 /*location*/, 3 /*nEntries*/) },
-                         { nullptr,
-                           Inputs::InstanceData::positions.size(),
-                           Inputs::InstanceData::dataSize },
-                         { Chimia::Rendering::ShaderAttribute::Float(
-                           1 /*location*/, 2 /*nEntries*/) });
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  buffer.LoadInstancedData(Inputs::InstanceData::positions);
+  auto instancedData = Chimia::Rendering::InstancedData::Create(
+    { nullptr,
+      Inputs::InstanceData::positions.size() * Inputs::InstanceData::dataSize },
+    { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  instancedData->Load(Inputs::InstanceData::positions);
 
   int selectedGroup = 0;
   while (!win.ShouldClose()) {
@@ -119,10 +131,9 @@ main()
 
     const std::vector<glm::vec2>& positions =
       Inputs::InstanceData::positionGroups[selectedGroup];
-    buffer.LoadInstancedData(positions);
+    instancedData->Load(positions);
 
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();

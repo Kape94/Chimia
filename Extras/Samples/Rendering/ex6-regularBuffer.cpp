@@ -1,6 +1,7 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/Buffer.h"
 #include "Rendering/Shader.h"
 
 #include "Utils/Window.h"
@@ -72,14 +73,23 @@ main()
   Window win(1280, 1080, "Example #6");
   Chimia::Rendering::Initialize();
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader);
+  const Chimia::Rendering::DataLayout dataLayout(
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  Chimia::Rendering::Buffer buffer;
-  buffer.Create(
-    Inputs::BufferData::vertex,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto shader = Chimia::Rendering::Shader::Create(
+    Inputs::ShaderCodes::vShader, Inputs::ShaderCodes::fShader, dataLayout);
+
+  auto vertexData = Chimia::Rendering::VertexData::Create(
+    Inputs::BufferData::vertex, dataLayout);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction action;
+  action.Create(
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();
@@ -96,18 +106,14 @@ main()
       const std::vector<float>& data = selected == 0
                                          ? Inputs::BufferData::vertex
                                          : Inputs::BufferData::vertex2;
-      buffer.Load(data);
+      vertexData->Load(data);
     }
 
-    shader.Use();
-    buffer.Render();
+    action.Render();
 
     win.Swap();
     win.PollEvents();
   }
-
-  buffer.Clear();
-  shader.Clear();
 
   return 0;
 }

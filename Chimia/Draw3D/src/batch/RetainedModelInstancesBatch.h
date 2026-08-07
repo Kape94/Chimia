@@ -2,14 +2,15 @@
 
 // ----------------------------------------------------------------------------
 
+#include "BatchUtils.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
 #include "ObjectTable.h"
+#include "ShaderBindingsTemplate.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
-#include "Rendering/InstancedBuffer.h"
-#include "Rendering/ShaderAttribute.h"
+#include "Rendering/DataLayout.h"
 #include "Types.h"
 
 #include <functional>
@@ -30,8 +31,9 @@ public:
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
-              const Rendering::ShaderAttributes& vertexAttributes,
-              const Rendering::ShaderAttributes& instanceAttributes,
+              const Rendering::DataLayout& instancedDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplate,
+              const ShaderBindingsTemplate& instancedBindingsTemplate,
               const std::function<void()>& onRender);
 
   unsigned AddInstance(const RawDataView& instanceData);
@@ -42,11 +44,13 @@ public:
   void Render();
 
 private:
-  void CreateGPUBuffers(const Model& model,
-                        const size_t batchSize,
-                        const size_t instanceBatchDataSize,
-                        const Rendering::ShaderAttributes& vertexAttributes,
-                        const Rendering::ShaderAttributes& instanceAttributes);
+  void CreateGPUBuffers(
+    const Model& model,
+    const size_t batchSize,
+    const size_t instanceBatchDataSize,
+    const Rendering::DataLayout& instancedDataLayout,
+    const ShaderBindingsTemplate& vertexBindingsTemplate,
+    const ShaderBindingsTemplate& instancedBindingsTemplate);
 
   bool HasSomethingToRender() const;
 
@@ -67,7 +71,7 @@ private:
   // Fixed attributes, don't get changed after initial batch creation
   std::function<void()> m_onRender;
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderAttributes m_instancedAttributes;
+  ShaderBindingsTemplate m_instancedBindingsTemplate;
   size_t m_instanceDataSizeInBytes = 0;
 
   // Cache attribute to indicate whenever a new instance gets added
@@ -77,7 +81,7 @@ private:
   // The attributes get modified often during rendering
   DataBuffer m_instanceDataBuffer;
   ObjectTable<DataBuffer> m_instanceTable;
-  std::vector<Rendering::InstancedBuffer> m_gpuBuffers;
+  std::vector<BatchUtils::InstancedGPUComponent> m_gpuComponent;
 };
 
 // ----------------------------------------------------------------------------

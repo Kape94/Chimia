@@ -1,8 +1,11 @@
+#include "Rendering/DataLayout.h"
+#include "Rendering/IndexData.h"
+#include "Rendering/InstancedData.h"
+#include "Rendering/RenderAction.h"
 #include "Rendering/Rendering.h"
 
-#include "Rendering/IndexedBuffer.h"
-#include "Rendering/InstancedBuffer.h"
 #include "Rendering/Shader.h"
+#include "Rendering/VertexData.h"
 #include "TestsUtils.h"
 #include "Utils/Window.h"
 
@@ -47,23 +50,30 @@ IndexedBuffer(Window& win)
                              0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
   // clang-format on
 
-  const unsigned nVertices = 3;
   const std::vector<unsigned> indexData{ 0, 1, 2 };
 
-  Chimia::Rendering::Shader shader;
-  shader.Create(vShader, fShader);
+  const Chimia::Rendering::DataLayout dataLayout{
+    { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+    { "color", Chimia::Rendering::eDataType::VECTOR_3_FLOAT }
+  };
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(vertex, nVertices, indexData);
+  auto shader = Chimia::Rendering::Shader::Create(vShader, fShader, dataLayout);
 
-  Chimia::Rendering::IndexedBuffer buffer;
-  buffer.Create(
-    reusableVertexBuffer,
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*position*/, 3 /*nFloats*/),
-      Chimia::Rendering::ShaderAttribute::Float(1 /*color*/, 3 /*nFLoats*/) });
+  auto reusableVertexData =
+    Chimia::Rendering::VertexData::Create(vertex, dataLayout);
 
-  shader.Use();
-  buffer.Render();
+  auto reusableIndexData = Chimia::Rendering::IndexData::Create(indexData);
+
+  auto target = Chimia::Rendering::Target::Create(shader);
+
+  Chimia::Rendering::RenderAction renderReusable;
+  renderReusable.Create(target,
+                        reusableIndexData,
+                        { { reusableVertexData, "pos", "pos" },
+                          { reusableVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  renderReusable.Render();
 
   win.Swap();
 
@@ -146,39 +156,52 @@ Instancing(Window& win)
 
   const std::vector<glm::mat4x4> transforms{ m1, m2 };
 
-  Chimia::Rendering::Shader shader1(vShaderDisplaced, fShaderDisplaced);
-  Chimia::Rendering::Shader shader2(vShaderTransformed, fShaderTransformed);
+  auto shader1 = Chimia::Rendering::Shader::Create(
+    vShaderDisplaced,
+    fShaderDisplaced,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
 
-  Chimia::Rendering::ReusableIndexedVertexBufferObject reusableVertexBuffer;
-  reusableVertexBuffer.Create(vertex, nVertices, index);
+  auto shader2 = Chimia::Rendering::Shader::Create(
+    vShaderTransformed,
+    fShaderTransformed,
+    { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
+      { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  const Chimia::Rendering::ShaderAttributes vertexAttributes{
-    { Chimia::Rendering::ShaderAttribute::Float(0 /*location*/,
-                                                3 /*nEntries*/) }
-  };
-  Chimia::Rendering::InstancedBuffer buffer1;
-  buffer1.CreateInstanced(reusableVertexBuffer,
-                          vertexAttributes,
-                          positions,
-                          { Chimia::Rendering::ShaderAttribute::Float(
-                            1 /*location*/, 2 /*nEntries*/) });
+  auto reusableVertexData = Chimia::Rendering::VertexData::Create(
+    vertex, { { "pos", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } });
 
-  Chimia::Rendering::InstancedBuffer buffer2;
-  buffer2.CreateInstanced(
-    reusableVertexBuffer,
-    vertexAttributes,
+  auto reusableIndexData = Chimia::Rendering::IndexData::Create(index);
+
+  auto instancedPositions = Chimia::Rendering::InstancedData::Create(
+    positions, { { "offset", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } });
+
+  auto target1 = Chimia::Rendering::Target::Create(shader1);
+
+  Chimia::Rendering::RenderAction renderReusableWithOffsets;
+  renderReusableWithOffsets.Create(
+    target1,
+    reusableIndexData,
+    { { reusableVertexData, "pos", "pos" },
+      { instancedPositions, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  auto instancedTransforms = Chimia::Rendering::InstancedData::Create(
     transforms,
-    { Chimia::Rendering::ShaderAttribute::Float(1 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(2 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(3 /*location*/, 4 /*nEntries*/),
-      Chimia::Rendering::ShaderAttribute::Float(4 /*location*/,
-                                                4 /*nEntries*/) });
+    { { "transform", Chimia::Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 
-  shader1.Use();
-  buffer1.Render();
+  auto target2 = Chimia::Rendering::Target::Create(shader2);
 
-  shader2.Use();
-  buffer2.Render();
+  Chimia::Rendering::RenderAction renderReusableTransformed;
+  renderReusableTransformed.Create(
+    target2,
+    reusableIndexData,
+    { { reusableVertexData, "pos", "pos" },
+      { instancedTransforms, "transform", "transform" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
+
+  renderReusableWithOffsets.Render();
+  renderReusableTransformed.Render();
 
   win.Swap();
 

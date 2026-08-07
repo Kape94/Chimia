@@ -24,17 +24,23 @@ RenderersTable()
 GenericRenderer&
 Renderers::CreateRenderer(
   const eVertexLayout& vertexLayout,
+  const Rendering::TargetInstance& target,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
 {
   auto [id, renderer] = RenderersInternal::RenderersTable().Insert();
 
-  const VertexLayoutAttributes layoutAttributes =
-    RenderersUtils::GetAttributesForLayout(vertexLayout);
+  const VertexLayoutBindingsTemplates bindingTemplates =
+    RenderersUtils::GetBindingsTemplatesForLayout(vertexLayout, target);
+
+  const VertexLayoutDataSchemas dataSchemas =
+    RenderersUtils::GetDataSchemasForLayout(vertexLayout);
 
   renderer->Create(id,
-                   layoutAttributes.vertexAttributes,
-                   layoutAttributes.instancedAttributes,
+                   dataSchemas.vertexDataLayout,
+                   dataSchemas.instancedDataLayout,
+                   bindingTemplates.vertexBindingsTemplate,
+                   bindingTemplates.instancedBindingsTemplate,
                    setupShaderForTriangleRendering,
                    setupShaderForInstancedRendering);
 

@@ -1,11 +1,16 @@
 #pragma once
 
 #include "Core/ClassDefs.h"
+#include "FrameBuffer.h"
+#include "IDataChangeListener.h"
+#include "IndexData.h"
+#include "InstancedData.h"
 #include "RenderingNamespaceDefs.h"
-
-#include "IndexedBuffer.h"
-#include "ReusableIndexedVertexBufferObject.h"
-#include "ReusableVertexBufferObject.h"
+#include "ShaderBinding.h"
+#include "Target.h"
+#include "Texture2D.h"
+#include "TextureUnit.h"
+#include "VertexData.h"
 
 // --------------------------------------------------------------------------------------
 
@@ -18,27 +23,61 @@ class BufferPrivate
 public:
   STATIC_CLASS(BufferPrivate)
 
-  // Buffer
-  static unsigned GetVAO(const Buffer& buffer);
-  static unsigned GetNVertices(const Buffer& buffer);
+  // VertexData
+  static void Bind(const VertexDataInstance& data);
+  static unsigned GetNVertices(const VertexDataInstance& data);
+  static unsigned GetLayoutSize(const VertexDataInstance& data);
+  static const DataLayout& GetDataLayout(const VertexDataInstance& data);
+  static void AddListener(VertexDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(VertexDataInstance& data,
+                             IDataChangeListener* listener);
 
-  // IndexedBuffer
-  static unsigned GetVAO(const IndexedBuffer& buffer);
-  static unsigned GetNElements(const IndexedBuffer& buffer);
+  // IndexData
+  static void Bind(const IndexDataInstance& data);
+  static unsigned GetNIndices(const IndexDataInstance& data);
+  static void AddListener(IndexDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(IndexDataInstance& data,
+                             IDataChangeListener* listener);
 
-  // ReusableVertexBufferObject
-  static void Bind(const ReusableVertexBufferObject& reusableVertexBuffer);
-  static unsigned GetNVertices(
-    const ReusableVertexBufferObject& reusableVertexBuffer);
-  static unsigned GetNElements(
-    const ReusableVertexBufferObject& reusableVertexBuffer);
+  // InstancedDataBuffer
+  static void Bind(const InstancedDataInstance& buffer);
+  static unsigned GetNInstances(const InstancedDataInstance& buffer);
+  static unsigned GetInstanceSize(const InstancedDataInstance& buffer);
+  static const DataLayout& GetDataLayout(const InstancedDataInstance& data);
+  static void AddListener(InstancedDataInstance& data,
+                          IDataChangeListener* listener);
+  static void RemoveListener(InstancedDataInstance& data,
+                             IDataChangeListener* listener);
 
-  // ReusableIndexedVertexBufferObject
-  static void Bind(const ReusableIndexedVertexBufferObject& reusableBuffer);
-  static unsigned GetNElements(
-    const ReusableIndexedVertexBufferObject& reusableBuffer);
-  static const ReusableVertexBufferObject& GetBaseVertexBuffer(
-    const ReusableIndexedVertexBufferObject& reusableBuffer);
+  // ShaderBinding
+  static const VertexDataInstance& GetVertexData(const ShaderBinding& binding);
+  static const InstancedDataInstance& GetInstancedData(
+    const ShaderBinding& binding);
+  static unsigned GetLocation(const ShaderBinding& binding);
+  static unsigned GetNEntries(const ShaderBinding& binding);
+  static unsigned GetDataType(const ShaderBinding& binding);
+  static unsigned GetOffset(const ShaderBinding& binding);
+
+  // Shader
+  static const DataLayout& GetDataLayout(const ShaderInstance& shader);
+  static unsigned GetAttributeLocation(const std::string& attributeName,
+                                       const ShaderInstance& shader);
+  static void UseShader(const ShaderInstance& shader);
+
+  // Framebuffer
+  static void UseFramebuffer(const FrameBufferInstance& frameBuffer);
+
+  // Texture
+  static unsigned GetTextureID(const Texture2DInstance& texture);
+  static void UseTexture(const Texture2DInstance& texture,
+                         const TextureUnit& unit);
+
+  // Target
+  static const ShaderInstance& GetShader(const TargetInstance& target);
+  static const FrameBufferInstance& GetFramebuffer(
+    const TargetInstance& target);
 };
 
 // --------------------------------------------------------------------------------------

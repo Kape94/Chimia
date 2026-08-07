@@ -1,14 +1,14 @@
 #pragma once
 
+#include "BatchUtils.h"
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
+#include "ShaderBindingsTemplate.h"
 
 #include "Core/DataBuffer.h"
 #include "Types.h"
 
 #include "ObjectTable.h"
-#include "Rendering/Buffer.h"
-#include "Rendering/ShaderAttribute.h"
 
 // ----------------------------------------------------------------------------
 
@@ -23,7 +23,8 @@ public:
   NON_COPYABLE_NON_MOVABLE(RetainedTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
-              const Rendering::ShaderAttributes& shaderAttributes);
+              const Rendering::DataLayout& vertexDataLayout,
+              const ShaderBindingsTemplate& vertexBindingsTemplate);
 
   unsigned AddStaticMesh(const RawDataView& vertexData);
 
@@ -51,12 +52,12 @@ private:
 
   // Fixed attributes, only set during initialization
   BatchingSettings m_batchingSettings;
-  Rendering::ShaderAttributes m_vertexAttributes;
+  ShaderBindingsTemplate m_vertexBindingsTemplate;
   size_t m_triangleSizeInBytes = 0;
 
   // These attributes get modified as rendering requests come in
   size_t m_currentGPUBatchSize = 0;
-  Rendering::Buffer m_gpuBuffer;
+  BatchUtils::SimpleGPUComponent m_gpuComponent;
   DataBuffer m_inputBuffer;
   ObjectTable<DataBuffer> m_staticTrianglesTable;
 };
