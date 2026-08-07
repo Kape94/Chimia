@@ -87,7 +87,9 @@ main()
 
   Chimia::Rendering::RenderAction action;
   action.Create(
-    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

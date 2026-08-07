@@ -95,7 +95,8 @@ main(int argc, char** argv)
   renderTriangleAction.Create(
     target,
     indexData,
-    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
+    { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string testPath = ExtrasUtils::GetCurrentAppDir(argv);
   const std::string assetsDir = testPath + "/assets/";

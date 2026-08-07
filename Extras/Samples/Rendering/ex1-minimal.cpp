@@ -81,7 +81,8 @@ main()
   action.Create(
     target,
     indexData,
-    { { vertexData, "position", "pos" }, { vertexData, "color", "color" } });
+    { { vertexData, "position", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     action.Render();

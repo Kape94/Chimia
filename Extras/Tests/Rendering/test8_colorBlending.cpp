@@ -123,19 +123,22 @@ BlendingSimple(Window& win)
   opaqueTriangle.Create(
     target,
     triangleIndexData,
-    { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } });
+    { { vertexData1, "pos", "pos" }, { vertexData1, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::RenderAction transparentTriangle1;
   transparentTriangle1.Create(
     target,
     triangleIndexData,
-    { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } });
+    { { vertexData2, "pos", "pos" }, { vertexData2, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::RenderAction transparentTriangle2;
   transparentTriangle2.Create(
     target,
     triangleIndexData,
-    { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } });
+    { { vertexData3, "pos", "pos" }, { vertexData3, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::EnableDepthMask(true);
 

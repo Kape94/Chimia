@@ -81,7 +81,8 @@ main()
   action.Create(target,
                 reusableIndexData,
                 { { reusableVertexData, "pos", "pos" },
-                  { reusableVertexData, "color", "color" } });
+                  { reusableVertexData, "color", "color" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     action.Render();

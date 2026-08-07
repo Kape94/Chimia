@@ -151,7 +151,8 @@ main(int argc, char** argv)
   Chimia::Rendering::RenderAction action;
   action.Create(targetDrawToFramebuffer,
                 indexData,
-                { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } });
+                { { vertexData, "pos", "pos" }, { vertexData, "uv", "uv" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";
@@ -181,7 +182,8 @@ main(int argc, char** argv)
   renderScreenQuadAction.Create(
     targetDrawToScreen,
     quadIndexData,
-    { { quadVertexData, "pos", "pos" }, { quadVertexData, "uv", "uv" } });
+    { { quadVertexData, "pos", "pos" }, { quadVertexData, "uv", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const Chimia::Rendering::TextureUnit texUnitPost =
     Chimia::Rendering::TextureUnit::UNIT_2;

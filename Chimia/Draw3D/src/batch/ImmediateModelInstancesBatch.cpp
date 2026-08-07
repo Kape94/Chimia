@@ -67,8 +67,10 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
 
   bindings.insert(
     bindings.end(), instancedBindings.begin(), instancedBindings.end());
-  inserted.action.Create(
-    vertexBindingsTemplate.GetTarget(), indexData, bindings);
+  inserted.action.Create(vertexBindingsTemplate.GetTarget(),
+                         indexData,
+                         bindings,
+                         Rendering::ePrimitive::TRIANGLES);
 }
 
 // ----------------------------------------------------------------------------

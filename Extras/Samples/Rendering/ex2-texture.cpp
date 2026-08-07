@@ -93,7 +93,8 @@ main(int argc, char** argv)
   action.Create(
     target,
     indexData,
-    { { vertexData, "position", "pos" }, { vertexData, "texCoord", "uv" } });
+    { { vertexData, "position", "pos" }, { vertexData, "texCoord", "uv" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const std::string assetsDir =
     ExtrasUtils::GetCurrentAppDir(argv) + "/assets/";

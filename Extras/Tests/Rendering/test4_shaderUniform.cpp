@@ -98,7 +98,10 @@ main(int argc, char** argv)
   auto target = Chimia::Rendering::Target::Create(shader);
 
   Chimia::Rendering::RenderAction renderTriangle;
-  renderTriangle.Create(target, indexData, { { vertexData, "pos", "pos" } });
+  renderTriangle.Create(target,
+                        indexData,
+                        { { vertexData, "pos", "pos" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr float PI = 3.141592;
   float angle = 0.0f;

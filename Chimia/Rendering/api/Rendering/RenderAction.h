@@ -15,6 +15,15 @@ BEGIN_RENDERLIB_NAMESPACE
 
 //---------------------------------------------------------------------------------------
 
+enum class ePrimitive
+{
+  POINTS,
+  LINES,
+  TRIANGLES
+};
+
+//---------------------------------------------------------------------------------------
+
 class RenderAction
 {
 public:
@@ -58,11 +67,13 @@ public:
   ~RenderAction();
 
   void Create(const TargetInstance& target,
-              const std::vector<Binding>& bindings);
+              const std::vector<Binding>& bindings,
+              const ePrimitive primitiveType);
 
   void Create(const TargetInstance& target,
               const IndexDataInstance& indexData,
-              const std::vector<Binding>& bindings);
+              const std::vector<Binding>& bindings,
+              const ePrimitive primitiveType);
 
   void Retarget(const TargetInstance& target);
 
@@ -71,7 +82,8 @@ public:
 private:
   void Setup(const TargetInstance& target,
              const IndexDataInstance& indexData,
-             const std::vector<Binding>& bindings);
+             const std::vector<Binding>& bindings,
+             const ePrimitive primitiveType);
 
   void SetupVAO();
 
@@ -97,6 +109,7 @@ private:
 
   TargetInstance m_target = nullptr;
   std::vector<Binding> m_bindings;
+  ePrimitive m_primitiveType = ePrimitive::TRIANGLES;
 
   class Listener;
   std::unique_ptr<Listener> m_dataListener;

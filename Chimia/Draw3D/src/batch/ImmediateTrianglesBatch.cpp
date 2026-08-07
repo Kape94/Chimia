@@ -35,7 +35,8 @@ ImmediateTrianglesBatch::Create(
 
   m_gpuComponent.action.Create(
     vertexBindingsTemplates.GetTarget(),
-    vertexBindingsTemplates.GenerateFor(m_gpuComponent.data));
+    vertexBindingsTemplates.GenerateFor(m_gpuComponent.data),
+    Rendering::ePrimitive::TRIANGLES);
 
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;
 

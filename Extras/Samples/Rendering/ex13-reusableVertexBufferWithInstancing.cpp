@@ -139,7 +139,8 @@ main()
   renderWithOffsets.Create(target1,
                            reusableIndexData,
                            { { reusableVertexData, "pos", "pos" },
-                             { positionsData, "offset", "offset" } });
+                             { positionsData, "offset", "offset" } },
+                           Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto transformData = Chimia::Rendering::InstancedData::Create(
     Inputs::InstanceData::transforms,
@@ -151,7 +152,8 @@ main()
   renderTransformed.Create(target2,
                            reusableIndexData,
                            { { reusableVertexData, "pos", "pos" },
-                             { transformData, "transform", "transform" } });
+                             { transformData, "transform", "transform" } },
+                           Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

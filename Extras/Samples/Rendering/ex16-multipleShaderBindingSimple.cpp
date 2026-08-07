@@ -79,7 +79,8 @@ main()
   Chimia::Rendering::RenderAction action;
   action.Create(
     target,
-    { { positionData, "data", "pos" }, { colorData, "data", "color" } });
+    { { positionData, "data", "pos" }, { colorData, "data", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

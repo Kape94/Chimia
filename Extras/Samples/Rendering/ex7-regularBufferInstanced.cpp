@@ -93,7 +93,8 @@ main()
   Chimia::Rendering::RenderAction action;
   action.Create(
     target,
-    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

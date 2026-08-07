@@ -73,7 +73,8 @@ Basic(Window& win)
   Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create(
     target,
-    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 
@@ -143,7 +144,8 @@ BasicIndexed(Window& win)
   renderWithOffsets.Create(
     target,
     indexData,
-    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 
@@ -236,7 +238,8 @@ InstanceSubData(Window& win)
   Chimia::Rendering::RenderAction renderWithOffsets;
   renderWithOffsets.Create(
     target,
-    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } });
+    { { vertexData, "pos", "pos" }, { instancedData, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   instancedData->Load(positions);
 
@@ -324,7 +327,8 @@ InstancingByTransformMatrix(Window& win)
   Chimia::Rendering::RenderAction renderTransformed;
   renderTransformed.Create(target,
                            { { vertexData, "pos", "pos" },
-                             { instancedData, "transform", "transform" } });
+                             { instancedData, "transform", "transform" } },
+                           Chimia::Rendering::ePrimitive::TRIANGLES);
 
   Chimia::Rendering::Clear();
 

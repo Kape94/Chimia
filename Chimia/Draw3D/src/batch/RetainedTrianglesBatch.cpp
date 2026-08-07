@@ -32,7 +32,8 @@ RetainedTrianglesBatch::Create(
 
   m_gpuComponent.action.Create(
     vertexBindingsTemplate.GetTarget(),
-    vertexBindingsTemplate.GenerateFor(m_gpuComponent.data));
+    vertexBindingsTemplate.GenerateFor(m_gpuComponent.data),
+    Rendering::ePrimitive::TRIANGLES);
 
   m_inputBuffer.Resize(batchSizeInBytes);
 

@@ -81,7 +81,10 @@ main()
   auto target = Chimia::Rendering::Target::Create(shader);
 
   Chimia::Rendering::RenderAction action;
-  action.Create(target, indexData, { { vertexData, "pos", "pos" } });
+  action.Create(target,
+                indexData,
+                { { vertexData, "pos", "pos" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   float angle = 0.0f;
 

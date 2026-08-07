@@ -172,6 +172,19 @@ GenerateDetailedBindings(const ShaderInstance& shader,
 
   return detailedBindings;
 }
+
+int
+GLPrimitive(const ePrimitive primitiveType)
+{
+  switch (primitiveType) {
+    case ePrimitive::POINTS:
+      return GL_POINTS;
+    case ePrimitive::LINES:
+      return GL_LINES;
+    case ePrimitive::TRIANGLES:
+      return GL_TRIANGLES;
+  }
+}
 }
 
 //---------------------------------------------------------------------------------------
@@ -192,6 +205,7 @@ RenderAction::RenderAction(RenderAction&& other) noexcept
   , m_referenceInstancedDatas(std::move(other.m_referenceInstancedDatas))
   , m_target(std::move(other.m_target))
   , m_bindings(std::move(other.m_bindings))
+  , m_primitiveType(other.m_primitiveType)
   , m_dataListener(std::move(other.m_dataListener))
 {
   other.m_VAO = 0;
@@ -209,6 +223,7 @@ RenderAction::operator=(RenderAction&& other) noexcept
     m_referenceInstancedDatas = std::move(m_referenceInstancedDatas);
     m_target = std::move(other.m_target);
     m_bindings = std::move(other.m_bindings);
+    m_primitiveType = other.m_primitiveType;
     m_dataListener = std::move(other.m_dataListener);
 
     other.m_VAO = 0;
@@ -228,11 +243,12 @@ RenderAction::~RenderAction()
 
 void
 RenderAction::Create(const TargetInstance& target,
-                     const std::vector<Binding>& bindings)
+                     const std::vector<Binding>& bindings,
+                     const ePrimitive primitiveType)
 {
   Clear();
 
-  Setup(target, nullptr /*indexData*/, bindings);
+  Setup(target, nullptr /*indexData*/, bindings, primitiveType);
 }
 
 //---------------------------------------------------------------------------------------
@@ -240,11 +256,12 @@ RenderAction::Create(const TargetInstance& target,
 void
 RenderAction::Create(const TargetInstance& target,
                      const IndexDataInstance& indexData,
-                     const std::vector<Binding>& bindings)
+                     const std::vector<Binding>& bindings,
+                     const ePrimitive primitiveType)
 {
   Clear();
 
-  Setup(target, indexData, bindings);
+  Setup(target, indexData, bindings, primitiveType);
 }
 
 //---------------------------------------------------------------------------------------
@@ -252,7 +269,8 @@ RenderAction::Create(const TargetInstance& target,
 void
 RenderAction::Setup(const TargetInstance& target,
                     const IndexDataInstance& indexData,
-                    const std::vector<Binding>& bindings)
+                    const std::vector<Binding>& bindings,
+                    const ePrimitive primitiveType)
 {
   const ShaderBindings detailedBindings =
     RenderActionInternal::GenerateDetailedBindings(
@@ -273,6 +291,7 @@ RenderAction::Setup(const TargetInstance& target,
   }
 
   m_bindings = bindings;
+  m_primitiveType = primitiveType;
   m_target = target;
 }
 
@@ -346,8 +365,9 @@ RenderAction::Retarget(const TargetInstance& target)
 {
   const std::vector<Binding> backupBindings = m_bindings;
   const IndexDataInstance backupIndex = m_referenceIndexBuffer;
+  const ePrimitive backupPrimitive = m_primitiveType;
 
-  Create(target, backupIndex, backupBindings);
+  Create(target, backupIndex, backupBindings, backupPrimitive);
 }
 
 //---------------------------------------------------------------------------------------
@@ -378,16 +398,17 @@ RenderAction::Render() const
 void
 RenderAction::RenderInstanced() const
 {
+  const int glPrimitive = RenderActionInternal::GLPrimitive(m_primitiveType);
   const bool isIndexed = m_referenceIndexBuffer != nullptr;
   const unsigned nInstances = PickReferenceInstanceCount();
   if (isIndexed) {
     const unsigned nElements =
       BufferPrivate::GetNIndices(m_referenceIndexBuffer);
     glDrawElementsInstanced(
-      GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0, nInstances);
+      glPrimitive, nElements, GL_UNSIGNED_INT, 0, nInstances);
   } else {
     const unsigned nVertices = PickReferenceVertexCount();
-    glDrawArraysInstanced(GL_TRIANGLES, 0, nVertices, nInstances);
+    glDrawArraysInstanced(glPrimitive, 0, nVertices, nInstances);
   }
 }
 
@@ -396,14 +417,15 @@ RenderAction::RenderInstanced() const
 void
 RenderAction::RenderSingle() const
 {
+  const int glPrimitive = RenderActionInternal::GLPrimitive(m_primitiveType);
   const bool isIndexed = m_referenceIndexBuffer != nullptr;
   if (isIndexed) {
     const unsigned nElements =
       BufferPrivate::GetNIndices(m_referenceIndexBuffer);
-    glDrawElements(GL_TRIANGLES, nElements, GL_UNSIGNED_INT, 0);
+    glDrawElements(glPrimitive, nElements, GL_UNSIGNED_INT, 0);
   } else {
     const unsigned nVertices = PickReferenceVertexCount();
-    glDrawArrays(GL_TRIANGLES, 0, nVertices);
+    glDrawArrays(glPrimitive, 0, nVertices);
   }
 }
 
@@ -452,17 +474,8 @@ RenderAction::PickReferenceInstanceCount() const
 void
 RenderAction::DataChanged()
 {
-  const std::vector<Binding> backupBindings = m_bindings;
-  const IndexDataInstance backupIndex = m_referenceIndexBuffer;
   const TargetInstance backupTarget = m_target;
-
-  Clear();
-
-  if (backupIndex != nullptr) {
-    Create(backupTarget, backupIndex, backupBindings);
-  } else {
-    Create(backupTarget, backupBindings);
-  }
+  Retarget(backupTarget);
 }
 
 //---------------------------------------------------------------------------------------

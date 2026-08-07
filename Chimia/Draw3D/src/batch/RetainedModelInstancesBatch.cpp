@@ -70,8 +70,10 @@ RetainedModelInstancesBatch::CreateGPUBuffers(
     bindings.insert(
       bindings.end(), instancedBindings.begin(), instancedBindings.end());
 
-    gpuComponent.action.Create(
-      vertexBindingsTemplate.GetTarget(), indexData, bindings);
+    gpuComponent.action.Create(vertexBindingsTemplate.GetTarget(),
+                               indexData,
+                               bindings,
+                               Rendering::ePrimitive::TRIANGLES);
   });
 }
 

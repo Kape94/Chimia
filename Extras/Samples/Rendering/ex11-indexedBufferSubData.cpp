@@ -130,7 +130,8 @@ main()
   action.Create(
     target,
     indexData,
-    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto changeTime = 1s;
   auto last = std::chrono::high_resolution_clock::now();

@@ -99,7 +99,8 @@ main()
                 { { startData, "pos", "pos" },
                   { startData, "color", "color" },
                   { targetData, "pos", "target_pos" },
-                  { targetData, "color", "target_color" } });
+                  { targetData, "color", "target_color" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr float SPEED = 0.002f;
   float interpolationRate = 0.0f;

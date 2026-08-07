@@ -88,11 +88,13 @@ Implementation steps:
   - Create Texture2DInstance as well! [DONE]
     * Will be held by shader inUseTextures table; [DONE]
   - Don't forget to create the RenderAction retargeting function, it should be pretty easy!  [DONE]
+  - VertexData::Create and VertexData::New should be combined into the same function; [DONE]
+    * Same applies to InstancedData and IndexData; [DONE]
+  - The static object creation functions should be all centered at Chimia::Rendering; [NO]
+    * This is not critical, can be changed later [NO]
+  - We should maybe swap the classes names? ShaderInstance should be called Shader, and the Shader could be called ShaderInstance or ShaderObject? [NO]
+    * Not critical, can be changed later [NO]
+  - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property; [DONE]
 
 
 
-  - VertexData::Create and VertexData::New should be combined into the same function;
-    * Same applies to InstancedData and IndexData;
-  - The static object creation functions should be all centered at Chimia::Rendering;
-  - We should maybe swap the classes names? ShaderInstance should be called Shader, and the Shader could be called ShaderInstance or ShaderObject?
-  - Create support for essential primitive types: triangles, lines and points. The render data should receive the primitive type as property;

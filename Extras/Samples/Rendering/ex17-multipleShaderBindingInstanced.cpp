@@ -93,7 +93,8 @@ main()
                   { positionData, "data", "pos" },
                   { colorData, "data", "color" },
                   { offsetData, "data", "offset" },
-                });
+                },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

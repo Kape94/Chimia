@@ -71,7 +71,8 @@ Basic(Window& win)
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(target,
                         { { triangleVertexData, "pos", "pos" },
-                          { triangleVertexData, "color", "color" } });
+                          { triangleVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
 
   renderTriangle.Render();
 
@@ -141,7 +142,8 @@ Indexed(Window& win)
   renderTriangle.Create(target,
                         triangleIndexData,
                         { { triangleVertexData, "pos", "pos" },
-                          { triangleVertexData, "color", "color" } });
+                          { triangleVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
 
   renderTriangle.Render();
 
@@ -215,7 +217,9 @@ Subdata(Window& win)
 
   Chimia::Rendering::RenderAction renderTriangle;
   renderTriangle.Create(
-    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   const int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -326,7 +330,9 @@ SubDataWithVaryingSize(Window& win)
 
   Chimia::Rendering::RenderAction renderTriangles;
   renderTriangles.Create(
-    target, { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    target,
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr int EXTRA_STEPS = 2;
   int currentScreenshot = 1;
@@ -450,7 +456,8 @@ VertexAndIndexSubData(Window& win)
   renderTriangles.Create(
     target,
     indexData,
-    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } });
+    { { vertexData, "pos", "pos" }, { vertexData, "color", "color" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   constexpr int EXTRA_STEPS = 2;
   int currentScreenshot = 1;

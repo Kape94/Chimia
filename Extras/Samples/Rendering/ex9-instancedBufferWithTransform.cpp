@@ -101,7 +101,8 @@ main()
   Chimia::Rendering::RenderAction action;
   action.Create(target,
                 { { vertexData, "pos", "pos" },
-                  { instancedData, "transform", "transform" } });
+                  { instancedData, "transform", "transform" } },
+                Chimia::Rendering::ePrimitive::TRIANGLES);
 
   while (!win.ShouldClose()) {
     Chimia::Rendering::Clear();

@@ -70,7 +70,8 @@ IndexedBuffer(Window& win)
   renderReusable.Create(target,
                         reusableIndexData,
                         { { reusableVertexData, "pos", "pos" },
-                          { reusableVertexData, "color", "color" } });
+                          { reusableVertexData, "color", "color" } },
+                        Chimia::Rendering::ePrimitive::TRIANGLES);
 
   renderReusable.Render();
 
@@ -182,7 +183,8 @@ Instancing(Window& win)
     target1,
     reusableIndexData,
     { { reusableVertexData, "pos", "pos" },
-      { instancedPositions, "offset", "offset" } });
+      { instancedPositions, "offset", "offset" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   auto instancedTransforms = Chimia::Rendering::InstancedData::Create(
     transforms,
@@ -195,7 +197,8 @@ Instancing(Window& win)
     target2,
     reusableIndexData,
     { { reusableVertexData, "pos", "pos" },
-      { instancedTransforms, "transform", "transform" } });
+      { instancedTransforms, "transform", "transform" } },
+    Chimia::Rendering::ePrimitive::TRIANGLES);
 
   renderReusableWithOffsets.Render();
   renderReusableTransformed.Render();
