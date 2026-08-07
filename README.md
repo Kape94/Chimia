@@ -7,6 +7,8 @@
 
 - [Graphics] Fog;
 - [Graphics] Morph target animation;
+- [Graphics] Line and point rendering;
+- [Graphics] Text rendering;
 - [Core] Logging system
   - Include error level support;
 - [General] Testing tooling
