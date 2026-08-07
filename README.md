@@ -7,15 +7,16 @@
 
 - [Graphics] Fog;
 - [Graphics] Morph target animation;
-  - [Rendering] VAO with multi buffer shader bindings;
 - [Core] Logging system
   - Include error level support;
 - [General] Testing tooling
   - [Core] Printing things to a log;
-  - [Utils] Comparing images + Comparing text files; 
+  - [Utils] Comparing text files; 
 - [Core] Create class for representing a model/mesh;
 - [Graphics] Post processing effects: HDR, bloom, anti aliasing;
 - [Graphics] Texture filtering; 
+- [Rendering] Stateless API: Remove enable/disable functions (e.g depthTest, colorBlending)
+  * This enable/disable mechanic should be replaced by the concept of a pipeline object;
 
 ## Tech depts
 
@@ -39,6 +40,14 @@
   - Choose a license for the project;
   - Create documentation for the architecture;
 - [Rendering] The rendering module samples seem to be with wrong triangle winding. Try enabling depth test;
+- [Rendering] Texture binding is being done inside shader usage, it would be good to have it done inside RenderAction;
+- [Rendering] The static object creation functions should be all centered at Chimia::Rendering;
+- [Rendering] We should maybe swap the classes names? ShaderInstance should be called Shader, and the Shader could be called ShaderInstance or ShaderObject?
+- [Tests][Rendering] Add test coverage for: 
+  - data resize;
+  - Multiple data bindings;
+  - RenderData retargeting;
+  - Different primitives;
 - [Tests] Reduce artifacts for retained triangles test (steps 2 and 3 aren't really needed);
 - [Tests] Reduce artifacts for batching test (doesn't really need to test all vertex layouts);
 
