@@ -97,3 +97,8 @@ target_link_libraries(Samples_Rendering_ex16 PRIVATE Samples_Rendering_DefaultDe
 
 add_executable(Samples_Rendering_ex17 ex17-multipleShaderBindingInstanced.cpp)
 target_link_libraries(Samples_Rendering_ex17 PRIVATE Samples_Rendering_DefaultDeps)
+
+# 18) Primitives
+
+add_executable(Samples_Rendering_ex18 ex18-primitives.cpp)
+target_link_libraries(Samples_Rendering_ex18 PRIVATE Samples_Rendering_DefaultDeps)
