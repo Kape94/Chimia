@@ -85,7 +85,8 @@ ModelRenderingComponent::AllocateImmediateBatchForModelInstances(
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  ImmediateModelInstancesBatch* batch = m_transformedModelsTable.Insert(id);
+  ImmediateModelInstancesBatch* batch =
+    m_transformedModelsTable.InsertWithID(id);
   if (batch == nullptr) {
     Chimia::Diagnostics::Error(
       1,
@@ -153,7 +154,8 @@ ModelRenderingComponent::AllocateRetainedBatchForModelInstances(
 {
   const unsigned id = Draw3DPrivate::GetModelID(modelID);
 
-  RetainedModelInstancesBatch* staticModel = m_staticModelsTable.Insert(id);
+  RetainedModelInstancesBatch* staticModel =
+    m_staticModelsTable.InsertWithID(id);
   if (staticModel == nullptr) {
     Chimia::Diagnostics::Error(
       1,

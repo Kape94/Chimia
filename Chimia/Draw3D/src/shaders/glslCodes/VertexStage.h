@@ -35,6 +35,7 @@ inline const char* generic = R"(
   uniform bool u_hasTexture;
 
   uniform bool u_isTransparentRendering;
+  uniform bool u_isTransitionRendering;
 
   uniform int u_lightningModel;
 
@@ -42,7 +43,12 @@ inline const char* generic = R"(
   layout (location = 1) in vec4 a_vertexColor;
   layout (location = 2) in vec3 a_vertexNorm;
   layout (location = 3) in vec2 a_vertexTexCoord;
-  layout (location = 4) in mat4 a_instanceTransform;
+  layout (location = 4) in vec3 a_targetVertexPos;
+  layout (location = 5) in vec4 a_targetVertexColor;
+  layout (location = 6) in vec3 a_targetVertexNorm;
+  layout (location = 7) in vec2 a_targetVertexTexCoord;
+  layout (location = 8) in float a_transitionInterpolation;
+  layout (location = 9) in mat4 a_instanceTransform;
 
   out vec3 a_fragmentPos;
   out vec4 a_fragmentColor;
@@ -50,10 +56,15 @@ inline const char* generic = R"(
   out vec2 a_fragmentTexCoord;
 
   void main() {
-    vec4 transformedPos = u_isInstanced ? a_instanceTransform * vec4(a_vertexPos, 1.0) : vec4(a_vertexPos, 1.0);
+    vec3 effectivePos = u_isTransitionRendering ? a_vertexPos + (a_targetVertexPos - a_vertexPos) * a_transitionInterpolation : a_vertexPos;
+    vec4 effectiveColor = u_isTransitionRendering ? a_vertexColor + (a_targetVertexColor - a_vertexColor) * a_transitionInterpolation : a_vertexColor;
+    vec3 effectiveNorm = u_isTransitionRendering ? a_vertexNorm + (a_targetVertexNorm - a_vertexNorm) * a_transitionInterpolation : a_vertexNorm;
+    vec2 effectiveTexCoord = u_isTransitionRendering ? a_vertexTexCoord + (a_targetVertexTexCoord - a_vertexTexCoord) * a_transitionInterpolation : a_vertexTexCoord;
+
+    vec4 transformedPos = u_isInstanced ? a_instanceTransform * vec4(effectivePos, 1.0) : vec4(effectivePos, 1.0);
 
     vec3 pos = vec3(transformedPos);
-    vec3 norm = u_isInstanced ? mat3(transpose(inverse(a_instanceTransform))) * a_vertexNorm : a_vertexNorm;
+    vec3 norm = u_isInstanced ? mat3(transpose(inverse(a_instanceTransform))) * effectiveNorm : effectiveNorm;
 
     vec3 directional = vec3(0.0, 0.0, 0.0);
     vec3 point = vec3(0.0, 0.0, 0.0);
@@ -109,13 +120,13 @@ inline const char* generic = R"(
 
     if (shouldCalculateLights)
     {
-      a_fragmentColor = u_hasMaterial ? result : result * a_vertexColor;
+      a_fragmentColor = u_hasMaterial ? result : result * effectiveColor;
     }
     else 
     {
-      a_fragmentColor = u_hasVertexColor ? a_vertexColor : vec4(1.0, 1.0, 1.0, 1.0);
+      a_fragmentColor = u_hasVertexColor ? effectiveColor : vec4(1.0, 1.0, 1.0, 1.0);
     }
-    a_fragmentTexCoord = a_vertexTexCoord;
+    a_fragmentTexCoord = effectiveTexCoord;
 
     gl_Position = u_cameraTransform * transformedPos;
 

@@ -87,6 +87,22 @@ Draw3DPrivate::GetLocalModelInstanceIDValues(
 
 // ----------------------------------------------------------------------------
 
+TransitionID
+Draw3DPrivate::CreateTransitionID(unsigned id)
+{
+  return TransitionID(id);
+}
+
+// ----------------------------------------------------------------------------
+
+unsigned
+Draw3DPrivate::GetTransitionIDValue(const TransitionID& transitionID)
+{
+  return transitionID.m_id;
+}
+
+// ----------------------------------------------------------------------------
+
 MaterialID
 Draw3DPrivate::CreateMaterialID(unsigned id)
 {

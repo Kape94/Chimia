@@ -7,6 +7,7 @@
 #include "ModelRenderingComponent.h"
 #include "ResourcesManager.h"
 
+#include "TransitionRenderingComponent.h"
 #include "TriangleMeshComponent.h"
 #include "Types.h"
 
@@ -21,18 +22,26 @@ GenericRenderer::Create(
   const unsigned id,
   const Rendering::DataLayout& vertexDataLayout,
   const Rendering::DataLayout& instancedDataLayout,
+  const Rendering::DataLayout& transitionInstancedDataLayout,
   const ShaderBindingsTemplate& vertexBindingsTemplates,
+  const ShaderBindingsTemplate& targetVertexBindingsTemplates,
   const ShaderBindingsTemplate& instancedBindingsTemplates,
+  const ShaderBindingsTemplate& transitionInstancedBindingsTemplates,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&),
+  void (*setupShaderForTransitionRendering)(const ResourcesGroup&))
 {
   m_id = id;
   m_vertexDataLayout = vertexDataLayout;
   m_instancedDataLayout = instancedDataLayout;
+  m_transitionInstancedDataLayout = transitionInstancedDataLayout;
   m_vertexBindingsTemplates = vertexBindingsTemplates;
+  m_targetVertexBindingsTemplates = targetVertexBindingsTemplates;
   m_instancedBindingsTemplates = instancedBindingsTemplates;
+  m_transitionInstancedBindingsTemplates = transitionInstancedBindingsTemplates;
   m_setupShaderForTriangleRendering = setupShaderForTriangleRendering;
   m_setupShaderForInstancedRendering = setupShaderForInstancedRendering;
+  m_setupShaderForTransitionRendering = setupShaderForTransitionRendering;
 }
 
 // ----------------------------------------------------------------------------
@@ -98,7 +107,7 @@ GenericRenderer::FetchTriangleRenderComponentForResource(
   const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(resourceID);
   auto renderComponent = m_triangleMeshComponents.Find(idValue);
   if (renderComponent == nullptr) {
-    renderComponent = m_triangleMeshComponents.Insert(idValue);
+    renderComponent = m_triangleMeshComponents.InsertWithID(idValue);
 
     renderComponent->Init(
       Config::Batching::TriangleBatchingByResourceSettings(),
@@ -119,7 +128,7 @@ GenericRenderer::FetchModelRenderComponentForResource(
   const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(resourceID);
   auto renderComponent = m_modelComponents.Find(idValue);
   if (renderComponent == nullptr) {
-    renderComponent = m_modelComponents.Insert(idValue);
+    renderComponent = m_modelComponents.InsertWithID(idValue);
 
     renderComponent->Init(Config::Batching::ModelBatchingByResourceSettings(),
                           m_instancedDataLayout,
@@ -129,6 +138,29 @@ GenericRenderer::FetchModelRenderComponentForResource(
                             ConfigureShaderForTransformedModelDrawing(
                               resourceID);
                           });
+  }
+
+  return renderComponent;
+}
+
+// ----------------------------------------------------------------------------
+
+TransitionRenderingComponent*
+GenericRenderer::FetchTransitionRenderComponentForResource(
+  const ResourceGroupID& resourceID)
+{
+  const unsigned idValue = Draw3DPrivate::GetResourceGroupIDValue(resourceID);
+  auto renderComponent = m_transitionComponents.Find(idValue);
+  if (renderComponent == nullptr) {
+    renderComponent = m_transitionComponents.InsertWithID(idValue);
+
+    renderComponent->Init(
+      Config::Batching::ModelBatchingByResourceSettings(),
+      m_transitionInstancedDataLayout,
+      m_vertexBindingsTemplates,
+      m_targetVertexBindingsTemplates,
+      m_transitionInstancedBindingsTemplates,
+      [&, resourceID]() { ConfigureShaderForTransitionDrawing(resourceID); });
   }
 
   return renderComponent;
@@ -180,6 +212,21 @@ GenericRenderer::DeleteRetainedModel(const ModelInstanceID& instanceID)
 // ----------------------------------------------------------------------------
 
 void
+GenericRenderer::DrawTransition(const TransitionID& transition,
+                                const float interpolation,
+                                const glm::mat4x4& transform,
+                                const ResourceGroupID& resource)
+{
+  auto transitionComponent =
+    FetchTransitionRenderComponentForResource(resource);
+  transitionComponent->DrawTransition(
+    transition,
+    { { &transform, sizeof(glm::mat4x4) }, { &interpolation, sizeof(float) } });
+}
+
+// ----------------------------------------------------------------------------
+
+void
 GenericRenderer::Flush(const eImmediateFlusingPolicy flushingPolicy)
 {
   m_triangleMeshComponents.ForEach(
@@ -189,6 +236,10 @@ GenericRenderer::Flush(const eImmediateFlusingPolicy flushingPolicy)
   m_modelComponents.ForEach(
     [flushingPolicy](ModelRenderingComponent& modelRenderer) {
       modelRenderer.Flush(flushingPolicy);
+    });
+  m_transitionComponents.ForEach(
+    [flushingPolicy](TransitionRenderingComponent& transitionRenderer) {
+      transitionRenderer.Flush(flushingPolicy);
     });
 }
 
@@ -218,6 +269,20 @@ GenericRenderer::ConfigureShaderForTransformedModelDrawing(
   }
 
   m_setupShaderForInstancedRendering(*resource);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+GenericRenderer::ConfigureShaderForTransitionDrawing(
+  const ResourceGroupID& resourceID)
+{
+  auto resource = ResourcesManager::GetInstance().GetResourcesGroup(resourceID);
+  if (resource == nullptr) {
+    return;
+  }
+
+  m_setupShaderForTransitionRendering(*resource);
 }
 
 // ----------------------------------------------------------------------------

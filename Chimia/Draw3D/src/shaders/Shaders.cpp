@@ -58,6 +58,11 @@ Chimia::Draw3D::Shaders::Initialize()
       { "a_vertexColor", Rendering::eDataType::VECTOR_4_FLOAT },
       { "a_vertexNorm", Rendering::eDataType::VECTOR_3_FLOAT },
       { "a_vertexTexCoord", Rendering::eDataType::VECTOR_2_FLOAT },
+      { "a_targetVertexPos", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_targetVertexColor", Rendering::eDataType::VECTOR_4_FLOAT },
+      { "a_targetVertexNorm", Rendering::eDataType::VECTOR_3_FLOAT },
+      { "a_targetVertexTexCoord", Rendering::eDataType::VECTOR_2_FLOAT },
+      { "a_transitionInterpolation", Rendering::eDataType::FLOAT },
       { "a_instanceTransform", Rendering::eDataType::MATRIX_FLOAT_4X4 } });
 }
 

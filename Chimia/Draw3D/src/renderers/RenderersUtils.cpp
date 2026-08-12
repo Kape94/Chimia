@@ -274,7 +274,14 @@ RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
     { "transform", Rendering::eDataType::MATRIX_FLOAT_4X4 }
   };
 
-  return { vertexDataLayout, instancedDataLayout };
+  const Rendering::DataLayout transitionInstancedDataLayout = {
+    { "transform", Rendering::eDataType::MATRIX_FLOAT_4X4 },
+    { "interpolation", Rendering::eDataType::FLOAT }
+  };
+
+  return { vertexDataLayout,
+           instancedDataLayout,
+           transitionInstancedDataLayout };
 }
 
 // ----------------------------------------------------------------------------
@@ -287,47 +294,85 @@ RenderersUtils::GetBindingsTemplatesForLayout(
   const ShaderBindingsTemplate instancedTemplate(
     { { "transform", "a_instanceTransform" } }, target);
 
+  const ShaderBindingsTemplate transitionInstancedTemplate(
+    { { "transform", "a_instanceTransform" },
+      { "interpolation", "a_transitionInterpolation" } },
+    target);
+
   switch (layout) {
     case eVertexLayout::POSITION3_COLOR4:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "color", "a_targetVertexColor" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_NORMAL3:
       return { { { { "position", "a_vertexPos" },
                    { "normal", "a_vertexNorm" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "normal", "a_targetVertexNorm" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "texCoord", "a_vertexTexCoord" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "texCoord", "a_targetVertexTexCoord" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_NORMAL3:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "normal", "a_vertexNorm" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "color", "a_targetVertexColor" },
+                   { "normal", "a_targetVertexNorm" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "texCoord", "a_vertexTexCoord" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "color", "a_targetVertexColor" },
+                   { "texCoord", "a_targetVertexTexCoord" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "normal", "a_vertexNorm" },
                    { "texCoord", "a_vertexTexCoord" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "normal", "a_targetVertexNorm" },
+                   { "texCoord", "a_targetVertexTexCoord" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
       return { { { { "position", "a_vertexPos" },
                    { "color", "a_vertexColor" },
                    { "normal", "a_vertexNorm" },
                    { "texCoord", "a_vertexTexCoord" } },
                  target },
-               instancedTemplate };
+               { { { "position", "a_targetVertexPos" },
+                   { "color", "a_targetVertexColor" },
+                   { "normal", "a_targetVertexNorm" },
+                   { "texCoord", "a_targetVertexTexCoord" } },
+                 target },
+               instancedTemplate,
+               transitionInstancedTemplate };
     case eVertexLayout::UNDEFINED:
     default:
       return {};
@@ -390,6 +435,7 @@ RenderersUtils::ConfigureShaderForRendering(Rendering::ShaderInstance& shader,
                                             const eVertexLayout& layout,
                                             const ResourcesGroup& resources)
 {
+  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, false);
   RenderersUtilsPrivate::ConfigureShaderForRendering(
     shader, layout, false /*isInstancedRendering*/, resources);
 }
@@ -402,8 +448,18 @@ RenderersUtils::ConfigureShaderForInstancedRendering(
   const eVertexLayout& layout,
   const ResourcesGroup& resources)
 {
+  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, false);
   RenderersUtilsPrivate::ConfigureShaderForRendering(
     shader, layout, true /*isInstancedRendering*/, resources);
+}
+
+// ----------------------------------------------------------------------------
+
+void
+RenderersUtils::ConfigureForTransitionRendering(
+  Rendering::ShaderInstance& shader)
+{
+  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, true);
 }
 
 // ----------------------------------------------------------------------------

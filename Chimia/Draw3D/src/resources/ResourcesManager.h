@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "ObjectTable.h"
 #include "Rendering/Texture2D.h"
+#include "Transition.h"
 #include "Types.h"
 #include "resources/ResourceGroup.h"
 
@@ -27,6 +28,10 @@ public:
                       const eVertexLayout vertexLayout);
 
   const Model* GetModel(const ModelID& modelID) const;
+
+  TransitionID CreateTransition(const ModelID& start, const ModelID& target);
+
+  const Transition* GetTransition(const TransitionID& transitionID) const;
 
   MaterialID CreateMaterial(const glm::vec3& ambient,
                             const glm::vec3& diffuse,
@@ -78,6 +83,8 @@ private:
   NON_COPYABLE_NON_MOVABLE(ResourcesManager)
 
   ObjectTable<Model> m_modelsTable;
+
+  ObjectTable<Transition> m_transitionsTable;
 
   ObjectTable<Material> m_materialsTable;
 

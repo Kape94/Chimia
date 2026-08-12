@@ -21,12 +21,15 @@ struct VertexLayoutDataSchemas
 {
   Chimia::Rendering::DataLayout vertexDataLayout;
   Chimia::Rendering::DataLayout instancedDataLayout;
+  Chimia::Rendering::DataLayout transitionInstancedDataLayout;
 };
 
 struct VertexLayoutBindingsTemplates
 {
   ShaderBindingsTemplate vertexBindingsTemplate;
+  ShaderBindingsTemplate targetVertexBindingsTemplate;
   ShaderBindingsTemplate instancedBindingsTemplate;
+  ShaderBindingsTemplate transitionInstancedBindingsTemplate;
 };
 
 // ----------------------------------------------------------------------------
@@ -55,6 +58,9 @@ void
 ConfigureShaderForInstancedRendering(Rendering::ShaderInstance& shader,
                                      const eVertexLayout& layout,
                                      const ResourcesGroup& resources);
+
+void
+ConfigureForTransitionRendering(Rendering::ShaderInstance& shader);
 }
 
 // ----------------------------------------------------------------------------

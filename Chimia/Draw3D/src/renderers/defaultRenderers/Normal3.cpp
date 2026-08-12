@@ -40,6 +40,16 @@ ConfigureShaderForTransformedModelDrawing(const ResourcesGroup& resource)
     shader, VERTEX_LAYOUT, resource);
 }
 
+void
+ConfigureForTransitionDrawing(const ResourcesGroup& resource)
+{
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
+
+  RenderersUtils::ConfigureShaderForInstancedRendering(
+    shader, VERTEX_LAYOUT, resource);
+  RenderersUtils::ConfigureForTransitionRendering(shader);
+}
+
 GenericRenderer* g_renderer = nullptr;
 }
 
@@ -52,7 +62,8 @@ Normal3::Init()
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
                                RenderersUtils::GetDefaultRenderingTarget(),
                                ConfigureShaderForTriangleDrawing,
-                               ConfigureShaderForTransformedModelDrawing);
+                               ConfigureShaderForTransformedModelDrawing,
+                               ConfigureForTransitionDrawing);
 }
 
 // ----------------------------------------------------------------------------

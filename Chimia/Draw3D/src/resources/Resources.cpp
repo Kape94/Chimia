@@ -19,6 +19,16 @@ CHIMIA_DRAW3D_NAMESPACE_NAME::CreateModel(const MeshDataView& meshData,
 
 // ----------------------------------------------------------------------------
 
+TransitionID
+CHIMIA_DRAW3D_NAMESPACE_NAME::CreateTransition(const ModelID& start,
+                                               const ModelID& target)
+{
+  auto& manager = ResourcesManager::GetInstance();
+  return manager.CreateTransition(start, target);
+}
+
+// ----------------------------------------------------------------------------
+
 MaterialID
 CHIMIA_DRAW3D_NAMESPACE_NAME::CreateMaterial(const glm::vec3& ambient,
                                              const glm::vec3& diffuse,

@@ -15,6 +15,9 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 ModelID
 CreateModel(const MeshDataView& meshData, const eVertexLayout vertexLayout);
 
+TransitionID
+CreateTransition(const ModelID& start, const ModelID& target);
+
 MaterialID
 CreateMaterial(const glm::vec3& ambient,
                const glm::vec3& diffuse,

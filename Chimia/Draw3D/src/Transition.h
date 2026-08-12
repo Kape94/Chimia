@@ -2,9 +2,9 @@
 
 // ----------------------------------------------------------------------------
 
+#include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
-#include "GenericRenderer.h"
-#include "Rendering/Target.h"
+#include "Types.h"
 
 // ----------------------------------------------------------------------------
 
@@ -12,21 +12,24 @@ BEGIN_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
-namespace Renderers {
-GenericRenderer&
-CreateRenderer(
-  const eVertexLayout& vertexLayout,
-  const Rendering::TargetInstance& target,
-  void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-  void (*setupShaderForInstancedRendering)(const ResourcesGroup&),
-  void (*setupShaderForTransitionRendering)(const ResourcesGroup&));
+class Transition
+{
+public:
+  NON_COPYABLE_NON_MOVABLE(Transition)
 
-void
-DeleteRenderer(GenericRenderer* renderer);
+  Transition(const ModelID& start, const ModelID& target);
 
-GenericRenderer*
-GetRendererByID(const unsigned id);
-}
+  eVertexLayout GetVertexLayout() const;
+
+  const ModelID& GetStart() const;
+  const ModelID& GetTarget() const;
+
+private:
+  eVertexLayout m_vertexLayout;
+
+  const ModelID m_start;
+  const ModelID m_target;
+};
 
 // ----------------------------------------------------------------------------
 

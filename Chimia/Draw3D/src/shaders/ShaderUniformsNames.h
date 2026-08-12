@@ -36,6 +36,7 @@ inline const std::string POINT_LIGHTS_ARRAY = "u_pointLights";
 inline const std::string N_POINT_LIGHTS = "u_nPointLights";
 
 inline const std::string IS_TRANSPARENT_RENDERING = "u_isTransparentRendering";
+inline const std::string IS_TRANSITION_RENDERING = "u_isTransitionRendering";
 
 }
 

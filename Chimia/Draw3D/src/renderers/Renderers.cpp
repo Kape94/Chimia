@@ -26,7 +26,8 @@ Renderers::CreateRenderer(
   const eVertexLayout& vertexLayout,
   const Rendering::TargetInstance& target,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
-  void (*setupShaderForInstancedRendering)(const ResourcesGroup&))
+  void (*setupShaderForInstancedRendering)(const ResourcesGroup&),
+  void (*setupShaderForTransitionRendering)(const ResourcesGroup&))
 {
   auto [id, renderer] = RenderersInternal::RenderersTable().Insert();
 
@@ -39,10 +40,14 @@ Renderers::CreateRenderer(
   renderer->Create(id,
                    dataSchemas.vertexDataLayout,
                    dataSchemas.instancedDataLayout,
+                   dataSchemas.transitionInstancedDataLayout,
                    bindingTemplates.vertexBindingsTemplate,
+                   bindingTemplates.targetVertexBindingsTemplate,
                    bindingTemplates.instancedBindingsTemplate,
+                   bindingTemplates.transitionInstancedBindingsTemplate,
                    setupShaderForTriangleRendering,
-                   setupShaderForInstancedRendering);
+                   setupShaderForInstancedRendering,
+                   setupShaderForTransitionRendering);
 
   return *renderer;
 }

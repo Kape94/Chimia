@@ -93,6 +93,22 @@ private:
 
 // ----------------------------------------------------------------------------
 
+class TransitionID
+{
+private:
+  friend class Draw3DPrivate;
+
+  TransitionID() = delete;
+  TransitionID(unsigned id)
+    : m_id(id)
+  {
+  }
+
+  unsigned m_id = 0;
+};
+
+// ----------------------------------------------------------------------------
+
 class MaterialID
 {
 private:

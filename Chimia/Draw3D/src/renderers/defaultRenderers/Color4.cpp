@@ -38,6 +38,16 @@ ConfigureForInstancedDrawing(const ResourcesGroup& resource)
     shader, VERTEX_LAYOUT, resource);
 }
 
+void
+ConfigureForTransitionDrawing(const ResourcesGroup& resource)
+{
+  Chimia::Rendering::ShaderInstance& shader = Shaders::Generic();
+
+  RenderersUtils::ConfigureShaderForInstancedRendering(
+    shader, VERTEX_LAYOUT, resource);
+  RenderersUtils::ConfigureForTransitionRendering(shader);
+}
+
 GenericRenderer* g_renderer = nullptr;
 }
 
@@ -50,7 +60,8 @@ Color4::Init()
     &Renderers::CreateRenderer(VERTEX_LAYOUT,
                                RenderersUtils::GetDefaultRenderingTarget(),
                                ConfigureForTriangleDrawing,
-                               ConfigureForInstancedDrawing);
+                               ConfigureForInstancedDrawing,
+                               ConfigureForTransitionDrawing);
 }
 
 // ----------------------------------------------------------------------------

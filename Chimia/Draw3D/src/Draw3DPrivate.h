@@ -43,6 +43,10 @@ public:
   static std::pair<unsigned, unsigned> GetLocalModelInstanceIDValues(
     const LocalModelInstanceID& instanceID);
 
+  // TransitionID
+  static TransitionID CreateTransitionID(unsigned id);
+  static unsigned GetTransitionIDValue(const TransitionID& transitionID);
+
   // MaterialID
   static MaterialID CreateMaterialID(unsigned id);
   static unsigned GetMaterialIDValue(const MaterialID& materialID);

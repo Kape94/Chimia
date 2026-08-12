@@ -12,10 +12,13 @@ add_library(${TARGET_NAME}
     src/Pipeline.cpp
     src/Pipelines.cpp
     src/ResourceGroupHelper.cpp
+    src/Transition.cpp
+    src/TransitionRendering.cpp
     src/Triangle.cpp
     
     src/batch/BatchUtils.cpp
     src/batch/ImmediateModelInstancesBatch.cpp
+    src/batch/ImmediateTransitionsBatch.cpp
     src/batch/ImmediateTrianglesBatch.cpp
     src/batch/RetainedModelInstancesBatch.cpp
     src/batch/RetainedTrianglesBatch.cpp
@@ -24,6 +27,7 @@ add_library(${TARGET_NAME}
     src/renderers/GenericRenderer.cpp
     src/renderers/ModelRenderingComponent.cpp
     src/renderers/Renderers.cpp
+    src/renderers/TransitionRenderingComponent.cpp
     src/renderers/TriangleMeshComponent.cpp
     src/renderers/RenderersUtils.cpp
 

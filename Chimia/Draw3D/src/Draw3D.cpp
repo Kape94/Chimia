@@ -6,6 +6,7 @@
 #include "ModelRenderingPrivate.h"
 #include "Pipelines.h"
 #include "Shaders.h"
+#include "TransitionRenderingPrivate.h"
 #include "TrianglePrivate.h"
 
 #include "defaultRenderers/Color4.h"
@@ -39,6 +40,7 @@ InitRenderers()
 
   TrianglePrivate::Init();
   ModelRenderingPrivate::Init();
+  TransitionRenderingPrivate::Init();
 }
 
 void

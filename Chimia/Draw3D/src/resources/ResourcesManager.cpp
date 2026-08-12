@@ -43,6 +43,26 @@ ResourcesManager::GetModel(const ModelID& modelID) const
 
 // ----------------------------------------------------------------------------
 
+TransitionID
+ResourcesManager::CreateTransition(const ModelID& start, const ModelID& target)
+{
+  auto [transitionIDValue, transition] =
+    m_transitionsTable.Insert(start, target);
+
+  return Draw3DPrivate::CreateTransitionID(transitionIDValue);
+}
+
+// ----------------------------------------------------------------------------
+
+const Transition*
+ResourcesManager::GetTransition(const TransitionID& transitionID) const
+{
+  return m_transitionsTable.Find(
+    Draw3DPrivate::GetTransitionIDValue(transitionID));
+}
+
+// ----------------------------------------------------------------------------
+
 MaterialID
 ResourcesManager::CreateMaterial(const glm::vec3& ambient,
                                  const glm::vec3& diffuse,

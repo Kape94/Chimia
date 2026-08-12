@@ -23,8 +23,11 @@ public:
 
   NON_COPYABLE_NON_MOVABLE(ObjectTable)
 
-  std::pair<unsigned, Object*> Insert();
-  Object* Insert(unsigned id);
+  template<typename... Args>
+  std::pair<unsigned, Object*> Insert(Args&&... args);
+
+  template<typename... Args>
+  Object* InsertWithID(unsigned id, Args&&... args);
 
   Object* Find(unsigned id);
   const Object* Find(unsigned id) const;
@@ -68,8 +71,9 @@ ObjectTable<Object>::~ObjectTable()
 // ----------------------------------------------------------------------------
 
 template<class Object>
+template<typename... Args>
 std::pair<unsigned, Object*>
-ObjectTable<Object>::Insert()
+ObjectTable<Object>::Insert(Args&&... args)
 {
   int index = FindAvailableIndex();
   if (index == NOT_FOUND_INDEX) {
@@ -77,7 +81,7 @@ ObjectTable<Object>::Insert()
     index = FindAvailableIndex();
   }
 
-  Object* newObject = new Object();
+  Object* newObject = new Object(std::forward<Args>(args)...);
   m_objects[index] = newObject;
 
   return { static_cast<unsigned>(index), newObject };
@@ -86,15 +90,16 @@ ObjectTable<Object>::Insert()
 // ----------------------------------------------------------------------------
 
 template<class Object>
+template<typename... Args>
 Object*
-ObjectTable<Object>::Insert(unsigned id)
+ObjectTable<Object>::InsertWithID(unsigned id, Args&&... args)
 {
   if (id > m_objects.size()) {
     m_objects.resize(id + 1);
   }
 
   if (m_objects[id] == nullptr) {
-    Object* newObject = new Object();
+    Object* newObject = new Object(std::forward<Args>(args)...);
     m_objects[id] = newObject;
     return newObject;
   }

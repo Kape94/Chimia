@@ -64,7 +64,7 @@ ResourceGroupHelper::GetResourceGroup(const TextureID& texture)
 
   const ResourceGroupID newGroup = WrapTexture(texture);
 
-  unsigned* newGroupIDValue = textureGroups.Insert(textureIDValue);
+  unsigned* newGroupIDValue = textureGroups.InsertWithID(textureIDValue);
   *newGroupIDValue = Draw3DPrivate::GetResourceGroupIDValue(newGroup);
 
   return newGroup;
@@ -97,7 +97,7 @@ ResourceGroupHelper::GetResourceGroup(const MaterialID& material)
 
   const ResourceGroupID newGroup = WrapMaterial(material);
 
-  unsigned* newGroupIDValue = materialGroups.Insert(materialIDValue);
+  unsigned* newGroupIDValue = materialGroups.InsertWithID(materialIDValue);
   *newGroupIDValue = Draw3DPrivate::GetResourceGroupIDValue(newGroup);
 
   return newGroup;
