@@ -9,9 +9,7 @@
 #include "ImmediateModelInstancesBatch.h"
 #include "InternalTypes.h"
 #include "ObjectTable.h"
-#include "Rendering/DataLayout.h"
 #include "RetainedModelInstancesBatch.h"
-#include "ShaderBindingsTemplate.h"
 #include "Types.h"
 
 #include <glm/ext/matrix_float4x4.hpp>

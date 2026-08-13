@@ -12,91 +12,116 @@
 USING_CHIMIA_DRAW3D_NAMESPACE
 
 // ----------------------------------------------------------------------------
+// Helpers
+// ----------------------------------------------------------------------------
+
+namespace {
+
+std::vector<Chimia::Rendering::DataLayout::DataSpec>
+GetVertexLayoutSpecs(const eVertexLayout vertexLayout)
+{
+  std::vector<Chimia::Rendering::DataLayout::DataSpec> vertexSpecs;
+
+  vertexSpecs.push_back({ DataNames::BufferData::VERTEX_POS,
+                          Chimia::Rendering::eDataType::VECTOR_3_FLOAT });
+  if (RenderersUtils::HasColor(vertexLayout)) {
+    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_COLOR,
+                            Chimia::Rendering::eDataType::VECTOR_4_FLOAT });
+  }
+  if (RenderersUtils::HasNormal(vertexLayout)) {
+    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_NORMAL,
+                            Chimia::Rendering::eDataType::VECTOR_3_FLOAT });
+  }
+  if (RenderersUtils::HasTexCoord(vertexLayout)) {
+    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_TEX_COORD,
+                            Chimia::Rendering::eDataType::VECTOR_2_FLOAT });
+  }
+
+  return vertexSpecs;
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<ShaderBindingsTemplate::Item>
+GetVertexBindings(const eVertexLayout vertexLayout)
+{
+  std::vector<ShaderBindingsTemplate::Item> vertexBindings;
+
+  vertexBindings.push_back(
+    { DataNames::BufferData::VERTEX_POS, DataNames::ShaderInputs::VERTEX_POS });
+  if (RenderersUtils::HasColor(vertexLayout)) {
+    vertexBindings.push_back({ DataNames::BufferData::VERTEX_COLOR,
+                               DataNames::ShaderInputs::VERTEX_COLOR });
+  }
+  if (RenderersUtils::HasNormal(vertexLayout)) {
+    vertexBindings.push_back({ DataNames::BufferData::VERTEX_NORMAL,
+                               DataNames::ShaderInputs::VERTEX_NORMAL });
+  }
+  if (RenderersUtils::HasTexCoord(vertexLayout)) {
+    vertexBindings.push_back({ DataNames::BufferData::VERTEX_TEX_COORD,
+                               DataNames::ShaderInputs::VERTEX_TEX_COORD });
+  }
+
+  return vertexBindings;
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<ShaderBindingsTemplate::Item>
+GetTargetVertexBindings(const eVertexLayout vertexLayout)
+{
+  std::vector<ShaderBindingsTemplate::Item> targetVertexBindings;
+
+  targetVertexBindings.push_back(
+    { DataNames::BufferData::VERTEX_POS,
+      DataNames::ShaderInputs::VERTEX_TARGET_POS });
+  if (RenderersUtils::HasColor(vertexLayout)) {
+    targetVertexBindings.push_back(
+      { DataNames::BufferData::VERTEX_COLOR,
+        DataNames::ShaderInputs::VERTEX_TARGET_COLOR });
+  }
+  if (RenderersUtils::HasNormal(vertexLayout)) {
+    targetVertexBindings.push_back(
+      { DataNames::BufferData::VERTEX_NORMAL,
+        DataNames::ShaderInputs::VERTEX_TARGET_NORMAL });
+  }
+  if (RenderersUtils::HasTexCoord(vertexLayout)) {
+    targetVertexBindings.push_back(
+      { DataNames::BufferData::VERTEX_TEX_COORD,
+        DataNames::ShaderInputs::VERTEX_TARGET_TEX_COORD });
+  }
+
+  return targetVertexBindings;
+}
+
+}
+
+// ----------------------------------------------------------------------------
+// DataBindingProvider
+// ----------------------------------------------------------------------------
 
 DataBindingProvider::DataBindingProvider(
   const eVertexLayout vertexLayout,
   const Rendering::TargetInstance& target)
   : m_renderingTarget(target)
+  , m_vertexLayout(GetVertexLayoutSpecs(vertexLayout))
+  , m_instancedLayout({ { DataNames::BufferData::INSTANCE_TRANSFORM,
+                          Rendering::eDataType::MATRIX_FLOAT_4X4 } })
+  , m_instancedTransitionLayout(
+      { { DataNames::BufferData::INSTANCE_TRANSFORM,
+          Rendering::eDataType::MATRIX_FLOAT_4X4 },
+        { DataNames::BufferData::INSTANCE_INTERPOLATION,
+          Rendering::eDataType::FLOAT } })
+  , m_vertexTemplate(GetVertexBindings(vertexLayout))
+  , m_targetVertexTemplate(GetTargetVertexBindings(vertexLayout))
+  , m_instancedTemplate({ { DataNames::BufferData::INSTANCE_TRANSFORM,
+                            DataNames::ShaderInputs::INSTANCE_TRANSFORM } })
+  , m_instancedTransitionTemplate(
+      { { DataNames::BufferData::INSTANCE_TRANSFORM,
+          DataNames::ShaderInputs::INSTANCE_TRANSFORM },
+        { DataNames::BufferData::INSTANCE_INTERPOLATION,
+          DataNames::ShaderInputs::INSTANCE_TRANSITION_INTERPOLATION } })
 {
-  const bool hasColor = RenderersUtils::HasColor(vertexLayout);
-  const bool hasNormal = RenderersUtils::HasNormal(vertexLayout);
-  const bool hasTexCoord = RenderersUtils::HasTexCoord(vertexLayout);
-
-  std::vector<Rendering::DataLayout::DataSpec> vertexSpecs;
-  vertexSpecs.push_back({ DataNames::BufferData::VERTEX_POS,
-                          Chimia::Rendering::eDataType::VECTOR_3_FLOAT });
-  if (hasColor) {
-    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_COLOR,
-                            Chimia::Rendering::eDataType::VECTOR_4_FLOAT });
-  }
-  if (hasNormal) {
-    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_NORMAL,
-                            Chimia::Rendering::eDataType::VECTOR_3_FLOAT });
-  }
-  if (hasTexCoord) {
-    vertexSpecs.push_back({ DataNames::BufferData::VERTEX_TEX_COORD,
-                            Chimia::Rendering::eDataType::VECTOR_2_FLOAT });
-  }
-
-  m_vertexLayout = Rendering::DataLayout(vertexSpecs);
-
-  m_instancedLayout =
-    Rendering::DataLayout({ { DataNames::BufferData::INSTANCE_TRANSFORM,
-                              Rendering::eDataType::MATRIX_FLOAT_4X4 } });
-
-  m_instancedTransitionLayout =
-    Rendering::DataLayout({ { DataNames::BufferData::INSTANCE_TRANSFORM,
-                              Rendering::eDataType::MATRIX_FLOAT_4X4 },
-                            { DataNames::BufferData::INSTANCE_INTERPOLATION,
-                              Rendering::eDataType::FLOAT } });
-
-  std::vector<ShaderBindingsTemplate::Item> vertexBindings;
-  vertexBindings.push_back(
-    { DataNames::BufferData::VERTEX_POS, DataNames::ShaderInputs::VERTEX_POS });
-  if (hasColor) {
-    vertexBindings.push_back({ DataNames::BufferData::VERTEX_COLOR,
-                               DataNames::ShaderInputs::VERTEX_COLOR });
-  }
-  if (hasNormal) {
-    vertexBindings.push_back({ DataNames::BufferData::VERTEX_NORMAL,
-                               DataNames::ShaderInputs::VERTEX_NORMAL });
-  }
-  if (hasTexCoord) {
-    vertexBindings.push_back({ DataNames::BufferData::VERTEX_TEX_COORD,
-                               DataNames::ShaderInputs::VERTEX_TEX_COORD });
-  }
-  m_vertexTemplate = ShaderBindingsTemplate(vertexBindings);
-
-  std::vector<ShaderBindingsTemplate::Item> targetVertexBindings;
-  targetVertexBindings.push_back(
-    { DataNames::BufferData::VERTEX_POS,
-      DataNames::ShaderInputs::VERTEX_TARGET_POS });
-  if (hasColor) {
-    targetVertexBindings.push_back(
-      { DataNames::BufferData::VERTEX_COLOR,
-        DataNames::ShaderInputs::VERTEX_TARGET_COLOR });
-  }
-  if (hasNormal) {
-    targetVertexBindings.push_back(
-      { DataNames::BufferData::VERTEX_NORMAL,
-        DataNames::ShaderInputs::VERTEX_TARGET_NORMAL });
-  }
-  if (hasTexCoord) {
-    targetVertexBindings.push_back(
-      { DataNames::BufferData::VERTEX_TEX_COORD,
-        DataNames::ShaderInputs::VERTEX_TARGET_TEX_COORD });
-  }
-  m_targetVertexTemplate = ShaderBindingsTemplate(targetVertexBindings);
-
-  m_instancedTemplate =
-    ShaderBindingsTemplate({ { DataNames::BufferData::INSTANCE_TRANSFORM,
-                               DataNames::ShaderInputs::INSTANCE_TRANSFORM } });
-
-  m_instancedTransitionTemplate = ShaderBindingsTemplate(
-    { { DataNames::BufferData::INSTANCE_TRANSFORM,
-        DataNames::ShaderInputs::INSTANCE_TRANSFORM },
-      { DataNames::BufferData::INSTANCE_INTERPOLATION,
-        DataNames::ShaderInputs::INSTANCE_TRANSITION_INTERPOLATION } });
 }
 
 // ----------------------------------------------------------------------------

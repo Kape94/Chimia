@@ -2,6 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
+#include "DataBindingProvider.h"
 #include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
@@ -9,11 +10,42 @@
 #include "Rendering/VertexData.h"
 #include "ResourcesManager.h"
 #include "eImmediateFlushingPolicy.h"
+#include <vector>
 
 // ----------------------------------------------------------------------------
 
 USING_CHIMIA_DRAW3D_NAMESPACE
 
+// ----------------------------------------------------------------------------
+// Utils
+// ----------------------------------------------------------------------------
+
+namespace {
+
+std::vector<Chimia::Rendering::RenderAction::Binding>
+GenerateBindings(const Chimia::Rendering::VertexDataInstance& vertexStart,
+                 const Chimia::Rendering::VertexDataInstance& vertexTarget,
+                 const Chimia::Rendering::InstancedDataInstance& instancedData,
+                 const DataBindingProvider& dataBindings)
+{
+  auto bindings = dataBindings.GetVertexTemplate().GenerateFor(vertexStart);
+
+  auto targetBindings =
+    dataBindings.GetTargetVertexTemplate().GenerateFor(vertexTarget);
+  auto instancedBindings =
+    dataBindings.GetInstancedTransitionTemplate().GenerateFor(instancedData);
+
+  bindings.insert(bindings.end(), targetBindings.begin(), targetBindings.end());
+  bindings.insert(
+    bindings.end(), instancedBindings.begin(), instancedBindings.end());
+
+  return bindings;
+}
+
+}
+
+// ----------------------------------------------------------------------------
+// ImmediateTransitionsBatch
 // ----------------------------------------------------------------------------
 
 void
@@ -24,73 +56,73 @@ ImmediateTransitionsBatch::Create(const Transition& transition,
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
-
-  const Rendering::DataLayout instancedTransitionLayout =
-    dataBindings.GetInstancedTransitionLayout();
-  m_instancedDataSizeInBytes = instancedTransitionLayout.TotalSize();
-
-  const size_t batchSize = batchingSettings.initialBatchSize;
+  m_instancedDataSizeInBytes =
+    dataBindings.GetInstancedTransitionLayout().TotalSize();
 
   auto& resources = ResourcesManager::GetInstance();
   const Model* start = resources.GetModel(transition.GetStart());
   const Model* target = resources.GetModel(transition.GetTarget());
 
-  std::vector<std::pair<const Rendering::VertexDataInstance,
-                        const Rendering::IndexDataInstance>>
-    startDatas;
-
-  start->ForEachBuffer(
-    [&startDatas](const Rendering::VertexDataInstance& vertex,
-                  const Rendering::IndexDataInstance& index) {
-      startDatas.emplace_back(std::make_pair(vertex, index));
-    });
-
-  std::vector<std::pair<const Rendering::VertexDataInstance,
-                        const Rendering::IndexDataInstance>>
-    targetDatas;
-
-  target->ForEachBuffer(
-    [&targetDatas](const Rendering::VertexDataInstance& vertex,
-                   const Rendering::IndexDataInstance& index) {
-      targetDatas.emplace_back(std::make_pair(vertex, index));
-    });
+  const std::vector<ModelVertexAndIndex> startDatas =
+    ExtractGPUDatasFromModel(*start);
+  const std::vector<ModelVertexAndIndex> targetDatas =
+    ExtractGPUDatasFromModel(*target);
 
   assert(startDatas.size() == targetDatas.size() &&
          "TransitionsBatch: start and target models are not compatible");
 
+  const size_t batchSize = batchingSettings.initialBatchSize;
+  CreateGPUActions(startDatas, targetDatas, dataBindings, batchSize);
+
+  const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
+  m_instancedInputBuffer.Resize(batchSizeInBytes);
+  m_currentGPUBatchSizeInBytes = batchSizeInBytes;
+}
+
+// ----------------------------------------------------------------------------
+
+std::vector<ImmediateTransitionsBatch::ModelVertexAndIndex>
+ImmediateTransitionsBatch::ExtractGPUDatasFromModel(const Model& model) const
+{
+  std::vector<ModelVertexAndIndex> gpuDatas;
+
+  model.ForEachBuffer(
+    [&gpuDatas](const Chimia::Rendering::VertexDataInstance& vertex,
+                const Chimia::Rendering::IndexDataInstance& index) {
+      gpuDatas.emplace_back(std::make_pair(vertex, index));
+    });
+
+  return gpuDatas;
+}
+
+// ----------------------------------------------------------------------------
+
+void
+ImmediateTransitionsBatch::CreateGPUActions(
+  const std::vector<ModelVertexAndIndex>& startDatas,
+  const std::vector<ModelVertexAndIndex>& targetDatas,
+  const DataBindingProvider& dataBindings,
+  const size_t batchSize)
+{
   for (size_t i = 0; i < startDatas.size(); ++i) {
     BatchUtils::InstancedGPUComponent& inserted =
       m_gpuComponents.emplace_back();
 
     inserted.data = Rendering::InstancedData::Create(
       RawDataView{ nullptr, batchSize * m_instancedDataSizeInBytes },
-      instancedTransitionLayout);
+      dataBindings.GetInstancedTransitionLayout());
 
     const auto& vertexStart = startDatas[i].first;
     const auto& vertexTarget = targetDatas[i].first;
     const auto& index = startDatas[i].second;
 
-    auto bindings = dataBindings.GetVertexTemplate().GenerateFor(vertexStart);
-
-    auto targetBindings =
-      dataBindings.GetTargetVertexTemplate().GenerateFor(vertexTarget);
-    auto instancedBindings =
-      dataBindings.GetInstancedTransitionTemplate().GenerateFor(inserted.data);
-
-    bindings.insert(
-      bindings.end(), targetBindings.begin(), targetBindings.end());
-    bindings.insert(
-      bindings.end(), instancedBindings.begin(), instancedBindings.end());
-
+    auto bindings =
+      GenerateBindings(vertexStart, vertexTarget, inserted.data, dataBindings);
     inserted.action.Create(dataBindings.GetRenderingTarget(),
                            index,
                            bindings,
                            Rendering::ePrimitive::TRIANGLES);
   }
-
-  const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
-  m_instancedInputBuffer.Resize(batchSizeInBytes);
-  m_currentGPUBatchSizeInBytes = batchSizeInBytes;
 }
 
 // ----------------------------------------------------------------------------

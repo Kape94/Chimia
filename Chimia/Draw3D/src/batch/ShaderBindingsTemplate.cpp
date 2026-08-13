@@ -1,5 +1,4 @@
 #include "ShaderBindingsTemplate.h"
-#include "Rendering/Target.h"
 
 // ----------------------------------------------------------------------------
 

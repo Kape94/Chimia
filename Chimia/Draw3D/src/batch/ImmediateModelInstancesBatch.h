@@ -9,7 +9,6 @@
 
 #include "Rendering/IndexData.h"
 #include "Rendering/VertexData.h"
-#include "ShaderBindingsTemplate.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/ClassDefs.h"

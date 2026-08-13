@@ -3,10 +3,8 @@
 // ----------------------------------------------------------------------------
 
 #include "Draw3DNamespaceDefs.h"
-#include "Rendering/DataLayout.h"
 #include "Rendering/Target.h"
 #include "ResourceGroup.h"
-#include "ShaderBindingsTemplate.h"
 #include "Types.h"
 
 #include "Rendering/Shader.h"

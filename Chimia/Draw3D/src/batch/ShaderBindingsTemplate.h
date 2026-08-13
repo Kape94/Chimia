@@ -6,7 +6,6 @@
 
 #include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
-#include "Rendering/Target.h"
 #include "Rendering/VertexData.h"
 
 #include <string>

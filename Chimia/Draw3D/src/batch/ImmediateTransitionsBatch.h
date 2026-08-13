@@ -6,6 +6,7 @@
 #include "Draw3DNamespaceDefs.h"
 
 #include "DataBindingProvider.h"
+#include "Model.h"
 #include "Transition.h"
 #include "eImmediateFlushingPolicy.h"
 
@@ -39,6 +40,18 @@ public:
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
 
 private:
+  using ModelVertexAndIndex =
+    std::pair<const Chimia::Rendering::VertexDataInstance,
+              const Chimia::Rendering::IndexDataInstance>;
+
+  std::vector<ModelVertexAndIndex> ExtractGPUDatasFromModel(
+    const Model& model) const;
+
+  void CreateGPUActions(const std::vector<ModelVertexAndIndex>& startDatas,
+                        const std::vector<ModelVertexAndIndex>& targetDatas,
+                        const DataBindingProvider& dataBindings,
+                        const size_t batchSize);
+
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
   void HandleDynamicResizing();
