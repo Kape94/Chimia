@@ -2,6 +2,7 @@
 
 #include "Config.h"
 #include "Core/Types.h"
+#include "DataBindingProvider.h"
 #include "Draw3DPrivate.h"
 #include "InternalTypes.h"
 #include "ModelRenderingComponent.h"
@@ -20,25 +21,13 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 void
 GenericRenderer::Create(
   const unsigned id,
-  const Rendering::DataLayout& vertexDataLayout,
-  const Rendering::DataLayout& instancedDataLayout,
-  const Rendering::DataLayout& transitionInstancedDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplates,
-  const ShaderBindingsTemplate& targetVertexBindingsTemplates,
-  const ShaderBindingsTemplate& instancedBindingsTemplates,
-  const ShaderBindingsTemplate& transitionInstancedBindingsTemplates,
+  const DataBindingProvider& dataBindings,
   void (*setupShaderForTriangleRendering)(const ResourcesGroup&),
   void (*setupShaderForInstancedRendering)(const ResourcesGroup&),
   void (*setupShaderForTransitionRendering)(const ResourcesGroup&))
 {
   m_id = id;
-  m_vertexDataLayout = vertexDataLayout;
-  m_instancedDataLayout = instancedDataLayout;
-  m_transitionInstancedDataLayout = transitionInstancedDataLayout;
-  m_vertexBindingsTemplates = vertexBindingsTemplates;
-  m_targetVertexBindingsTemplates = targetVertexBindingsTemplates;
-  m_instancedBindingsTemplates = instancedBindingsTemplates;
-  m_transitionInstancedBindingsTemplates = transitionInstancedBindingsTemplates;
+  m_dataBindingProvider = dataBindings;
   m_setupShaderForTriangleRendering = setupShaderForTriangleRendering;
   m_setupShaderForInstancedRendering = setupShaderForInstancedRendering;
   m_setupShaderForTransitionRendering = setupShaderForTransitionRendering;
@@ -111,8 +100,7 @@ GenericRenderer::FetchTriangleRenderComponentForResource(
 
     renderComponent->Init(
       Config::Batching::TriangleBatchingByResourceSettings(),
-      m_vertexDataLayout,
-      m_vertexBindingsTemplates,
+      m_dataBindingProvider,
       [&, resourceID]() { ConfigureShaderForTriangleDrawing(resourceID); });
   }
 
@@ -131,9 +119,7 @@ GenericRenderer::FetchModelRenderComponentForResource(
     renderComponent = m_modelComponents.InsertWithID(idValue);
 
     renderComponent->Init(Config::Batching::ModelBatchingByResourceSettings(),
-                          m_instancedDataLayout,
-                          m_vertexBindingsTemplates,
-                          m_instancedBindingsTemplates,
+                          m_dataBindingProvider,
                           [&, resourceID]() {
                             ConfigureShaderForTransformedModelDrawing(
                               resourceID);
@@ -156,10 +142,7 @@ GenericRenderer::FetchTransitionRenderComponentForResource(
 
     renderComponent->Init(
       Config::Batching::ModelBatchingByResourceSettings(),
-      m_transitionInstancedDataLayout,
-      m_vertexBindingsTemplates,
-      m_targetVertexBindingsTemplates,
-      m_transitionInstancedBindingsTemplates,
+      m_dataBindingProvider,
       [&, resourceID]() { ConfigureShaderForTransitionDrawing(resourceID); });
   }
 

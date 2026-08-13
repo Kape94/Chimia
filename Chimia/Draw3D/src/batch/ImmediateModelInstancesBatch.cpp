@@ -15,28 +15,19 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ImmediateModelInstancesBatch::Create(
-  const Model& model,
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& instancedDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplate,
-  const ShaderBindingsTemplate& instancedBindingsTemplate,
-  const std::function<void(void)>& onFlush)
+ImmediateModelInstancesBatch::Create(const Model& model,
+                                     const BatchingSettings& batchingSettings,
+                                     const DataBindingProvider& dataBindings,
+                                     const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
-  m_instancedBindingsTemplates = instancedBindingsTemplate;
-  m_instancedDataSizeInBytes = instancedDataLayout.TotalSize();
+  m_instancedDataSizeInBytes = dataBindings.GetInstancedLayout().TotalSize();
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   model.ForEachBuffer([&](const Rendering::VertexDataInstance& vertexData,
                           const Rendering::IndexDataInstance& indexData) {
-    AddGPUBuffer(vertexData,
-                 indexData,
-                 batchSize,
-                 instancedDataLayout,
-                 vertexBindingsTemplate,
-                 instancedBindingsTemplate);
+    AddGPUBuffer(vertexData, indexData, batchSize, dataBindings);
   });
 
   const size_t batchSizeInBytes = batchSize * m_instancedDataSizeInBytes;
@@ -51,23 +42,21 @@ ImmediateModelInstancesBatch::AddGPUBuffer(
   const Rendering::VertexDataInstance& vertexData,
   const Rendering::IndexDataInstance& indexData,
   const size_t instanceBatchSize,
-  const Rendering::DataLayout& instancedDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplate,
-  const ShaderBindingsTemplate& instancedBindingsTemplate)
+  const DataBindingProvider& dataBindings)
 {
   BatchUtils::InstancedGPUComponent& inserted = m_gpuComponents.emplace_back();
 
   inserted.data = Rendering::InstancedData::Create(
     RawDataView{ nullptr, instanceBatchSize * m_instancedDataSizeInBytes },
-    instancedDataLayout);
+    dataBindings.GetInstancedLayout());
 
-  auto bindings = vertexBindingsTemplate.GenerateFor(vertexData);
+  auto bindings = dataBindings.GetVertexTemplate().GenerateFor(vertexData);
   const auto instancedBindings =
-    instancedBindingsTemplate.GenerateFor(inserted.data);
+    dataBindings.GetInstancedTemplate().GenerateFor(inserted.data);
 
   bindings.insert(
     bindings.end(), instancedBindings.begin(), instancedBindings.end());
-  inserted.action.Create(vertexBindingsTemplate.GetTarget(),
+  inserted.action.Create(dataBindings.GetRenderingTarget(),
                          indexData,
                          bindings,
                          Rendering::ePrimitive::TRIANGLES);

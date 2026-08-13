@@ -13,17 +13,12 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ModelRenderingComponent::Init(
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& instancedDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplates,
-  const ShaderBindingsTemplate& instancedBindingsTemplates,
-  const std::function<void(void)>& onFlush)
+ModelRenderingComponent::Init(const BatchingSettings& batchingSettings,
+                              const DataBindingProvider& dataBindings,
+                              const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
-  m_instancedDataLayout = instancedDataLayout;
-  m_vertexBindingsTemplates = vertexBindingsTemplates;
-  m_instancedBindingsTemplates = instancedBindingsTemplates;
+  m_dataBindingProvider = dataBindings;
   m_onFlush = onFlush;
 }
 
@@ -96,12 +91,7 @@ ModelRenderingComponent::AllocateImmediateBatchForModelInstances(
   }
 
   const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
-  batch->Create(*model,
-                m_batchingSettings,
-                m_instancedDataLayout,
-                m_vertexBindingsTemplates,
-                m_instancedBindingsTemplates,
-                m_onFlush);
+  batch->Create(*model, m_batchingSettings, m_dataBindingProvider, m_onFlush);
   return batch;
 }
 
@@ -165,12 +155,8 @@ ModelRenderingComponent::AllocateRetainedBatchForModelInstances(
   }
 
   const Model* model = ResourcesManager::GetInstance().GetModel(modelID);
-  staticModel->Create(*model,
-                      m_batchingSettings,
-                      m_instancedDataLayout,
-                      m_vertexBindingsTemplates,
-                      m_instancedBindingsTemplates,
-                      m_onFlush);
+  staticModel->Create(
+    *model, m_batchingSettings, m_dataBindingProvider, m_onFlush);
   return staticModel;
 }
 

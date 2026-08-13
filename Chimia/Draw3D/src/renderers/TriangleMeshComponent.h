@@ -5,9 +5,9 @@
 #include "Core/ClassDefs.h"
 #include "Draw3DNamespaceDefs.h"
 
+#include "DataBindingProvider.h"
 #include "ImmediateTrianglesBatch.h"
 #include "RetainedTrianglesBatch.h"
-#include "ShaderBindingsTemplate.h"
 
 #include <initializer_list>
 
@@ -24,8 +24,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(TriangleMeshComponent)
 
   void Init(const BatchingSettings& batchingSettings,
-            const Rendering::DataLayout& vertexDataLayout,
-            const ShaderBindingsTemplate& vertexBindingsTemplates,
+            const DataBindingProvider& dataBindings,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);

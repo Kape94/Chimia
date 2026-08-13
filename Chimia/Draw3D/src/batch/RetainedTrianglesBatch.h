@@ -2,8 +2,8 @@
 
 #include "BatchUtils.h"
 #include "Core/ClassDefs.h"
+#include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
-#include "ShaderBindingsTemplate.h"
 
 #include "Core/DataBuffer.h"
 #include "Types.h"
@@ -23,8 +23,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(RetainedTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
-              const Rendering::DataLayout& vertexDataLayout,
-              const ShaderBindingsTemplate& vertexBindingsTemplate);
+              const DataBindingProvider& dataBindings);
 
   unsigned AddStaticMesh(const RawDataView& vertexData);
 
@@ -52,7 +51,6 @@ private:
 
   // Fixed attributes, only set during initialization
   BatchingSettings m_batchingSettings;
-  ShaderBindingsTemplate m_vertexBindingsTemplate;
   size_t m_triangleSizeInBytes = 0;
 
   // These attributes get modified as rendering requests come in

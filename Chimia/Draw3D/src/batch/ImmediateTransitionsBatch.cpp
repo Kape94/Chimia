@@ -2,6 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/IndexData.h"
 #include "Rendering/InstancedData.h"
 #include "Rendering/RenderAction.h"
@@ -16,19 +17,17 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ImmediateTransitionsBatch::Create(
-  const Transition& transition,
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& instancedDataLayout,
-  const ShaderBindingsTemplate& startBindingsTemplate,
-  const ShaderBindingsTemplate& targetBindingsTemplate,
-  const ShaderBindingsTemplate& instancedBindingsTemplate,
-  const std::function<void(void)>& onFlush)
+ImmediateTransitionsBatch::Create(const Transition& transition,
+                                  const BatchingSettings& batchingSettings,
+                                  const DataBindingProvider& dataBindings,
+                                  const std::function<void(void)>& onFlush)
 {
   m_onFlush = onFlush;
   m_batchingSettings = batchingSettings;
-  m_instancedBindingsTemplates = instancedBindingsTemplate;
-  m_instancedDataSizeInBytes = instancedDataLayout.TotalSize();
+
+  const Rendering::DataLayout instancedTransitionLayout =
+    dataBindings.GetInstancedTransitionLayout();
+  m_instancedDataSizeInBytes = instancedTransitionLayout.TotalSize();
 
   const size_t batchSize = batchingSettings.initialBatchSize;
 
@@ -65,24 +64,25 @@ ImmediateTransitionsBatch::Create(
 
     inserted.data = Rendering::InstancedData::Create(
       RawDataView{ nullptr, batchSize * m_instancedDataSizeInBytes },
-      instancedDataLayout);
+      instancedTransitionLayout);
 
     const auto& vertexStart = startDatas[i].first;
     const auto& vertexTarget = targetDatas[i].first;
     const auto& index = startDatas[i].second;
 
-    auto bindings = startBindingsTemplate.GenerateFor(vertexStart);
+    auto bindings = dataBindings.GetVertexTemplate().GenerateFor(vertexStart);
 
-    auto targetBindings = targetBindingsTemplate.GenerateFor(vertexTarget);
+    auto targetBindings =
+      dataBindings.GetTargetVertexTemplate().GenerateFor(vertexTarget);
     auto instancedBindings =
-      instancedBindingsTemplate.GenerateFor(inserted.data);
+      dataBindings.GetInstancedTransitionTemplate().GenerateFor(inserted.data);
 
     bindings.insert(
       bindings.end(), targetBindings.begin(), targetBindings.end());
     bindings.insert(
       bindings.end(), instancedBindings.begin(), instancedBindings.end());
 
-    inserted.action.Create(startBindingsTemplate.GetTarget(),
+    inserted.action.Create(dataBindings.GetRenderingTarget(),
                            index,
                            bindings,
                            Rendering::ePrimitive::TRIANGLES);

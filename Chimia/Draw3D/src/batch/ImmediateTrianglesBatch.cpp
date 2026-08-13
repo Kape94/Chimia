@@ -2,6 +2,7 @@
 
 #include "BatchUtils.h"
 #include "Core/Types.h"
+#include "Rendering/DataLayout.h"
 #include "Rendering/VertexData.h"
 #include "eImmediateFlushingPolicy.h"
 
@@ -12,30 +13,28 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-ImmediateTrianglesBatch::Create(
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& vertexDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplates,
-  const std::function<void(void)>& onFlush)
+ImmediateTrianglesBatch::Create(const BatchingSettings& batchingSettings,
+                                const DataBindingProvider& dataBindings,
+                                const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
-  m_vertexBindingsTemplate = vertexBindingsTemplates;
+
+  const Rendering::DataLayout vertexLayout = dataBindings.GetVertexLayout();
 
   constexpr size_t N_VERTICES_IN_TRIANGLE = 3;
   const size_t triangleSizeInBytes =
-    vertexDataLayout.TotalSize() * N_VERTICES_IN_TRIANGLE;
+    vertexLayout.TotalSize() * N_VERTICES_IN_TRIANGLE;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
   const size_t batchSizeInBytes = batchSize * triangleSizeInBytes;
   m_inputBuffer.Resize(batchSizeInBytes);
 
   RawDataView rawData{ nullptr, batchSizeInBytes };
-  m_gpuComponent.data =
-    Rendering::VertexData::Create(rawData, vertexDataLayout);
+  m_gpuComponent.data = Rendering::VertexData::Create(rawData, vertexLayout);
 
   m_gpuComponent.action.Create(
-    vertexBindingsTemplates.GetTarget(),
-    vertexBindingsTemplates.GenerateFor(m_gpuComponent.data),
+    dataBindings.GetRenderingTarget(),
+    dataBindings.GetVertexTemplate().GenerateFor(m_gpuComponent.data),
     Rendering::ePrimitive::TRIANGLES);
 
   m_currentGpuBufferSizeInBytes = batchSizeInBytes;

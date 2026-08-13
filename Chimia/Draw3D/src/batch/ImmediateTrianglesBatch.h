@@ -2,9 +2,8 @@
 
 #include "BatchUtils.h"
 #include "Core/ClassDefs.h"
+#include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
-#include "Rendering/DataLayout.h"
-#include "ShaderBindingsTemplate.h"
 #include "eImmediateFlushingPolicy.h"
 
 #include "Core/DataBuffer.h"
@@ -28,8 +27,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(ImmediateTrianglesBatch)
 
   void Create(const BatchingSettings& batchingSettings,
-              const Rendering::DataLayout& vertexDataLayout,
-              const ShaderBindingsTemplate& vertexBindingsTemplates,
+              const DataBindingProvider& dataBindings,
               const std::function<void(void)>& onFlush);
 
   void Draw(const std::initializer_list<RawDataView>& vertexDatas);
@@ -49,7 +47,6 @@ private:
   // Fixed attributes, defined only on creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  ShaderBindingsTemplate m_vertexBindingsTemplate;
   size_t m_triangleSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens

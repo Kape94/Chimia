@@ -6,6 +6,7 @@
 #include "RenderingNamespaceDefs.h"
 
 #include <functional>
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -45,6 +46,7 @@ public:
   DEFAULT_MOVABLE(DataLayout)
 
   DataLayout(const std::initializer_list<DataSpec>& dataSpecs);
+  DataLayout(const std::vector<DataSpec>& dataSpecs);
 
   size_t OffsetOf(const std::string& name) const;
   eDataType DataTypeOf(const std::string& name) const;

@@ -4,8 +4,8 @@
 
 #include "BatchUtils.h"
 #include "Draw3DNamespaceDefs.h"
-#include "Rendering/DataLayout.h"
-#include "ShaderBindingsTemplate.h"
+
+#include "DataBindingProvider.h"
 #include "Transition.h"
 #include "eImmediateFlushingPolicy.h"
 
@@ -30,10 +30,7 @@ public:
 
   void Create(const Transition& transition,
               const BatchingSettings& batchingSettings,
-              const Rendering::DataLayout& instancedDataLayout,
-              const ShaderBindingsTemplate& startBindingsTemplate,
-              const ShaderBindingsTemplate& targetBindingsTemplate,
-              const ShaderBindingsTemplate& instancedBindingsTemplate,
+              const DataBindingProvider& dataBindings,
               const std::function<void(void)>& onFlush);
 
   void Draw(const RawDataView& instanceData);
@@ -53,7 +50,6 @@ private:
   // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  ShaderBindingsTemplate m_instancedBindingsTemplates;
   size_t m_instancedDataSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens

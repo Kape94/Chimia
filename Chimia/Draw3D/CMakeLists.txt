@@ -24,6 +24,7 @@ add_library(${TARGET_NAME}
     src/batch/RetainedTrianglesBatch.cpp
     src/batch/ShaderBindingsTemplate.cpp
 
+    src/renderers/DataBindingProvider.cpp
     src/renderers/GenericRenderer.cpp
     src/renderers/ModelRenderingComponent.cpp
     src/renderers/Renderers.cpp

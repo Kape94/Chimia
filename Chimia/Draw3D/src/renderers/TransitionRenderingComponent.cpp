@@ -15,19 +15,12 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-TransitionRenderingComponent::Init(
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& instancedDataLayout,
-  const ShaderBindingsTemplate& startBindingsTemplates,
-  const ShaderBindingsTemplate& targetBindingsTemplates,
-  const ShaderBindingsTemplate& instancedBindingsTemplates,
-  const std::function<void(void)>& onFlush)
+TransitionRenderingComponent::Init(const BatchingSettings& batchingSettings,
+                                   const DataBindingProvider& dataBindings,
+                                   const std::function<void(void)>& onFlush)
 {
   m_batchingSettings = batchingSettings;
-  m_instancedDataLayout = instancedDataLayout;
-  m_startBindingsTemplates = startBindingsTemplates;
-  m_targetBindingsTemplates = targetBindingsTemplates;
-  m_instancedBindingsTemplates = instancedBindingsTemplates;
+  m_dataBindingProvider = dataBindings;
   m_onFlush = onFlush;
 }
 
@@ -99,13 +92,8 @@ TransitionRenderingComponent::AllocateImmediateBatchForTransition(
 
   const Transition* transition =
     ResourcesManager::GetInstance().GetTransition(transitionID);
-  batch->Create(*transition,
-                m_batchingSettings,
-                m_instancedDataLayout,
-                m_startBindingsTemplates,
-                m_targetBindingsTemplates,
-                m_instancedBindingsTemplates,
-                m_onFlush);
+  batch->Create(
+    *transition, m_batchingSettings, m_dataBindingProvider, m_onFlush);
   return batch;
 }
 

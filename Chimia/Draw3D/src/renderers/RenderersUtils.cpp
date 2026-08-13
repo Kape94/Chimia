@@ -2,13 +2,12 @@
 
 #include "CameraPrivate.h"
 #include "Config.h"
+#include "DataNames.h"
 #include "IlluminationPrivate.h"
 #include "Pipelines.h"
-#include "Rendering/DataLayout.h"
 #include "Rendering/Target.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
-#include "ShaderUniformsNames.h"
 #include "Shaders.h"
 #include "Types.h"
 
@@ -64,9 +63,9 @@ ConfigureOpacity(Rendering::ShaderInstance& shader,
     const float* opacity =
       ResourcesManager::GetInstance().GetOpacityFactor(opacityID);
 
-    shader->SetUniform(ShaderUniformsNames::OPACITY, *opacity);
+    shader->SetUniform(DataNames::ShaderUniforms::OPACITY, *opacity);
   } else {
-    shader->SetUniform(ShaderUniformsNames::OPACITY, 1.0f);
+    shader->SetUniform(DataNames::ShaderUniforms::OPACITY, 1.0f);
   }
 }
 
@@ -79,10 +78,10 @@ ConfigureMixtureColor(Rendering::ShaderInstance& shader,
     const glm::vec3* color =
       ResourcesManager::GetInstance().GetMixtureColor(colorID);
 
-    shader->SetUniform(ShaderUniformsNames::MIXTURE_COLOR, *color);
+    shader->SetUniform(DataNames::ShaderUniforms::MIXTURE_COLOR, *color);
 
   } else {
-    shader->SetUniform(ShaderUniformsNames::MIXTURE_COLOR,
+    shader->SetUniform(DataNames::ShaderUniforms::MIXTURE_COLOR,
                        glm::vec3(1.0f, 1.0f, 1.0f));
   }
 }
@@ -101,7 +100,7 @@ ConfigureMaterialOnShader(const ResourcesGroup& resources,
     return;
   }
 
-  const std::string materialUniform = ShaderUniformsNames::MATERIAL;
+  const std::string materialUniform = DataNames::ShaderUniforms::MATERIAL;
 
   shader->SetUniform(materialUniform + ".ambient", material->ambient);
   shader->SetUniform(materialUniform + ".diffuse", material->diffuse);
@@ -124,7 +123,8 @@ ConfigureTextureOnShader(const ResourcesGroup& resources,
   }
 
   constexpr auto TEXTURE_UNIT = Chimia::Rendering::TextureUnit::UNIT_1;
-  shader->SetTexture(ShaderUniformsNames::TEXTURE, *texture, TEXTURE_UNIT);
+  shader->SetTexture(
+    DataNames::ShaderUniforms::TEXTURE, *texture, TEXTURE_UNIT);
 }
 
 void
@@ -135,8 +135,8 @@ ConfigureResourceOnShader(const ResourcesGroup& resources,
   const bool hasMaterial = resources.HasMaterials();
   const bool hasTexture = resources.HasTextures();
 
-  shader->SetUniform(ShaderUniformsNames::HAS_MATERIAL, hasMaterial);
-  shader->SetUniform(ShaderUniformsNames::HAS_TEXTURE, hasTexture);
+  shader->SetUniform(DataNames::ShaderUniforms::HAS_MATERIAL, hasMaterial);
+  shader->SetUniform(DataNames::ShaderUniforms::HAS_TEXTURE, hasTexture);
 
   if (hasMaterial) {
     ConfigureMaterialOnShader(resources, shader);
@@ -152,9 +152,9 @@ ConfigureResourceOnShader(const ResourcesGroup& resources,
 void
 ConfigureCameraOnShader(Rendering::ShaderInstance& shader)
 {
-  shader->SetUniform(ShaderUniformsNames::CAMERA_TRANSFORM,
+  shader->SetUniform(DataNames::ShaderUniforms::CAMERA_TRANSFORM,
                      CameraPrivate::GetCameraTransform());
-  shader->SetUniform(ShaderUniformsNames::VIEW_POSITION,
+  shader->SetUniform(DataNames::ShaderUniforms::VIEW_POSITION,
                      CameraPrivate::GetCameraPosition());
 }
 
@@ -163,8 +163,9 @@ SetDirectionalLightOnShader(const DirectionalLight& light,
                             const int index,
                             Chimia::Rendering::ShaderInstance& shader)
 {
-  const std::string iLight = ShaderUniformsNames::DIRECTIONAL_LIGHTS_ARRAY +
-                             "[" + std::to_string(index) + "].";
+  const std::string iLight =
+    DataNames::ShaderUniforms::DIRECTIONAL_LIGHTS_ARRAY + "[" +
+    std::to_string(index) + "].";
   const LightColor& col = light.color;
 
   shader->SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
@@ -187,7 +188,7 @@ ConfigureDirectionalLights(Chimia::Rendering::ShaderInstance& shader)
     ++nDirectionalLights;
   }
 
-  shader->SetUniform(ShaderUniformsNames::N_DIRECTIONAL_LIGHTS,
+  shader->SetUniform(DataNames::ShaderUniforms::N_DIRECTIONAL_LIGHTS,
                      nDirectionalLights);
 }
 
@@ -196,8 +197,8 @@ SetPointLightOnShader(const PointLight& light,
                       const int index,
                       Chimia::Rendering::ShaderInstance& shader)
 {
-  const std::string iLight = ShaderUniformsNames::POINT_LIGHTS_ARRAY + "[" +
-                             std::to_string(index) + "].";
+  const std::string iLight = DataNames::ShaderUniforms::POINT_LIGHTS_ARRAY +
+                             "[" + std::to_string(index) + "].";
   const LightColor& col = light.color;
   const PointLightAttenuation& attenuation = light.attenuation;
   shader->SetUniform(std::string(iLight + "ambient").c_str(), col.ambient);
@@ -225,7 +226,7 @@ ConfigurePointLights(Chimia::Rendering::ShaderInstance& shader)
     ++nPointLights;
   }
 
-  shader->SetUniform(ShaderUniformsNames::N_POINT_LIGHTS, nPointLights);
+  shader->SetUniform(DataNames::ShaderUniforms::N_POINT_LIGHTS, nPointLights);
 }
 
 void
@@ -243,15 +244,19 @@ ConfigureShaderForRendering(Rendering::ShaderInstance& shader,
 {
   const bool vertexHasNormal = HasNormal(layout);
 
-  shader->SetUniform(ShaderUniformsNames::HAS_VERTEX_COLOR, HasColor(layout));
-  shader->SetUniform(ShaderUniformsNames::HAS_NORMAL, vertexHasNormal);
-  shader->SetUniform(ShaderUniformsNames::HAS_TEXCOORD, HasTexCoord(layout));
-  shader->SetUniform(ShaderUniformsNames::IS_INSTANCED, isInstancedRendering);
+  shader->SetUniform(DataNames::ShaderUniforms::HAS_VERTEX_COLOR,
+                     HasColor(layout));
+  shader->SetUniform(DataNames::ShaderUniforms::HAS_NORMAL, vertexHasNormal);
+  shader->SetUniform(DataNames::ShaderUniforms::HAS_TEXCOORD,
+                     HasTexCoord(layout));
+  shader->SetUniform(DataNames::ShaderUniforms::IS_INSTANCED,
+                     isInstancedRendering);
 
   Pipelines::CurrentPipeline().ConfigureShader(shader);
 
   const int illuminationModel = static_cast<int>(Config::IlluminationModel());
-  shader->SetUniform(ShaderUniformsNames::LIGHTNING_MODEL, illuminationModel);
+  shader->SetUniform(DataNames::ShaderUniforms::LIGHTNING_MODEL,
+                     illuminationModel);
 
   ConfigureResourceOnShader(resources, layout, shader);
   ConfigureCameraOnShader(shader);
@@ -265,156 +270,26 @@ ConfigureShaderForRendering(Rendering::ShaderInstance& shader,
 // RenderersUtils
 // ----------------------------------------------------------------------------
 
-VertexLayoutDataSchemas
-RenderersUtils::GetDataSchemasForLayout(const eVertexLayout& layout)
+bool
+RenderersUtils::HasColor(const eVertexLayout& layout)
 {
-  const Rendering::DataLayout vertexDataLayout = GetVertexDataSchema(layout);
-
-  const Rendering::DataLayout instancedDataLayout = {
-    { "transform", Rendering::eDataType::MATRIX_FLOAT_4X4 }
-  };
-
-  const Rendering::DataLayout transitionInstancedDataLayout = {
-    { "transform", Rendering::eDataType::MATRIX_FLOAT_4X4 },
-    { "interpolation", Rendering::eDataType::FLOAT }
-  };
-
-  return { vertexDataLayout,
-           instancedDataLayout,
-           transitionInstancedDataLayout };
+  return RenderersUtilsPrivate::HasColor(layout);
 }
 
 // ----------------------------------------------------------------------------
 
-VertexLayoutBindingsTemplates
-RenderersUtils::GetBindingsTemplatesForLayout(
-  const eVertexLayout& layout,
-  const Rendering::TargetInstance& target)
+bool
+RenderersUtils::HasNormal(const eVertexLayout& layout)
 {
-  const ShaderBindingsTemplate instancedTemplate(
-    { { "transform", "a_instanceTransform" } }, target);
-
-  const ShaderBindingsTemplate transitionInstancedTemplate(
-    { { "transform", "a_instanceTransform" },
-      { "interpolation", "a_transitionInterpolation" } },
-    target);
-
-  switch (layout) {
-    case eVertexLayout::POSITION3_COLOR4:
-      return { { { { "position", "a_vertexPos" },
-                   { "color", "a_vertexColor" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "color", "a_targetVertexColor" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_NORMAL3:
-      return { { { { "position", "a_vertexPos" },
-                   { "normal", "a_vertexNorm" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "normal", "a_targetVertexNorm" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_TEXCOORD2:
-      return { { { { "position", "a_vertexPos" },
-                   { "texCoord", "a_vertexTexCoord" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "texCoord", "a_targetVertexTexCoord" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3:
-      return { { { { "position", "a_vertexPos" },
-                   { "color", "a_vertexColor" },
-                   { "normal", "a_vertexNorm" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "color", "a_targetVertexColor" },
-                   { "normal", "a_targetVertexNorm" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
-      return { { { { "position", "a_vertexPos" },
-                   { "color", "a_vertexColor" },
-                   { "texCoord", "a_vertexTexCoord" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "color", "a_targetVertexColor" },
-                   { "texCoord", "a_targetVertexTexCoord" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
-      return { { { { "position", "a_vertexPos" },
-                   { "normal", "a_vertexNorm" },
-                   { "texCoord", "a_vertexTexCoord" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "normal", "a_targetVertexNorm" },
-                   { "texCoord", "a_targetVertexTexCoord" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
-      return { { { { "position", "a_vertexPos" },
-                   { "color", "a_vertexColor" },
-                   { "normal", "a_vertexNorm" },
-                   { "texCoord", "a_vertexTexCoord" } },
-                 target },
-               { { { "position", "a_targetVertexPos" },
-                   { "color", "a_targetVertexColor" },
-                   { "normal", "a_targetVertexNorm" },
-                   { "texCoord", "a_targetVertexTexCoord" } },
-                 target },
-               instancedTemplate,
-               transitionInstancedTemplate };
-    case eVertexLayout::UNDEFINED:
-    default:
-      return {};
-  }
+  return RenderersUtilsPrivate::HasNormal(layout);
 }
 
 // ----------------------------------------------------------------------------
 
-Chimia::Rendering::DataLayout
-RenderersUtils::GetVertexDataSchema(const eVertexLayout& layout)
+bool
+RenderersUtils::HasTexCoord(const eVertexLayout& layout)
 {
-  switch (layout) {
-    case eVertexLayout::POSITION3_COLOR4:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT } };
-    case eVertexLayout::POSITION3_NORMAL3:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } };
-    case eVertexLayout::POSITION3_TEXCOORD2:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
-               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT } };
-    case eVertexLayout::POSITION3_COLOR4_TEXCOORD2:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
-               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
-    case eVertexLayout::POSITION3_NORMAL3_TEXCOORD2:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
-    case eVertexLayout::POSITION3_COLOR4_NORMAL3_TEXCOORD2:
-      return { { "position", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "color", Chimia::Rendering::eDataType::VECTOR_4_FLOAT },
-               { "normal", Chimia::Rendering::eDataType::VECTOR_3_FLOAT },
-               { "texCoord", Chimia::Rendering::eDataType::VECTOR_2_FLOAT } };
-    case eVertexLayout::UNDEFINED:
-    default:
-      return {};
-  }
+  return RenderersUtilsPrivate::HasTexCoord(layout);
 }
 
 // ----------------------------------------------------------------------------
@@ -435,7 +310,7 @@ RenderersUtils::ConfigureShaderForRendering(Rendering::ShaderInstance& shader,
                                             const eVertexLayout& layout,
                                             const ResourcesGroup& resources)
 {
-  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, false);
+  shader->SetUniform(DataNames::ShaderUniforms::IS_TRANSITION_RENDERING, false);
   RenderersUtilsPrivate::ConfigureShaderForRendering(
     shader, layout, false /*isInstancedRendering*/, resources);
 }
@@ -448,7 +323,7 @@ RenderersUtils::ConfigureShaderForInstancedRendering(
   const eVertexLayout& layout,
   const ResourcesGroup& resources)
 {
-  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, false);
+  shader->SetUniform(DataNames::ShaderUniforms::IS_TRANSITION_RENDERING, false);
   RenderersUtilsPrivate::ConfigureShaderForRendering(
     shader, layout, true /*isInstancedRendering*/, resources);
 }
@@ -459,7 +334,7 @@ void
 RenderersUtils::ConfigureForTransitionRendering(
   Rendering::ShaderInstance& shader)
 {
-  shader->SetUniform(ShaderUniformsNames::IS_TRANSITION_RENDERING, true);
+  shader->SetUniform(DataNames::ShaderUniforms::IS_TRANSITION_RENDERING, true);
 }
 
 // ----------------------------------------------------------------------------

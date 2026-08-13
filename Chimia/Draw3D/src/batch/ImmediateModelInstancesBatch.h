@@ -3,9 +3,10 @@
 // ----------------------------------------------------------------------------
 
 #include "BatchUtils.h"
+#include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
-#include "Rendering/DataLayout.h"
+
 #include "Rendering/IndexData.h"
 #include "Rendering/VertexData.h"
 #include "ShaderBindingsTemplate.h"
@@ -32,9 +33,7 @@ public:
 
   void Create(const Model& model,
               const BatchingSettings& batchingSettings,
-              const Rendering::DataLayout& instancedDataLayout,
-              const ShaderBindingsTemplate& vertexBindingsTemplate,
-              const ShaderBindingsTemplate& instancedBindingsTemplate,
+              const DataBindingProvider& dataBindings,
               const std::function<void(void)>& onFlush);
 
   void Draw(const RawDataView& instanceData);
@@ -46,9 +45,7 @@ private:
   void AddGPUBuffer(const Rendering::VertexDataInstance& vertexData,
                     const Rendering::IndexDataInstance& indexData,
                     const size_t instanceBatchSize,
-                    const Rendering::DataLayout& instancedDataLayout,
-                    const ShaderBindingsTemplate& vertexBindingsTemplate,
-                    const ShaderBindingsTemplate& instancedBindingsTemplate);
+                    const DataBindingProvider& dataBindings);
 
   void DoFlush(const eImmediateFlusingPolicy flushingPolicy);
 
@@ -61,7 +58,6 @@ private:
   // Fixed attributes, not changed after initial creation
   std::function<void(void)> m_onFlush;
   BatchingSettings m_batchingSettings;
-  ShaderBindingsTemplate m_instancedBindingsTemplates;
   size_t m_instancedDataSizeInBytes = 0;
 
   // This attribute only gets changed when a buffer resize happens

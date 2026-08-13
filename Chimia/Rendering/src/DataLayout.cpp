@@ -9,6 +9,13 @@ USING_RENDERLIB_NAMESPACE
 // ----------------------------------------------------------------------------
 
 DataLayout::DataLayout(const std::initializer_list<DataSpec>& dataSpecs)
+  : DataLayout(std::vector<DataSpec>(dataSpecs))
+{
+}
+
+// ----------------------------------------------------------------------------
+
+DataLayout::DataLayout(const std::vector<DataSpec>& dataSpecs)
 {
   size_t currentOffset = 0;
   for (const DataSpec& spec : dataSpecs) {

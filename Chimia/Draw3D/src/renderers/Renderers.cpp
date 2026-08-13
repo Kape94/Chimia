@@ -1,8 +1,8 @@
 #include "Renderers.h"
 
+#include "DataBindingProvider.h"
 #include "GenericRenderer.h"
 #include "ObjectTable.h"
-#include "RenderersUtils.h"
 
 // ----------------------------------------------------------------------------
 
@@ -31,20 +31,10 @@ Renderers::CreateRenderer(
 {
   auto [id, renderer] = RenderersInternal::RenderersTable().Insert();
 
-  const VertexLayoutBindingsTemplates bindingTemplates =
-    RenderersUtils::GetBindingsTemplatesForLayout(vertexLayout, target);
-
-  const VertexLayoutDataSchemas dataSchemas =
-    RenderersUtils::GetDataSchemasForLayout(vertexLayout);
+  const DataBindingProvider dataBindings(vertexLayout, target);
 
   renderer->Create(id,
-                   dataSchemas.vertexDataLayout,
-                   dataSchemas.instancedDataLayout,
-                   dataSchemas.transitionInstancedDataLayout,
-                   bindingTemplates.vertexBindingsTemplate,
-                   bindingTemplates.targetVertexBindingsTemplate,
-                   bindingTemplates.instancedBindingsTemplate,
-                   bindingTemplates.transitionInstancedBindingsTemplate,
+                   dataBindings,
                    setupShaderForTriangleRendering,
                    setupShaderForInstancedRendering,
                    setupShaderForTransitionRendering);

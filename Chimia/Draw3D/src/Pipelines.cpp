@@ -1,7 +1,7 @@
 #include "Pipelines.h"
 #include "Pipeline.h"
 
-#include "ShaderUniformsNames.h"
+#include "DataNames.h"
 
 #include "Rendering/Rendering.h"
 #include "Rendering/Shader.h"
@@ -33,7 +33,8 @@ Pipelines::Init()
       Chimia::Rendering::EnableColorBlend(false);
     },
     [](Chimia::Rendering::ShaderInstance& shader) {
-      shader->SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, false);
+      shader->SetUniform(DataNames::ShaderUniforms::IS_TRANSPARENT_RENDERING,
+                         false);
     }));
 
   g_transparentRenderingPipeline.reset(new Pipeline(
@@ -42,7 +43,8 @@ Pipelines::Init()
       Chimia::Rendering::EnableColorBlend(true);
     },
     [](Chimia::Rendering::ShaderInstance& shader) {
-      shader->SetUniform(ShaderUniformsNames::IS_TRANSPARENT_RENDERING, true);
+      shader->SetUniform(DataNames::ShaderUniforms::IS_TRANSPARENT_RENDERING,
+                         true);
     }));
 
   g_currentPipeline = g_regularPipeline.get();

@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "ImmediateModelInstancesBatch.h"
@@ -28,9 +29,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(ModelRenderingComponent)
 
   void Init(const BatchingSettings& batchingSettings,
-            const Rendering::DataLayout& instancedDataLayout,
-            const ShaderBindingsTemplate& vertexBindingsTemplates,
-            const ShaderBindingsTemplate& instancedBindingsTemplates,
+            const DataBindingProvider& dataBindings,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
@@ -55,10 +54,7 @@ private:
     const ModelID& modelID);
 
   BatchingSettings m_batchingSettings;
-  Rendering::DataLayout m_vertexDataLayout;
-  Rendering::DataLayout m_instancedDataLayout;
-  ShaderBindingsTemplate m_vertexBindingsTemplates;
-  ShaderBindingsTemplate m_instancedBindingsTemplates;
+  DataBindingProvider m_dataBindingProvider;
   std::function<void(void)> m_onFlush;
 
   ObjectTable<ImmediateModelInstancesBatch> m_transformedModelsTable;

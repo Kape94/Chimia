@@ -3,12 +3,11 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 
 #include "ImmediateTransitionsBatch.h"
 #include "ObjectTable.h"
-#include "Rendering/DataLayout.h"
-#include "ShaderBindingsTemplate.h"
 #include "Types.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -26,10 +25,7 @@ public:
   NON_COPYABLE_NON_MOVABLE(TransitionRenderingComponent)
 
   void Init(const BatchingSettings& batchingSettings,
-            const Rendering::DataLayout& instancedDataLayout,
-            const ShaderBindingsTemplate& startBindingsTemplates,
-            const ShaderBindingsTemplate& targetBindingsTemplates,
-            const ShaderBindingsTemplate& instancedBindingsTemplates,
+            const DataBindingProvider& dataBindings,
             const std::function<void(void)>& onFlush);
 
   void Flush(const eImmediateFlusingPolicy flushingPolicy);
@@ -44,11 +40,7 @@ private:
     const TransitionID& transitionID);
 
   BatchingSettings m_batchingSettings;
-  Rendering::DataLayout m_vertexDataLayout;
-  Rendering::DataLayout m_instancedDataLayout;
-  ShaderBindingsTemplate m_startBindingsTemplates;
-  ShaderBindingsTemplate m_targetBindingsTemplates;
-  ShaderBindingsTemplate m_instancedBindingsTemplates;
+  DataBindingProvider m_dataBindingProvider;
   std::function<void(void)> m_onFlush;
 
   ObjectTable<ImmediateTransitionsBatch> m_transitionsTable;

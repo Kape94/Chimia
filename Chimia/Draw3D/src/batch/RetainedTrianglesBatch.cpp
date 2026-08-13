@@ -3,6 +3,7 @@
 #include "BatchUtils.h"
 #include "Core/DataBuffer.h"
 #include "Core/Types.h"
+#include "Rendering/DataLayout.h"
 
 // ----------------------------------------------------------------------------
 
@@ -11,15 +12,14 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 void
-RetainedTrianglesBatch::Create(
-  const BatchingSettings& batchingSettings,
-  const Rendering::DataLayout& vertexDataLayout,
-  const ShaderBindingsTemplate& vertexBindingsTemplate)
+RetainedTrianglesBatch::Create(const BatchingSettings& batchingSettings,
+                               const DataBindingProvider& dataBindings)
 {
   m_batchingSettings = batchingSettings;
-  m_vertexBindingsTemplate = vertexBindingsTemplate;
 
   const size_t batchSize = batchingSettings.initialBatchSize;
+
+  const Rendering::DataLayout vertexDataLayout = dataBindings.GetVertexLayout();
   const size_t sizePerVertex = vertexDataLayout.TotalSize();
   constexpr size_t nVerticesPerTriangle = 3;
   const size_t triangleSizeInBytes = sizePerVertex * nVerticesPerTriangle;
@@ -31,8 +31,8 @@ RetainedTrianglesBatch::Create(
     Rendering::VertexData::Create(rawData, vertexDataLayout);
 
   m_gpuComponent.action.Create(
-    vertexBindingsTemplate.GetTarget(),
-    vertexBindingsTemplate.GenerateFor(m_gpuComponent.data),
+    dataBindings.GetRenderingTarget(),
+    dataBindings.GetVertexTemplate().GenerateFor(m_gpuComponent.data),
     Rendering::ePrimitive::TRIANGLES);
 
   m_inputBuffer.Resize(batchSizeInBytes);
