@@ -1,0 +1,26 @@
+# Third-Party Licenses
+
+This project uses the following third-party libraries:
+
+* **GLFW**
+  * License: zlib License
+  * GitHub: https://github.com/glfw/glfw
+  * Website: https://www.glfw.org/
+
+* **GLM (OpenGL Mathematics)**
+  * License: MIT License
+  * GitHub: https://github.com/g-truc/glm
+
+* **Assimp (Open Asset Import Library)**
+  * License: BSD 3-Clause License
+  * GitHub: https://github.com/assimp/assimp
+  * Website: https://www.assimp.org/
+
+* **GLEW (The OpenGL Extension Wrangler Library)**
+  * License: BSD 3-Clause / MIT / Khronos
+  * GitHub: https://github.com/nigels-com/glew
+  * Website: https://glew.sourceforge.net 
+
+* **Dear ImGUI**
+  * License: MIT
+  * GitHub: https://github.com/ocornut/imgui
