@@ -3,25 +3,25 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
-#include "Draw3DNamespaceDefs.h"
+#include "CoreNamespaceDefs.h"
 
 #include <functional>
 #include <vector>
 
 // ----------------------------------------------------------------------------
 
-BEGIN_CHIMIA_DRAW3D_NAMESPACE
+BEGIN_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------
 
 template<class Object>
-class ObjectTable
+class ObjectRegistry
 {
 public:
-  ObjectTable();
-  ~ObjectTable();
+  ObjectRegistry();
+  ~ObjectRegistry();
 
-  NON_COPYABLE_NON_MOVABLE(ObjectTable)
+  NON_COPYABLE_NON_MOVABLE(ObjectRegistry)
 
   template<typename... Args>
   std::pair<unsigned, Object*> Insert(Args&&... args);
@@ -52,7 +52,7 @@ private:
 // ----------------------------------------------------------------------------
 
 template<class Object>
-ObjectTable<Object>::ObjectTable()
+ObjectRegistry<Object>::ObjectRegistry()
   : m_objects(INITIAL_SIZE)
 {
 }
@@ -60,7 +60,7 @@ ObjectTable<Object>::ObjectTable()
 // ----------------------------------------------------------------------------
 
 template<class Object>
-ObjectTable<Object>::~ObjectTable()
+ObjectRegistry<Object>::~ObjectRegistry()
 {
   for (Object* obj : m_objects) {
     DeleteObject(obj);
@@ -73,7 +73,7 @@ ObjectTable<Object>::~ObjectTable()
 template<class Object>
 template<typename... Args>
 std::pair<unsigned, Object*>
-ObjectTable<Object>::Insert(Args&&... args)
+ObjectRegistry<Object>::Insert(Args&&... args)
 {
   int index = FindAvailableIndex();
   if (index == NOT_FOUND_INDEX) {
@@ -92,7 +92,7 @@ ObjectTable<Object>::Insert(Args&&... args)
 template<class Object>
 template<typename... Args>
 Object*
-ObjectTable<Object>::InsertWithID(unsigned id, Args&&... args)
+ObjectRegistry<Object>::InsertWithID(unsigned id, Args&&... args)
 {
   if (id > m_objects.size()) {
     m_objects.resize(id + 1);
@@ -110,7 +110,7 @@ ObjectTable<Object>::InsertWithID(unsigned id, Args&&... args)
 
 template<class Object>
 Object*
-ObjectTable<Object>::Find(unsigned id)
+ObjectRegistry<Object>::Find(unsigned id)
 {
   if (id > m_objects.size()) {
     return nullptr;
@@ -123,7 +123,7 @@ ObjectTable<Object>::Find(unsigned id)
 
 template<class Object>
 const Object*
-ObjectTable<Object>::Find(unsigned id) const
+ObjectRegistry<Object>::Find(unsigned id) const
 {
   if (id > m_objects.size()) {
     return nullptr;
@@ -136,7 +136,7 @@ ObjectTable<Object>::Find(unsigned id) const
 
 template<class Object>
 void
-ObjectTable<Object>::ForEach(const std::function<void(Object&)>& action)
+ObjectRegistry<Object>::ForEach(const std::function<void(Object&)>& action)
 {
   for (Object* obj : m_objects) {
     if (obj != nullptr) {
@@ -149,7 +149,7 @@ ObjectTable<Object>::ForEach(const std::function<void(Object&)>& action)
 
 template<class Object>
 void
-ObjectTable<Object>::Delete(unsigned id)
+ObjectRegistry<Object>::Delete(unsigned id)
 {
   if (id > m_objects.size()) {
     return;
@@ -162,7 +162,7 @@ ObjectTable<Object>::Delete(unsigned id)
 
 template<class Object>
 void
-ObjectTable<Object>::Delete(Object* obj)
+ObjectRegistry<Object>::Delete(Object* obj)
 {
   for (unsigned i = 0; i < m_objects.size(); ++i) {
     if (m_objects[i] == obj) {
@@ -175,7 +175,7 @@ ObjectTable<Object>::Delete(Object* obj)
 
 template<class Object>
 int
-ObjectTable<Object>::FindAvailableIndex() const
+ObjectRegistry<Object>::FindAvailableIndex() const
 {
   for (unsigned i = 0; i < m_objects.size(); ++i) {
     if (m_objects[i] == nullptr)
@@ -188,7 +188,7 @@ ObjectTable<Object>::FindAvailableIndex() const
 
 template<class Object>
 void
-ObjectTable<Object>::DeleteObject(Object*& object)
+ObjectRegistry<Object>::DeleteObject(Object*& object)
 {
   if (object != nullptr) {
     delete object;
@@ -198,6 +198,6 @@ ObjectTable<Object>::DeleteObject(Object*& object)
 
 // ----------------------------------------------------------------------------
 
-END_CHIMIA_DRAW3D_NAMESPACE
+END_CHIMIA_CORE_NAMESPACE
 
 // ----------------------------------------------------------------------------

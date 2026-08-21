@@ -3,11 +3,11 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "Core/ObjectRegistry.h"
 #include "Core/Types.h"
 #include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 #include "ModelRenderingComponent.h"
-#include "ObjectTable.h"
 #include "ResourceGroup.h"
 #include "TransitionRenderingComponent.h"
 #include "TriangleMeshComponent.h"
@@ -83,9 +83,9 @@ private:
   void (*m_setupShaderForInstancedRendering)(const ResourcesGroup&) = nullptr;
   void (*m_setupShaderForTransitionRendering)(const ResourcesGroup&) = nullptr;
 
-  ObjectTable<TriangleMeshComponent> m_triangleMeshComponents;
-  ObjectTable<ModelRenderingComponent> m_modelComponents;
-  ObjectTable<TransitionRenderingComponent> m_transitionComponents;
+  ObjectRegistry<TriangleMeshComponent> m_triangleMeshComponents;
+  ObjectRegistry<ModelRenderingComponent> m_modelComponents;
+  ObjectRegistry<TransitionRenderingComponent> m_transitionComponents;
 };
 
 END_CHIMIA_DRAW3D_NAMESPACE

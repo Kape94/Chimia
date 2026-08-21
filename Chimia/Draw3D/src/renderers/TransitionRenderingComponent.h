@@ -6,8 +6,8 @@
 #include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 
+#include "Core/ObjectRegistry.h"
 #include "ImmediateTransitionsBatch.h"
-#include "ObjectTable.h"
 #include "Types.h"
 
 #include <glm/ext/matrix_float4x4.hpp>
@@ -43,7 +43,7 @@ private:
   DataBindingProvider m_dataBindingProvider;
   std::function<void(void)> m_onFlush;
 
-  ObjectTable<ImmediateTransitionsBatch> m_transitionsTable;
+  ObjectRegistry<ImmediateTransitionsBatch> m_transitionsTable;
 };
 
 // ----------------------------------------------------------------------------

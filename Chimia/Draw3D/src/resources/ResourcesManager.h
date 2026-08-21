@@ -3,11 +3,12 @@
 // ----------------------------------------------------------------------------
 
 #include "Core/ClassDefs.h"
+#include "Core/ObjectRegistry.h"
+
 #include "Draw3DNamespaceDefs.h"
 
 #include "InternalTypes.h"
 #include "Model.h"
-#include "ObjectTable.h"
 #include "Rendering/Texture2D.h"
 #include "Transition.h"
 #include "Types.h"
@@ -82,19 +83,19 @@ private:
   DEFAULT_CONSTUCTIBLE(ResourcesManager)
   NON_COPYABLE_NON_MOVABLE(ResourcesManager)
 
-  ObjectTable<Model> m_modelsTable;
+  ObjectRegistry<Model> m_modelsTable;
 
-  ObjectTable<Transition> m_transitionsTable;
+  ObjectRegistry<Transition> m_transitionsTable;
 
-  ObjectTable<Material> m_materialsTable;
+  ObjectRegistry<Material> m_materialsTable;
 
-  ObjectTable<Rendering::Texture2DInstance> m_texturesTable;
+  ObjectRegistry<Rendering::Texture2DInstance> m_texturesTable;
 
-  ObjectTable<float> m_opacityFactors;
+  ObjectRegistry<float> m_opacityFactors;
 
-  ObjectTable<glm::vec3> m_mixtureColors;
+  ObjectRegistry<glm::vec3> m_mixtureColors;
 
-  ObjectTable<ResourcesGroup> m_resourceGroups;
+  ObjectRegistry<ResourcesGroup> m_resourceGroups;
 };
 
 // ----------------------------------------------------------------------------

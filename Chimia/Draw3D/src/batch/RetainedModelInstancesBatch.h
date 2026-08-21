@@ -3,10 +3,10 @@
 // ----------------------------------------------------------------------------
 
 #include "BatchUtils.h"
+#include "Core/ObjectRegistry.h"
 #include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 #include "Model.h"
-#include "ObjectTable.h"
 
 #include "Core/ClassDefs.h"
 #include "Core/DataBuffer.h"
@@ -73,7 +73,7 @@ private:
 
   // The attributes get modified often during rendering
   DataBuffer m_instanceDataBuffer;
-  ObjectTable<DataBuffer> m_instanceTable;
+  ObjectRegistry<DataBuffer> m_instanceTable;
   std::vector<BatchUtils::InstancedGPUComponent> m_gpuComponent;
 };
 

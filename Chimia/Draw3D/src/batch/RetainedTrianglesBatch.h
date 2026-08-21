@@ -8,7 +8,7 @@
 #include "Core/DataBuffer.h"
 #include "Types.h"
 
-#include "ObjectTable.h"
+#include "Core/ObjectRegistry.h"
 
 // ----------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ private:
   size_t m_currentGPUBatchSize = 0;
   BatchUtils::SimpleGPUComponent m_gpuComponent;
   DataBuffer m_inputBuffer;
-  ObjectTable<DataBuffer> m_staticTrianglesTable;
+  ObjectRegistry<DataBuffer> m_staticTrianglesTable;
 };
 
 // ----------------------------------------------------------------------------

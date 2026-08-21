@@ -1,8 +1,8 @@
 #include "Renderers.h"
 
+#include "Core/ObjectRegistry.h"
 #include "DataBindingProvider.h"
 #include "GenericRenderer.h"
-#include "ObjectTable.h"
 
 // ----------------------------------------------------------------------------
 
@@ -11,10 +11,10 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace RenderersInternal {
-ObjectTable<GenericRenderer>&
+Chimia::ObjectRegistry<GenericRenderer>&
 RenderersTable()
 {
-  static ObjectTable<GenericRenderer> renderersTable;
+  static Chimia::ObjectRegistry<GenericRenderer> renderersTable;
   return renderersTable;
 }
 }

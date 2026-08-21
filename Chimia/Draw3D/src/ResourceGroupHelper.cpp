@@ -1,7 +1,7 @@
 #include "ResourceGroupHelper.h"
 
+#include "Core/ObjectRegistry.h"
 #include "Draw3DPrivate.h"
-#include "ObjectTable.h"
 #include "ResourceGroup.h"
 #include "ResourcesManager.h"
 #include "Types.h"
@@ -13,8 +13,8 @@ USING_CHIMIA_DRAW3D_NAMESPACE
 // ----------------------------------------------------------------------------
 
 namespace ResourceGroupHelperInternal {
-ObjectTable<unsigned> textureGroups;
-ObjectTable<unsigned> materialGroups;
+Chimia::ObjectRegistry<unsigned> textureGroups;
+Chimia::ObjectRegistry<unsigned> materialGroups;
 
 const ResourceGroupID EMPTY_RESOURCE =
   ResourcesManager::GetInstance().CreateResourceGroup();

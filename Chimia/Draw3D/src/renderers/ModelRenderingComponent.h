@@ -6,9 +6,9 @@
 #include "DataBindingProvider.h"
 #include "Draw3DNamespaceDefs.h"
 
+#include "Core/ObjectRegistry.h"
 #include "ImmediateModelInstancesBatch.h"
 #include "InternalTypes.h"
-#include "ObjectTable.h"
 #include "RetainedModelInstancesBatch.h"
 #include "Types.h"
 
@@ -55,8 +55,8 @@ private:
   DataBindingProvider m_dataBindingProvider;
   std::function<void(void)> m_onFlush;
 
-  ObjectTable<ImmediateModelInstancesBatch> m_transformedModelsTable;
-  ObjectTable<RetainedModelInstancesBatch> m_staticModelsTable;
+  ObjectRegistry<ImmediateModelInstancesBatch> m_transformedModelsTable;
+  ObjectRegistry<RetainedModelInstancesBatch> m_staticModelsTable;
 };
 
 // ----------------------------------------------------------------------------
